@@ -206,6 +206,7 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
 - Validazione:
   - README coerente con UI e comportamento reale
   - link principali funzionanti
+- Stato: completata su `main`
 
 ## Backlog opzionale
 
