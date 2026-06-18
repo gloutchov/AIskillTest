@@ -159,19 +159,21 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - offrire un test completo e test tematici piu' brevi.
 - Modalita' previste:
   - test completo da 50 domande
-  - Literacy
-  - Fondamenti tecnici LLM
-  - Fluency - Delegation
-  - Fluency - Description
-  - Fluency - Discernment
-  - Fluency - Diligence
-  - Mindset
-  - Practical Lab
-- Decisioni da prendere prima dell'implementazione:
-  - se i test tematici devono includere le prove pratiche collegate al tema o solo le domande della sezione
-  - se il risultato dei test brevi deve mostrare un profilo globale oppure solo un profilo tematico
-  - se lo storico deve distinguere chiaramente `complete` e `topic`
-  - se mantenere rotazione A/B/C anche sui test tematici
+  - Literacy da 10 domande
+  - Fondamenti tecnici LLM da 10 domande
+  - Fluency - Delegation da 10 domande
+  - Fluency - Description da 10 domande
+  - Fluency - Discernment da 10 domande
+  - Fluency - Diligence da 10 domande
+  - Mindset da 10 domande
+  - Practical Lab da 10 domande
+- Decisioni applicate:
+  - i test tematici includono solo le domande della sezione scelta; il Practical Lab resta una modalita' dedicata
+  - i test brevi mostrano un profilo tematico, non il profilo globale Beginner/Curious/Expert/Champion
+  - lo storico distingue chiaramente `complete` e `topic`
+  - la rotazione A/B/C resta attiva anche sui test tematici
+  - ogni test tematico estrae casualmente 10 domande dal pool della sezione, ampliato dove necessario
+  - la banca domande passa a 100 domande base, pari a 300 item erogabili sulle tre forme A/B/C
 - Scope:
   - selettore di modalita' nella landing o nello step dati
   - conteggio domande aggiornato in base alla modalita'
@@ -181,10 +183,12 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - storico report con modalita' visibile
 - Validazione:
   - test completo resta a 50 domande
-  - ogni test tematico contiene solo le domande attese
+  - ogni test tematico contiene 10 domande della sezione attesa
+  - due sessioni consecutive dello stesso tema possono mostrare set di domande diversi
   - risultati non mostrano aree assenti come punteggi fuorvianti
   - export include modalita' e versione
   - bibliografia resta raggiungibile
+- Stato: completata su `main`
 
 ## Milestone 5 - Revisione README e documentazione pubblica
 

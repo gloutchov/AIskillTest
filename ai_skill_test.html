@@ -22,7 +22,7 @@
         <div>
           <div class="hero-meta">
             <p class="kicker">AI Skill & Adoption Assessment</p>
-            <span class="version-badge">Versione 1.2.1</span>
+            <span class="version-badge">Versione 2.0.0</span>
           </div>
           <h1>Misura pratica della competenza AI</h1>
           <p class="subtitle">Un questionario interattivo per stimare conoscenza, uso operativo, giudizio critico e attitudine verso la GenAI. Il risultato finale produce un profilo, una dashboard e suggerimenti formativi.</p>
@@ -31,7 +31,7 @@
         <aside class="hero-card" aria-label="Sintesi assessment">
           <div>
             <div class="big-number" id="heroCount">50</div>
-            <p>domande estratte da una delle tre forme parallele, tra autovalutazione, quiz tecnico, scenari e prove pratiche</p>
+            <p id="heroCountDescription">domande estratte da una delle tre forme parallele, tra autovalutazione, quiz tecnico, scenari e prove pratiche</p>
           </div>
           <div class="pill-row">
             <span class="pill">Literacy</span>
@@ -46,10 +46,11 @@
         <section id="introView" class="view active">
           <div class="grid-2">
             <div class="card landing-card">
-              <p class="kicker">Assessment completo</p>
-              <h2>50 domande per leggere competenza, uso e attitudine verso l'AI</h2>
-              <p>Il test combina autovalutazione, quiz sui fondamenti degli LLM, scenari decisionali e prove pratiche. Alla fine produce un profilo, una dashboard dei punteggi, il confronto tra skill dichiarate e risultati emersi, e suggerimenti formativi.</p>
+              <p class="kicker">Assessment AI</p>
+              <h2>Scegli test completo o percorso tematico</h2>
+              <p>Il test completo contiene 50 domande e combina autovalutazione, quiz sui fondamenti degli LLM, scenari decisionali e prove pratiche. I percorsi tematici contengono 10 domande estratte dall'area selezionata.</p>
               <p class="muted">All'avvio viene scelta una delle tre forme parallele disponibili. Le alternative vengono rimescolate a ogni assessment e le spiegazioni restano nascoste finche' non vengono richieste.</p>
+              <div class="mode-selector" id="testModeSelector" aria-label="Modalita' di test"></div>
               <div class="actions">
                 <button class="btn-primary" id="introStartBtn">Inizia</button>
                 <button class="btn-secondary" id="introBibliographyBtn">Bibliografia</button>
@@ -58,7 +59,7 @@
 
             <div class="card">
               <h2>Temi affrontati</h2>
-              <p class="muted">La distribuzione e' calcolata dalla banca domande del test completo.</p>
+              <p class="muted" id="distributionNote">La distribuzione e' calcolata dalla banca domande del test completo.</p>
               <div class="topic-summary" id="questionDistribution" aria-live="polite"></div>
             </div>
           </div>

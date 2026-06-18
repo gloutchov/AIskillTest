@@ -62,6 +62,114 @@ function cloneQuestionData(value) {
       return selected;
     }
 
+    const APP_VERSION = "2.0.0";
+    const DEFAULT_TEST_MODE_ID = "complete";
+    const COMPLETE_TEST_COUNT = 50;
+    const TOPIC_TEST_COUNT = 10;
+    const SECTION_ORDER = [
+      "Literacy",
+      "Fondamenti tecnici LLM",
+      "Fluency · Delegation",
+      "Fluency · Description",
+      "Fluency · Discernment",
+      "Fluency · Diligence",
+      "Mindset",
+      "Practical Lab"
+    ];
+
+    const TEST_MODES = [
+      {
+        id: "complete",
+        label: "Test completo",
+        shortLabel: "Completo",
+        type: "complete",
+        section: null,
+        questionLimit: COMPLETE_TEST_COUNT,
+        description: "Tutte le 50 domande: Literacy, fondamenti tecnici, Fluency 4D, Mindset e prove pratiche.",
+        outputNote: "Profilo completo con indice AI Skill, quadrante Literacy x Fluency e radar competenze."
+      },
+      {
+        id: "literacy",
+        label: "Literacy",
+        shortLabel: "Literacy",
+        type: "topic",
+        section: "Literacy",
+        questionLimit: TOPIC_TEST_COUNT,
+        description: "Comprensione di funzionamento, limiti, dati, fonti, privacy e affidabilita'.",
+        outputNote: "Report tematico sulla Literacy, senza profilo globale."
+      },
+      {
+        id: "technical",
+        label: "Fondamenti tecnici LLM",
+        shortLabel: "Tecnica",
+        type: "topic",
+        section: "Fondamenti tecnici LLM",
+        questionLimit: TOPIC_TEST_COUNT,
+        description: "Token, contesto, inferenza, reti neurali, Transformer, allucinazioni, RAG, embedding e citazioni.",
+        outputNote: "Report tematico sui fondamenti tecnici, senza profilo globale."
+      },
+      {
+        id: "delegation",
+        label: "Fluency - Delegation",
+        shortLabel: "Delegation",
+        type: "topic",
+        section: "Fluency · Delegation",
+        questionLimit: TOPIC_TEST_COUNT,
+        description: "Scelta dei task delegabili, scomposizione del lavoro e responsabilita' umana.",
+        outputNote: "Report tematico sulla Delegation, senza profilo globale."
+      },
+      {
+        id: "description",
+        label: "Fluency - Description",
+        shortLabel: "Description",
+        type: "topic",
+        section: "Fluency · Description",
+        questionLimit: TOPIC_TEST_COUNT,
+        description: "Qualita' del brief: obiettivi, vincoli, contesto, formato e criteri di qualita'.",
+        outputNote: "Report tematico sulla Description, senza profilo globale."
+      },
+      {
+        id: "discernment",
+        label: "Fluency - Discernment",
+        shortLabel: "Discernment",
+        type: "topic",
+        section: "Fluency · Discernment",
+        questionLimit: TOPIC_TEST_COUNT,
+        description: "Valutazione critica di output, dati, fonti, utilita' e rischi prima dell'uso.",
+        outputNote: "Report tematico sul Discernment, senza profilo globale."
+      },
+      {
+        id: "diligence",
+        label: "Fluency - Diligence",
+        shortLabel: "Diligence",
+        type: "topic",
+        section: "Fluency · Diligence",
+        questionLimit: TOPIC_TEST_COUNT,
+        description: "Uso responsabile, trasparente e proporzionato della GenAI nel lavoro reale.",
+        outputNote: "Report tematico sulla Diligence, senza profilo globale."
+      },
+      {
+        id: "mindset",
+        label: "Mindset",
+        shortLabel: "Mindset",
+        type: "topic",
+        section: "Mindset",
+        questionLimit: TOPIC_TEST_COUNT,
+        description: "Attitudine, fiducia calibrata, sperimentazione e disponibilita' a cambiare workflow.",
+        outputNote: "Report tematico sul Mindset, senza profilo globale."
+      },
+      {
+        id: "practical",
+        label: "Practical Lab",
+        shortLabel: "Practical Lab",
+        type: "topic",
+        section: "Practical Lab",
+        questionLimit: TOPIC_TEST_COUNT,
+        description: "Mini-task operativi, prompt, checklist e controlli applicati a casi concreti.",
+        outputNote: "Report tematico sulle prove pratiche, senza profilo globale."
+      }
+    ];
+
     let questions = buildQuestionForm("A");
 
 
@@ -155,6 +263,7 @@ function cloneQuestionData(value) {
       hintsVisible: {},
       meta: {},
       formId: null,
+      selectedModeId: DEFAULT_TEST_MODE_ID,
       latestReport: null,
       bibliographyBackView: "introView",
       autoAdvanceTimer: null
@@ -187,32 +296,108 @@ function cloneQuestionData(value) {
       showView(state.bibliographyBackView || "introView");
     }
 
+    function getModeById(modeId) {
+      return TEST_MODES.find(mode => mode.id === modeId) || TEST_MODES[0];
+    }
+
+    function modePoolQuestions(sourceQuestions, mode) {
+      if (!mode || mode.id === DEFAULT_TEST_MODE_ID) return sourceQuestions.slice(0, COMPLETE_TEST_COUNT);
+      return sourceQuestions.filter(question => question.section === mode.section);
+    }
+
+    function sampleQuestions(sourceQuestions, count) {
+      const copy = [...sourceQuestions];
+      for (let i = copy.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy.slice(0, Math.min(count, copy.length));
+    }
+
+    function questionsForMode(sourceQuestions, mode, randomize = false) {
+      const selectedMode = mode || getModeById(DEFAULT_TEST_MODE_ID);
+      const pool = modePoolQuestions(sourceQuestions, selectedMode);
+      const limit = selectedMode.questionLimit || pool.length;
+      if (randomize) return sampleQuestions(pool, limit);
+      return pool.slice(0, Math.min(limit, pool.length));
+    }
+
+    function questionCountForMode(mode) {
+      const selectedMode = mode || getModeById(DEFAULT_TEST_MODE_ID);
+      const pool = modePoolQuestions(baseQuestions, selectedMode);
+      const limit = selectedMode.questionLimit || pool.length;
+      return Math.min(limit, pool.length);
+    }
+
+    function selectedTestModeId() {
+      const selected = document.querySelector('input[name="testMode"]:checked');
+      return selected ? selected.value : state.selectedModeId || DEFAULT_TEST_MODE_ID;
+    }
+
+    function renderModeSelector() {
+      const container = $("testModeSelector");
+      if (!container) return;
+      container.innerHTML = TEST_MODES.map(mode => {
+        const count = questionCountForMode(mode);
+        const checked = mode.id === state.selectedModeId ? "checked" : "";
+        return `
+          <label class="mode-card ${checked ? "selected" : ""}" for="mode_${escapeHtml(mode.id)}">
+            <input id="mode_${escapeHtml(mode.id)}" type="radio" name="testMode" value="${escapeHtml(mode.id)}" ${checked} />
+            <span class="mode-card-body">
+              <span class="mode-card-top">
+                <strong>${escapeHtml(mode.label)}</strong>
+                <span>${count} domande</span>
+              </span>
+              <span class="mode-card-desc">${escapeHtml(mode.description)}</span>
+            </span>
+          </label>
+        `;
+      }).join("");
+      Array.from(document.querySelectorAll('input[name="testMode"]')).forEach(input => {
+        input.addEventListener("change", (event) => updateSelectedMode(event.target.value));
+      });
+    }
+
+    function updateSelectedMode(modeId) {
+      state.selectedModeId = getModeById(modeId).id;
+      Array.from(document.querySelectorAll(".mode-card")).forEach(card => {
+        const input = card.querySelector('input[name="testMode"]');
+        card.classList.toggle("selected", input && input.value === state.selectedModeId);
+      });
+      renderQuestionDistribution();
+    }
+
     function renderQuestionDistribution() {
       const container = $("questionDistribution");
       if (!container) return;
-      const sectionOrder = [
-        "Literacy",
-        "Fondamenti tecnici LLM",
-        "Fluency · Delegation",
-        "Fluency · Description",
-        "Fluency · Discernment",
-        "Fluency · Diligence",
-        "Mindset",
-        "Practical Lab"
-      ];
-      const counts = baseQuestions.reduce((acc, question) => {
+      const mode = getModeById(selectedTestModeId());
+      const modeQuestions = questionsForMode(baseQuestions, mode);
+      const counts = modeQuestions.reduce((acc, question) => {
         acc[question.section] = (acc[question.section] || 0) + 1;
         return acc;
       }, {});
-      const rows = sectionOrder
+      const rows = SECTION_ORDER
         .filter(section => counts[section])
         .map(section => `<div class="topic-row"><span>${escapeHtml(section)}</span><strong>${counts[section]}</strong></div>`)
         .join("");
-      const total = baseQuestions.length;
+      const total = modeQuestions.length;
       container.innerHTML = `
         ${rows}
-        <div class="topic-row topic-total"><span>Totale</span><strong>${total}</strong></div>
+        <div class="topic-row topic-total"><span>${escapeHtml(mode.shortLabel || mode.label)}</span><strong>${total}</strong></div>
       `;
+      $("heroCount").textContent = total;
+      const heroDescription = $("heroCountDescription");
+      if (heroDescription) {
+        heroDescription.textContent = mode.id === DEFAULT_TEST_MODE_ID
+          ? "domande estratte da una delle tre forme parallele, tra autovalutazione, quiz tecnico, scenari e prove pratiche"
+          : "domande nel percorso tematico selezionato, con report locale dedicato alla sezione scelta";
+      }
+      const distributionNote = $("distributionNote");
+      if (distributionNote) {
+        distributionNote.textContent = mode.id === DEFAULT_TEST_MODE_ID
+          ? "La distribuzione e' calcolata dalla banca domande del test completo."
+          : "La distribuzione mostra solo le domande incluse nella modalita' selezionata.";
+      }
     }
 
     function showToast(message) {
@@ -232,16 +417,25 @@ function cloneQuestionData(value) {
 
     function startAssessment() {
       const selectedForm = selectNextForm();
-      questions = buildQuestionForm(selectedForm);
+      const selectedMode = getModeById(selectedTestModeId());
+      questions = questionsForMode(buildQuestionForm(selectedForm), selectedMode, true);
       state.formId = selectedForm;
+      state.selectedModeId = selectedMode.id;
       state.meta = {
         name: $("nameInput").value.trim(),
         role: $("roleInput").value.trim(),
         area: $("areaInput").value.trim(),
-        assessmentVersion: "1.2.1",
+        assessmentVersion: APP_VERSION,
         formId: selectedForm,
         formVersion: FORM_VERSION,
         questionBankVersion: QUESTION_BANK_VERSION,
+        testMode: {
+          id: selectedMode.id,
+          label: selectedMode.label,
+          type: selectedMode.type,
+          section: selectedMode.section,
+          questionCount: questions.length
+        },
         selfAssessment: {
           overall: optionalScore("selfOverallInput"),
           literacy: optionalScore("selfLiteracyInput"),
@@ -521,6 +715,16 @@ function cloneQuestionData(value) {
       return Math.round(((avg - 1) / 4) * 100);
     }
 
+    function pctOrNull(values) {
+      return values.length ? pctFromValues(values) : null;
+    }
+
+    function averagePresent(values) {
+      const present = values.filter(value => typeof value === "number");
+      if (!present.length) return null;
+      return Math.round(present.reduce((sum, value) => sum + value, 0) / present.length);
+    }
+
     function avg(values) {
       if (!values.length) return 0;
       return values.reduce((sum, value) => sum + value, 0) / values.length;
@@ -544,12 +748,13 @@ function cloneQuestionData(value) {
         const rawValue = declared[key];
         const value = Number(rawValue);
         const hasDeclared = rawValue !== null && rawValue !== "" && typeof rawValue !== "undefined" && Number.isFinite(value);
+        const measured = typeof actual[key] === "number" ? actual[key] : null;
         return {
           key,
           label: labels[key],
           declared: hasDeclared ? Math.round(clamp(value, 0, 100)) : null,
-          measured: actual[key],
-          gap: hasDeclared ? Math.round(value - actual[key]) : null
+          measured,
+          gap: hasDeclared && measured !== null ? Math.round(value - measured) : null
         };
       });
     }
@@ -609,32 +814,41 @@ function cloneQuestionData(value) {
       });
 
       const score = {
-        literacy: pctFromValues(buckets.literacy),
-        mindset: pctFromValues(buckets.mindset),
-        delegation: pctFromValues(buckets.delegation),
-        description: pctFromValues(buckets.description),
-        discernment: pctFromValues(buckets.discernment),
-        diligence: pctFromValues(buckets.diligence)
+        literacy: pctOrNull(buckets.literacy),
+        mindset: pctOrNull(buckets.mindset),
+        delegation: pctOrNull(buckets.delegation),
+        description: pctOrNull(buckets.description),
+        discernment: pctOrNull(buckets.discernment),
+        diligence: pctOrNull(buckets.diligence)
       };
-      score.fluency = Math.round((score.delegation + score.description + score.discernment + score.diligence) / 4);
-      score.execution = pctFromValues(typeBuckets.practical);
-      score.behavioral = pctFromValues(typeBuckets.behavioral);
-      score.technical = pctFromValues(typeBuckets.technical);
-      score.overall = Math.round(score.literacy * 0.35 + score.fluency * 0.45 + score.mindset * 0.20);
+      score.fluency = averagePresent([score.delegation, score.description, score.discernment, score.diligence]);
+      score.execution = pctOrNull(typeBuckets.practical);
+      score.behavioral = pctOrNull(typeBuckets.behavioral);
+      score.technical = pctOrNull(typeBuckets.technical);
 
-      const highLiteracy = score.literacy >= 60;
-      const highFluency = score.fluency >= 60;
-      const profile = !highLiteracy && !highFluency ? "Beginner" :
-        !highLiteracy && highFluency ? "Curious" :
-        highLiteracy && !highFluency ? "Expert" : "Champion";
+      const mode = getModeById(state.meta && state.meta.testMode && state.meta.testMode.id);
+      const isCompleteMode = mode.id === DEFAULT_TEST_MODE_ID;
+      score.overall = isCompleteMode
+        ? Math.round(score.literacy * 0.35 + score.fluency * 0.45 + score.mindset * 0.20)
+        : pctFromValues(answeredDetails.map(item => item.score));
+      let profile = "Profilo tematico";
+      if (isCompleteMode) {
+        const highLiteracy = score.literacy >= 60;
+        const highFluency = score.fluency >= 60;
+        profile = !highLiteracy && !highFluency ? "Beginner" :
+          !highLiteracy && highFluency ? "Curious" :
+          highLiteracy && !highFluency ? "Expert" : "Champion";
+      }
 
       const mindsetLens = getMindsetLens(score.mindset);
-      const likertPct = pctFromValues(typeBuckets.likert);
-      const scenarioPct = pctFromValues(typeBuckets.scenario);
-      const practicalPct = pctFromValues(typeBuckets.practical);
-      const behavioralPct = pctFromValues(typeBuckets.behavioral);
-      const technicalPct = pctFromValues(typeBuckets.technical);
-      const calibrationGap = Math.round(likertPct - behavioralPct);
+      const likertPct = pctOrNull(typeBuckets.likert);
+      const scenarioPct = pctOrNull(typeBuckets.scenario);
+      const practicalPct = pctOrNull(typeBuckets.practical);
+      const behavioralPct = pctOrNull(typeBuckets.behavioral);
+      const technicalPct = pctOrNull(typeBuckets.technical);
+      const calibrationGap = typeof likertPct === "number" && typeof behavioralPct === "number"
+        ? Math.round(likertPct - behavioralPct)
+        : null;
       const calibration = getCalibration(calibrationGap);
 
       const lowBehaviorItems = answeredDetails.filter(item => item.type !== "likert" && item.type !== "knowledge" && item.score <= 3);
@@ -648,13 +862,14 @@ function cloneQuestionData(value) {
         lowScenarioItems,
         lowBehaviorItems,
         lowTechnicalItems,
-        recommendations: buildRecommendations(score, profile)
+        recommendations: buildRecommendations(score, profile, mode)
       };
 
       return report;
     }
 
     function getMindsetLens(score) {
+      if (typeof score !== "number") return { label: "Non misurato", text: "Questa modalita' non include abbastanza domande Mindset per produrre una lente dedicata." };
       if (score < 40) return { label: "Cauto / resistente", text: "L’adozione richiede casi d’uso concreti, rischio basso e accompagnamento ravvicinato." };
       if (score < 60) return { label: "Pragmatico ma incerto", text: "C’è apertura, ma servono obiettivi chiari, regole e risultati misurabili." };
       if (score < 80) return { label: "Aperto e gestibile", text: "Buona predisposizione alla sperimentazione controllata e al miglioramento del workflow." };
@@ -662,12 +877,13 @@ function cloneQuestionData(value) {
     }
 
     function getCalibration(gap) {
+      if (typeof gap !== "number") return { label: "Non disponibile", text: "La calibrazione richiede sia risposte dichiarative sia prove comportamentali nella stessa modalita'." };
       if (gap >= 18) return { label: "Autovalutazione alta rispetto alle prove", text: "Le risposte dichiarative sono più forti delle scelte comportamentali e delle prove pratiche. Conviene lavorare su esercizi guidati, rubriche e verifica degli output." };
       if (gap <= -18) return { label: "Prove migliori dell’autovalutazione", text: "La persona tende a sottostimarsi o è prudente nel dichiarare competenza. Conviene valorizzare esempi pratici già corretti e trasformarli in metodo." };
       return { label: "Autovalutazione coerente", text: "Le risposte dichiarative, gli scenari e le prove pratiche sono abbastanza allineati." };
     }
 
-    function buildRecommendations(score, profile) {
+    function buildRecommendations(score, profile, mode) {
       const dims = [
         ["Literacy", score.literacy, "Rafforzare fondamenti, limiti, fonti, dati, privacy e differenza tra output plausibile e verificato."],
         ["Fondamenti tecnici", score.technical, "Consolidare token, generazione autoregressiva, addestramento, inferenza, contesto, reti neurali, Transformer, allucinazioni, RAG ed embedding."],
@@ -676,10 +892,17 @@ function cloneQuestionData(value) {
         ["Discernment", score.discernment, "Introdurre checklist di valutazione, controllo fonti, confronto alternative e revisione proporzionata al rischio."],
         ["Diligence", score.diligence, "Chiarire dati ammessi, responsabilità finale, trasparenza d’uso, compliance e tracciabilità."],
         ["Mindset", score.mindset, "Lavorare su sperimentazioni a basso rischio, fiducia calibrata e condivisione di pratiche utili."]
-      ].sort((a, b) => a[1] - b[1]);
+      ].filter(item => typeof item[1] === "number").sort((a, b) => a[1] - b[1]);
+
+      const isCompleteMode = !mode || mode.id === DEFAULT_TEST_MODE_ID;
+      const thematicActions = [
+        `Usare il risultato di ${mode ? mode.label : "questa modalita'"} come diagnosi mirata, non come profilo globale della persona.`,
+        "Rivedere le risposte a punteggio basso e trasformarle in esempi o checklist operative.",
+        "Completare il test completo quando serve una lettura comparabile su Literacy, Fluency e Mindset."
+      ];
 
       return {
-        profile: profileActions[profile],
+        profile: isCompleteMode ? profileActions[profile] : thematicActions,
         weakest: dims.slice(0, 2).map(item => ({ area: item[0], score: item[1], action: item[2] })),
         strongest: dims.slice(-2).reverse().map(item => ({ area: item[0], score: item[1], action: `Usare questa area come leva per sostenere il miglioramento delle aree più deboli.` }))
       };
@@ -688,55 +911,19 @@ function cloneQuestionData(value) {
     function renderDashboard(report) {
       state.latestReport = report;
       saveReport(report);
-      const s = { execution: report.practicalPct || 0, behavioral: report.behavioralPct || 0, technical: report.technicalPct || 0, ...report.score };
-      report.practicalPct = typeof report.practicalPct === "number" ? report.practicalPct : (s.execution || 0);
-      report.behavioralPct = typeof report.behavioralPct === "number" ? report.behavioralPct : (s.behavioral || 0);
-      report.technicalPct = typeof report.technicalPct === "number" ? report.technicalPct : (s.technical || 0);
-      report.scenarioPct = typeof report.scenarioPct === "number" ? report.scenarioPct : 0;
-      report.likertPct = typeof report.likertPct === "number" ? report.likertPct : 0;
+      const mode = getReportMode(report);
+      const isCompleteMode = mode.id === DEFAULT_TEST_MODE_ID;
+      const s = { ...report.score };
       const metaTitle = [report.meta.name, report.meta.role, report.meta.area].filter(Boolean).join(" · ");
-
-      $("dashboard").innerHTML = `
-        <div class="actions" style="margin-top: 0; margin-bottom: 18px;">
-          <button class="btn-primary" id="restartBtn">Nuovo assessment</button>
-          <button class="btn-ghost" id="exportJsonBtn">Esporta JSON</button>
-          <button class="btn-ghost" id="exportCsvBtn">Esporta CSV</button>
-          <button class="btn-ghost" id="printBtn">Stampa / salva PDF</button>
-          <button class="btn-ghost" id="bibliographyBtn">Bibliografia</button>
-          <button class="btn-danger" id="clearHistoryBtn">Svuota storico locale</button>
-        </div>
-
-        <div class="grid-4">
-          ${scoreCard("Indice AI Skill", s.overall, "Punteggio composito: 35% Literacy, 45% Fluency, 20% Mindset. Le prove pratiche pesano nelle rispettive dimensioni.")}
-          ${scoreCard("Literacy", s.literacy, "Comprensione di funzionamento, limiti, dati, fonti e privacy.")}
-          ${scoreCard("Fluency", s.fluency, "Competenza operativa media sulle 4D.")}
-          ${scoreCard("Mindset", s.mindset, "Attitudine, fiducia calibrata e apertura alla sperimentazione.")}
-        </div>
-
-        <div class="profile-band">
-          <section class="profile-card">
-            <p class="kicker" style="color:#a5b4fc;">Profilo principale</p>
-            <div class="profile-title">${escapeHtml(report.profile)}</div>
-            <p>${escapeHtml(profileDescriptions[report.profile])}</p>
-            <p class="small">${metaTitle ? escapeHtml(metaTitle) + " · " : ""}${formatDate(report.meta.completedAt)} · Forma ${escapeHtml((report.meta && report.meta.formId) || "non registrata")}</p>
-          </section>
-          <section class="card">
-            <h3>Lente Mindset: ${escapeHtml(report.mindsetLens.label)}</h3>
-            <p>${escapeHtml(report.mindsetLens.text)}</p>
-            <h3 style="margin-top: 18px;">Calibrazione: ${escapeHtml(report.calibration.label)}</h3>
-            <p>${escapeHtml(report.calibration.text)} Gap dichiarato/comportamentale: <strong>${report.calibrationGap > 0 ? "+" : ""}${report.calibrationGap}</strong> punti.</p>
-          </section>
-        </div>
-
-        ${selfAssessmentComparison(report)}
-
-        <div class="grid-4" style="margin-bottom: 18px;">
-          ${scoreCard("Autovalutazione", report.likertPct, "Media delle risposte dichiarative, presentate senza etichette di livello e in ordine casuale.")}
-          ${scoreCard("Scenari", report.scenarioPct, "Media delle scelte situazionali in casi realistici.")}
-          ${scoreCard("Prove pratiche", report.practicalPct, "Media di mini-task, checklist operative e prompt valutati con rubrica locale.")}
-          ${scoreCard("Fondamenti tecnici", report.technicalPct, "Quiz su token, generazione, training, contesto, reti neurali, Transformer, allucinazioni, RAG, embedding e storia dell’AI.")}
-        </div>
-
+      const profileTitle = isCompleteMode ? report.profile : mode.label;
+      const profileKicker = isCompleteMode ? "Profilo principale" : "Profilo tematico";
+      const profileDescription = isCompleteMode
+        ? profileDescriptions[report.profile]
+        : `${mode.outputNote} Il punteggio e' calcolato solo sulle ${modeQuestionCount(report)} domande svolte.`;
+      const calibrationGapText = typeof report.calibrationGap === "number"
+        ? ` Gap dichiarato/comportamentale: <strong>${report.calibrationGap > 0 ? "+" : ""}${report.calibrationGap}</strong> punti.`
+        : "";
+      const chartBlock = isCompleteMode ? `
         <div class="grid-2">
           <section class="card chart-card">
             <div class="chart-title-row">
@@ -757,20 +944,51 @@ function cloneQuestionData(value) {
             <div class="svg-box">${quadrantSvg(s.literacy, s.fluency, report.profile)}</div>
           </section>
         </div>
+      ` : `
+        <section class="card chart-card" style="margin-bottom: 18px;">
+          <h3>Dettaglio percorso tematico</h3>
+          <p class="muted small">Sono mostrate solo le aree effettivamente misurate dalla modalita' selezionata.</p>
+          <div class="bar-list">${dimensionBarRows(s)}</div>
+        </section>
+      `;
+
+      $("dashboard").innerHTML = `
+        <div class="actions" style="margin-top: 0; margin-bottom: 18px;">
+          <button class="btn-primary" id="restartBtn">Nuovo assessment</button>
+          <button class="btn-ghost" id="exportJsonBtn">Esporta JSON</button>
+          <button class="btn-ghost" id="exportCsvBtn">Esporta CSV</button>
+          <button class="btn-ghost" id="printBtn">Stampa / salva PDF</button>
+          <button class="btn-ghost" id="bibliographyBtn">Bibliografia</button>
+          <button class="btn-danger" id="clearHistoryBtn">Svuota storico locale</button>
+        </div>
+
+        <div class="grid-4">${scoreSummaryCards(report, isCompleteMode)}</div>
+
+        <div class="profile-band">
+          <section class="profile-card">
+            <p class="kicker" style="color:#a5b4fc;">${escapeHtml(profileKicker)}</p>
+            <div class="profile-title">${escapeHtml(profileTitle)}</div>
+            <p>${escapeHtml(profileDescription)}</p>
+            <p class="small">${metaTitle ? escapeHtml(metaTitle) + " · " : ""}${formatDate(report.meta.completedAt)} · ${escapeHtml(mode.label)} · Forma ${escapeHtml((report.meta && report.meta.formId) || "non registrata")}</p>
+          </section>
+          <section class="card">
+            <h3>Lente Mindset: ${escapeHtml(report.mindsetLens.label)}</h3>
+            <p>${escapeHtml(report.mindsetLens.text)}</p>
+            <h3 style="margin-top: 18px;">Calibrazione: ${escapeHtml(report.calibration.label)}</h3>
+            <p>${escapeHtml(report.calibration.text)}${calibrationGapText}</p>
+          </section>
+        </div>
+
+        ${selfAssessmentComparison(report)}
+
+        ${typeScoreCards(report)}
+
+        ${chartBlock}
 
         <div class="grid-2" style="margin-top: 18px;">
           <section class="card">
             <h3>Dettaglio dimensioni</h3>
-            <div class="bar-list">
-              ${barRow("Literacy", s.literacy)}
-              ${barRow("Fondamenti tecnici", s.technical)}
-              ${barRow("Delegation", s.delegation)}
-              ${barRow("Description", s.description)}
-              ${barRow("Discernment", s.discernment)}
-              ${barRow("Diligence", s.diligence)}
-              ${barRow("Mindset", s.mindset)}
-              ${barRow("Prove pratiche", s.execution)}
-            </div>
+            <div class="bar-list">${dimensionBarRows(s)}</div>
           </section>
           <section class="card">
             <h3>Azioni consigliate</h3>
@@ -784,13 +1002,13 @@ function cloneQuestionData(value) {
           <section class="card">
             <h3>Aree da rafforzare</h3>
             <div class="analysis-list">
-              ${report.recommendations.weakest.map(item => `<div class="analysis-item"><strong>${escapeHtml(item.area)} · ${item.score}/100</strong>${escapeHtml(item.action)}</div>`).join("")}
+              ${recommendationRows(report.recommendations.weakest, "Non ci sono aree misurate da ordinare per priorita'.")}
             </div>
           </section>
           <section class="card">
             <h3>Aree di leva</h3>
             <div class="analysis-list">
-              ${report.recommendations.strongest.map(item => `<div class="analysis-item"><strong>${escapeHtml(item.area)} · ${item.score}/100</strong>${escapeHtml(item.action)}</div>`).join("")}
+              ${recommendationRows(report.recommendations.strongest, "Non ci sono aree misurate da usare come leva.")}
             </div>
           </section>
         </div>
@@ -805,6 +1023,74 @@ function cloneQuestionData(value) {
       $("progressFill").style.width = "100%";
       bindDashboardEvents();
       showView("dashboardView");
+    }
+
+    function getReportMode(report) {
+      return getModeById(report && report.meta && report.meta.testMode && report.meta.testMode.id);
+    }
+
+    function modeQuestionCount(report) {
+      const count = report && report.meta && report.meta.testMode && report.meta.testMode.questionCount;
+      return typeof count === "number" ? count : ((report && report.answers && report.answers.length) || 0);
+    }
+
+    function isScore(value) {
+      return typeof value === "number" && Number.isFinite(value);
+    }
+
+    function scoreSummaryCards(report, isCompleteMode) {
+      const score = report.score || {};
+      const entries = [
+        [
+          isCompleteMode ? "Indice AI Skill" : "Risultato percorso",
+          score.overall,
+          isCompleteMode
+            ? "Punteggio composito del test completo: 35% Literacy, 45% Fluency, 20% Mindset."
+            : "Punteggio medio calcolato solo sulle domande della modalita' selezionata."
+        ],
+        ["Literacy", score.literacy, "Comprensione di funzionamento, limiti, dati, fonti e privacy."],
+        ["Fluency", score.fluency, "Competenza operativa media sulle 4D presenti nel percorso."],
+        ["Mindset", score.mindset, "Attitudine, fiducia calibrata e apertura alla sperimentazione."],
+        ["Delegation", score.delegation, "Scelta dei task delegabili e responsabilita' umana."],
+        ["Description", score.description, "Qualita' di brief, contesto, vincoli e formato atteso."],
+        ["Discernment", score.discernment, "Valutazione critica di output, fonti, utilita' e rischi."],
+        ["Diligence", score.diligence, "Uso responsabile, trasparente e proporzionato della GenAI."]
+      ];
+      return entries
+        .filter(([, value], index) => index === 0 || isScore(value))
+        .map(([label, value, desc]) => scoreCard(label, value, desc))
+        .join("");
+    }
+
+    function typeScoreCards(report) {
+      const entries = [
+        ["Autovalutazione", report.likertPct, "Media delle risposte dichiarative, presentate senza etichette di livello e in ordine casuale."],
+        ["Scenari", report.scenarioPct, "Media delle scelte situazionali in casi realistici."],
+        ["Prove pratiche", report.practicalPct, "Media di mini-task, checklist operative e prompt valutati con rubrica locale."],
+        ["Fondamenti tecnici", report.technicalPct, "Quiz su token, generazione, training, contesto, reti neurali, Transformer, allucinazioni, RAG, embedding e storia dell'AI."]
+      ].filter(([, value]) => isScore(value));
+      if (!entries.length) return "";
+      return `<div class="grid-4" style="margin-bottom: 18px;">${entries.map(([label, value, desc]) => scoreCard(label, value, desc)).join("")}</div>`;
+    }
+
+    function dimensionBarRows(score) {
+      const rows = [
+        ["Literacy", score.literacy],
+        ["Fondamenti tecnici", score.technical],
+        ["Delegation", score.delegation],
+        ["Description", score.description],
+        ["Discernment", score.discernment],
+        ["Diligence", score.diligence],
+        ["Mindset", score.mindset],
+        ["Prove pratiche", score.execution]
+      ].filter(([, value]) => isScore(value));
+      if (!rows.length) return `<p class="muted">Nessun punteggio dimensionale disponibile.</p>`;
+      return rows.map(([label, value]) => barRow(label, value)).join("");
+    }
+
+    function recommendationRows(items, fallback) {
+      if (!items || !items.length) return `<div class="analysis-item">${escapeHtml(fallback)}</div>`;
+      return items.map(item => `<div class="analysis-item"><strong>${escapeHtml(item.area)} · ${item.score}/100</strong>${escapeHtml(item.action)}</div>`).join("");
     }
 
     function selfConsistency(gap) {
@@ -822,7 +1108,7 @@ function cloneQuestionData(value) {
       const comparison = Array.isArray(report.selfComparison)
         ? report.selfComparison
         : buildSelfComparison(report.meta && report.meta.selfAssessment, report.score);
-      const provided = comparison.filter(item => item.declared !== null);
+      const provided = comparison.filter(item => item.declared !== null && item.measured !== null);
       if (!provided.length) {
         return `
           <section class="card" style="margin-bottom: 18px;">
@@ -862,21 +1148,25 @@ function cloneQuestionData(value) {
     }
 
     function scoreCard(label, score, desc) {
+      const value = isScore(score) ? score : "—";
+      const suffix = isScore(score) ? "<span>/100</span>" : "";
       return `
         <section class="card score-card">
           <p class="label">${escapeHtml(label)}</p>
-          <div class="score">${score}<span>/100</span></div>
+          <div class="score">${value}${suffix}</div>
           <p class="desc">${escapeHtml(desc)}</p>
         </section>
       `;
     }
 
     function barRow(label, value) {
+      const pct = isScore(value) ? clamp(value, 0, 100) : 0;
+      const display = isScore(value) ? value : "—";
       return `
         <div class="bar-row">
           <strong>${escapeHtml(label)}</strong>
-          <div class="bar-track"><div class="bar-fill" style="width:${value}%;"></div></div>
-          <span>${value}</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${pct}%;"></div></div>
+          <span>${display}</span>
         </div>
       `;
     }
@@ -947,6 +1237,8 @@ function cloneQuestionData(value) {
     }
 
     function scenarioReview(report) {
+      const hasBehavioralItems = (report.answers || []).some(item => item.type !== "likert" && item.type !== "knowledge");
+      if (!hasBehavioralItems) return "";
       const items = report.lowBehaviorItems || report.lowScenarioItems || [];
       if (!items.length) {
         return `
@@ -968,6 +1260,8 @@ function cloneQuestionData(value) {
     }
 
     function technicalReview(report) {
+      const hasTechnicalItems = (report.answers || []).some(item => item.type === "knowledge");
+      if (!hasTechnicalItems) return "";
       const items = report.lowTechnicalItems || [];
       if (!items.length) {
         return `
@@ -991,33 +1285,42 @@ function cloneQuestionData(value) {
     function historyBlock() {
       const history = loadHistory();
       if (!history.length) return "";
-      const rows = history.slice(-8).reverse().map(report => `
-        <tr>
-          <td>${escapeHtml(formatDate(report.meta.completedAt))}</td>
-          <td>${escapeHtml(report.meta.name || "—")}</td>
-          <td>${escapeHtml((report.meta && report.meta.formId) || "—")}</td>
-          <td>${escapeHtml(report.profile)}</td>
-          <td>${report.score.overall}</td>
-          <td>${report.score.literacy}</td>
-          <td>${report.score.fluency}</td>
-          <td>${report.score.mindset}</td>
-          <td>${typeof report.score.technical === "number" ? report.score.technical : "—"}</td>
-          <td>${typeof report.score.execution === "number" ? report.score.execution : "—"}</td>
-        </tr>
-      `).join("");
-      const avgOverall = Math.round(avg(history.map(item => item.score.overall)));
+      const rows = history.slice(-8).reverse().map(report => {
+        const mode = getReportMode(report);
+        return `
+          <tr>
+            <td>${escapeHtml(formatDate(report.meta.completedAt))}</td>
+            <td>${escapeHtml(report.meta.name || "—")}</td>
+            <td>${escapeHtml(mode.shortLabel || mode.label)}</td>
+            <td>${escapeHtml((report.meta && report.meta.formId) || "—")}</td>
+            <td>${escapeHtml(report.profile)}</td>
+            <td>${scoreText(report.score.overall)}</td>
+            <td>${scoreText(report.score.literacy)}</td>
+            <td>${scoreText(report.score.fluency)}</td>
+            <td>${scoreText(report.score.mindset)}</td>
+            <td>${scoreText(report.score.technical)}</td>
+            <td>${scoreText(report.score.execution)}</td>
+          </tr>
+        `;
+      }).join("");
+      const overallValues = history.map(item => item.score && item.score.overall).filter(isScore);
+      const avgOverall = overallValues.length ? Math.round(avg(overallValues)) : null;
       return `
         <section class="card" style="margin-top: 18px;">
           <h3>Storico locale</h3>
-          <p class="muted">Ultimi ${Math.min(8, history.length)} report salvati in questo browser. Media indice AI Skill: <strong>${avgOverall}/100</strong>.</p>
+          <p class="muted">Ultimi ${Math.min(8, history.length)} report salvati in questo browser. Media risultato percorso: <strong>${scoreText(avgOverall)}/100</strong>.</p>
           <div style="overflow:auto;">
             <table class="history-table">
-              <thead><tr><th>Data</th><th>Nome</th><th>Forma</th><th>Profilo</th><th>Indice</th><th>Literacy</th><th>Fluency</th><th>Mindset</th><th>Tecnica</th><th>Pratica</th></tr></thead>
+              <thead><tr><th>Data</th><th>Nome</th><th>Modalita'</th><th>Forma</th><th>Profilo</th><th>Risultato</th><th>Literacy</th><th>Fluency</th><th>Mindset</th><th>Tecnica</th><th>Pratica</th></tr></thead>
               <tbody>${rows}</tbody>
             </table>
           </div>
         </section>
       `;
+    }
+
+    function scoreText(value) {
+      return isScore(value) ? String(value) : "—";
     }
 
     function bindDashboardEvents() {
@@ -1125,6 +1428,12 @@ function cloneQuestionData(value) {
       rows.push(["meta", "forma", report.meta.formId || ""]);
       rows.push(["meta", "versione_forma", report.meta.formVersion || ""]);
       rows.push(["meta", "versione_banca_domande", report.meta.questionBankVersion || ""]);
+      const testMode = (report.meta && report.meta.testMode) || {};
+      const fallbackMode = getReportMode(report);
+      rows.push(["meta", "testMode", testMode.id || fallbackMode.id]);
+      rows.push(["meta", "modalita_test_label", testMode.label || fallbackMode.label]);
+      rows.push(["meta", "tipo_modalita", testMode.type || fallbackMode.type]);
+      rows.push(["meta", "domande_modalita", testMode.questionCount || modeQuestionCount(report)]);
       const selfAssessment = (report.meta && report.meta.selfAssessment) || {};
       rows.push(["autovalutazione", "AI Skill", selfAssessment.overall ?? ""]);
       rows.push(["autovalutazione", "Literacy", selfAssessment.literacy ?? ""]);
@@ -1144,7 +1453,9 @@ function cloneQuestionData(value) {
       const who = (report.meta.name || "assessment").toLowerCase().replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "") || "assessment";
       const date = new Date(report.meta.completedAt).toISOString().slice(0, 10);
       const form = report.meta && report.meta.formId ? `-forma-${String(report.meta.formId).toLowerCase()}` : "";
-      return `ai-skill-${who}-${date}${form}.${ext}`;
+      const mode = getReportMode(report);
+      const modePart = mode.id && mode.id !== DEFAULT_TEST_MODE_ID ? `-${mode.id}` : "";
+      return `ai-skill-${who}-${date}${modePart}${form}.${ext}`;
     }
 
     function csvCell(value) {
@@ -1186,7 +1497,7 @@ function cloneQuestionData(value) {
       }
     }
 
-    $("heroCount").textContent = baseQuestions.length;
+    renderModeSelector();
     renderQuestionDistribution();
     $("introStartBtn").addEventListener("click", openProfileStep);
     $("introBibliographyBtn").addEventListener("click", () => showBibliography("introView"));

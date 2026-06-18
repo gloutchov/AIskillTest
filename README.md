@@ -4,7 +4,7 @@ Questionario interattivo in italiano per valutare in modo pratico competenza, us
 
 L'assessment produce un profilo finale, una dashboard dei punteggi e suggerimenti formativi. E' pensato come strumento diagnostico interno e migliorabile, non come test psicometrico validato.
 
-Versione corrente dell'app: `1.2.1`.
+Versione corrente dell'app: `2.0.0`.
 
 ## Nota sullo sviluppo
 
@@ -23,11 +23,15 @@ Questo test e' stato realizzato in vibecoding, usando l'AI come supporto operati
 
 Apri `ai_skill_test.html` in un browser moderno. Non servono build, dipendenze o server.
 
-La home descrive il test completo da 50 domande, mostra la distribuzione per tema e permette di aprire la bibliografia prima di iniziare. Il pulsante `Inizia` porta a uno step separato con dati e autovalutazione iniziale facoltativi; il test vero e proprio parte solo dal pulsante `Inizia il test`.
+La home permette di scegliere tra il test completo da 50 domande e percorsi tematici da 10 domande. Il conteggio e la distribuzione delle domande si aggiornano in base alla modalita' selezionata. Il pulsante `Inizia` porta a uno step separato con dati e autovalutazione iniziale facoltativi; il test vero e proprio parte solo dal pulsante `Inizia il test`.
 
 Durante il test, le domande a scelta singola avanzano automaticamente dopo la selezione. Le domande a scelta multipla e le prove testuali richiedono ancora il pulsante `Avanti`.
 
-Il test salva localmente nel browser lo storico degli ultimi report e permette di esportare i risultati in formato JSON o CSV.
+Il test salva localmente nel browser lo storico degli ultimi report e permette di esportare i risultati in formato JSON o CSV. Storico ed export includono la modalita' svolta, la forma A/B/C e la versione dell'assessment.
+
+Nei percorsi tematici, le 10 domande vengono estratte casualmente dal pool disponibile per l'area scelta, cosi' due sessioni consecutive dello stesso tema non propongono necessariamente lo stesso set.
+
+La banca contiene 100 domande base. Considerando la rotazione sulle tre forme A/B/C, il carnet erogabile arriva a 300 item.
 
 Per sviluppo locale e verifica manuale e' possibile aprire direttamente `ai_skill_test.html`, perche' il progetto usa solo file statici.
 
@@ -40,11 +44,25 @@ L'assessment combina autovalutazione, scenari, quiz tecnici e prove pratiche su:
 - Mindset: apertura alla sperimentazione, fiducia calibrata e adozione responsabile.
 - Fondamenti LLM: token, contesto, inferenza, Transformer, allucinazioni, RAG, embedding e citazioni.
 
-Il punteggio composito usa questa ponderazione:
+Le modalita' disponibili sono:
+
+- Test completo: 50 domande su tutte le aree.
+- Literacy: 10 domande.
+- Fondamenti tecnici LLM: 10 domande.
+- Fluency - Delegation: 10 domande.
+- Fluency - Description: 10 domande.
+- Fluency - Discernment: 10 domande.
+- Fluency - Diligence: 10 domande.
+- Mindset: 10 domande.
+- Practical Lab: 10 domande.
+
+Nel test completo, il profilo globale usa questa ponderazione:
 
 - 35% Literacy
 - 45% Fluency
 - 20% Mindset
+
+Nei percorsi tematici, il risultato e' calcolato solo sulle domande presenti nella modalita' scelta. Le dashboard tematiche non mostrano punteggi globali o aree non misurate.
 
 ## Privacy e dati
 

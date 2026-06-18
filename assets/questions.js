@@ -520,10 +520,414 @@ const likertOptions = [
           { score: -1, title: "Scarto definitivamente l’AI", text: "Interpreto un singolo output debole come prova che lo strumento non serve." }
         ],
         feedback: "Un mindset maturo si vede dalla capacità di modificare processo, prompt e criteri dopo un risultato debole."
+      },
+      {
+        id: "L8", section: "Literacy", dimension: "literacy", type: "likert",
+        text: "So distinguere tra un output utile come bozza e un contenuto abbastanza verificato da essere usato in un documento di lavoro.",
+        hint: "La domanda misura la differenza tra utilità operativa e affidabilità finale."
+      },
+      {
+        id: "L9", section: "Literacy", dimension: "literacy", type: "likert",
+        text: "Quando uso strumenti AI, considero il rischio che istruzioni, file o esempi nel prompt possano influenzare impropriamente la risposta.",
+        hint: "Conta la consapevolezza di contesto, prompt injection e qualità degli input."
+      },
+      {
+        id: "L10", section: "Literacy", dimension: "literacy", type: "likert",
+        text: "So spiegare perché un modello può produrre risposte diverse a richieste simili e perché questo non equivale automaticamente a errore.",
+        hint: "Valuta la comprensione della natura probabilistica e contestuale della generazione."
+      },
+      {
+        id: "L11", section: "Literacy", dimension: "literacy", type: "scenario",
+        text: "Un output AI cita un documento interno che non ricordi di aver caricato. Cosa fai?",
+        hint: "Scegli il comportamento più robusto rispetto a fonti, memoria e contesto.",
+        options: [
+          { score: 1, title: "Uso la citazione se sembra coerente", text: "Assumo che il modello abbia accesso al documento." },
+          { score: 2, title: "Chiedo al modello dove l'ha trovata", text: "Mi affido alla spiegazione del modello senza verifica esterna." },
+          { score: 3, title: "Controllo se il documento è nella conversazione", text: "Verifico il contesto immediato, ma non tutto il perimetro." },
+          { score: 4, title: "Verifico contesto, file caricati e impostazioni", text: "Controllo da dove può arrivare l'informazione e se è autorizzata." },
+          { score: 5, title: "Tratto la citazione come non verificata finché non è tracciabile", text: "Ricerco la fonte reale, documento l'incertezza e non la uso finché non è confermata." }
+        ],
+        feedback: "Una citazione prodotta dall'AI va trattata come ipotesi finché non è riconducibile a una fonte accessibile e autorizzata."
+      },
+      {
+        id: "L12", section: "Literacy", dimension: "literacy", type: "scenario",
+        text: "Devi usare l'AI per preparare una risposta a un cliente su dati aziendali non pubblici. Qual è il primo controllo?",
+        hint: "La risposta migliore mette prima perimetro dati e strumento, poi produttività.",
+        options: [
+          { score: 1, title: "Scrivo subito la risposta con lo strumento più rapido", text: "Privilegio velocità e qualità apparente." },
+          { score: 2, title: "Tolgo il nome del cliente e procedo", text: "Riduco poco il rischio e non verifico il contesto." },
+          { score: 3, title: "Uso solo dati aggregati", text: "Riduce il rischio, ma non basta senza policy e strumento adeguato." },
+          { score: 4, title: "Verifico classificazione dati e strumenti approvati", text: "Controllo se posso usare quei contenuti in quel servizio." },
+          { score: 5, title: "Definisco un flusso minimizzato e tracciabile", text: "Uso solo dati necessari, ambiente autorizzato, revisione umana e note su fonti e limiti." }
+        ],
+        feedback: "La literacy include sapere che la qualità dell'output non compensa un perimetro dati non governato."
+      },
+      {
+        id: "F_DE_4", section: "Fluency · Delegation", dimension: "fluency", sub: "delegation", type: "likert",
+        text: "Prima di usare l'AI, chiarisco quale decisione resta mia e quale parte può essere solo supportata dallo strumento.",
+        hint: "La delega matura mantiene responsabilità e controllo umano."
+      },
+      {
+        id: "F_DE_5", section: "Fluency · Delegation", dimension: "fluency", sub: "delegation", type: "likert",
+        text: "So separare attività esplorative, analitiche, creative e decisionali quando progetto un workflow con l'AI.",
+        hint: "Non tutti i passaggi hanno lo stesso livello di delegabilità."
+      },
+      {
+        id: "F_DE_6", section: "Fluency · Delegation", dimension: "fluency", sub: "delegation", type: "likert",
+        text: "Quando affido un compito all'AI, definisco criteri di accettazione prima di guardare l'output.",
+        hint: "La qualità va progettata prima, non solo giudicata dopo."
+      },
+      {
+        id: "F_DE_7", section: "Fluency · Delegation", dimension: "fluency", sub: "delegation", type: "likert",
+        text: "Uso l'AI per generare alternative, ma confronto io rischi, vincoli e conseguenze della scelta finale.",
+        hint: "Generare opzioni non equivale a delegare la scelta."
+      },
+      {
+        id: "F_DE_8", section: "Fluency · Delegation", dimension: "fluency", sub: "delegation", type: "likert",
+        text: "Riconosco quando un'attività richiede accesso a contesto, relazioni o responsabilità che l'AI non possiede.",
+        hint: "Alcuni compiti sembrano testuali, ma dipendono da responsabilità organizzative."
+      },
+      {
+        id: "F_DE_9", section: "Fluency · Delegation", dimension: "fluency", sub: "delegation", type: "likert",
+        text: "Scompongo task complessi in passaggi brevi, verificabili e correggibili invece di chiedere un risultato finale in un solo prompt.",
+        hint: "La delega efficace riduce opacità e aumenta controllo."
+      },
+      {
+        id: "F_DE_10", section: "Fluency · Delegation", dimension: "fluency", sub: "delegation", type: "likert",
+        text: "Decido consapevolmente quando non usare l'AI perché il costo di verifica supererebbe il beneficio.",
+        hint: "La competenza include anche non delegare."
+      },
+      {
+        id: "F_DE_11", section: "Fluency · Delegation", dimension: "fluency", sub: "delegation", type: "scenario",
+        text: "Devi scrivere una raccomandazione su una scelta strategica con dati incompleti. Che cosa deleghi all'AI?",
+        hint: "La scelta migliore usa l'AI come supporto strutturato, non come decisore.",
+        options: [
+          { score: 1, title: "La decisione finale", text: "Chiedo quale opzione scegliere e la seguo." },
+          { score: 2, title: "Un testo convincente", text: "Mi interessa soprattutto presentare bene la raccomandazione." },
+          { score: 3, title: "Una lista di pro e contro", text: "Utile, ma ancora poco governata." },
+          { score: 4, title: "Una matrice con assunzioni e dati mancanti", text: "Uso l'AI per strutturare il ragionamento e vedere i vuoti." },
+          { score: 5, title: "Alternative, rischi, domande e criteri di verifica", text: "Mantengo la decisione umana e uso l'AI per aumentare qualità del processo." }
+        ],
+        feedback: "Nelle decisioni strategiche la delega riguarda struttura, alternative e controlli, non responsabilità finale."
+      },
+      {
+        id: "F_DE_12", section: "Fluency · Delegation", dimension: "fluency", sub: "delegation", type: "scenario",
+        text: "Un task è urgente, ripetitivo e basato su dati già verificati. Come usi l'AI?",
+        hint: "La risposta migliore bilancia automazione e controllo leggero.",
+        options: [
+          { score: 1, title: "Non la uso mai su task urgenti", text: "Evito lo strumento anche quando il rischio è basso." },
+          { score: 2, title: "Le affido tutto senza revisione", text: "L'urgenza elimina i controlli." },
+          { score: 3, title: "La uso per una bozza e controllo a campione", text: "Approccio utile ma poco esplicito." },
+          { score: 4, title: "Definisco template, input e controllo finale", text: "Uso l'AI dove accelera e verifico l'aderenza." },
+          { score: 5, title: "Creo un micro-workflow riutilizzabile", text: "Input standard, criteri, eccezioni e revisione proporzionata al rischio." }
+        ],
+        feedback: "La delega operativa matura è proporzionata: più automazione quando dati, criteri e rischio sono sotto controllo."
+      },
+      {
+        id: "F_DS_4", section: "Fluency · Description", dimension: "fluency", sub: "description", type: "likert",
+        text: "Nei prompt includo destinatario, obiettivo, vincoli e livello di dettaglio atteso.",
+        hint: "La descrizione efficace riduce ambiguità sul risultato."
+      },
+      {
+        id: "F_DS_5", section: "Fluency · Description", dimension: "fluency", sub: "description", type: "likert",
+        text: "Quando non ho abbastanza informazioni, chiedo all'AI di farmi domande prima di produrre l'output.",
+        hint: "Far emergere le lacune è spesso meglio che forzare una risposta."
+      },
+      {
+        id: "F_DS_6", section: "Fluency · Description", dimension: "fluency", sub: "description", type: "likert",
+        text: "Specifico il formato dell'output quando mi serve confrontare, copiare o riusare il risultato.",
+        hint: "Formato e struttura sono parte del brief, non dettagli estetici."
+      },
+      {
+        id: "F_DS_7", section: "Fluency · Description", dimension: "fluency", sub: "description", type: "likert",
+        text: "Uso esempi di output buono e output debole per chiarire lo standard richiesto.",
+        hint: "Gli esempi aiutano il modello a capire criteri impliciti."
+      },
+      {
+        id: "F_DS_8", section: "Fluency · Description", dimension: "fluency", sub: "description", type: "likert",
+        text: "Rendo esplicite le assunzioni che l'AI può fare e quelle che deve segnalare come incerte.",
+        hint: "Le assunzioni non dichiarate sono una fonte frequente di output fragili."
+      },
+      {
+        id: "F_DS_9", section: "Fluency · Description", dimension: "fluency", sub: "description", type: "likert",
+        text: "Quando il primo output non è buono, modifico il brief in modo mirato invece di ripetere la stessa richiesta.",
+        hint: "Iterare non significa solo chiedere di riprovare."
+      },
+      {
+        id: "F_DS_10", section: "Fluency · Description", dimension: "fluency", sub: "description", type: "scenario",
+        text: "Vuoi una sintesi per il CEO e una per il team tecnico. Come imposti la richiesta?",
+        hint: "La risposta migliore differenzia destinatario, livello e formato.",
+        options: [
+          { score: 1, title: "Chiedo una sintesi unica", text: "Un solo output dovrebbe andare bene per tutti." },
+          { score: 2, title: "Chiedo due versioni più o meno lunghe", text: "La lunghezza non basta a cambiare utilità." },
+          { score: 3, title: "Indico i due destinatari", text: "Buon inizio, ma mancano criteri e formato." },
+          { score: 4, title: "Definisco obiettivo, tono e dettagli per ciascuno", text: "Adatto contenuto e formato ai due usi." },
+          { score: 5, title: "Chiedo due output con criteri, rischi e domande aperte", text: "Differenzio destinatario, decisioni da supportare, dettaglio tecnico e incertezze." }
+        ],
+        feedback: "La Description efficace progetta l'output per il destinatario e per la decisione da supportare."
+      },
+      {
+        id: "F_DS_11", section: "Fluency · Description", dimension: "fluency", sub: "description", type: "scenario",
+        text: "Un prompt produce risposte troppo generiche. Qual è la modifica più utile?",
+        hint: "Cerca la modifica che aumenta contesto e verificabilità.",
+        options: [
+          { score: 1, title: "Scrivere: sii più preciso", text: "Richiesta generica per risolvere genericità." },
+          { score: 2, title: "Chiedere una risposta più lunga", text: "Più testo non significa più qualità." },
+          { score: 3, title: "Aggiungere qualche dettaglio di contesto", text: "Migliora, ma può restare non verificabile." },
+          { score: 4, title: "Aggiungere contesto, criteri e formato", text: "Orienta l'output verso l'uso reale." },
+          { score: 5, title: "Aggiungere esempi, vincoli, criteri e richiesta di chiarimenti", text: "Trasforma il prompt in un brief controllabile." }
+        ],
+        feedback: "Un output generico si corregge progettando meglio il compito, non solo chiedendo più precisione."
+      },
+      {
+        id: "F_DI_4", section: "Fluency · Discernment", dimension: "fluency", sub: "discernment", type: "likert",
+        text: "Valuto se un output AI risponde davvero alla domanda o se è solo plausibile e ben scritto.",
+        hint: "La forma può mascherare lacune di contenuto."
+      },
+      {
+        id: "F_DI_5", section: "Fluency · Discernment", dimension: "fluency", sub: "discernment", type: "likert",
+        text: "Controllo citazioni, numeri e nomi propri prima di riusarli in contesti professionali.",
+        hint: "I dettagli precisi sono spesso quelli che richiedono più verifica."
+      },
+      {
+        id: "F_DI_6", section: "Fluency · Discernment", dimension: "fluency", sub: "discernment", type: "likert",
+        text: "Confronto più alternative generate dall'AI invece di accettare automaticamente la prima risposta.",
+        hint: "Il confronto aiuta a vedere omissioni e bias."
+      },
+      {
+        id: "F_DI_7", section: "Fluency · Discernment", dimension: "fluency", sub: "discernment", type: "likert",
+        text: "So riconoscere quando un output è fuori perimetro rispetto ai dati forniti o alle fonti disponibili.",
+        hint: "Un modello può riempire i vuoti con contenuti plausibili."
+      },
+      {
+        id: "F_DI_8", section: "Fluency · Discernment", dimension: "fluency", sub: "discernment", type: "likert",
+        text: "Uso criteri espliciti per decidere se accettare, correggere, rigenerare o scartare un output.",
+        hint: "La revisione matura ha soglie e criteri."
+      },
+      {
+        id: "F_DI_9", section: "Fluency · Discernment", dimension: "fluency", sub: "discernment", type: "likert",
+        text: "Distinguo tra errore fattuale, incompletezza, tono inadatto e ragionamento debole quando valuto una risposta.",
+        hint: "Problemi diversi richiedono correzioni diverse."
+      },
+      {
+        id: "F_DI_10", section: "Fluency · Discernment", dimension: "fluency", sub: "discernment", type: "scenario",
+        text: "L'AI propone tre insight da un file di vendita, ma non mostra passaggi o righe usate. Che cosa fai?",
+        hint: "La risposta migliore cerca tracciabilità prima dell'uso.",
+        options: [
+          { score: 1, title: "Uso gli insight perché sembrano utili", text: "Valuto l'utilità apparente." },
+          { score: 2, title: "Chiedo di essere più convincente", text: "Migliora la forma, non la verifica." },
+          { score: 3, title: "Controllo solo l'insight più importante", text: "Riduce il rischio ma lascia buchi." },
+          { score: 4, title: "Chiedo evidenze e controllo righe/campi", text: "Cerco tracciabilità e coerenza con i dati." },
+          { score: 5, title: "Ricostruisco metodo, evidenze e limiti", text: "Verifico campione, calcoli, outlier e alternative prima di usare gli insight." }
+        ],
+        feedback: "Il Discernment richiede tracciabilità: insight senza evidenze sono ipotesi da verificare."
+      },
+      {
+        id: "F_DI_11", section: "Fluency · Discernment", dimension: "fluency", sub: "discernment", type: "scenario",
+        text: "Una risposta AI è molto allineata alla tua opinione iniziale. Qual è il rischio principale?",
+        hint: "La maturità critica include controllare anche ciò che ci piace.",
+        options: [
+          { score: 1, title: "Nessun rischio, conferma che avevo ragione", text: "Confondi accordo e qualità." },
+          { score: 2, title: "Solo il rischio che sia scritta male", text: "La forma è un problema secondario." },
+          { score: 3, title: "Potrebbe mancare qualche dettaglio", text: "Riconosci un rischio ma non il bias principale." },
+          { score: 4, title: "Potrebbe amplificare il mio bias", text: "Controllo alternative e controargomenti." },
+          { score: 5, title: "Chiedo controprove, alternative e condizioni di falsificazione", text: "Uso l'AI per testare l'ipotesi, non solo per confermarla." }
+        ],
+        feedback: "Un output convincente perché conferma le nostre ipotesi richiede più, non meno, discernimento."
+      },
+      {
+        id: "F_DG_4", section: "Fluency · Diligence", dimension: "fluency", sub: "diligence", type: "likert",
+        text: "Prima di usare dati con l'AI, verifico se appartengono a categorie riservate, personali o regolamentate.",
+        hint: "La responsabilità parte dalla classificazione del dato."
+      },
+      {
+        id: "F_DG_5", section: "Fluency · Diligence", dimension: "fluency", sub: "diligence", type: "likert",
+        text: "Evito di usare account personali o strumenti non approvati per trattare informazioni aziendali.",
+        hint: "La comodità dello strumento non basta a renderlo appropriato."
+      },
+      {
+        id: "F_DG_6", section: "Fluency · Diligence", dimension: "fluency", sub: "diligence", type: "likert",
+        text: "Quando l'AI contribuisce in modo sostanziale a un contenuto, valuto se dichiararlo al destinatario.",
+        hint: "La trasparenza dipende da contesto, aspettative e impatto."
+      },
+      {
+        id: "F_DG_7", section: "Fluency · Diligence", dimension: "fluency", sub: "diligence", type: "likert",
+        text: "Mantengo traccia delle fonti e dei passaggi usati quando il risultato AI può influenzare decisioni o documenti importanti.",
+        hint: "Tracciabilità e auditabilità sono parte dell'uso responsabile."
+      },
+      {
+        id: "F_DG_8", section: "Fluency · Diligence", dimension: "fluency", sub: "diligence", type: "likert",
+        text: "Uso dati sintetici, minimizzati o anonimizzati quando il dato reale non è necessario al compito.",
+        hint: "Il dato migliore da proteggere è quello che non viene condiviso."
+      },
+      {
+        id: "F_DG_9", section: "Fluency · Diligence", dimension: "fluency", sub: "diligence", type: "likert",
+        text: "Riconosco quando un output AI può avere impatti reputazionali, legali o discriminatori e richiede revisione aggiuntiva.",
+        hint: "Il livello di controllo deve crescere con il rischio."
+      },
+      {
+        id: "F_DG_10", section: "Fluency · Diligence", dimension: "fluency", sub: "diligence", type: "likert",
+        text: "Non uso l'AI per aggirare policy, controlli o responsabilità del mio ruolo.",
+        hint: "La Diligence è anche rispetto del perimetro organizzativo."
+      },
+      {
+        id: "F_DG_11", section: "Fluency · Diligence", dimension: "fluency", sub: "diligence", type: "scenario",
+        text: "Un output AI contiene una valutazione severa su una persona del team. Come procedi?",
+        hint: "La risposta migliore evita uso improprio e cerca evidenze.",
+        options: [
+          { score: 1, title: "La inoltro perché è scritta bene", text: "Trasferisco un giudizio non verificato." },
+          { score: 2, title: "La ammorbidisco e la uso", text: "Miglioro il tono ma non il metodo." },
+          { score: 3, title: "La uso solo come spunto privato", text: "Riduce il danno ma resta poco governato." },
+          { score: 4, title: "Verifico dati, contesto e policy HR", text: "Non uso giudizi personali senza perimetro ed evidenze." },
+          { score: 5, title: "Separare fatti, ipotesi e responsabilità umana", text: "Uso eventualmente l'AI per strutturare evidenze, non per formulare giudizi automatici." }
+        ],
+        feedback: "Le valutazioni sulle persone richiedono massima cautela, evidenze e responsabilità umana."
+      },
+      {
+        id: "F_DG_12", section: "Fluency · Diligence", dimension: "fluency", sub: "diligence", type: "scenario",
+        text: "Per risparmiare tempo, un fornitore propone di caricare i tuoi file su un tool AI esterno. Che cosa chiedi prima?",
+        hint: "La risposta più matura guarda a dati, contratto e controllo.",
+        options: [
+          { score: 1, title: "Solo se il tool è veloce", text: "Valuto il beneficio operativo." },
+          { score: 2, title: "Una promessa informale di riservatezza", text: "Non basta per governare il rischio." },
+          { score: 3, title: "Uno screenshot delle impostazioni privacy", text: "È un controllo parziale." },
+          { score: 4, title: "Contratto, data processing e policy dello strumento", text: "Verifico base, ruoli, conservazione e uso dei dati." },
+          { score: 5, title: "Perimetro completo: dati, accessi, retention, training e audit", text: "Valuto se il flusso è autorizzabile e quali alternative usare." }
+        ],
+        feedback: "La Diligence include anche la catena dei fornitori e il controllo delle condizioni d'uso."
+      },
+      {
+        id: "M10", section: "Mindset", dimension: "mindset", type: "likert",
+        text: "Accetto di misurare l'efficacia dell'AI con evidenze, non solo con entusiasmo o fastidio personale.",
+        hint: "Il mindset maturo è sperimentale e misurabile."
+      },
+      {
+        id: "M11", section: "Mindset", dimension: "mindset", type: "likert",
+        text: "Quando un collega usa bene l'AI, cerco di capire il metodo invece di limitarmi al risultato finale.",
+        hint: "La competenza cresce osservando pratiche ripetibili."
+      },
+      {
+        id: "M12", section: "Mindset", dimension: "mindset", type: "scenario",
+        text: "Il tuo team è diviso tra entusiasmo e scetticismo sull'AI. Quale contributo porti?",
+        hint: "La risposta migliore costruisce apprendimento condiviso e regole pratiche.",
+        options: [
+          { score: 1, title: "Mi schiero e basta", text: "Rendo il confronto più polarizzato." },
+          { score: 2, title: "Propongo di aspettare", text: "Evito il conflitto ma non genero apprendimento." },
+          { score: 3, title: "Raccolgo esempi interessanti", text: "Utile, ma ancora informale." },
+          { score: 4, title: "Propongo casi pilota con criteri", text: "Creo uno spazio misurabile e governato." },
+          { score: 5, title: "Facilito una pratica comune", text: "Definisco use case, limiti, metriche, condivisione e retrospettiva." }
+        ],
+        feedback: "Il mindset utile al team trasforma opinioni divergenti in esperimenti governati e apprendimento comune."
+      },
+      {
+        id: "P_L_2", section: "Practical Lab", dimension: "literacy", type: "multi",
+        text: "Devi usare un documento generato da AI in un contesto esterno. Quali controlli fai prima della consegna?",
+        hint: "Seleziona le azioni che rendono il contenuto tracciabile e difendibile.",
+        minSelected: 3,
+        options: [
+          { score: 2, title: "Verifico dati, date e nomi propri", text: "Controllo gli elementi più esposti a errore." },
+          { score: 2, title: "Controllo fonti e citazioni", text: "Rendo tracciabile ciò che viene affermato." },
+          { score: 1, title: "Rivedo tono e destinatario", text: "Adatto il testo all'uso reale." },
+          { score: 1, title: "Segnalo incertezze residue", text: "Non trasformo ipotesi in certezze." },
+          { score: -2, title: "Controllo solo grammatica e stile", text: "La forma non garantisce correttezza." },
+          { score: -2, title: "Uso il testo perché è convincente", text: "La persuasività non sostituisce verifica." }
+        ],
+        feedback: "Il controllo pratico prima della consegna riguarda accuratezza, fonti, contesto e incertezze."
+      },
+      {
+        id: "P_DE_2", section: "Practical Lab", dimension: "fluency", sub: "delegation", type: "choice",
+        text: "Quale passaggio NON delegheresti interamente all'AI in un processo di selezione fornitori?",
+        hint: "Scegli il confine più importante della responsabilità.",
+        options: [
+          { score: 2, title: "Riassumere schede tecniche", text: "Può essere un supporto utile se verificato." },
+          { score: 3, title: "Estrarre requisiti ricorrenti", text: "Delegabile con controllo." },
+          { score: 5, title: "Decidere il fornitore vincente", text: "La decisione richiede responsabilità, contesto e verifica umana." },
+          { score: 2, title: "Preparare una tabella comparativa", text: "Utile se i dati sono tracciabili." },
+          { score: 3, title: "Generare domande di chiarimento", text: "Buon uso come supporto." }
+        ],
+        feedback: "L'AI può supportare confronto e analisi, ma non deve assorbire la responsabilità della scelta."
+      },
+      {
+        id: "P_DS_3", section: "Practical Lab", dimension: "fluency", sub: "description", type: "text",
+        text: "Scrivi un prompt per chiedere all'AI di revisionare una proposta commerciale senza cambiare promesse, prezzi o condizioni contrattuali.",
+        hint: "Scrivi il prompt che useresti davvero, includendo vincoli e formato dell'output.",
+        minChars: 100,
+        proceedChars: 1,
+        rubric: {
+          criteria: [
+            { label: "Obiettivo", points: 1, keywords: ["revision", "migliora", "proposta", "commerciale"] },
+            { label: "Vincoli sostanziali", points: 1, keywords: ["non cambiare", "non modificare", "prezzi", "condizioni", "promesse"] },
+            { label: "Formato", points: 1, keywords: ["tabella", "commenti", "prima", "dopo", "motivazione"] },
+            { label: "Controllo", points: 1, keywords: ["segnala", "dubbi", "rischi", "verifica"] },
+            { label: "Destinatario", points: 1, keywords: ["cliente", "destinatario", "tono", "stile"] }
+          ],
+          redFlags: [
+            { label: "delega sostanziale", points: 1, keywords: ["riscrivi liberamente", "migliora le condizioni", "rendila più vantaggiosa"] }
+          ]
+        },
+        feedback: "Un buon prompt di revisione distingue forma e sostanza: migliora chiarezza senza alterare impegni."
+      },
+      {
+        id: "P_DI_2", section: "Practical Lab", dimension: "fluency", sub: "discernment", type: "choice",
+        text: "L'AI produce una tabella comparativa ma una riga sembra troppo favorevole alla tua ipotesi. Quale controllo è prioritario?",
+        hint: "Scegli il controllo che riduce il rischio di conferma.",
+        options: [
+          { score: 1, title: "Lasciarla così perché conferma l'ipotesi", text: "Accetti il bias." },
+          { score: 2, title: "Rendere la riga più prudente nel tono", text: "Correggi forma, non contenuto." },
+          { score: 3, title: "Chiedere una seconda tabella", text: "Può aiutare ma resta autoreferenziale." },
+          { score: 4, title: "Verificare dati sorgente e criteri di confronto", text: "Controlli base e metodologia." },
+          { score: 5, title: "Cercare controevidenze e rieseguire il confronto", text: "Metti alla prova l'ipotesi con criteri espliciti." }
+        ],
+        feedback: "Il discernimento pratico richiede di verificare soprattutto ciò che appare comodo o confermativo."
+      },
+      {
+        id: "P_DG_2", section: "Practical Lab", dimension: "fluency", sub: "diligence", type: "multi",
+        text: "Stai preparando un prompt con dati di clienti. Quali interventi riducono davvero il rischio?",
+        hint: "Seleziona le azioni concrete di minimizzazione e governance.",
+        minSelected: 3,
+        options: [
+          { score: 2, title: "Uso solo campi necessari al task", text: "Minimizzazione del dato." },
+          { score: 2, title: "Sostituisco identificativi con placeholder", text: "Riduce esposizione diretta." },
+          { score: 1, title: "Uso uno strumento approvato", text: "Allinea il processo alla policy." },
+          { score: 1, title: "Documentare finalità e perimetro", text: "Rende il trattamento spiegabile." },
+          { score: -2, title: "Cambio solo i nomi dei file", text: "Non protegge il contenuto." },
+          { score: -2, title: "Uso un account personale per fare prima", text: "Aumenta il rischio di controllo e conservazione." }
+        ],
+        feedback: "La riduzione del rischio nasce da minimizzazione, anonimizzazione, strumenti approvati e tracciabilità."
+      },
+      {
+        id: "T13", section: "Fondamenti tecnici LLM", dimension: "literacy", sub: "technical", type: "knowledge",
+        text: "Quale affermazione descrive meglio il fine-tuning di un modello?",
+        hint: "Distingui fine-tuning, prompt e recupero documentale.",
+        options: [
+          { score: 1, title: "È scrivere un prompt più lungo", text: "Il prompt non modifica i parametri del modello." },
+          { score: 5, title: "È un addestramento aggiuntivo su dati specifici", text: "Adatta il modello a un dominio o comportamento modificando parametri o componenti addestrabili." },
+          { score: 2, title: "È caricare documenti nel contesto", text: "Questo riguarda input o RAG, non necessariamente fine-tuning." },
+          { score: 1, title: "È verificare manualmente le risposte", text: "La verifica è revisione, non addestramento." }
+        ],
+        feedback: "Il fine-tuning è un processo di adattamento tramite addestramento ulteriore; non coincide con prompt engineering o RAG."
+      },
+      {
+        id: "M13", section: "Mindset", dimension: "mindset", type: "likert",
+        text: "Sono disposto a mettere in discussione sia il mio scetticismo sia il mio entusiasmo quando i risultati dell'AI non li confermano.",
+        hint: "Il mindset maturo resta ancorato a evidenze e apprendimento."
+      },
+      {
+        id: "P_M_2", section: "Practical Lab", dimension: "mindset", type: "choice",
+        text: "Dopo un mese di sperimentazione AI, i risultati sono disomogenei. Qual è il passo più utile?",
+        hint: "Scegli l'azione che trasforma esperienza sparsa in apprendimento.",
+        options: [
+          { score: 1, title: "Interrompere tutto", text: "I risultati non uniformi vengono letti come fallimento definitivo." },
+          { score: 2, title: "Continuare senza cambiare metodo", text: "Si accumulano tentativi ma non apprendimento." },
+          { score: 3, title: "Usare solo i casi riusciti", text: "Utile, ma rischia di ignorare condizioni e limiti." },
+          { score: 4, title: "Raccogliere pattern di successo e fallimento", text: "Si inizia a capire quando l'AI funziona." },
+          { score: 5, title: "Definire playbook, metriche e casi esclusi", text: "Si trasforma la sperimentazione in metodo operativo condivisibile." }
+        ],
+        feedback: "Un buon mindset non cerca successo uniforme immediato: costruisce criteri, playbook e limiti d'uso."
       }
     ];
 
-    const QUESTION_BANK_VERSION = "2026.06";
+    const QUESTION_BANK_VERSION = "2026.06-m4";
     const FORM_VERSION = "1.0";
     const FORM_IDS = ["A", "B", "C"];
     const FORM_CYCLE_STORAGE_KEY = "aiSkillAssessmentFormCycle";
