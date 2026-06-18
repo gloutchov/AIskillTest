@@ -65,7 +65,7 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
 - Validazione:
   - lettura del maintainer
   - `git status --short --branch`
-- Stato: in lavorazione
+- Stato: completata su `main`
 
 ## Milestone 1 - Refactor file statici
 
@@ -91,6 +91,7 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - completamento rapido di un percorso campione
   - export JSON e CSV
   - accesso alla bibliografia
+- Stato: completata su `main`
 
 ## Milestone 2 - Nuova pagina iniziale e step dati
 

@@ -10,7 +10,10 @@ Questo test e' stato realizzato in vibecoding, usando l'AI come supporto operati
 
 ## Contenuto del repository
 
-- `ai_skill_test.html`: applicazione completa in un singolo file HTML, CSS e JavaScript.
+- `ai_skill_test.html`: shell HTML dell'applicazione.
+- `assets/styles.css`: stili dell'interfaccia.
+- `assets/questions.js`: banca domande, forme parallele e override.
+- `assets/app.js`: logica client-side, navigazione, scoring, dashboard ed export.
 - `index.html`: pagina di ingresso che rimanda al test.
 - `LICENSE`: licenza Apache 2.0.
 
@@ -19,6 +22,8 @@ Questo test e' stato realizzato in vibecoding, usando l'AI come supporto operati
 Apri `ai_skill_test.html` in un browser moderno. Non servono build, dipendenze o server.
 
 Il test salva localmente nel browser lo storico degli ultimi report e permette di esportare i risultati in formato JSON o CSV.
+
+Per sviluppo locale e verifica manuale e' possibile aprire direttamente `ai_skill_test.html`, perche' il progetto usa solo file statici.
 
 ## Cosa misura
 

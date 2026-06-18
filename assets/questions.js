@@ -1,0 +1,2825 @@
+const likertOptions = [
+      { value: 1, score: 1, title: "Non riconosco questo comportamento nel mio modo di lavorare", text: "Non saprei applicarlo senza guida oppure non lo considero parte del mio approccio." },
+      { value: 2, score: 2, title: "Lo riconosco soprattutto quando seguo un supporto esterno", text: "Riesco a procedere usando esempi, template o indicazioni già predisposte." },
+      { value: 3, score: 3, title: "Lo applico autonomamente nei casi ordinari", text: "Riesco a farlo, ma il metodo non è sempre stabile, esplicito o trasferibile." },
+      { value: 4, score: 4, title: "Fa parte del mio metodo di lavoro", text: "Lo applico con criteri, controlli e passaggi ripetibili." },
+      { value: 5, score: 5, title: "Lo traduco in una pratica riutilizzabile e condivisibile", text: "Ne valuto gli esiti, definisco standard e so supportare altre persone nell’applicazione." }
+    ];
+
+    const baseQuestions = [
+      {
+        id: "L1", section: "Literacy", dimension: "literacy", type: "likert",
+        text: "So spiegare in parole semplici come un modello linguistico genera una risposta e perché può sbagliare.",
+        hint: "Non serve una spiegazione tecnica da ricercatore: conta la capacità di capire il principio e i limiti generali."
+      },
+      {
+        id: "L2", section: "Literacy", dimension: "literacy", type: "likert",
+        text: "Distinguo tra dati di addestramento, contesto della conversazione, documenti caricati, memoria e fonti esterne.",
+        hint: "Questa distinzione è importante perché influenza affidabilità, aggiornamento e verificabilità dell’output."
+      },
+      {
+        id: "L3", section: "Literacy", dimension: "literacy", type: "likert",
+        text: "Conosco il concetto di allucinazione e uso controlli prima di assumere che un output sia corretto.",
+        hint: "Una risposta plausibile non è automaticamente una risposta verificata."
+      },
+      {
+        id: "L4", section: "Literacy", dimension: "literacy", type: "likert",
+        text: "Capisco quando servono ricerca web, RAG, basi documentali o fonti aziendali rispetto alla sola chat con un modello.",
+        hint: "La domanda misura se sai scegliere il modo corretto di dare contesto allo strumento."
+      },
+      {
+        id: "L5", section: "Literacy", dimension: "literacy", type: "likert",
+        text: "Conosco le implicazioni base di privacy, proprietà intellettuale e dati riservati nell’uso di strumenti AI.",
+        hint: "Conta la consapevolezza del rischio, anche se non sei una figura legale o compliance."
+      },
+      {
+        id: "L6", section: "Literacy", dimension: "literacy", type: "scenario",
+        text: "Devi preparare una sintesi su un tema normativo che potrebbe essere cambiato negli ultimi mesi. Quale comportamento scegli?",
+        hint: "Scenario situazionale: scegli l’approccio più vicino a ciò che faresti davvero.",
+        options: [
+          { score: 1, title: "Uso il primo output del chatbot", text: "Se il testo è scritto bene, lo considero sufficiente." },
+          { score: 2, title: "Chiedo al chatbot di essere sicuro", text: "Mi affido alla sua conferma senza controlli esterni." },
+          { score: 3, title: "Chiedo una sintesi e controllo qualche punto", text: "Verifico solo le parti che mi sembrano dubbie." },
+          { score: 4, title: "Uso fonti aggiornate e poi chiedo una sintesi", text: "Parto da fonti affidabili, controllo date e riferimenti." },
+          { score: 5, title: "Creo un flusso con fonti, citazioni e verifica", text: "Separando ricerca, sintesi, controllo e revisione finale." }
+        ],
+        feedback: "Per temi aggiornabili o ad alto impatto, la competenza non è solo generare il testo: è governare fonti, data di aggiornamento e verifica."
+      },
+      {
+        id: "L7", section: "Literacy", dimension: "literacy", type: "scenario",
+        text: "Hai un set di documenti aziendali da interrogare con l’AI. Cosa valuti prima di iniziare?",
+        hint: "La risposta più matura combina utilità, accesso ai dati, sicurezza e tracciabilità.",
+        options: [
+          { score: 1, title: "Carico tutto nello strumento più comodo", text: "L’importante è ottenere rapidamente una risposta." },
+          { score: 2, title: "Carico solo i documenti più piccoli", text: "Mi preoccupo soprattutto del limite tecnico di caricamento." },
+          { score: 3, title: "Tolgo qualche dato sensibile", text: "Anonimizzo in parte, ma senza verificare policy o strumento." },
+          { score: 4, title: "Verifico policy, accessi e finalità", text: "Uso strumenti approvati e documento il perimetro dei dati." },
+          { score: 5, title: "Progetto un flusso controllato", text: "Con dati minimizzati, fonti citabili, logica RAG o repository autorizzato." }
+        ],
+        feedback: "La conoscenza AI include il perimetro di dati e governance, non solo la qualità della risposta prodotta."
+      },
+
+      {
+        id: "T1", section: "Fondamenti tecnici LLM", dimension: "literacy", sub: "technical", type: "knowledge",
+        text: "Nel contesto di un LLM, che cos’è un token?",
+        hint: "Scegli la definizione tecnicamente più corretta. Le alternative sono presentate in ordine casuale.",
+        options: [
+          { score: 2, title: "È sempre una parola completa", text: "Ogni parola corrisponde esattamente a un token, indipendentemente dalla lingua e dalla punteggiatura." },
+          { score: 5, title: "È un’unità prodotta dal tokenizer", text: "Può corrispondere a una parola, a una parte di parola, a un segno di punteggiatura o ad altri frammenti di testo." },
+          { score: 1, title: "È un parametro interno della rete", text: "Indica uno dei valori numerici appresi durante l’addestramento." },
+          { score: 2, title: "È sempre un singolo carattere", text: "Ogni lettera, spazio o simbolo viene trattato necessariamente come un token separato." }
+        ],
+        feedback: "Un token è l’unità discreta con cui il testo viene rappresentato dal tokenizer. Non coincide necessariamente con una parola o con un singolo carattere."
+      },
+      {
+        id: "T2", section: "Fondamenti tecnici LLM", dimension: "literacy", sub: "technical", type: "knowledge",
+        text: "Come viene normalmente generata una risposta da un LLM autoregressivo?",
+        hint: "La domanda riguarda il meccanismo generale di generazione, non l’interfaccia del chatbot.",
+        options: [
+          { score: 1, title: "Consulta automaticamente il web per ogni frase", text: "Cerca la risposta più aggiornata e poi la riscrive." },
+          { score: 5, title: "Stima il token successivo e ripete il processo", text: "Calcola una distribuzione di probabilità sui possibili token successivi, ne seleziona uno e continua usando anche quanto appena generato." },
+          { score: 2, title: "Recupera una frase già memorizzata", text: "Trova nel dataset di addestramento la frase più simile e la restituisce quasi invariata." },
+          { score: 1, title: "Compone l’intera risposta in un solo passaggio", text: "Prima comprende completamente la domanda, poi scrive tutto il testo simultaneamente." }
+        ],
+        feedback: "Un LLM autoregressivo genera la risposta un token alla volta, condizionando ogni passaggio sul contesto disponibile e sui token già prodotti."
+      },
+      {
+        id: "T3", section: "Fondamenti tecnici LLM", dimension: "literacy", sub: "technical", type: "knowledge",
+        text: "Qual è la differenza essenziale tra addestramento e inferenza?",
+        hint: "Pensa a ciò che accade ai parametri del modello nelle due fasi.",
+        options: [
+          { score: 1, title: "Durante entrambe le fasi i parametri cambiano continuamente", text: "Ogni conversazione riscrive automaticamente il modello di base." },
+          { score: 5, title: "L’addestramento modifica i parametri; l’inferenza li usa", text: "Durante l’addestramento i parametri vengono ottimizzati sui dati; durante l’uso ordinario il modello applica i parametri appresi al contesto ricevuto." },
+          { score: 1, title: "L’inferenza serve a verificare la verità delle risposte", text: "È la fase in cui il sistema confronta automaticamente ogni affermazione con fonti attendibili." },
+          { score: 2, title: "L’addestramento riguarda solo la velocità", text: "Serve principalmente a rendere il modello più rapido, mentre l’inferenza gli insegna nuovi concetti." }
+        ],
+        feedback: "Nell’addestramento si ottimizzano i parametri del modello; nell’inferenza quei parametri vengono usati per calcolare una previsione o generare un output."
+      },
+      {
+        id: "T4", section: "Fondamenti tecnici LLM", dimension: "literacy", sub: "technical", type: "knowledge",
+        text: "Quando fornisci un documento a un LLM durante una normale sessione, quale affermazione è più corretta in generale?",
+        hint: "La gestione concreta dei dati dipende sempre dal servizio e dalle sue policy, ma il principio tecnico resta distinguibile.",
+        options: [
+          { score: 1, title: "Il documento entra automaticamente nei pesi del modello", text: "Il modello viene riaddestrato in tempo reale e conserverà stabilmente quelle informazioni." },
+          { score: 5, title: "Il documento viene usato come input o contesto della sessione", text: "Di norma non riaddestra da solo il modello di base; conservazione e uso dei dati dipendono però dalle condizioni del servizio." },
+          { score: 1, title: "Il documento non lascia mai il dispositivo", text: "Qualunque strumento AI elabora sempre il file soltanto in locale." },
+          { score: 2, title: "Il documento diventa una fonte verificata", text: "Una volta caricato, ogni sua affermazione viene considerata automaticamente corretta dal sistema." }
+        ],
+        feedback: "Contesto della sessione, conservazione del servizio e addestramento del modello sono concetti diversi. Le policy del fornitore vanno comunque verificate."
+      },
+      {
+        id: "T5", section: "Fondamenti tecnici LLM", dimension: "literacy", sub: "technical", type: "knowledge",
+        text: "Che cosa indica la finestra di contesto di un LLM?",
+        hint: "Considera prompt, conversazione, documenti e output generato.",
+        options: [
+          { score: 2, title: "La quantità totale di dati usata per addestrare il modello", text: "Misura la dimensione del dataset storico da cui il modello ha appreso." },
+          { score: 1, title: "Una memoria permanente di tutte le conversazioni", text: "Tutto ciò che è stato detto in passato resta sempre disponibile al modello." },
+          { score: 5, title: "La capacità di token gestibile in una singola elaborazione", text: "Comprende il contesto fornito e lo spazio necessario all’output; ciò che eccede può essere escluso, troncato o gestito con altre strategie." },
+          { score: 1, title: "Il numero massimo di utenti simultanei", text: "Indica quante persone possono interrogare il modello nello stesso momento." }
+        ],
+        feedback: "La finestra di contesto è un limite di capacità espresso in token per l’elaborazione corrente, non una memoria illimitata o permanente."
+      },
+      {
+        id: "T6", section: "Fondamenti tecnici LLM", dimension: "literacy", sub: "technical", type: "knowledge",
+        text: "Quale descrizione rappresenta meglio una rete neurale artificiale?",
+        hint: "La domanda richiede un’intuizione corretta, non una definizione matematica completa.",
+        options: [
+          { score: 2, title: "È una copia digitale fedele del cervello umano", text: "Riproduce neuroni biologici e coscienza con lo stesso funzionamento del cervello." },
+          { score: 5, title: "È un insieme di trasformazioni numeriche con parametri appresi", text: "Nodi e strati combinano input attraverso pesi e funzioni, adattati durante l’addestramento per riconoscere relazioni nei dati." },
+          { score: 1, title: "È un archivio ordinato di frasi e risposte", text: "Conserva testi completi e li recupera quando riconosce una domanda simile." },
+          { score: 2, title: "È un programma composto soltanto da regole esplicite", text: "Ogni risposta deriva da istruzioni if/then scritte manualmente dagli sviluppatori." }
+        ],
+        feedback: "Una rete neurale è un modello parametrico composto da trasformazioni numeriche organizzate in strati. L’analogia biologica è solo parziale."
+      },
+      {
+        id: "T7", section: "Fondamenti tecnici LLM", dimension: "literacy", sub: "technical", type: "knowledge",
+        text: "Nel Transformer, a che cosa serve in termini generali il meccanismo di attention?",
+        hint: "Non confondere l’attention matematica con attenzione, intenzione o coscienza umana.",
+        options: [
+          { score: 1, title: "Verifica automaticamente l’affidabilità delle fonti", text: "Attribuisce più peso alle fonti vere e scarta quelle non attendibili." },
+          { score: 5, title: "Pesa le relazioni tra le rappresentazioni dei token", text: "Permette al modello di combinare informazioni del contesto attribuendo rilevanza diversa alle varie posizioni." },
+          { score: 1, title: "Conferisce al modello consapevolezza del significato", text: "Trasforma il calcolo statistico in comprensione cosciente del testo." },
+          { score: 2, title: "Conta soltanto la frequenza delle parole", text: "Sceglie i termini più ripetuti e costruisce la risposta attorno a essi." }
+        ],
+        feedback: "L’attention calcola pesi tra rappresentazioni del contesto. È un meccanismo matematico e non implica coscienza né controllo della verità."
+      },
+      {
+        id: "T8", section: "Fondamenti tecnici LLM", dimension: "literacy", sub: "technical", type: "knowledge",
+        text: "Cos’è un’allucinazione di un LLM?",
+        hint: "Scegli la definizione più corretta.",
+        options: [
+          { score: 5, title: "Un contenuto plausibile ma falso, inventato o non supportato", text: "Il modello produce un’affermazione linguisticamente convincente che non è fondata su informazioni affidabili o sul contesto disponibile." },
+          { score: 2, title: "Qualunque risposta creativa o originale", text: "Creatività e allucinazione non coincidono: un contenuto creativo può essere coerente con la richiesta." },
+          { score: 1, title: "Un blocco tecnico che interrompe il programma", text: "Il termine non indica un crash o un arresto dell’applicazione." },
+          { score: 1, title: "Una menzogna intenzionale del modello", text: "L’LLM non sceglie consapevolmente di ingannare né possiede intenzioni umane." }
+        ],
+        feedback: "Un’allucinazione è un output plausibile ma falso, inventato o non adeguatamente supportato. La fluidità del testo non costituisce una verifica fattuale."
+      },
+      {
+        id: "T9", section: "Fondamenti tecnici LLM", dimension: "literacy", sub: "technical", type: "knowledge",
+        text: "Che cosa descrive meglio un sistema RAG?",
+        hint: "RAG significa Retrieval-Augmented Generation.",
+        options: [
+          { score: 1, title: "Riaddestra il modello a ogni domanda", text: "I documenti recuperati modificano immediatamente e permanentemente i pesi del modello." },
+          { score: 5, title: "Recupera contenuti esterni e li aggiunge al contesto", text: "Il modello genera usando anche i documenti selezionati; qualità del recupero, citazioni e verifica restano essenziali." },
+          { score: 2, title: "Rende automaticamente vera ogni risposta", text: "La presenza di documenti elimina errori, interpretazioni scorrette e allucinazioni." },
+          { score: 1, title: "È un metodo per rendere casuale la generazione", text: "Aumenta la varietà delle parole scelte dal modello." }
+        ],
+        feedback: "Il RAG integra recupero documentale e generazione. Non equivale a riaddestramento e non sostituisce la valutazione della qualità delle fonti e dell’output."
+      },
+      {
+        id: "T10", section: "Fondamenti tecnici LLM", dimension: "literacy", sub: "technical", type: "knowledge",
+        text: "L’intelligenza artificiale esisteva già prima degli LLM moderni?",
+        hint: "La domanda distingue la storia dell’AI dalla recente diffusione dei chatbot generativi.",
+        options: [
+          { score: 1, title: "No, gli LLM hanno creato il primo vero campo dell’AI", text: "Prima dei chatbot generativi esistevano soltanto normali programmi informatici." },
+          { score: 5, title: "Sì, da molti decenni esistono diversi approcci all’AI", text: "AI simbolica, sistemi esperti, ricerca, machine learning e reti neurali precedono gli LLM moderni." },
+          { score: 1, title: "Sì, ma soltanto nella robotica industriale", text: "Prima degli LLM l’AI riguardava esclusivamente macchine fisiche e automazione." },
+          { score: 1, title: "No, l’AI nasce con il Transformer nel 2017", text: "L’architettura Transformer coincide con l’origine storica dell’intera disciplina." }
+        ],
+        feedback: "Il termine artificial intelligence risale agli anni Cinquanta e gli LLM sono una fase recente di una storia molto più lunga e articolata."
+      },
+
+      {
+        id: "T11", section: "Fondamenti tecnici LLM", dimension: "literacy", sub: "technical", type: "knowledge",
+        text: "Come affronti una possibile allucinazione in un output destinato al lavoro?",
+        hint: "Scegli il comportamento che applicheresti davvero.",
+        options: [
+          { score: 5, title: "Verifico le affermazioni critiche con fonti affidabili e revisione umana", text: "Controllo dati, date, citazioni e passaggi ad alto impatto; segnalo ciò che resta incerto e calibro la revisione sul rischio." },
+          { score: 3, title: "Chiedo le fonti e controllo soltanto alcuni punti", text: "È un controllo parziale: utile, ma può lasciare passare errori nelle parti non campionate." },
+          { score: 2, title: "Chiedo al modello: “Sei sicuro?”", text: "La risposta del medesimo modello non è una verifica indipendente e può ribadire lo stesso errore." },
+          { score: 1, title: "Gli ordino di non inventare e uso il risultato", text: "L’istruzione può orientare il comportamento, ma non rende l’output automaticamente vero." },
+          { score: 1, title: "Mi fido se il testo è preciso e ben scritto", text: "Forma, sicurezza apparente e precisione numerica non dimostrano correttezza." }
+        ],
+        feedback: "Una possibile allucinazione si affronta con verifica indipendente, tracciabilità delle fonti e revisione proporzionata all’impatto, non con una semplice richiesta di conferma."
+      },
+      {
+        id: "T12", section: "Fondamenti tecnici LLM", dimension: "literacy", sub: "technical", type: "knowledge",
+        text: "Cos’è un embedding?",
+        hint: "Scegli la definizione tecnica generale più corretta.",
+        options: [
+          { score: 5, title: "Una rappresentazione numerica che colloca contenuti simili in posizioni vicine", text: "Testi o altri oggetti vengono trasformati in vettori utilizzabili per similarità, ricerca semantica, clustering e recupero." },
+          { score: 2, title: "Un riassunto completo del testo originale", text: "Un embedding non conserva il contenuto come una normale sintesi leggibile." },
+          { score: 1, title: "Una copia cifrata del documento", text: "La rappresentazione vettoriale non equivale a cifratura o anonimizzazione." },
+          { score: 1, title: "Il prompt permanente memorizzato nel modello", text: "Gli embedding non sono istruzioni né modificano automaticamente i pesi del modello." }
+        ],
+        feedback: "Un embedding è una rappresentazione vettoriale appresa. È utile per confrontare la vicinanza tra contenuti, ma non è una garanzia di verità né una tecnica di cifratura."
+      },
+      {
+        id: "TR_CITE", section: "Fondamenti tecnici LLM", dimension: "literacy", sub: "technical", type: "knowledge", trap: true,
+        text: "Un LLM fornisce titolo, autore, anno, DOI e link di una fonte. Che cosa puoi concludere?",
+        hint: "Scegli ciò che considereresti sufficiente prima di usare la citazione.",
+        options: [
+          { score: 5, title: "Nulla sulla sua esistenza finché non verifico la fonte fuori dal modello", text: "Anche riferimenti completi e formalmente credibili possono essere inventati, errati o riferiti a un contenuto diverso." },
+          { score: 2, title: "Il DOI rende la fonte quasi certamente reale", text: "Anche un identificatore dall’aspetto corretto può essere inesistente o non corrispondere al titolo indicato." },
+          { score: 2, title: "Il link è sufficiente se il dominio sembra autorevole", text: "Un URL plausibile non dimostra che la pagina esista o sostenga l’affermazione citata." },
+          { score: 1, title: "La precisione bibliografica dimostra che il modello ha consultato la fonte", text: "Il modello può generare dettagli coerenti senza aver recuperato o verificato il documento." }
+        ],
+        feedback: "Una citazione completa non è prova di esistenza o pertinenza. Occorre aprire la fonte, verificarne identità, contenuto, data e corrispondenza con l’affermazione."
+      },
+      {
+        id: "F_DE_1", section: "Fluency · Delegation", dimension: "fluency", sub: "delegation", type: "likert",
+        text: "Prima di usare l’AI, scelgo quali parti del lavoro delegare e quali devono restare sotto controllo umano.",
+        hint: "Delegare bene significa anche decidere cosa non delegare."
+      },
+      {
+        id: "F_DE_2", section: "Fluency · Delegation", dimension: "fluency", sub: "delegation", type: "likert",
+        text: "Scompongo attività complesse in passaggi affidabili da affidare, verificare o far rielaborare all’AI.",
+        hint: "La scomposizione del lavoro riduce errori invisibili e rende il risultato più controllabile."
+      },
+      {
+        id: "F_DE_3", section: "Fluency · Delegation", dimension: "fluency", sub: "delegation", type: "scenario",
+        text: "Ti chiedono di preparare in due ore una bozza di piano operativo per un nuovo progetto. Come usi l’AI?",
+        hint: "La domanda misura la capacità di delegare in modo strategico, non semplicemente veloce.",
+        options: [
+          { score: 1, title: "Le chiedo di scrivere tutto il piano", text: "Poi lo invio quasi senza modifiche." },
+          { score: 2, title: "Le chiedo una bozza generale", text: "Ritocco stile e formattazione." },
+          { score: 3, title: "Le chiedo una struttura e qualche idea", text: "Integro con la mia esperienza." },
+          { score: 4, title: "Divido il lavoro in fasi", text: "Brief, rischi, stakeholder, milestone, assunzioni, poi verifico." },
+          { score: 5, title: "Uso l’AI come co-analista controllato", text: "Genero alternative, criteri di scelta, rischi e checklist di validazione." }
+        ],
+        feedback: "Una delega matura specifica confini, passaggi, criteri di qualità e responsabilità finale."
+      },
+
+      {
+        id: "F_DS_1", section: "Fluency · Description", dimension: "fluency", sub: "description", type: "likert",
+        text: "Formulo richieste includendo obiettivo, contesto, vincoli, pubblico, formato atteso e criteri di qualità.",
+        hint: "La qualità della descrizione condiziona direttamente la qualità del lavoro delegato."
+      },
+      {
+        id: "F_DS_2", section: "Fluency · Description", dimension: "fluency", sub: "description", type: "likert",
+        text: "Itero con l’AI: faccio domande di chiarimento, fornisco esempi, correggo assunzioni e restringo il perimetro.",
+        hint: "La competenza non si esaurisce nel primo prompt."
+      },
+      {
+        id: "F_DS_3", section: "Fluency · Description", dimension: "fluency", sub: "description", type: "scenario",
+        text: "L’AI produce una risposta generica e poco utile. Qual è la tua reazione più probabile?",
+        hint: "La risposta migliore non è cambiare subito strumento, ma migliorare la descrizione del lavoro.",
+        options: [
+          { score: 1, title: "Concludo che lo strumento non serve", text: "Abbandono il tentativo." },
+          { score: 2, title: "Ripeto la stessa domanda", text: "Sperando in una risposta migliore." },
+          { score: 3, title: "Aggiungo qualche dettaglio", text: "Specifico meglio il risultato desiderato." },
+          { score: 4, title: "Riscrivo il brief", text: "Aggiungo contesto, vincoli, esempi, pubblico e formato." },
+          { score: 5, title: "Imposto una mini-procedura", text: "Chiedo domande preliminari, criteri, bozza, revisione e autoverifica." }
+        ],
+        feedback: "La Description matura trasforma una richiesta generica in un incarico verificabile."
+      },
+
+      {
+        id: "TR_PROMPT", section: "Fluency · Description", dimension: "fluency", sub: "description", type: "scenario", trap: true,
+        text: "Quale affermazione sulla lunghezza di un prompt è più corretta?",
+        hint: "Valuta il principio, non la preferenza personale.",
+        options: [
+          { score: 5, title: "La lunghezza da sola non misura la qualità del prompt", text: "Conta che obiettivo, contesto, vincoli e criteri siano pertinenti; un prompt può essere breve o lungo in funzione del compito." },
+          { score: 1, title: "Un prompt più lungo produce sempre una risposta migliore", text: "Dettagli inutili, contraddittori o ridondanti possono peggiorare il compito invece di chiarirlo." },
+          { score: 2, title: "Un prompt breve è sempre più efficace perché lascia libertà al modello", text: "In alcuni casi la brevità basta, ma nei compiti complessi può lasciare troppe assunzioni implicite." },
+          { score: 2, title: "La qualità si riconosce quando il prompt supera circa cento parole", text: "Non esiste una soglia universale di parole che trasformi una richiesta in un buon prompt." }
+        ],
+        feedback: "La qualità di un prompt dipende dall’adeguatezza delle informazioni e dalla verificabilità del compito, non da una lunghezza prestabilita."
+      },
+      {
+        id: "F_DI_1", section: "Fluency · Discernment", dimension: "fluency", sub: "discernment", type: "likert",
+        text: "Valuto l’output con criteri specifici prima di usarlo in un documento, in una decisione o in una comunicazione.",
+        hint: "Il discernimento è la capacità di separare ciò che è utile da ciò che va corretto o scartato."
+      },
+      {
+        id: "F_DI_2", section: "Fluency · Discernment", dimension: "fluency", sub: "discernment", type: "likert",
+        text: "Verifico affermazioni, numeri, citazioni o decisioni ad alto impatto con fonti o controlli indipendenti.",
+        hint: "La verifica è proporzionata al rischio e all’impatto del contenuto."
+      },
+      {
+        id: "F_DI_3", section: "Fluency · Discernment", dimension: "fluency", sub: "discernment", type: "scenario",
+        text: "L’AI propone un dato numerico molto preciso ma senza fonte. Cosa fai?",
+        hint: "La domanda misura la reazione davanti a un output plausibile ma non verificato.",
+        options: [
+          { score: 1, title: "Lo uso perché è molto preciso", text: "La precisione apparente mi basta." },
+          { score: 2, title: "Chiedo all’AI se è corretto", text: "Mi accontento della conferma." },
+          { score: 3, title: "Lo uso con una nota di cautela", text: "Segnalo che potrebbe essere da verificare." },
+          { score: 4, title: "Cerco una fonte indipendente", text: "Uso il dato solo dopo controllo." },
+          { score: 5, title: "Tratto il dato come ipotesi", text: "Chiedo fonte, metodo, range, alternative e verifico su sorgenti affidabili." }
+        ],
+        feedback: "Un numero preciso può essere più pericoloso di un’affermazione vaga se non è tracciabile."
+      },
+
+      {
+        id: "TR_SURE", section: "Fluency · Discernment", dimension: "fluency", sub: "discernment", type: "scenario", trap: true,
+        text: "L’AI fornisce un dato dubbio. Scrivi “Sei sicuro?” e il modello lo conferma con grande sicurezza. Come consideri questa conferma?",
+        hint: "Scegli il valore probatorio che attribuiresti alla seconda risposta.",
+        options: [
+          { score: 5, title: "Non è una verifica indipendente: controllo il dato su una fonte esterna", text: "Il modello può ripetere, riformulare o rafforzare lo stesso errore; la conferma interna non sostituisce un controllo separato." },
+          { score: 2, title: "È un segnale utile, quindi uso il dato con una nota di cautela", text: "La cautela è preferibile all’accettazione cieca, ma il dato resta non verificato." },
+          { score: 1, title: "La seconda risposta rende il dato abbastanza affidabile", text: "Ripetere la domanda allo stesso sistema non crea una nuova evidenza." },
+          { score: 1, title: "La sicurezza del linguaggio indica che il modello ha ricontrollato", text: "Il tono sicuro non dimostra l’accesso a fonti né l’esecuzione di una verifica fattuale." }
+        ],
+        feedback: "“Sei sicuro?” può stimolare una revisione, ma non produce una prova indipendente. Per un dato rilevante servono fonti o controlli esterni."
+      },
+      {
+        id: "F_DG_1", section: "Fluency · Diligence", dimension: "fluency", sub: "diligence", type: "likert",
+        text: "Mi assumo la responsabilità finale di ciò che produco con l’AI, anche quando il contributo dello strumento è ampio.",
+        hint: "La responsabilità non viene trasferita al modello."
+      },
+      {
+        id: "F_DG_2", section: "Fluency · Diligence", dimension: "fluency", sub: "diligence", type: "likert",
+        text: "Segnalo o documento l’uso dell’AI quando è rilevante per trasparenza, audit, compliance o fiducia del destinatario.",
+        hint: "La trasparenza dipende dal contesto: non è sempre identica, ma va governata."
+      },
+      {
+        id: "F_DG_3", section: "Fluency · Diligence", dimension: "fluency", sub: "diligence", type: "scenario",
+        text: "Un collega ti chiede di caricare in un chatbot non approvato un file con informazioni interne. Cosa fai?",
+        hint: "La Diligence misura uso responsabile, non solo prudenza generica.",
+        options: [
+          { score: 1, title: "Lo carico se serve a lavorare più rapidamente", text: "La produttività viene prima." },
+          { score: 2, title: "Lo carico eliminando il titolo", text: "Faccio una minimizzazione molto parziale." },
+          { score: 3, title: "Estraggo solo alcune parti", text: "Riduco il rischio, ma senza verificare il perimetro autorizzato." },
+          { score: 4, title: "Controllo policy e strumento", text: "Uso solo ambienti approvati o dati adeguatamente anonimizzati." },
+          { score: 5, title: "Propongo un’alternativa governata", text: "Creo un flusso sicuro: dati minimi, accessi, tracciabilità e revisione." }
+        ],
+        feedback: "La produttività ottenuta con l’AI non compensa un uso non governato di dati interni o sensibili."
+      },
+
+      {
+        id: "M1", section: "Mindset", dimension: "mindset", type: "likert",
+        text: "Considero l’AI un amplificatore che richiede giudizio umano, non un sostituto automatico del pensiero.",
+        hint: "La maturità non coincide né con entusiasmo cieco né con rifiuto automatico."
+      },
+      {
+        id: "M2", section: "Mindset", dimension: "mindset", type: "likert",
+        text: "Mi sento a mio agio a sperimentare con l’AI su attività a basso rischio e con obiettivi chiari.",
+        hint: "La disponibilità alla sperimentazione controllata è un indicatore importante di adozione."
+      },
+      {
+        id: "M3", section: "Mindset", dimension: "mindset", type: "likert",
+        text: "Quando un output è errato, cerco di capire se il problema dipende da prompt, contesto, dati o limiti dello strumento.",
+        hint: "Questo distingue la frustrazione dalla capacità di migliorare il processo."
+      },
+      {
+        id: "M4", section: "Mindset", dimension: "mindset", type: "likert",
+        text: "Sono disponibile a cambiare il mio workflow se l’AI dimostra valore misurabile e controllabile.",
+        hint: "La domanda misura apertura al cambiamento, non obbedienza al cambiamento."
+      },
+      {
+        id: "M5", section: "Mindset", dimension: "mindset", type: "likert",
+        text: "Mantengo una fiducia calibrata: non accetto gli output senza controllo, ma non scarto lo strumento al primo errore.",
+        hint: "La fiducia calibrata è un equilibrio operativo."
+      },
+      {
+        id: "M6", section: "Mindset", dimension: "mindset", type: "likert",
+        text: "Sono disposto a condividere pratiche, esempi e cautele con i colleghi per migliorare l’uso dell’AI nel team.",
+        hint: "Il mindset individuale influisce anche sulla diffusione organizzativa."
+      },
+      {
+        id: "M7", section: "Mindset", dimension: "mindset", type: "likert",
+        text: "Mi aggiorno con regolarità sulle possibilità, sui limiti e sui rischi degli strumenti AI.",
+        hint: "La GenAI cambia rapidamente: la competenza va mantenuta."
+      },
+      {
+        id: "M8", section: "Mindset", dimension: "mindset", type: "scenario",
+        text: "Un collega dice: “L’AI sbaglia, quindi è inutile”. Come rispondi operativamente?",
+        hint: "La risposta più matura riconosce il limite, ma propone un uso controllato.",
+        options: [
+          { score: 1, title: "Concordo e la evito", text: "Se sbaglia, non vale il rischio." },
+          { score: 2, title: "Dico che bisogna fidarsi di più", text: "Il problema è solo resistenza al cambiamento." },
+          { score: 3, title: "Propongo di usarla solo per testi semplici", text: "Limito il campo ma senza metodo." },
+          { score: 4, title: "Propongo casi a basso rischio", text: "Con criteri di verifica e confronto dei risultati." },
+          { score: 5, title: "Propongo una prova guidata", text: "Scelgo task, metriche, limiti, dati ammessi e revisione finale." }
+        ],
+        feedback: "Un mindset maturo non nega gli errori: li incorpora nel processo di lavoro."
+      },
+      {
+        id: "M9", section: "Mindset", dimension: "mindset", type: "scenario",
+        text: "Il management introduce strumenti AI ma non chiarisce bene obiettivi, regole e casi d’uso. Qual è il comportamento più utile?",
+        hint: "La risposta migliore unisce proattività, richiesta di regole e sperimentazione misurata.",
+        options: [
+          { score: 1, title: "Aspetto istruzioni complete", text: "Senza chiarezza non faccio nulla." },
+          { score: 2, title: "Uso lo strumento come voglio", text: "La pratica chiarirà tutto." },
+          { score: 3, title: "Sperimento in modo informale", text: "Resto su attività personali o poco critiche." },
+          { score: 4, title: "Chiedo perimetro e propongo casi d’uso", text: "Porto esempi concreti e criteri di rischio." },
+          { score: 5, title: "Creo una proposta di adozione controllata", text: "Mappa use case, policy, metriche, formazione e responsabilità." }
+        ],
+        feedback: "In assenza di chiarezza, la competenza consiste nel costruire perimetro e metodo, non solo nel provare strumenti."
+      },
+      {
+        id: "P_L_1", section: "Practical Lab", dimension: "literacy", type: "multi",
+        text: "L’AI ti restituisce una risposta su una norma potenzialmente aggiornata, ma senza link né data. Seleziona le azioni che faresti prima di usare il contenuto.",
+        hint: "Seleziona tutte le azioni operative che applicheresti davvero. Le scelte rischiose abbassano il punteggio.",
+        minSelected: 2,
+        options: [
+          { score: 2, title: "Cerco una fonte primaria o istituzionale", text: "Verifico il contenuto su ente, autorità, gazzetta, standard o fonte ufficiale pertinente." },
+          { score: 2, title: "Controllo data, versione e campo di applicazione", text: "Verifico se l’informazione è aggiornata e se vale davvero per il mio caso." },
+          { score: 1, title: "Distinguo spiegazione generale e informazione aggiornata", text: "Uso l’AI per capire il tema, ma non come fonte finale sulla data o sull’obbligo." },
+          { score: 1, title: "Riporto fonti e incertezza residua", text: "Nel documento finale distinguo ciò che è verificato da ciò che richiede conferma." },
+          { score: -2, title: "Chiedo all’AI se è sicura", text: "Considero sufficiente la conferma del modello senza cercare una fonte esterna." },
+          { score: -2, title: "Copio il testo se è coerente", text: "Se il ragionamento sembra logico, lo uso senza altre verifiche." },
+          { score: -1, title: "Controllo solo se qualcosa suona strano", text: "Mi affido alla plausibilità percepita come primo criterio di qualità." }
+        ],
+        feedback: "Nei contenuti aggiornabili la competenza pratica si vede dalla gestione di fonte, data, versione e campo di applicazione, non dalla sicurezza dichiarata."
+      },
+      {
+        id: "P_DE_1", section: "Practical Lab", dimension: "fluency", sub: "delegation", type: "multi",
+        text: "Devi analizzare 25 pagine di documentazione per preparare una raccomandazione. Seleziona quali parti affideresti all’AI e quali useresti solo come supporto.",
+        hint: "La domanda valuta la delega operativa: cosa fai fare allo strumento e cosa resta responsabilità umana.",
+        minSelected: 3,
+        options: [
+          { score: 2, title: "Estrarre temi, requisiti e rischi da verificare", text: "Uso l’AI per produrre una prima mappa controllabile del materiale." },
+          { score: 2, title: "Creare una matrice alternative/criteri", text: "Chiedo una struttura di confronto, poi controllo criteri e pesi." },
+          { score: 1, title: "Preparare domande per gli stakeholder", text: "Uso l’AI per evidenziare ambiguità e punti da chiarire." },
+          { score: 1, title: "Produrre una checklist di revisione umana", text: "Mi faccio aiutare a non dimenticare verifiche importanti." },
+          { score: -2, title: "Far decidere all’AI la raccomandazione finale", text: "Trasferisco allo strumento la decisione conclusiva." },
+          { score: -2, title: "Inviare il risultato senza revisione", text: "Uso direttamente il testo generato come raccomandazione ufficiale." },
+          { score: -1, title: "Chiedere un unico riassunto senza riferimenti", text: "Rendo più veloce la lettura, ma perdo tracciabilità e controllo." }
+        ],
+        feedback: "Una delega solida usa l’AI per accelerare analisi, alternative e controlli, ma non le trasferisce la decisione finale."
+      },
+      {
+        id: "P_DS_1", section: "Practical Lab", dimension: "fluency", sub: "description", type: "text",
+        text: "Scrivi il prompt che useresti per chiedere all’AI di trasformare appunti disordinati di una riunione in un action plan utilizzabile. Gli appunti potrebbero essere incompleti: non vuoi che lo strumento inventi decisioni o responsabilità.",
+        hint: "Scrivi esattamente il prompt che useresti nella situazione reale, anche se molto breve.",
+        minChars: 120,
+        proceedChars: 1,
+        rubric: {
+          criteria: [
+            { label: "Obiettivo e deliverable", points: 1, keywords: ["obiettivo", "scopo", "action plan", "piano d'azione", "piano azione", "deliverable", "azioni"] },
+            { label: "Contesto e input", points: 1, keywords: ["appunti", "riunione", "meeting", "note", "contesto", "verbale"] },
+            { label: "Vincolo: non inventare", points: 1, keywords: ["non invent", "non aggiungere", "non dedurre", "se manca", "informazione mancante", "assunzioni"] },
+            { label: "Formato atteso", points: 1, keywords: ["tabella", "formato", "colonne", "responsabile", "scadenza", "priorita", "priorità", "owner"] },
+            { label: "Ambiguità e chiarimenti", points: 1, keywords: ["chiarimenti", "domande", "ambig", "dubbi", "incomplet", "segnala"] },
+            { label: "Controllo qualità", points: 1, keywords: ["verifica", "controlla", "coerenza", "checklist", "rischi", "incongruen"] }
+          ],
+          redFlags: [
+            { label: "delega cieca", points: 1, keywords: ["fai tu", "decidi tu", "senza farmi domande", "definitivo", "perfetto"] },
+            { label: "assenza di verifica", points: 1, keywords: ["non serve verificare", "senza verificare", "non controllare"] }
+          ]
+        },
+        feedback: "Un prompt pratico deve rendere verificabile il lavoro: obiettivo, input, vincoli, formato, gestione delle informazioni mancanti e controllo finale."
+      },
+      {
+        id: "P_DS_2", section: "Practical Lab", dimension: "fluency", sub: "description", type: "choice",
+        text: "Quale prompt useresti per ottenere una risposta realmente utilizzabile su un problema aziendale complesso?",
+        hint: "Scegli il prompt che imposta meglio contesto, vincoli, output, criteri e interazione.",
+        options: [
+          { score: 1, title: "Dimmi cosa fare su questo problema", text: "Richiesta molto aperta, senza contesto né criteri." },
+          { score: 2, title: "Scrivi un piano completo e convincente", text: "Chiede un output finale, ma non definisce dati, vincoli o controlli." },
+          { score: 5, title: "Prima fammi 5 domande, poi proponi 3 opzioni con rischi", text: "Contesto, vincoli, criteri, assunzioni esplicite, formato tabellare e punti da verificare." },
+          { score: 3, title: "Dammi 10 idee e poi scelgo io", text: "Utile per divergere, ma debole su qualità, rischi e verifica." },
+          { score: 2, title: "Rispondi in modo breve e operativo", text: "Il formato è chiaro, ma mancano contesto, criteri e assunzioni." }
+        ],
+        feedback: "La Description efficace non è solo chiarezza linguistica: è progettazione del compito e del controllo."
+      },
+      {
+        id: "P_DI_1", section: "Practical Lab", dimension: "fluency", sub: "discernment", type: "text",
+        text: "Un output AI contiene questa frase: “Secondo il report 2026 di Global Manufacturing Observatory, il 72,4% delle aziende manifatturiere europee usa agenti AI in produzione”. Non c’è link. Scrivi i controlli che esegui prima di inserirla in una presentazione.",
+        hint: "Scrivi i controlli che eseguiresti davvero, anche in forma molto sintetica.",
+        minChars: 120,
+        proceedChars: 1,
+        rubric: {
+          criteria: [
+            { label: "Esistenza della fonte", points: 1, keywords: ["esistenza", "fonte", "report", "link", "pubblicazione", "autore"] },
+            { label: "Affidabilità della fonte", points: 1, keywords: ["affidabil", "autorevole", "istituz", "ente", "metodologia", "campione"] },
+            { label: "Data e versione", points: 1, keywords: ["data", "versione", "2026", "aggiorn", "pubblicato"] },
+            { label: "Confronto indipendente", points: 1, keywords: ["confront", "fonte indipendente", "altre fonti", "cross-check", "verifica incrociata"] },
+            { label: "Uso prudente del dato", points: 1, keywords: ["non verificato", "ipotesi", "rimuovo", "non lo uso", "cautela", "range"] },
+            { label: "Citazione o tracciabilità", points: 1, keywords: ["cit", "riferimento", "url", "nota", "slide", "tracci"] }
+          ],
+          redFlags: [
+            { label: "precisione scambiata per qualità", points: 1, keywords: ["preciso quindi", "sembra preciso", "lo uso cosi", "lo uso così"] },
+            { label: "conferma autoreferenziale", points: 1, keywords: ["chiedo all'ai", "chiedo alla ai", "chiedo al modello se"] }
+          ]
+        },
+        feedback: "Il discernimento pratico emerge quando un dato plausibile e preciso viene trattato come ipotesi finché non è tracciabile."
+      },
+      {
+        id: "P_DG_1", section: "Practical Lab", dimension: "fluency", sub: "diligence", type: "multi",
+        text: "Hai un documento interno con nomi cliente, prezzi riservati e note commerciali. Cosa fai prima di usarlo con uno strumento AI?",
+        hint: "Seleziona le azioni concrete che applicheresti. Alcune scelte sembrano rapide ma sono deboli sul piano della governance.",
+        minSelected: 3,
+        options: [
+          { score: 2, title: "Verifico policy e strumenti approvati", text: "Controllo se lo strumento è autorizzato per quel tipo di dato." },
+          { score: 2, title: "Minimizzo o anonimizzo il contenuto", text: "Uso solo ciò che serve e rimuovo elementi identificativi non necessari." },
+          { score: 1, title: "Valuto finalità, accessi e conservazione", text: "Mi chiedo chi può accedere ai dati e cosa resta nello strumento." },
+          { score: 1, title: "Cerco un’alternativa governata", text: "Uso ambiente aziendale, repository autorizzato, RAG controllato o dati sintetici." },
+          { score: 1, title: "Documento assunzioni e perimetro", text: "Tengo traccia di che cosa ho usato e perché." },
+          { score: -2, title: "Lo carico così com’è", text: "Il documento è interno, ma mi serve solo per lavorare più velocemente." },
+          { score: -2, title: "Uso un account personale", text: "Evito attriti organizzativi usando lo strumento che conosco meglio." },
+          { score: -1, title: "Tolgo solo il nome del file", text: "Intervento cosmetico che non riduce davvero il contenuto riservato." }
+        ],
+        feedback: "La Diligence pratica riguarda perimetro dei dati, strumenti autorizzati, minimizzazione, tracciabilità e responsabilità."
+      },
+      {
+        id: "P_M_1", section: "Practical Lab", dimension: "mindset", type: "multi",
+        text: "Un primo tentativo con l’AI produce un output mediocre. Seleziona cosa fai per migliorare il processo.",
+        hint: "La risposta misura fiducia calibrata e capacità di apprendimento operativo, non ottimismo generico.",
+        minSelected: 3,
+        options: [
+          { score: 2, title: "Riformulo il brief", text: "Aggiungo contesto, vincoli, destinatario, formato e criteri di qualità." },
+          { score: 1, title: "Fornisco un esempio di output atteso", text: "Rendo più chiaro lo standard desiderato." },
+          { score: 1, title: "Chiedo assunzioni e domande preliminari", text: "Faccio emergere ciò che manca prima di produrre la risposta finale." },
+          { score: 1, title: "Scompongo il task", text: "Divido ricerca, sintesi, revisione e controllo invece di chiedere tutto insieme." },
+          { score: 1, title: "Confronto l’output con criteri espliciti", text: "Valuto cosa funziona, cosa manca e cosa va rifatto." },
+          { score: -2, title: "Ripeto la stessa richiesta", text: "Spero che il modello produca casualmente una risposta migliore." },
+          { score: -2, title: "Accetto il risultato perché ho poco tempo", text: "Uso un output mediocre senza correggere il processo." },
+          { score: -1, title: "Scarto definitivamente l’AI", text: "Interpreto un singolo output debole come prova che lo strumento non serve." }
+        ],
+        feedback: "Un mindset maturo si vede dalla capacità di modificare processo, prompt e criteri dopo un risultato debole."
+      }
+    ];
+
+    const QUESTION_BANK_VERSION = "2026.06";
+    const FORM_VERSION = "1.0";
+    const FORM_IDS = ["A", "B", "C"];
+    const FORM_CYCLE_STORAGE_KEY = "aiSkillAssessmentFormCycle";
+
+    const formOverrides = {
+  "B": {
+    "L1": {
+      "text": "Quando qualcuno mi chiede come funziona un LLM, riesco a descrivere il principio di previsione dei token e i motivi per cui una risposta può essere plausibile ma errata.",
+      "hint": "Valuta ciò che sapresti spiegare senza consultare materiale esterno."
+    },
+    "L2": {
+      "text": "Quando uso una chat AI, distinguo ciò che il modello ha appreso in addestramento da ciò che riceve nel prompt, nei file allegati o tramite strumenti esterni.",
+      "hint": "Considera il tuo comportamento nelle normali sessioni di lavoro."
+    },
+    "L3": {
+      "text": "Riconosco i segnali che rendono un output AI da verificare, anche quando il testo è fluido, dettagliato e sicuro nel tono.",
+      "hint": "Pensa a dati, citazioni, nomi, date e affermazioni non tracciabili."
+    },
+    "L4": {
+      "text": "So decidere quando una normale conversazione con un LLM non basta e occorrono ricerca aggiornata, documenti controllati o recupero da una base conoscitiva.",
+      "hint": "Valuta la capacità di scegliere l’architettura informativa adatta al compito."
+    },
+    "L5": {
+      "text": "Prima di inserire informazioni in uno strumento AI, valuto classificazione dei dati, condizioni d’uso, autorizzazioni e possibili vincoli di proprietà intellettuale.",
+      "hint": "Non è richiesta competenza legale specialistica, ma consapevolezza operativa."
+    },
+    "L6": {
+      "text": "Devi preparare una nota su uno standard tecnico che potrebbe essere stato revisionato di recente. Come procedi?",
+      "hint": "Scegli il comportamento più vicino a quello che adotteresti davvero.",
+      "options": [
+        {
+          "score": 2,
+          "title": "Chiedo al modello la versione più recente",
+          "text": "Mi affido alla data indicata nella risposta."
+        },
+        {
+          "score": 4,
+          "title": "Recupero la versione ufficiale e poi uso l’AI",
+          "text": "Fornisco il testo aggiornato e controllo i riferimenti."
+        },
+        {
+          "score": 1,
+          "title": "Uso una sintesi già pronta trovata in chat",
+          "text": "La forma professionale mi sembra sufficiente."
+        },
+        {
+          "score": 5,
+          "title": "Separo reperimento, confronto e sintesi",
+          "text": "Verifico ente, revisione, ambito, differenze e citazioni prima dell’uso."
+        },
+        {
+          "score": 3,
+          "title": "Genero una bozza e verifico i passaggi principali",
+          "text": "Controllo alcuni requisiti, ma non costruisco una tracciabilità completa."
+        }
+      ],
+      "feedback": "Su contenuti soggetti a revisione, la qualità dipende dalla fonte ufficiale, dalla versione e dal campo di applicazione."
+    },
+    "L7": {
+      "text": "Vuoi usare l’AI per analizzare ticket di assistenza che includono nomi, indirizzi e dettagli contrattuali. Qual è la prima impostazione corretta?",
+      "hint": "Considera insieme utilità, minimizzazione, autorizzazione e tracciabilità.",
+      "options": [
+        {
+          "score": 3,
+          "title": "Rimuovo i nomi più evidenti e inizio",
+          "text": "Riduco alcuni identificativi senza verificare l’intero flusso."
+        },
+        {
+          "score": 1,
+          "title": "Carico il dataset nello strumento che uso di solito",
+          "text": "Il valore dell’analisi giustifica il caricamento."
+        },
+        {
+          "score": 5,
+          "title": "Definisco un flusso autorizzato e minimizzato",
+          "text": "Stabilisco finalità, dati necessari, ambiente approvato, accessi e controlli."
+        },
+        {
+          "score": 2,
+          "title": "Uso solo i ticket meno recenti",
+          "text": "L’età dei dati mi sembra sufficiente a ridurre il rischio."
+        },
+        {
+          "score": 4,
+          "title": "Verifico policy e preparo un campione anonimizzato",
+          "text": "Uso uno strumento ammesso e controllo che il contenuto sia realmente necessario."
+        }
+      ],
+      "feedback": "Il trattamento di dati operativi richiede un perimetro autorizzato; eliminare pochi identificativi non basta necessariamente."
+    },
+    "T1": {
+      "text": "La parola “automazione” viene sempre trattata da ogni LLM come un unico token?",
+      "hint": "Scegli l’affermazione tecnicamente più corretta.",
+      "options": [
+        {
+          "score": 1,
+          "title": "Sì, ogni parola corrisponde sempre a un token",
+          "text": "La tokenizzazione non segue necessariamente i confini delle parole."
+        },
+        {
+          "score": 5,
+          "title": "No, può essere suddivisa diversamente dal tokenizer",
+          "text": "Token diversi possono rappresentare parole intere, parti di parola, spazi o punteggiatura."
+        },
+        {
+          "score": 2,
+          "title": "No, perché ogni lettera è sempre un token",
+          "text": "Alcuni sistemi possono usare frammenti molto piccoli, ma non esiste questa regola generale."
+        },
+        {
+          "score": 3,
+          "title": "Dipende solo dalla lingua usata nel prompt",
+          "text": "La lingua incide, ma conta anche il tokenizer specifico del modello."
+        }
+      ],
+      "feedback": "Un token è un’unità definita dal tokenizer; non coincide sempre con una parola e può variare tra modelli."
+    },
+    "T2": {
+      "text": "Dopo aver generato un token della risposta, che cosa fa normalmente un LLM autoregressivo?",
+      "hint": "La domanda riguarda il ciclo di generazione.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Aggiunge il token al contesto e stima il successivo",
+          "text": "La sequenza viene costruita passo dopo passo fino alla condizione di arresto."
+        },
+        {
+          "score": 1,
+          "title": "Consulta automaticamente una fonte esterna",
+          "text": "La generazione di base non implica una ricerca sul web o in un database."
+        },
+        {
+          "score": 2,
+          "title": "Riscrive tutti i pesi del modello",
+          "text": "I pesi non vengono normalmente aggiornati durante la singola risposta."
+        },
+        {
+          "score": 3,
+          "title": "Completa internamente l’intero testo e poi lo mostra",
+          "text": "L’output è in genere prodotto in modo sequenziale, anche se l’interfaccia può visualizzarlo a blocchi."
+        }
+      ],
+      "feedback": "La generazione autoregressiva usa la sequenza disponibile per stimare il token successivo e ripete il processo."
+    },
+    "T3": {
+      "text": "In quale fase vengono normalmente modificati i pesi di un modello linguistico?",
+      "hint": "Distingui apprendimento del modello e uso del modello.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Durante addestramento o successive procedure di adattamento",
+          "text": "L’ottimizzazione aggiorna i parametri sulla base dei dati e dell’obiettivo."
+        },
+        {
+          "score": 1,
+          "title": "Ogni volta che un utente invia un prompt",
+          "text": "La normale inferenza non comporta automaticamente un aggiornamento dei pesi."
+        },
+        {
+          "score": 2,
+          "title": "Solo quando il modello produce una risposta sbagliata",
+          "text": "L’errore della singola chat non attiva di per sé un nuovo addestramento."
+        },
+        {
+          "score": 3,
+          "title": "Quando si allega un documento alla conversazione",
+          "text": "Il documento può entrare nel contesto senza modificare stabilmente il modello."
+        }
+      ],
+      "feedback": "L’addestramento modifica i parametri; l’inferenza usa i parametri già disponibili per produrre un output."
+    },
+    "T4": {
+      "text": "Carichi un manuale in una normale chat e chiedi una sintesi. Che cosa accade in generale?",
+      "hint": "Considera il comportamento tipico, salvo funzioni esplicite del servizio.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Il contenuto viene usato come contesto della sessione",
+          "text": "Non significa automaticamente che i pesi del modello vengano aggiornati con quel manuale."
+        },
+        {
+          "score": 1,
+          "title": "Il manuale entra immediatamente nell’addestramento globale",
+          "text": "L’uso in chat e l’addestramento sono processi distinti."
+        },
+        {
+          "score": 2,
+          "title": "Il modello memorizza permanentemente ogni pagina per tutti gli utenti",
+          "text": "Non è la conseguenza generale di un allegato."
+        },
+        {
+          "score": 3,
+          "title": "Il file sostituisce temporaneamente i dati di addestramento",
+          "text": "Il file aggiunge contesto, non rimpiazza il modello preesistente."
+        }
+      ],
+      "feedback": "Un allegato può essere elaborato nel contesto; trattamento, conservazione e uso ulteriore dipendono dal servizio e dalle sue impostazioni."
+    },
+    "T5": {
+      "text": "Una conversazione molto lunga supera la finestra di contesto del modello. Quale conseguenza è plausibile?",
+      "hint": "La finestra di contesto è una capacità limitata.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Parte del contenuto meno recente può non essere più disponibile al modello",
+          "text": "Il sistema può troncare, riassumere o gestire diversamente i messaggi oltre il limite."
+        },
+        {
+          "score": 1,
+          "title": "Il modello espande automaticamente la propria memoria permanente",
+          "text": "Il limite di contesto non crea nuova memoria stabile."
+        },
+        {
+          "score": 2,
+          "title": "La risposta diventa necessariamente più accurata",
+          "text": "Più testo non implica più qualità e può introdurre rumore."
+        },
+        {
+          "score": 3,
+          "title": "Vengono cancellati i pesi appresi in addestramento",
+          "text": "La finestra riguarda l’input elaborabile, non i parametri del modello."
+        }
+      ],
+      "feedback": "La finestra di contesto limita la quantità di token che il modello può considerare nello stesso ciclo di elaborazione."
+    },
+    "T6": {
+      "text": "Quale affermazione descrive meglio ciò che una rete neurale apprende?",
+      "hint": "Scegli la descrizione generale, non una metafora letterale.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Regola molti parametri per rappresentare pattern nei dati",
+          "text": "I pesi vengono ottimizzati per ridurre un errore rispetto a un obiettivo."
+        },
+        {
+          "score": 1,
+          "title": "Archivia un elenco completo di risposte corrette",
+          "text": "Una rete non è semplicemente un database di frasi precompilate."
+        },
+        {
+          "score": 2,
+          "title": "Segue soltanto regole scritte manualmente per ogni caso",
+          "text": "Le regole possono far parte di altri sistemi, ma non descrivono l’apprendimento neurale in generale."
+        },
+        {
+          "score": 3,
+          "title": "Replica il cervello umano in modo biologicamente fedele",
+          "text": "Il nome è ispirato alla biologia, ma il modello è una costruzione matematica semplificata."
+        }
+      ],
+      "feedback": "Una rete neurale è un modello parametrico che apprende regolarità attraverso l’ottimizzazione dei pesi."
+    },
+    "T7": {
+      "text": "Perché il meccanismo di attention è utile nell’elaborazione di una frase?",
+      "hint": "Pensa alle relazioni tra elementi della sequenza.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Permette di pesare quali token sono più rilevanti tra loro",
+          "text": "Il modello costruisce rappresentazioni dipendenti dal contesto."
+        },
+        {
+          "score": 1,
+          "title": "Controlla se ogni affermazione è vera su Internet",
+          "text": "L’attention non è un motore di verifica fattuale."
+        },
+        {
+          "score": 2,
+          "title": "Conserva per sempre tutte le conversazioni",
+          "text": "Non è un meccanismo di memoria permanente."
+        },
+        {
+          "score": 3,
+          "title": "Trasforma automaticamente il testo in una regola aziendale",
+          "text": "Organizza relazioni nel contesto, non determina la validità organizzativa."
+        }
+      ],
+      "feedback": "L’attention calcola relazioni tra posizioni della sequenza e aiuta a interpretare un token in funzione del contesto."
+    },
+    "T8": {
+      "text": "Il modello cita un articolo con titolo plausibile, rivista credibile e autore inesistente. Come si classifica questo output?",
+      "hint": "La forma dettagliata non determina la veridicità.",
+      "options": [
+        {
+          "score": 5,
+          "title": "È un’allucinazione fattuale",
+          "text": "Il modello ha prodotto un’informazione plausibile ma non corrispondente a una fonte reale."
+        },
+        {
+          "score": 1,
+          "title": "È una citazione valida perché contiene tutti i campi",
+          "text": "Completezza formale e autenticità sono cose diverse."
+        },
+        {
+          "score": 2,
+          "title": "È un semplice errore di formattazione",
+          "text": "Il problema riguarda l’esistenza della fonte, non il formato."
+        },
+        {
+          "score": 3,
+          "title": "È una previsione statistica e quindi va considerata vera",
+          "text": "La natura probabilistica non conferisce validità fattuale."
+        }
+      ],
+      "feedback": "Un’allucinazione può assumere una forma molto credibile; occorre verificare l’esistenza e il contenuto della fonte."
+    },
+    "T9": {
+      "text": "Un assistente aziendale cerca prima passaggi pertinenti in procedure approvate e poi li fornisce all’LLM per rispondere. Quale tecnica sta usando?",
+      "hint": "Individua il meccanismo principale.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Retrieval-Augmented Generation",
+          "text": "Il recupero di contenuti precede e supporta la generazione."
+        },
+        {
+          "score": 1,
+          "title": "Addestramento completo del modello a ogni domanda",
+          "text": "La ricerca non richiede di riaddestrare i pesi per ogni richiesta."
+        },
+        {
+          "score": 2,
+          "title": "Solo prompting senza fonti",
+          "text": "Qui è presente un recupero esplicito da una base documentale."
+        },
+        {
+          "score": 3,
+          "title": "Compressione lossless dei documenti",
+          "text": "L’obiettivo non è comprimere i file, ma recuperare passaggi rilevanti."
+        }
+      ],
+      "feedback": "Nel RAG, documenti o passaggi vengono recuperati e inseriti nel contesto; la risposta resta comunque da valutare."
+    },
+    "T10": {
+      "text": "Sistemi esperti, ricerca simbolica e machine learning esistevano prima della diffusione degli LLM?",
+      "hint": "La domanda riguarda la storia dell’AI.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Sì, sono filoni precedenti agli LLM moderni",
+          "text": "L’intelligenza artificiale comprende decenni di approcci differenti."
+        },
+        {
+          "score": 1,
+          "title": "No, l’AI è nata con i chatbot generativi",
+          "text": "Gli LLM sono una fase recente di una storia molto più lunga."
+        },
+        {
+          "score": 2,
+          "title": "Esisteva solo la statistica, non l’AI",
+          "text": "Molti sistemi erano già esplicitamente studiati e descritti come AI."
+        },
+        {
+          "score": 3,
+          "title": "Esistevano solo robot industriali senza software intelligente",
+          "text": "La ricerca AI includeva già ragionamento, apprendimento e rappresentazione della conoscenza."
+        }
+      ],
+      "feedback": "Gli LLM non coincidono con l’intero campo dell’AI; sono una famiglia recente di modelli."
+    },
+    "T11": {
+      "text": "Una risposta AI contiene tre date e due riferimenti che influenzano una decisione. Qual è il controllo più solido?",
+      "hint": "Valuta il processo, non la sola richiesta al modello.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Verifico ogni elemento critico su fonti affidabili e tracciabili",
+          "text": "Mantengo evidenza delle fonti e segnalo ciò che resta incerto."
+        },
+        {
+          "score": 1,
+          "title": "Chiedo al modello di ricontrollarsi",
+          "text": "Una seconda formulazione dello stesso sistema non è una verifica indipendente."
+        },
+        {
+          "score": 2,
+          "title": "Accetto i riferimenti se il testo è coerente",
+          "text": "Coerenza narrativa e correttezza fattuale non coincidono."
+        },
+        {
+          "score": 3,
+          "title": "Elimino solo i dettagli che sembrano strani",
+          "text": "La plausibilità personale non è un criterio sufficiente."
+        }
+      ],
+      "feedback": "La verifica deve essere proporzionata all’impatto e appoggiarsi a fonti o controlli indipendenti."
+    },
+    "T12": {
+      "text": "In una ricerca semantica, a che cosa serve un embedding?",
+      "hint": "Pensa a come testi diversi vengono confrontati per significato.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Rappresenta il contenuto come vettore confrontabile",
+          "text": "La vicinanza tra vettori può aiutare a recuperare elementi semanticamente simili."
+        },
+        {
+          "score": 1,
+          "title": "Certifica che il testo sia vero",
+          "text": "La somiglianza semantica non è una prova fattuale."
+        },
+        {
+          "score": 2,
+          "title": "Converte sempre il testo in una frase più corta",
+          "text": "Un embedding non è un riassunto leggibile."
+        },
+        {
+          "score": 3,
+          "title": "Cifra il documento rendendolo sicuro",
+          "text": "Una rappresentazione vettoriale non equivale a una misura di sicurezza."
+        }
+      ],
+      "feedback": "Gli embedding sono rappresentazioni numeriche utili, tra l’altro, per similarità e recupero semantico."
+    },
+    "TR_CITE": {
+      "text": "Un LLM indica con sicurezza il numero esatto di una clausola contrattuale e ne riporta il testo tra virgolette. Che cosa dimostra questo dettaglio?",
+      "hint": "Attribuisci al dettaglio il suo reale valore probatorio.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Nulla sulla correttezza finché non confronto il contratto originale",
+          "text": "Numero e citazione possono essere generati in modo plausibile ma errato."
+        },
+        {
+          "score": 1,
+          "title": "La clausola è certamente presente perché è numerata",
+          "text": "La precisione formale non prova l’esistenza."
+        },
+        {
+          "score": 2,
+          "title": "Il modello ha accesso al contratto anche se non gliel’ho fornito",
+          "text": "Non si può dedurre l’accesso a una fonte dal tono della risposta."
+        },
+        {
+          "score": 3,
+          "title": "La citazione è abbastanza affidabile se sembra scritta in stile legale",
+          "text": "Lo stile non sostituisce la verifica sul documento."
+        }
+      ],
+      "feedback": "Un riferimento estremamente specifico può aumentare la credibilità percepita senza aumentare l’evidenza."
+    },
+    "F_DE_1": {
+      "text": "Prima di coinvolgere l’AI, esplicito quali decisioni restano mie e quali passaggi possono essere automatizzati, proposti o soltanto supportati.",
+      "hint": "Considera attività ricorrenti e decisioni ad impatto."
+    },
+    "F_DE_2": {
+      "text": "Quando il lavoro è complesso, organizzo l’interazione in passaggi con input, output intermedi e punti di controllo.",
+      "hint": "Valuta la stabilità del tuo metodo, non un singolo caso riuscito."
+    },
+    "F_DE_3": {
+      "text": "Devi confrontare tre offerte di fornitori e formulare una raccomandazione. Come distribuisci il lavoro tra te e l’AI?",
+      "hint": "Scegli il comportamento che adotteresti in pratica.",
+      "options": [
+        {
+          "score": 3,
+          "title": "Faccio estrarre prezzi e caratteristiche, poi scelgo",
+          "text": "Uso il modello per una prima lettura ma non definisco criteri espliciti."
+        },
+        {
+          "score": 5,
+          "title": "Definisco criteri, faccio estrarre evidenze e controllo la matrice",
+          "text": "L’AI supporta confronto e alternative; la raccomandazione resta motivata e revisionata."
+        },
+        {
+          "score": 1,
+          "title": "Carico le offerte e chiedo quale fornitore scegliere",
+          "text": "Trasferisco la decisione finale senza un processo controllato."
+        },
+        {
+          "score": 4,
+          "title": "Chiedo una matrice comparativa con riferimenti alle offerte",
+          "text": "Verifico dati, lacune e pesi prima di concludere."
+        },
+        {
+          "score": 2,
+          "title": "Chiedo tre riassunti e scelgo quello che sembra migliore",
+          "text": "La sintesi aiuta, ma non rende confrontabili criteri e rischi."
+        }
+      ],
+      "feedback": "Delegare bene significa separare estrazione, analisi, proposta e decisione, mantenendo evidenze e responsabilità."
+    },
+    "F_DS_1": {
+      "text": "Nei prompt di lavoro definisco cosa deve essere prodotto, per chi, con quali informazioni, entro quali vincoli e secondo quali criteri di accettazione.",
+      "hint": "Pensa alle richieste che usi realmente."
+    },
+    "F_DS_2": {
+      "text": "Quando mancano dati, invito l’AI a porre domande o a rendere esplicite le assunzioni prima di produrre un risultato finale.",
+      "hint": "Valuta come gestisci le ambiguità."
+    },
+    "F_DS_3": {
+      "text": "L’AI risponde correttamente ma il risultato non è utilizzabile dal destinatario. Che cosa fai?",
+      "hint": "Considera il modo in cui correggeresti l’incarico.",
+      "options": [
+        {
+          "score": 4,
+          "title": "Aggiungo destinatario, formato, priorità e criteri",
+          "text": "Rendo esplicite le condizioni di utilizzo dell’output."
+        },
+        {
+          "score": 1,
+          "title": "Chiedo la stessa cosa a un altro chatbot",
+          "text": "Cambio strumento senza diagnosticare il problema."
+        },
+        {
+          "score": 5,
+          "title": "Riformulo il brief e imposto una revisione per criteri",
+          "text": "Chiedo chiarimenti iniziali, bozza, verifica e versione finale."
+        },
+        {
+          "score": 2,
+          "title": "Chiedo di essere più professionale",
+          "text": "Intervengo soprattutto sul tono, non sulla struttura del compito."
+        },
+        {
+          "score": 3,
+          "title": "Fornisco un esempio del formato desiderato",
+          "text": "Miglioro il riferimento, ma potrei lasciare impliciti vincoli e controlli."
+        }
+      ],
+      "feedback": "Un output può essere corretto ma non adatto: la descrizione deve includere contesto d’uso e criteri di accettazione."
+    },
+    "TR_PROMPT": {
+      "text": "Aggiungere “Agisci come il massimo esperto mondiale” rende automaticamente un prompt più affidabile?",
+      "hint": "Valuta l’effetto reale della formula.",
+      "options": [
+        {
+          "score": 5,
+          "title": "No, il ruolo può orientare stile o prospettiva ma non sostituisce dati, vincoli e verifica",
+          "text": "La qualità dipende dalla progettazione del compito e dal controllo dell’output."
+        },
+        {
+          "score": 1,
+          "title": "Sì, obbliga il modello ad accedere a conoscenze più accurate",
+          "text": "La formula non conferisce nuove fonti né capacità di verifica."
+        },
+        {
+          "score": 2,
+          "title": "Sì, purché la frase sia scritta all’inizio",
+          "text": "La posizione non trasforma il ruolo in una garanzia fattuale."
+        },
+        {
+          "score": 3,
+          "title": "È sufficiente per compiti semplici e complessi",
+          "text": "Può essere un’indicazione utile, ma non definisce da sola il lavoro."
+        }
+      ],
+      "feedback": "Il role prompting può influenzare il comportamento, ma non è una scorciatoia per accuratezza, completezza o responsabilità."
+    },
+    "F_DI_1": {
+      "text": "Prima di riutilizzare un output, lo confronto con requisiti, fonti o esempi attesi invece di giudicarlo soltanto dalla scorrevolezza.",
+      "hint": "Pensa ai controlli che esegui davvero."
+    },
+    "F_DI_2": {
+      "text": "Quando due output AI propongono conclusioni diverse, cerco le assunzioni e le evidenze che spiegano la divergenza.",
+      "hint": "Valuta la capacità di investigare, non solo di scegliere."
+    },
+    "F_DI_3": {
+      "text": "L’AI produce un grafico con una tendenza convincente, ma non indica origine né trattamento dei dati. Come reagisci?",
+      "hint": "Scegli la procedura più vicina al tuo comportamento.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Richiedo dati, definizioni e metodo e ricostruisco il grafico",
+          "text": "Tratto la visualizzazione come non verificata finché non è riproducibile."
+        },
+        {
+          "score": 2,
+          "title": "Lo uso dichiarando che è indicativo",
+          "text": "La cautela nel testo non risolve l’assenza di dati."
+        },
+        {
+          "score": 1,
+          "title": "Lo uso perché la tendenza è plausibile",
+          "text": "La plausibilità visiva non prova il risultato."
+        },
+        {
+          "score": 4,
+          "title": "Cerco il dataset e controllo aggregazioni e scala",
+          "text": "Verifico che il grafico rappresenti correttamente la fonte."
+        },
+        {
+          "score": 3,
+          "title": "Chiedo al modello di aggiungere una fonte",
+          "text": "È un passo utile, ma la fonte proposta va comunque controllata."
+        }
+      ],
+      "feedback": "Una visualizzazione richiede tracciabilità di dati, definizioni, trasformazioni e scala."
+    },
+    "TR_SURE": {
+      "text": "Due chatbot diversi forniscono la stessa risposta non citata. Questa concordanza rende il dato verificato?",
+      "hint": "Considera l’indipendenza delle evidenze.",
+      "options": [
+        {
+          "score": 5,
+          "title": "No, possono condividere dati, pattern o errori; serve una fonte indipendente",
+          "text": "La concordanza tra modelli è un indizio, non una verifica."
+        },
+        {
+          "score": 1,
+          "title": "Sì, due risposte uguali equivalgono a due fonti",
+          "text": "I modelli non sono necessariamente fonti indipendenti."
+        },
+        {
+          "score": 2,
+          "title": "Sì, se entrambi usano un tono sicuro",
+          "text": "Il tono non misura accuratezza né indipendenza."
+        },
+        {
+          "score": 3,
+          "title": "È sufficiente per un documento interno",
+          "text": "Il livello di diffusione non elimina il bisogno di controllo quando il dato conta."
+        }
+      ],
+      "feedback": "Confrontare modelli può far emergere differenze, ma una concordanza non sostituisce una fonte tracciabile."
+    },
+    "F_DG_1": {
+      "text": "Quando uso output AI in un’attività rilevante, conservo abbastanza informazioni da ricostruire input, fonti, revisioni e decisione finale.",
+      "hint": "Considera tracciabilità e responsabilità."
+    },
+    "F_DG_2": {
+      "text": "Adatto il livello di trasparenza sull’uso dell’AI al rischio, alle regole applicabili e alle aspettative del destinatario.",
+      "hint": "La trasparenza è una scelta contestuale da governare."
+    },
+    "F_DG_3": {
+      "text": "Ricevi la trascrizione di una riunione con informazioni personali e strategiche e ti propongono di riassumerla su un servizio AI pubblico. Cosa fai?",
+      "hint": "Valuta dati, autorizzazione e alternative operative.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Definisco dati necessari e uso un ambiente autorizzato",
+          "text": "Minimizzo, controllo accessi, conservazione e revisione del risultato."
+        },
+        {
+          "score": 1,
+          "title": "La carico perché la riunione è già avvenuta",
+          "text": "Il fatto che i dati esistano non autorizza un nuovo trattamento."
+        },
+        {
+          "score": 3,
+          "title": "Elimino i nomi e uso il servizio",
+          "text": "Riduce un rischio ma può lasciare contenuti identificabili o riservati."
+        },
+        {
+          "score": 4,
+          "title": "Verifico policy e preparo una versione realmente anonimizzata",
+          "text": "Procedo solo se strumento e contenuto rientrano nel perimetro ammesso."
+        },
+        {
+          "score": 2,
+          "title": "Uso il mio account personale per non bloccare il lavoro",
+          "text": "Sposta il trattamento fuori dai controlli organizzativi."
+        }
+      ],
+      "feedback": "Trascrizioni e note possono contenere dati sensibili o strategici; serve un flusso autorizzato e minimizzato."
+    },
+    "M1": {
+      "text": "Uso l’AI come supporto da dirigere e revisionare, senza attribuirle automaticamente autorità o intenzionalità.",
+      "hint": "Valuta la tua impostazione abituale."
+    },
+    "M2": {
+      "text": "Sono disposto a provare un nuovo uso dell’AI quando posso limitarne l’impatto, definire un criterio di successo e confrontare il risultato.",
+      "hint": "Pensa a sperimentazioni concrete."
+    },
+    "M3": {
+      "text": "Dopo un risultato insoddisfacente, analizzo il processo prima di concludere che lo strumento o il caso d’uso siano inutili.",
+      "hint": "Considera come reagisci al primo fallimento."
+    },
+    "M4": {
+      "text": "Accetto di modificare ruoli e passaggi di un processo se l’uso dell’AI produce benefici misurabili senza aumentare rischi non gestiti.",
+      "hint": "Valuta apertura e condizioni del cambiamento."
+    },
+    "M5": {
+      "text": "Riesco a mantenere contemporaneamente interesse per le opportunità e attenzione critica verso limiti ed effetti collaterali.",
+      "hint": "Evita di pensare solo a entusiasmo o scetticismo."
+    },
+    "M6": {
+      "text": "Quando scopro una pratica AI utile, condivido anche limiti, casi in cui non funziona e controlli necessari.",
+      "hint": "La condivisione matura comprende le cautele."
+    },
+    "M7": {
+      "text": "Rivedo periodicamente le mie conoscenze sull’AI invece di basarmi soltanto su ciò che ho imparato al primo utilizzo.",
+      "hint": "Considera l’aggiornamento effettivo."
+    },
+    "M8": {
+      "text": "Un collega afferma: “Tra poco l’AI farà tutto, quindi non vale la pena migliorare i processi”. Come rispondi?",
+      "hint": "Scegli una reazione operativa.",
+      "options": [
+        {
+          "score": 2,
+          "title": "Concordo e aspetto strumenti più maturi",
+          "text": "Rimando ogni miglioramento a un futuro incerto."
+        },
+        {
+          "score": 5,
+          "title": "Separo capacità reali, limiti e impatti sul processo",
+          "text": "Propongo test misurati, ruoli chiari e revisione delle attività."
+        },
+        {
+          "score": 1,
+          "title": "Dico che l’AI sostituirà comunque chi non la usa",
+          "text": "Uso una previsione come leva, senza progettare il lavoro."
+        },
+        {
+          "score": 4,
+          "title": "Propongo di analizzare task e colli di bottiglia",
+          "text": "Individuo dove l’AI può supportare e dove serve ancora responsabilità umana."
+        },
+        {
+          "score": 3,
+          "title": "Suggerisco di usare più chatbot",
+          "text": "Aumento l’uso senza collegarlo al miglioramento del processo."
+        }
+      ],
+      "feedback": "Un mindset maturo evita sia fatalismo sia immobilismo e traduce le capacità attuali in esperimenti governati."
+    },
+    "M9": {
+      "text": "Nel team diversi colleghi usano strumenti AI in modo autonomo, ma non esistono pratiche condivise. Quale iniziativa prendi?",
+      "hint": "Valuta equilibrio tra apprendimento e governo.",
+      "options": [
+        {
+          "score": 4,
+          "title": "Raccolgo casi d’uso, rischi e risultati",
+          "text": "Creo una base per definire priorità e regole."
+        },
+        {
+          "score": 1,
+          "title": "Chiedo di vietare tutto finché non c’è una policy perfetta",
+          "text": "Riduce il rischio immediato ma blocca anche la comprensione del fenomeno."
+        },
+        {
+          "score": 5,
+          "title": "Propongo un inventario e un pilota governato",
+          "text": "Definisco strumenti ammessi, dati, metriche, responsabilità e condivisione."
+        },
+        {
+          "score": 2,
+          "title": "Lascio che ogni persona scelga il proprio metodo",
+          "text": "La varietà resta senza controllo o apprendimento comune."
+        },
+        {
+          "score": 3,
+          "title": "Creo un canale per scambiarsi prompt",
+          "text": "È utile, ma non copre dati, qualità, rischi e misurazione."
+        }
+      ],
+      "feedback": "La diffusione informale può essere trasformata in apprendimento organizzativo tramite perimetro, metriche e pratiche condivise."
+    },
+    "P_L_1": {
+      "text": "Un assistente AI riassume i requisiti di una certificazione e cita una pagina web non datata. Seleziona ciò che faresti prima di usare il riepilogo in una procedura.",
+      "hint": "Seleziona le azioni che applicheresti realmente.",
+      "options": [
+        {
+          "score": 2,
+          "title": "Apro la fonte ufficiale dell’ente certificatore",
+          "text": "Controllo testo, data, revisione e documenti collegati."
+        },
+        {
+          "score": 2,
+          "title": "Confronto ogni requisito operativo con il documento vigente",
+          "text": "Verifico che il riepilogo non ometta condizioni o eccezioni."
+        },
+        {
+          "score": 1,
+          "title": "Registro riferimenti e data di consultazione",
+          "text": "Rendo tracciabile la verifica effettuata."
+        },
+        {
+          "score": 1,
+          "title": "Segnalo i punti che richiedono interpretazione esperta",
+          "text": "Distinguo il testo della fonte dalla sua applicazione al caso."
+        },
+        {
+          "score": -2,
+          "title": "Uso il riepilogo perché include un link",
+          "text": "La presenza di un URL non dimostra che la pagina sia vigente o pertinente."
+        },
+        {
+          "score": -2,
+          "title": "Chiedo al modello di confermare che non ci siano errori",
+          "text": "La conferma interna non sostituisce il confronto con il documento."
+        },
+        {
+          "score": -1,
+          "title": "Verifico soltanto il requisito che sembra più importante",
+          "text": "Rischio di lasciare omissioni negli altri punti."
+        }
+      ],
+      "feedback": "Una sintesi normativa o certificativa va ricondotta alla fonte vigente e al suo campo di applicazione."
+    },
+    "P_DE_1": {
+      "text": "Devi preparare una valutazione preliminare di cinque idee di miglioramento processo. Seleziona gli usi che affideresti all’AI come supporto.",
+      "hint": "Scegli ciò che faresti davvero; le opzioni trasferiscono livelli diversi di responsabilità.",
+      "options": [
+        {
+          "score": 2,
+          "title": "Organizzare le idee secondo criteri dichiarati",
+          "text": "Uso una matrice da controllare e correggere."
+        },
+        {
+          "score": 2,
+          "title": "Evidenziare assunzioni, dipendenze e rischi",
+          "text": "Faccio emergere punti da verificare con persone e dati."
+        },
+        {
+          "score": 1,
+          "title": "Proporre domande per i responsabili del processo",
+          "text": "Uso l’AI per preparare l’indagine."
+        },
+        {
+          "score": 1,
+          "title": "Generare scenari alternativi da confrontare",
+          "text": "Amplio le opzioni senza delegare la decisione."
+        },
+        {
+          "score": -2,
+          "title": "Assegnare autonomamente la priorità finale",
+          "text": "Lascio al modello una decisione che dipende da obiettivi e vincoli organizzativi."
+        },
+        {
+          "score": -2,
+          "title": "Scrivere la valutazione definitiva senza revisione",
+          "text": "Trasformo un supporto preliminare in esito ufficiale."
+        },
+        {
+          "score": -1,
+          "title": "Scartare le idee che il modello giudica deboli",
+          "text": "Uso una valutazione non verificata come filtro finale."
+        }
+      ],
+      "feedback": "L’AI può strutturare, interrogare e ampliare l’analisi; priorità e decisioni richiedono criteri, evidenze e responsabilità umana."
+    },
+    "P_DS_1": {
+      "text": "Scrivi il prompt che useresti per confrontare due procedure aziendali e produrre una tabella delle differenze. Alcune sezioni potrebbero mancare o usare termini diversi: non vuoi che l’AI inventi equivalenze.",
+      "hint": "Scrivi ciò che useresti davvero, anche se molto breve.",
+      "rubric": {
+        "criteria": [
+          {
+            "label": "Obiettivo del confronto",
+            "points": 1,
+            "keywords": [
+              "confront",
+              "differenz",
+              "procedur",
+              "tabella"
+            ]
+          },
+          {
+            "label": "Input e perimetro",
+            "points": 1,
+            "keywords": [
+              "document",
+              "procedura a",
+              "procedura b",
+              "sezion",
+              "testi"
+            ]
+          },
+          {
+            "label": "Non inventare equivalenze",
+            "points": 1,
+            "keywords": [
+              "non invent",
+              "non assum",
+              "non dedurre",
+              "nessuna equivalenza",
+              "se manca"
+            ]
+          },
+          {
+            "label": "Formato e tracciabilità",
+            "points": 1,
+            "keywords": [
+              "tabella",
+              "colonne",
+              "riferimento",
+              "paragrafo",
+              "sezione",
+              "cit"
+            ]
+          },
+          {
+            "label": "Ambiguità",
+            "points": 1,
+            "keywords": [
+              "ambig",
+              "termini diversi",
+              "chiariment",
+              "domande",
+              "segnala"
+            ]
+          },
+          {
+            "label": "Verifica finale",
+            "points": 1,
+            "keywords": [
+              "verifica",
+              "controll",
+              "coeren",
+              "revision",
+              "check"
+            ]
+          }
+        ],
+        "redFlags": [
+          {
+            "label": "delega cieca",
+            "points": 1,
+            "keywords": [
+              "decidi tu",
+              "equivalenti automaticamente",
+              "senza domande",
+              "versione definitiva"
+            ]
+          },
+          {
+            "label": "assenza di fonti",
+            "points": 1,
+            "keywords": [
+              "senza riferimenti",
+              "non citare",
+              "ignora le sezioni"
+            ]
+          }
+        ]
+      },
+      "feedback": "Il prompt dovrebbe definire documenti, criteri di confronto, riferimenti, gestione delle lacune e controllo delle equivalenze."
+    },
+    "P_DS_2": {
+      "text": "Quale richiesta useresti per ottenere una prima analisi affidabile di un ritardo ricorrente in un processo?",
+      "hint": "Scegli il prompt che organizza meglio dati, domande e risultato.",
+      "options": [
+        {
+          "score": 2,
+          "title": "Elenca tutte le possibili cause del ritardo",
+          "text": "Produce idee, ma senza usare il contesto reale né discriminare tra ipotesi."
+        },
+        {
+          "score": 5,
+          "title": "Prima chiedimi dati e vincoli; poi formula ipotesi con evidenze mancanti e piano di verifica",
+          "text": "Separa informazioni disponibili, assunzioni, analisi e controlli."
+        },
+        {
+          "score": 1,
+          "title": "Trova la causa principale e dimmi come eliminarla",
+          "text": "Presuppone che il modello possa diagnosticare senza dati."
+        },
+        {
+          "score": 3,
+          "title": "Crea un diagramma causa-effetto sul problema",
+          "text": "Fornisce una struttura utile, ma può restare generica senza domande e verifica."
+        },
+        {
+          "score": 2,
+          "title": "Rispondi come un consulente Lean esperto",
+          "text": "Il ruolo orienta il linguaggio, ma non definisce input e criteri."
+        }
+      ],
+      "feedback": "Per un problema complesso, un buon prompt fa emergere dati mancanti, distingue ipotesi da evidenze e prevede una verifica."
+    },
+    "P_DI_1": {
+      "text": "L’AI afferma: “Nel 2025 il tempo medio di introduzione di un nuovo prodotto nelle PMI europee è sceso del 31% grazie alla GenAI”, citando un osservatorio non collegato. Scrivi i controlli che eseguiresti prima di usare il dato.",
+      "hint": "Indica i controlli reali, anche in forma sintetica.",
+      "rubric": {
+        "criteria": [
+          {
+            "label": "Esistenza della fonte",
+            "points": 1,
+            "keywords": [
+              "fonte",
+              "osservatorio",
+              "esiste",
+              "link",
+              "pubblicazione",
+              "autore"
+            ]
+          },
+          {
+            "label": "Definizione della metrica",
+            "points": 1,
+            "keywords": [
+              "tempo medio",
+              "definiz",
+              "metrica",
+              "31",
+              "calcolo"
+            ]
+          },
+          {
+            "label": "Campione e metodologia",
+            "points": 1,
+            "keywords": [
+              "campione",
+              "metodologia",
+              "pmi",
+              "paesi",
+              "settore"
+            ]
+          },
+          {
+            "label": "Causalità",
+            "points": 1,
+            "keywords": [
+              "causa",
+              "correl",
+              "grazie alla",
+              "attribuzione",
+              "fattori"
+            ]
+          },
+          {
+            "label": "Confronto indipendente",
+            "points": 1,
+            "keywords": [
+              "altre fonti",
+              "confront",
+              "cross",
+              "indipendente",
+              "benchmark"
+            ]
+          },
+          {
+            "label": "Uso prudente e citazione",
+            "points": 1,
+            "keywords": [
+              "non uso",
+              "rimuovo",
+              "cautela",
+              "cit",
+              "nota",
+              "tracci"
+            ]
+          }
+        ],
+        "redFlags": [
+          {
+            "label": "fiducia nella precisione",
+            "points": 1,
+            "keywords": [
+              "31% quindi",
+              "dato preciso",
+              "sembra credibile"
+            ]
+          },
+          {
+            "label": "conferma del modello",
+            "points": 1,
+            "keywords": [
+              "chiedo all'ai",
+              "chiedo al modello se",
+              "sei sicuro"
+            ]
+          }
+        ]
+      },
+      "feedback": "Occorre verificare fonte, metrica, campione e soprattutto il nesso causale implicito nell’espressione “grazie alla”."
+    },
+    "P_DG_1": {
+      "text": "Devi usare l’AI per classificare commenti dei dipendenti raccolti in un’indagine interna. Seleziona le azioni preliminari che adotteresti.",
+      "hint": "Considera dati personali, finalità e qualità del processo.",
+      "options": [
+        {
+          "score": 2,
+          "title": "Verifico base autorizzativa, finalità e strumento ammesso",
+          "text": "Chiarisco perché e dove i dati possono essere elaborati."
+        },
+        {
+          "score": 2,
+          "title": "Rimuovo identificativi e dettagli non necessari",
+          "text": "Minimizzo il contenuto prima dell’elaborazione."
+        },
+        {
+          "score": 1,
+          "title": "Valuto il rischio di re-identificazione",
+          "text": "Anche commenti anonimi possono contenere riferimenti riconoscibili."
+        },
+        {
+          "score": 1,
+          "title": "Definisco controllo umano e criteri di classificazione",
+          "text": "Evito di usare etichette generate come decisioni automatiche."
+        },
+        {
+          "score": 1,
+          "title": "Documento limiti e qualità del campione",
+          "text": "Rendo esplicite le condizioni dell’analisi."
+        },
+        {
+          "score": -2,
+          "title": "Carico il file completo su un servizio gratuito",
+          "text": "Privilegio la comodità senza controllare il trattamento."
+        },
+        {
+          "score": -2,
+          "title": "Uso i risultati per valutare singoli dipendenti",
+          "text": "Cambio finalità e aumento l’impatto senza garanzie."
+        },
+        {
+          "score": -1,
+          "title": "Tolgo solo la colonna con il nome",
+          "text": "I testi liberi possono restare identificabili."
+        }
+      ],
+      "feedback": "I commenti liberi richiedono minimizzazione, controllo della finalità, prevenzione della re-identificazione e revisione umana."
+    },
+    "P_M_1": {
+      "text": "Un piccolo pilota AI non produce il risparmio di tempo atteso. Seleziona le azioni che prenderesti prima di abbandonarlo o scalarlo.",
+      "hint": "La domanda osserva come impari da un esito debole.",
+      "options": [
+        {
+          "score": 2,
+          "title": "Rivedo la metrica e il punto di partenza",
+          "text": "Controllo se il beneficio è stato misurato in modo appropriato."
+        },
+        {
+          "score": 1,
+          "title": "Analizzo quali passaggi hanno creato rilavorazioni",
+          "text": "Distinguo tempo risparmiato e tempo speso in correzioni."
+        },
+        {
+          "score": 1,
+          "title": "Raccolgo feedback dagli utilizzatori",
+          "text": "Cerco problemi di usabilità, competenza o integrazione."
+        },
+        {
+          "score": 1,
+          "title": "Modifico task, prompt o dati e ripeto un test limitato",
+          "text": "Uso l’esito per formulare un nuovo esperimento."
+        },
+        {
+          "score": 1,
+          "title": "Confronto il flusso con e senza AI",
+          "text": "Isolo il contributo dello strumento."
+        },
+        {
+          "score": -2,
+          "title": "Dichiaro il pilota riuscito perché l’AI è strategica",
+          "text": "Sostituisco l’evidenza con una convinzione."
+        },
+        {
+          "score": -2,
+          "title": "Estendo subito l’uso per ottenere più dati",
+          "text": "Aumento scala e rischio prima di capire il problema."
+        },
+        {
+          "score": -1,
+          "title": "Concludo che nessun caso d’uso AI può funzionare",
+          "text": "Generalizzo da un singolo esperimento."
+        }
+      ],
+      "feedback": "Un mindset sperimentale usa metriche, analisi delle rilavorazioni e iterazioni controllate per decidere."
+    }
+  },
+  "C": {
+    "L1": {
+      "text": "Riesco a chiarire perché un LLM non “conosce” una risposta nello stesso senso di una persona, pur potendo produrre testi molto convincenti.",
+      "hint": "Valuta la comprensione che sapresti esprimere con parole tue."
+    },
+    "L2": {
+      "text": "Quando una risposta richiama messaggi precedenti, file o memoria del servizio, so distinguere queste informazioni dai parametri appresi dal modello.",
+      "hint": "Pensa a ciò che avviene nelle sessioni che usi abitualmente."
+    },
+    "L3": {
+      "text": "So che sicurezza del tono, precisione numerica e presenza di riferimenti non bastano a dimostrare che un output AI sia corretto.",
+      "hint": "Considera come valuti la credibilità apparente."
+    },
+    "L4": {
+      "text": "Scelgo consapevolmente tra modello senza strumenti, ricerca web, interrogazione di documenti e sistemi collegati a dati aziendali.",
+      "hint": "Valuta se colleghi il compito alla fonte informativa necessaria."
+    },
+    "L5": {
+      "text": "Prima di riutilizzare testi, immagini, codice o dati generati con l’AI, considero origine degli input, diritti, riservatezza e regole del contesto.",
+      "hint": "Pensa alle verifiche di base che compi prima della pubblicazione o condivisione."
+    },
+    "L6": {
+      "text": "Devi descrivere le funzionalità e i limiti di una piattaforma software che viene aggiornata frequentemente. Quale approccio scegli?",
+      "hint": "Scegli ciò che faresti nel lavoro reale.",
+      "options": [
+        {
+          "score": 1,
+          "title": "Chiedo al modello una panoramica completa e la pubblico",
+          "text": "Assumo che la conoscenza del modello sia aggiornata."
+        },
+        {
+          "score": 3,
+          "title": "Genero una bozza e controllo le funzioni che uso personalmente",
+          "text": "Verifico una parte del contenuto, ma non l’intero perimetro."
+        },
+        {
+          "score": 5,
+          "title": "Parto dalla documentazione corrente e traccio versione e data",
+          "text": "Uso l’AI per organizzare il materiale, distinguendo fatti, limiti e punti da testare."
+        },
+        {
+          "score": 2,
+          "title": "Chiedo al modello di indicare la sua data di aggiornamento",
+          "text": "La risposta del modello non prova la copertura della specifica piattaforma."
+        },
+        {
+          "score": 4,
+          "title": "Confronto release note e documentazione ufficiale",
+          "text": "Controllo le affermazioni prima di trasformarle in una sintesi."
+        }
+      ],
+      "feedback": "Per prodotti in evoluzione servono documentazione corrente, versione, data e verifica delle funzionalità dichiarate."
+    },
+    "L7": {
+      "text": "Vuoi interrogare con l’AI un archivio di contratti e corrispondenza commerciale. Che cosa definisci prima del caricamento?",
+      "hint": "Considera perimetro informativo e responsabilità.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Finalità, documenti necessari, autorizzazioni, accessi e modalità di recupero",
+          "text": "Progetto il flusso perché le risposte siano controllabili e i dati minimizzati."
+        },
+        {
+          "score": 2,
+          "title": "La dimensione massima dei file",
+          "text": "È un vincolo tecnico, ma non risolve governance e riservatezza."
+        },
+        {
+          "score": 4,
+          "title": "Strumento approvato e criterio di selezione dei documenti",
+          "text": "Limito il corpus e verifico chi può accedere."
+        },
+        {
+          "score": 1,
+          "title": "Niente: i documenti sono già dell’azienda",
+          "text": "La titolarità interna non rende qualsiasi trattamento automaticamente appropriato."
+        },
+        {
+          "score": 3,
+          "title": "Rimuovo firme e loghi",
+          "text": "Intervengo su elementi visibili, ma potrei lasciare dati personali e condizioni riservate."
+        }
+      ],
+      "feedback": "Un archivio contrattuale richiede selezione, autorizzazione, controlli di accesso, tracciabilità e risposte collegate alle fonti."
+    },
+    "T1": {
+      "text": "Quale elemento può essere un token per un modello linguistico?",
+      "hint": "Scegli la risposta più generale.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Una parola, una parte di parola, un segno o altro frammento definito dal tokenizer",
+          "text": "L’unità dipende dal sistema di tokenizzazione."
+        },
+        {
+          "score": 1,
+          "title": "Soltanto una parola completa del dizionario",
+          "text": "Molti tokenizer suddividono le parole in parti."
+        },
+        {
+          "score": 2,
+          "title": "Sempre un singolo carattere Unicode",
+          "text": "Non è una regola generale."
+        },
+        {
+          "score": 3,
+          "title": "Un intero paragrafo semanticamente completo",
+          "text": "Alcuni sistemi usano unità diverse, ma non è la descrizione tipica dei token degli LLM."
+        }
+      ],
+      "feedback": "I token sono unità discrete prodotte dal tokenizer e non hanno una corrispondenza fissa con parole o caratteri."
+    },
+    "T2": {
+      "text": "Un LLM scrive normalmente la risposta intera in un’unica operazione?",
+      "hint": "Considera il meccanismo autoregressivo.",
+      "options": [
+        {
+          "score": 5,
+          "title": "No, stima progressivamente token successivi condizionati dalla sequenza disponibile",
+          "text": "La risposta viene costruita in passi successivi."
+        },
+        {
+          "score": 1,
+          "title": "Sì, recupera un testo completo già archiviato",
+          "text": "Il modello non funziona in generale come una raccolta di risposte preconfezionate."
+        },
+        {
+          "score": 2,
+          "title": "Sì, esegue prima una ricerca web obbligatoria",
+          "text": "La generazione non richiede necessariamente uno strumento esterno."
+        },
+        {
+          "score": 3,
+          "title": "No, ma sceglie casualmente parole indipendenti tra loro",
+          "text": "Le probabilità dipendono dal contesto precedente."
+        }
+      ],
+      "feedback": "La generazione procede token dopo token; il contesto influenza la distribuzione delle possibilità successive."
+    },
+    "T3": {
+      "text": "Quale attività è un esempio di inferenza e non di addestramento?",
+      "hint": "Distingui uso del modello e modifica dei parametri.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Inviare un prompt a un modello già addestrato e ottenere una risposta",
+          "text": "Il modello applica i parametri esistenti al nuovo input."
+        },
+        {
+          "score": 1,
+          "title": "Ottimizzare i pesi su un grande corpus",
+          "text": "Questo è addestramento."
+        },
+        {
+          "score": 2,
+          "title": "Eseguire fine-tuning su esempi aziendali",
+          "text": "È una forma di adattamento dei parametri."
+        },
+        {
+          "score": 3,
+          "title": "Calcolare gradienti per ridurre la funzione di perdita",
+          "text": "È parte del processo di apprendimento."
+        }
+      ],
+      "feedback": "L’inferenza produce output usando parametri già appresi; training e fine-tuning li modificano."
+    },
+    "T4": {
+      "text": "Inizi una nuova conversazione e il modello non ricorda un file usato nella sessione precedente. Qual è la spiegazione generale più corretta?",
+      "hint": "Distingui contesto, memoria del prodotto e addestramento.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Il file apparteneva al contesto precedente e non è automaticamente nei pesi o nella nuova sessione",
+          "text": "Eventuali funzioni di memoria dipendono dal prodotto e dalle impostazioni."
+        },
+        {
+          "score": 1,
+          "title": "Il modello ha cancellato parte del proprio addestramento",
+          "text": "Il file della chat non coincide con i parametri del modello."
+        },
+        {
+          "score": 2,
+          "title": "Il file non conteneva abbastanza token per essere ricordato",
+          "text": "La persistenza non dipende semplicemente dalla lunghezza."
+        },
+        {
+          "score": 3,
+          "title": "Il modello ricorda tutto ma sceglie di non mostrarlo",
+          "text": "Non si può assumere una memoria nascosta permanente."
+        }
+      ],
+      "feedback": "Il contesto di una sessione è distinto da memoria opzionale del servizio e da addestramento del modello."
+    },
+    "T5": {
+      "text": "Che cosa concorre normalmente a occupare la finestra di contesto?",
+      "hint": "Considera tutto ciò che il modello deve elaborare nello stesso scambio.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Istruzioni, messaggi, documenti inseriti e token della risposta",
+          "text": "Il budget complessivo è condiviso tra input e output secondo il sistema."
+        },
+        {
+          "score": 1,
+          "title": "Soltanto l’ultimo messaggio dell’utente",
+          "text": "La finestra può includere più elementi della conversazione."
+        },
+        {
+          "score": 2,
+          "title": "Solo i documenti allegati, non il prompt",
+          "text": "Anche istruzioni e messaggi consumano token."
+        },
+        {
+          "score": 3,
+          "title": "Tutti i dati di addestramento del modello",
+          "text": "I dati di training non vengono inseriti integralmente nel contesto."
+        }
+      ],
+      "feedback": "La finestra di contesto è il budget di token disponibile per gli elementi elaborati nella richiesta e, a seconda del sistema, nella risposta."
+    },
+    "T6": {
+      "text": "Che cosa sono i “pesi” di una rete neurale?",
+      "hint": "Scegli la descrizione matematica generale.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Parametri numerici che modulano le trasformazioni tra rappresentazioni",
+          "text": "Vengono regolati durante l’apprendimento."
+        },
+        {
+          "score": 1,
+          "title": "Documenti testuali conservati integralmente dentro ogni neurone",
+          "text": "I pesi non sono file leggibili archiviati nodo per nodo."
+        },
+        {
+          "score": 2,
+          "title": "Regole etiche predefinite e immutabili",
+          "text": "Le regole di comportamento possono derivare da più componenti, ma non definiscono i pesi."
+        },
+        {
+          "score": 3,
+          "title": "Misure della quantità fisica dell’hardware",
+          "text": "Il termine non indica il peso materiale dei server."
+        }
+      ],
+      "feedback": "I pesi sono valori numerici appresi che determinano come gli input vengono trasformati attraverso la rete."
+    },
+    "T7": {
+      "text": "Quale compito NON viene svolto automaticamente dal meccanismo di attention?",
+      "hint": "Distingui relazione nel contesto e accesso al mondo esterno.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Verificare su fonti esterne che una frase sia vera",
+          "text": "L’attention opera sulle rappresentazioni disponibili, non garantisce fact-checking."
+        },
+        {
+          "score": 1,
+          "title": "Mettere in relazione parole lontane nella sequenza",
+          "text": "È uno degli usi centrali dell’attention."
+        },
+        {
+          "score": 2,
+          "title": "Attribuire pesi diversi agli elementi del contesto",
+          "text": "È parte del meccanismo."
+        },
+        {
+          "score": 3,
+          "title": "Costruire rappresentazioni contestuali dei token",
+          "text": "È una conseguenza del calcolo delle relazioni."
+        }
+      ],
+      "feedback": "L’attention collega elementi del contesto; non aggiunge da sola fonti, verifica o conoscenza aggiornata."
+    },
+    "T8": {
+      "text": "Quale esempio rappresenta meglio un’allucinazione?",
+      "hint": "Scegli il caso in cui il sistema produce contenuto non supportato.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Inventare una decisione contenuta in un verbale che in realtà non la riporta",
+          "text": "Il modello aggiunge un fatto plausibile ma assente dalla fonte."
+        },
+        {
+          "score": 1,
+          "title": "Riassumere correttamente un paragrafo con parole diverse",
+          "text": "È una normale parafrasi."
+        },
+        {
+          "score": 2,
+          "title": "Rifiutare una richiesta perché mancano dati",
+          "text": "È un comportamento prudente, non un’allucinazione."
+        },
+        {
+          "score": 3,
+          "title": "Commettere un refuso evidente",
+          "text": "Un refuso può essere un errore, ma non descrive specificamente la fabbricazione plausibile di contenuto."
+        }
+      ],
+      "feedback": "Un’allucinazione è un contenuto generato come se fosse supportato, pur essendo falso, inventato o non presente nelle fonti."
+    },
+    "T9": {
+      "text": "Quale limite resta presente anche in un sistema RAG ben progettato?",
+      "hint": "Il recupero di fonti riduce alcuni rischi, ma non li annulla.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Può recuperare passaggi non pertinenti o interpretarli male",
+          "text": "Qualità del corpus, ricerca, contesto e generazione vanno comunque valutati."
+        },
+        {
+          "score": 1,
+          "title": "Non può mai citare documenti",
+          "text": "Un sistema RAG può essere progettato per mostrare citazioni."
+        },
+        {
+          "score": 2,
+          "title": "Deve modificare i pesi del modello a ogni ricerca",
+          "text": "Il recupero può avvenire senza fine-tuning."
+        },
+        {
+          "score": 3,
+          "title": "Funziona soltanto con pagine web pubbliche",
+          "text": "Può usare anche archivi privati e basi documentali autorizzate."
+        }
+      ],
+      "feedback": "Il RAG migliora l’accesso a fonti, ma non rende automaticamente corretti recupero, interpretazione e risposta."
+    },
+    "T10": {
+      "text": "Quale sequenza storica è più corretta?",
+      "hint": "La domanda non richiede date precise.",
+      "options": [
+        {
+          "score": 5,
+          "title": "AI simbolica e sistemi esperti precedono l’attuale diffusione del deep learning e degli LLM",
+          "text": "Il campo ha attraversato approcci e cicli differenti."
+        },
+        {
+          "score": 1,
+          "title": "Prima gli LLM, poi i sistemi esperti",
+          "text": "L’ordine storico è opposto."
+        },
+        {
+          "score": 2,
+          "title": "L’AI nasce dopo il 2020",
+          "text": "Il termine e la ricerca risalgono a molti decenni prima."
+        },
+        {
+          "score": 3,
+          "title": "Machine learning e AI sono apparsi soltanto con i chatbot",
+          "text": "Apprendimento automatico e altre tecniche hanno una storia precedente."
+        }
+      ],
+      "feedback": "Gli LLM sono una tappa recente; l’AI comprende tradizioni simboliche, statistiche, neurali e ibride."
+    },
+    "T11": {
+      "text": "Abbassare la temperatura del modello elimina il rischio di allucinazioni?",
+      "hint": "Valuta ciò che cambia e ciò che resta da verificare.",
+      "options": [
+        {
+          "score": 5,
+          "title": "No, può rendere l’output più deterministico ma non garantisce correttezza",
+          "text": "Servono comunque fonti, controlli e gestione dell’incertezza."
+        },
+        {
+          "score": 1,
+          "title": "Sì, a temperatura zero ogni fatto è vero",
+          "text": "Determinismo e verità non coincidono."
+        },
+        {
+          "score": 2,
+          "title": "Sì, perché il modello consulta automaticamente più fonti",
+          "text": "La temperatura non attiva una ricerca."
+        },
+        {
+          "score": 3,
+          "title": "Riduce sempre il rischio a un livello trascurabile",
+          "text": "L’effetto dipende dal compito e non sostituisce la verifica."
+        }
+      ],
+      "feedback": "Parametri di generazione influenzano varietà e determinismo, non trasformano il modello in una fonte garantita."
+    },
+    "T12": {
+      "text": "Due documenti hanno embedding molto vicini. Che cosa puoi inferire con maggiore prudenza?",
+      "hint": "Attribuisci alla vicinanza vettoriale il significato corretto.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Sono probabilmente simili secondo la rappresentazione del modello",
+          "text": "La vicinanza può indicare affinità semantica, non identità o verità."
+        },
+        {
+          "score": 1,
+          "title": "Contengono necessariamente gli stessi fatti corretti",
+          "text": "Similarità e accuratezza sono dimensioni diverse."
+        },
+        {
+          "score": 2,
+          "title": "Provengono dalla stessa fonte",
+          "text": "La rappresentazione non certifica la provenienza."
+        },
+        {
+          "score": 3,
+          "title": "Uno è una copia esatta dell’altro",
+          "text": "Documenti diversi possono risultare semanticamente vicini."
+        }
+      ],
+      "feedback": "Gli embedding supportano confronti di similarità, ma il loro significato dipende dal modello e non certifica origine o correttezza."
+    },
+    "TR_CITE": {
+      "text": "Verifichi che il DOI citato dall’AI esista davvero, ma l’articolo non sostiene l’affermazione riportata. La citazione può essere usata come prova?",
+      "hint": "Distingui esistenza della fonte e supporto alla specifica affermazione.",
+      "options": [
+        {
+          "score": 5,
+          "title": "No, devo verificare che il contenuto sostenga davvero la frase",
+          "text": "Una fonte reale può essere citata in modo improprio o fuori contesto."
+        },
+        {
+          "score": 1,
+          "title": "Sì, l’esistenza del DOI rende corretta la citazione",
+          "text": "La risoluzione del riferimento non prova il nesso con l’affermazione."
+        },
+        {
+          "score": 2,
+          "title": "Sì, purché autore e anno coincidano",
+          "text": "I metadati non sostituiscono la lettura del contenuto pertinente."
+        },
+        {
+          "score": 3,
+          "title": "Posso usarla indicando che la fonte è stata trovata",
+          "text": "La nota non corregge un riferimento che non supporta la tesi."
+        }
+      ],
+      "feedback": "La verifica di una citazione comprende autenticità, pertinenza e corrispondenza tra fonte e affermazione."
+    },
+    "F_DE_1": {
+      "text": "Classifico le attività AI in base a ciò che può essere suggerito, eseguito, verificato o deciso, definendo il livello di supervisione necessario.",
+      "hint": "Valuta se questa distinzione è parte del tuo metodo."
+    },
+    "F_DE_2": {
+      "text": "Per compiti articolati, evito la richiesta unica e progetto una sequenza in cui ogni risultato intermedio può essere controllato.",
+      "hint": "Pensa a come imposti realmente il lavoro."
+    },
+    "F_DE_3": {
+      "text": "Devi preparare un percorso formativo interno partendo da bisogni raccolti in interviste. Come usi l’AI?",
+      "hint": "Scegli la ripartizione di responsabilità più vicina al tuo comportamento.",
+      "options": [
+        {
+          "score": 2,
+          "title": "Chiedo un corso completo sul tema",
+          "text": "Ottengo una struttura generica senza collegarla sistematicamente ai bisogni."
+        },
+        {
+          "score": 4,
+          "title": "Faccio codificare i temi e proporre moduli",
+          "text": "Controllo citazioni dalle interviste e adatto la struttura."
+        },
+        {
+          "score": 5,
+          "title": "Definisco obiettivi, faccio analizzare evidenze e confronto alternative",
+          "text": "Verifico bisogni, priorità, contenuti, valutazione e responsabilità finale."
+        },
+        {
+          "score": 1,
+          "title": "Lascio che il modello scelga competenze e durata",
+          "text": "Delego decisioni che dipendono dal contesto organizzativo."
+        },
+        {
+          "score": 3,
+          "title": "Uso l’AI per riassumere le interviste",
+          "text": "Accelero la lettura, ma non progetto ancora criteri e controlli."
+        }
+      ],
+      "feedback": "La delega efficace usa l’AI per organizzare evidenze e generare alternative, mantenendo obiettivi e decisioni sotto controllo umano."
+    },
+    "F_DS_1": {
+      "text": "Quando incarico l’AI di produrre un deliverable, specifico input disponibili, risultato atteso, esclusioni e modalità con cui controllerò la qualità.",
+      "hint": "Considera la completezza abituale delle tue richieste."
+    },
+    "F_DS_2": {
+      "text": "Uso esempi positivi o negativi quando servono a chiarire uno standard che sarebbe difficile descrivere soltanto a parole.",
+      "hint": "Valuta l’uso concreto degli esempi."
+    },
+    "F_DS_3": {
+      "text": "L’AI interpreta in modo diverso un termine aziendale ambiguo e costruisce la risposta sull’assunzione sbagliata. Come intervieni?",
+      "hint": "Scegli il modo in cui correggeresti il processo.",
+      "options": [
+        {
+          "score": 1,
+          "title": "Correggo soltanto la frase finale",
+          "text": "L’assunzione può continuare a influenzare il resto dell’output."
+        },
+        {
+          "score": 5,
+          "title": "Definisco il termine, esplicito il contesto e chiedo di elencare le assunzioni",
+          "text": "Rendo l’ambiguità controllabile prima di rigenerare."
+        },
+        {
+          "score": 3,
+          "title": "Aggiungo un glossario al prompt",
+          "text": "È utile, ma potrei non chiedere una verifica dell’interpretazione."
+        },
+        {
+          "score": 2,
+          "title": "Scrivo il termine in maiuscolo",
+          "text": "L’enfasi grafica non chiarisce il significato."
+        },
+        {
+          "score": 4,
+          "title": "Fornisco esempi e chiedo conferma del perimetro",
+          "text": "Allineo il modello prima della risposta finale."
+        }
+      ],
+      "feedback": "Le ambiguità vanno risolte esplicitando definizioni, esempi e assunzioni, non soltanto correggendo l’output."
+    },
+    "TR_PROMPT": {
+      "text": "Scrivere un prompt in maiuscolo o aggiungere “È IMPORTANTISSIMO” aumenta automaticamente l’accuratezza fattuale?",
+      "hint": "Valuta la differenza tra enfasi e qualità dell’incarico.",
+      "options": [
+        {
+          "score": 5,
+          "title": "No, può enfatizzare un’istruzione ma non aggiunge fonti né controlli",
+          "text": "Accuratezza e verificabilità dipendono da contesto, dati e processo di revisione."
+        },
+        {
+          "score": 1,
+          "title": "Sì, il modello assegna più capacità computazionale alle frasi in maiuscolo",
+          "text": "L’enfasi non crea una garanzia tecnica di questo tipo."
+        },
+        {
+          "score": 2,
+          "title": "Sì, purché venga aggiunto anche un punto esclamativo",
+          "text": "La punteggiatura non sostituisce la progettazione del compito."
+        },
+        {
+          "score": 3,
+          "title": "È sufficiente quando la risposta deve essere breve",
+          "text": "Anche una risposta breve può richiedere dati e criteri."
+        }
+      ],
+      "feedback": "L’enfasi può influire sull’aderenza a un’istruzione, ma non rende vero un contenuto né sostituisce una verifica."
+    },
+    "F_DI_1": {
+      "text": "Distinguo tra qualità della forma e qualità dell’evidenza quando valuto una risposta generata.",
+      "hint": "Pensa a testi persuasivi ma non tracciabili."
+    },
+    "F_DI_2": {
+      "text": "Per attività importanti, provo a falsificare la conclusione dell’AI cercando eccezioni, controesempi o dati contrari.",
+      "hint": "Valuta se sottoponi l’output a un controllo critico."
+    },
+    "F_DI_3": {
+      "text": "L’AI sostiene che una variazione di processo ha causato un miglioramento, basandosi su due indicatori che si muovono insieme. Cosa fai?",
+      "hint": "Considera la differenza tra correlazione e causa.",
+      "options": [
+        {
+          "score": 3,
+          "title": "Chiedo al modello di spiegare meglio il nesso",
+          "text": "Ottengo un ragionamento, ma non nuove evidenze."
+        },
+        {
+          "score": 5,
+          "title": "Tratto la causalità come ipotesi e cerco disegno, dati e fattori alternativi",
+          "text": "Verifico periodo, gruppi di confronto e possibili confondenti."
+        },
+        {
+          "score": 1,
+          "title": "Accetto la conclusione perché gli indicatori coincidono",
+          "text": "La correlazione temporale non dimostra causalità."
+        },
+        {
+          "score": 4,
+          "title": "Controllo serie, definizioni e cambiamenti concomitanti",
+          "text": "Cerco elementi che sostengano o indeboliscano l’attribuzione."
+        },
+        {
+          "score": 2,
+          "title": "Riformulo la frase come “potrebbe aver causato” e la uso",
+          "text": "La cautela linguistica non sostituisce l’analisi."
+        }
+      ],
+      "feedback": "Le conclusioni causali richiedono evidenze e un disegno adeguato; la sola correlazione non basta."
+    },
+    "TR_SURE": {
+      "text": "Il modello attribuisce alla propria risposta una “confidenza del 98%”. Come interpreti quel numero?",
+      "hint": "Valuta se la percentuale è una misura calibrata.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Non la tratto come probabilità affidabile senza un metodo di calibrazione verificato",
+          "text": "Il modello può generare una percentuale plausibile senza misurare realmente la propria accuratezza."
+        },
+        {
+          "score": 1,
+          "title": "Significa che soltanto il 2% della risposta può essere sbagliato",
+          "text": "La percentuale non si traduce automaticamente in questa garanzia."
+        },
+        {
+          "score": 2,
+          "title": "È attendibile perché il modello conosce i propri limiti interni",
+          "text": "Una dichiarazione testuale non è necessariamente una stima calibrata."
+        },
+        {
+          "score": 3,
+          "title": "La uso come indicatore sufficiente per contenuti a basso impatto",
+          "text": "Può sembrare utile, ma resta priva di valore noto senza validazione."
+        }
+      ],
+      "feedback": "Le autostime numeriche generate dal modello non vanno confuse con probabilità calibrate o evidenze di correttezza."
+    },
+    "F_DG_1": {
+      "text": "Prima di distribuire un contenuto prodotto con l’AI, verifico chi ne assume la responsabilità, quali controlli sono stati svolti e quali limiti devono essere dichiarati.",
+      "hint": "Considera l’intero passaggio fino al destinatario."
+    },
+    "F_DG_2": {
+      "text": "Evito di usare l’AI per aggirare controlli, autorizzazioni o separazioni di ruolo previste dal processo.",
+      "hint": "Valuta la disciplina operativa oltre la qualità del testo."
+    },
+    "F_DG_3": {
+      "text": "Per rispettare una scadenza, ti propongono di elaborare dati aziendali con un account AI personale non sottoposto ai controlli dell’organizzazione. Cosa fai?",
+      "hint": "Scegli la risposta che adotteresti sotto pressione.",
+      "options": [
+        {
+          "score": 4,
+          "title": "Cerco uno strumento approvato o una versione anonimizzata",
+          "text": "Mantengo il lavoro nel perimetro consentito."
+        },
+        {
+          "score": 1,
+          "title": "Uso l’account personale e cancello poi la chat",
+          "text": "La cancellazione successiva non rende autorizzato il trattamento."
+        },
+        {
+          "score": 5,
+          "title": "Rinegozio modalità o scadenza e propongo un flusso governato",
+          "text": "Rendo esplicito il vincolo e preservo dati, accessi e tracciabilità."
+        },
+        {
+          "score": 2,
+          "title": "Uso l’account personale soltanto per pochi minuti",
+          "text": "La durata non risolve il problema di governance."
+        },
+        {
+          "score": 3,
+          "title": "Trascrivo manualmente solo i passaggi principali",
+          "text": "Riduce il volume, ma non verifica se i dati residui siano ammessi."
+        }
+      ],
+      "feedback": "La pressione temporale non cambia il perimetro autorizzativo; occorre trovare un’alternativa governata o modificare il piano."
+    },
+    "M1": {
+      "text": "Non interpreto l’output AI come un giudizio autonomo: lo considero il risultato di un sistema da contestualizzare e controllare.",
+      "hint": "Valuta il tuo atteggiamento spontaneo."
+    },
+    "M2": {
+      "text": "Preferisco piccoli esperimenti con rischio e metriche definiti rispetto a discussioni astratte sull’utilità generale dell’AI.",
+      "hint": "Pensa a come trasformi curiosità in prova."
+    },
+    "M3": {
+      "text": "Quando l’AI fallisce, distinguo tra limite intrinseco, configurazione inadeguata e problema del processo prima di decidere come procedere.",
+      "hint": "Considera la diagnosi effettiva degli insuccessi."
+    },
+    "M4": {
+      "text": "Sono disposto a rinunciare a un uso dell’AI quando i controlli necessari annullano il beneficio o il rischio resta sproporzionato.",
+      "hint": "L’apertura comprende anche la capacità di non usare lo strumento."
+    },
+    "M5": {
+      "text": "Riesco a cambiare opinione sull’AI quando emergono risultati misurati, positivi o negativi, invece di difendere una posizione iniziale.",
+      "hint": "Valuta la flessibilità basata su evidenze."
+    },
+    "M6": {
+      "text": "Nel confronto con i colleghi separo esperienze aneddotiche, risultati osservati e condizioni necessarie per replicarli.",
+      "hint": "Considera la qualità della condivisione."
+    },
+    "M7": {
+      "text": "Dedico tempo a comprendere modifiche rilevanti di strumenti e policy che possono cambiare il modo sicuro o efficace di usarli.",
+      "hint": "Pensa alla continuità dell’apprendimento."
+    },
+    "M8": {
+      "text": "Un collega mostra un risultato sorprendente e conclude: “Con l’AI non serve più alcuna revisione”. Come reagisci?",
+      "hint": "Scegli una risposta operativa e proporzionata.",
+      "options": [
+        {
+          "score": 1,
+          "title": "Concordo perché il risultato è convincente",
+          "text": "Generalizzo da un singolo caso."
+        },
+        {
+          "score": 5,
+          "title": "Chiedo di replicare il caso con criteri, errori e condizioni dichiarate",
+          "text": "Valuto robustezza, limiti e livello di supervisione necessario."
+        },
+        {
+          "score": 3,
+          "title": "Propongo di usare l’AI solo per quel compito",
+          "text": "Limito la generalizzazione, ma non analizzo il motivo del successo."
+        },
+        {
+          "score": 4,
+          "title": "Confronto output con baseline e revisione umana",
+          "text": "Misuro beneficio e difetti prima di modificare il processo."
+        },
+        {
+          "score": 2,
+          "title": "Dico che l’AI sbaglia sempre e quindi il risultato non conta",
+          "text": "Rifiuto l’evidenza senza valutarla."
+        }
+      ],
+      "feedback": "Un risultato positivo va replicato e confrontato; non dimostra che la supervisione sia superflua."
+    },
+    "M9": {
+      "text": "Un progetto AI pilota ha prodotto risultati contrastanti e opinioni molto polarizzate. Quale passo proponi?",
+      "hint": "Valuta come gestiresti evidenze incomplete e conflitto.",
+      "options": [
+        {
+          "score": 5,
+          "title": "Analizzo casi, metriche, errori e condizioni e decido il seguito per segmento",
+          "text": "Distinguo dove funziona, dove no e quali modifiche servono."
+        },
+        {
+          "score": 1,
+          "title": "Scelgo la posizione del dirigente più favorevole",
+          "text": "Sostituisco l’analisi con l’autorità."
+        },
+        {
+          "score": 2,
+          "title": "Interrompo tutto per evitare discussioni",
+          "text": "Elimino il conflitto senza apprendere dal pilota."
+        },
+        {
+          "score": 4,
+          "title": "Facilito una review con dati e criteri condivisi",
+          "text": "Rendo confrontabili le osservazioni e definisco un nuovo test se necessario."
+        },
+        {
+          "score": 3,
+          "title": "Estendo il pilota a più persone",
+          "text": "Aumento i dati, ma senza prima chiarire metriche e problemi."
+        }
+      ],
+      "feedback": "Risultati misti richiedono segmentazione, criteri comuni e decisioni basate su evidenze, non una media delle opinioni."
+    },
+    "P_L_1": {
+      "text": "L’AI descrive le caratteristiche di un componente e riporta valori tecnici senza datasheet. Seleziona ciò che faresti prima di approvarne l’uso in un progetto.",
+      "hint": "Scegli le azioni che adotteresti realmente.",
+      "options": [
+        {
+          "score": 2,
+          "title": "Recupero il datasheet del produttore e la revisione corretta",
+          "text": "Verifico valori, condizioni di prova e note applicative."
+        },
+        {
+          "score": 2,
+          "title": "Confronto codice esatto, package e varianti",
+          "text": "Evito di trasferire dati da un modello simile ma diverso."
+        },
+        {
+          "score": 1,
+          "title": "Controllo limiti assoluti e condizioni operative",
+          "text": "Distinguo valori tipici, massimi e condizioni di utilizzo."
+        },
+        {
+          "score": 1,
+          "title": "Registro la fonte nella documentazione di progetto",
+          "text": "Rendo il dato tracciabile per revisioni successive."
+        },
+        {
+          "score": -2,
+          "title": "Uso i valori perché il modello ha indicato molte cifre decimali",
+          "text": "La precisione apparente non certifica il componente."
+        },
+        {
+          "score": -2,
+          "title": "Chiedo al modello se i dati provengono dal datasheet",
+          "text": "La dichiarazione del modello non sostituisce il documento."
+        },
+        {
+          "score": -1,
+          "title": "Verifico solo il parametro che mi interessa di più",
+          "text": "Potrei ignorare condizioni o limiti critici."
+        }
+      ],
+      "feedback": "I dati tecnici vanno verificati sul documento corretto, includendo variante, revisione e condizioni di misura."
+    },
+    "P_DE_1": {
+      "text": "Devi preparare una comunicazione di cambiamento organizzativo a partire da decisioni approvate e commenti degli stakeholder. Seleziona gli usi appropriati dell’AI.",
+      "hint": "Distingui preparazione del testo e responsabilità sul messaggio.",
+      "options": [
+        {
+          "score": 2,
+          "title": "Organizzare i punti approvati per destinatario",
+          "text": "Uso l’AI per strutturare contenuti già validati."
+        },
+        {
+          "score": 2,
+          "title": "Generare versioni con tono e livello di dettaglio diversi",
+          "text": "Confronto alternative mantenendo invariati i fatti."
+        },
+        {
+          "score": 1,
+          "title": "Evidenziare possibili domande o incomprensioni",
+          "text": "Preparo una revisione con gli stakeholder."
+        },
+        {
+          "score": 1,
+          "title": "Controllare coerenza tra messaggi e decisioni fornite",
+          "text": "Uso una checklist prima della pubblicazione."
+        },
+        {
+          "score": -2,
+          "title": "Inventare motivazioni più persuasive",
+          "text": "Aggiungo contenuti non approvati."
+        },
+        {
+          "score": -2,
+          "title": "Inviare automaticamente la versione scelta dal modello",
+          "text": "Delego pubblicazione e responsabilità finale."
+        },
+        {
+          "score": -1,
+          "title": "Far eliminare tutte le osservazioni critiche",
+          "text": "Trasformo la revisione in manipolazione del feedback."
+        }
+      ],
+      "feedback": "L’AI può supportare struttura e varianti, ma non deve alterare decisioni, inventare motivazioni o sostituire l’approvazione."
+    },
+    "P_DS_1": {
+      "text": "Scrivi il prompt che useresti per trasformare note tecniche sparse in una comunicazione per utenti non specialisti. Alcuni punti sono incerti e non vuoi che vengano presentati come fatti.",
+      "hint": "Scrivi il prompt che useresti davvero, anche se molto breve.",
+      "rubric": {
+        "criteria": [
+          {
+            "label": "Obiettivo e pubblico",
+            "points": 1,
+            "keywords": [
+              "comunicazione",
+              "utenti",
+              "non specialist",
+              "pubblico",
+              "comprensib"
+            ]
+          },
+          {
+            "label": "Input disponibile",
+            "points": 1,
+            "keywords": [
+              "note",
+              "appunti",
+              "tecnic",
+              "testo",
+              "materiale"
+            ]
+          },
+          {
+            "label": "Gestione dell’incertezza",
+            "points": 1,
+            "keywords": [
+              "incert",
+              "non verific",
+              "non invent",
+              "segnala",
+              "da confermare"
+            ]
+          },
+          {
+            "label": "Formato e tono",
+            "points": 1,
+            "keywords": [
+              "formato",
+              "struttura",
+              "titolo",
+              "punti",
+              "tono",
+              "linguaggio"
+            ]
+          },
+          {
+            "label": "Chiarimenti",
+            "points": 1,
+            "keywords": [
+              "domande",
+              "chiariment",
+              "manc",
+              "ambig",
+              "assunzioni"
+            ]
+          },
+          {
+            "label": "Revisione",
+            "points": 1,
+            "keywords": [
+              "verifica",
+              "controll",
+              "revision",
+              "coeren",
+              "approv"
+            ]
+          }
+        ],
+        "redFlags": [
+          {
+            "label": "certezza artificiale",
+            "points": 1,
+            "keywords": [
+              "rendilo certo",
+              "presenta come fatto",
+              "non mostrare dubbi",
+              "inventa"
+            ]
+          },
+          {
+            "label": "pubblicazione automatica",
+            "points": 1,
+            "keywords": [
+              "pubblica direttamente",
+              "invia senza revisione",
+              "versione definitiva"
+            ]
+          }
+        ]
+      },
+      "feedback": "Il prompt dovrebbe adattare il contenuto al pubblico mantenendo separati fatti, incertezze e punti da confermare."
+    },
+    "P_DS_2": {
+      "text": "Quale prompt useresti per confrontare possibili soluzioni a un problema tecnico con informazioni ancora incomplete?",
+      "hint": "Scegli la richiesta che rende espliciti dati mancanti e criteri.",
+      "options": [
+        {
+          "score": 3,
+          "title": "Proponi cinque soluzioni innovative",
+          "text": "Amplia lo spazio delle idee, ma non struttura la valutazione."
+        },
+        {
+          "score": 1,
+          "title": "Scegli la soluzione migliore in assoluto",
+          "text": "Presuppone un criterio universale e dati completi."
+        },
+        {
+          "score": 5,
+          "title": "Elenca ciò che manca, fammi domande e poi confronta opzioni rispetto a criteri e rischi dichiarati",
+          "text": "Organizza incertezza, alternative e verifica."
+        },
+        {
+          "score": 2,
+          "title": "Agisci come un ingegnere senior e risolvi il problema",
+          "text": "Il ruolo non sostituisce dati, vincoli e criteri."
+        },
+        {
+          "score": 2,
+          "title": "Dammi una risposta breve con pro e contro",
+          "text": "Il formato è utile, ma lascia implicite assunzioni e informazioni mancanti."
+        }
+      ],
+      "feedback": "Quando i dati sono incompleti, la qualità del prompt dipende soprattutto dalla gestione esplicita di lacune, assunzioni e criteri."
+    },
+    "P_DI_1": {
+      "text": "L’AI scrive: “Un’indagine 2026 dimostra che i team che usano copiloti AI commettono il 40% di errori in meno”, senza indicare campione, definizione di errore o link. Scrivi i controlli che faresti.",
+      "hint": "Indica il processo reale, anche con poche parole.",
+      "rubric": {
+        "criteria": [
+          {
+            "label": "Fonte e pubblicazione",
+            "points": 1,
+            "keywords": [
+              "fonte",
+              "indagine",
+              "link",
+              "autore",
+              "pubblicazione",
+              "esiste"
+            ]
+          },
+          {
+            "label": "Campione",
+            "points": 1,
+            "keywords": [
+              "campione",
+              "team",
+              "numero",
+              "settore",
+              "selezione"
+            ]
+          },
+          {
+            "label": "Definizione e misura",
+            "points": 1,
+            "keywords": [
+              "errore",
+              "definiz",
+              "misura",
+              "40",
+              "metrica"
+            ]
+          },
+          {
+            "label": "Disegno e confronto",
+            "points": 1,
+            "keywords": [
+              "gruppo",
+              "confronto",
+              "baseline",
+              "metodo",
+              "controllo"
+            ]
+          },
+          {
+            "label": "Causalità e fattori alternativi",
+            "points": 1,
+            "keywords": [
+              "causa",
+              "correl",
+              "fattori",
+              "selezione",
+              "confond"
+            ]
+          },
+          {
+            "label": "Uso prudente",
+            "points": 1,
+            "keywords": [
+              "non uso",
+              "rimuovo",
+              "cautela",
+              "cit",
+              "nota",
+              "verifica"
+            ]
+          }
+        ],
+        "redFlags": [
+          {
+            "label": "accettazione del numero",
+            "points": 1,
+            "keywords": [
+              "40% è preciso",
+              "sembra realistico",
+              "lo inserisco"
+            ]
+          },
+          {
+            "label": "autoconferma",
+            "points": 1,
+            "keywords": [
+              "chiedo all'ai",
+              "sei sicuro",
+              "conferma al modello"
+            ]
+          }
+        ]
+      },
+      "feedback": "Il dato richiede fonte, definizioni, campione, disegno di confronto e attenzione alla causalità."
+    },
+    "P_DG_1": {
+      "text": "Vuoi usare l’AI per analizzare bozze di brevetto e documenti di sviluppo non ancora pubblici. Seleziona le precauzioni preliminari.",
+      "hint": "Considera riservatezza, proprietà intellettuale e ambiente tecnico.",
+      "options": [
+        {
+          "score": 2,
+          "title": "Verifico strumenti autorizzati e condizioni contrattuali",
+          "text": "Controllo trattamento, conservazione e uso dei contenuti."
+        },
+        {
+          "score": 2,
+          "title": "Limito il materiale alle parti strettamente necessarie",
+          "text": "Ridimensiono l’esposizione informativa."
+        },
+        {
+          "score": 1,
+          "title": "Coinvolgo le funzioni competenti per il perimetro IP",
+          "text": "Chiarisco vincoli di segretezza e divulgazione."
+        },
+        {
+          "score": 1,
+          "title": "Valuto un ambiente isolato o un modello approvato",
+          "text": "Scelgo un’architettura adeguata alla sensibilità."
+        },
+        {
+          "score": 1,
+          "title": "Registro documenti, finalità e revisioni",
+          "text": "Mantengo tracciabilità dell’uso."
+        },
+        {
+          "score": -2,
+          "title": "Uso un servizio pubblico ma senza inserire il titolo del progetto",
+          "text": "I contenuti restano potenzialmente riservati."
+        },
+        {
+          "score": -2,
+          "title": "Carico tutto per ottenere un’analisi più completa",
+          "text": "Massimizzo l’esposizione invece di minimizzarla."
+        },
+        {
+          "score": -1,
+          "title": "Sostituisco soltanto i nomi degli inventori",
+          "text": "Il contenuto tecnico può rimanere identificabile e confidenziale."
+        }
+      ],
+      "feedback": "Materiale brevettuale e di sviluppo richiede un controllo rigoroso di strumento, condizioni d’uso, minimizzazione e segretezza."
+    },
+    "P_M_1": {
+      "text": "Una demo AI ha impressionato il management, ma non è stata provata su dati reali né confrontata con il processo attuale. Seleziona i passi successivi più utili.",
+      "hint": "La domanda osserva come trasformi entusiasmo in apprendimento.",
+      "options": [
+        {
+          "score": 2,
+          "title": "Definisco una baseline del processo attuale",
+          "text": "Stabilisco tempi, qualità, errori e costi da confrontare."
+        },
+        {
+          "score": 1,
+          "title": "Preparo un campione rappresentativo e controllato",
+          "text": "Evito di valutare soltanto casi favorevoli."
+        },
+        {
+          "score": 1,
+          "title": "Stabilisco criteri di successo e di arresto",
+          "text": "Rendo la decisione meno dipendente dall’entusiasmo."
+        },
+        {
+          "score": 1,
+          "title": "Testo errori, eccezioni e necessità di revisione",
+          "text": "Misuro anche il lavoro nascosto."
+        },
+        {
+          "score": 1,
+          "title": "Coinvolgo utenti e responsabili del rischio",
+          "text": "Valuto adozione, impatto e governance."
+        },
+        {
+          "score": -2,
+          "title": "Annuncio subito l’estensione a tutta l’azienda",
+          "text": "Trasformo una dimostrazione in decisione senza prova."
+        },
+        {
+          "score": -2,
+          "title": "Scelgo solo esempi in cui la demo funziona bene",
+          "text": "Costruisco una valutazione distorta."
+        },
+        {
+          "score": -1,
+          "title": "Respingo la demo perché non usa dati reali",
+          "text": "Individuo un limite corretto, ma rinuncio a progettare un test adeguato."
+        }
+      ],
+      "feedback": "Una demo è un’ipotesi: servono baseline, campione, criteri, eccezioni e valutazione del lavoro di revisione."
+    }
+  }
+};
