@@ -22,7 +22,7 @@
         <div>
           <div class="hero-meta">
             <p class="kicker">AI Skill & Adoption Assessment</p>
-            <span class="version-badge">Versione 1.1.0</span>
+            <span class="version-badge">Versione 1.2.0</span>
           </div>
           <h1>Misura pratica della competenza AI</h1>
           <p class="subtitle">Un questionario interattivo per stimare conoscenza, uso operativo, giudizio critico e attitudine verso la GenAI. Il risultato finale produce un profilo, una dashboard e suggerimenti formativi.</p>
@@ -45,23 +45,57 @@
       <div class="content">
         <section id="introView" class="view active">
           <div class="grid-2">
-            <div class="card">
-              <h2>Prima di iniziare</h2>
-              <p>Il test richiede una risposta per ogni domanda. All’avvio viene scelta casualmente una delle tre forme parallele disponibili; la rotazione locale evita di riproporre subito lo stesso set. Le alternative vengono rimescolate a ogni nuovo assessment e i dettagli esplicativi restano nascosti, salvo richiesta dell’utente. Il quiz tecnico verifica la comprensione dei fondamenti degli LLM; gli scenari osservano le scelte operative; le prove pratiche raccolgono il comportamento spontaneo senza imporre prompt lunghi o un numero minimo di opzioni selezionate.</p>
-              <p class="muted">I dati restano nel browser in cui esegui la pagina. Puoi esportare il report in JSON o CSV e puoi svuotare lo storico locale.</p>
-              <div class="pill-row">
-                <span class="pill">Profilo individuale</span>
-                <span class="pill">Indice 0–100</span>
-                <span class="pill">Radar chart</span>
-                <span class="pill">Quadrante</span>
-                <span class="pill">Gap dichiarato/pratico</span>
-                <span class="pill">Quiz tecnico LLM</span>
+            <div class="card landing-card">
+              <p class="kicker">Assessment completo</p>
+              <h2>50 domande per leggere competenza, uso e attitudine verso l'AI</h2>
+              <p>Il test combina autovalutazione, quiz sui fondamenti degli LLM, scenari decisionali e prove pratiche. Alla fine produce un profilo, una dashboard dei punteggi, il confronto tra skill dichiarate e risultati emersi, e suggerimenti formativi.</p>
+              <p class="muted">All'avvio viene scelta una delle tre forme parallele disponibili. Le alternative vengono rimescolate a ogni assessment e le spiegazioni restano nascoste finche' non vengono richieste.</p>
+              <div class="actions">
+                <button class="btn-primary" id="introStartBtn">Inizia</button>
+                <button class="btn-secondary" id="introBibliographyBtn">Bibliografia</button>
               </div>
             </div>
 
             <div class="card">
+              <h2>Temi affrontati</h2>
+              <p class="muted">La distribuzione e' calcolata dalla banca domande del test completo.</p>
+              <div class="topic-summary" id="questionDistribution" aria-live="polite"></div>
+            </div>
+          </div>
+
+          <div class="grid-3 landing-metrics" aria-label="Sintesi del risultato finale">
+            <div class="metric-card">
+              <span>Output</span>
+              <strong>Profilo + dashboard</strong>
+            </div>
+            <div class="metric-card">
+              <span>Punteggio</span>
+              <strong>Indice 0-100</strong>
+            </div>
+            <div class="metric-card">
+              <span>Report</span>
+              <strong>JSON e CSV</strong>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top: 18px;">
+            <h3>Come viene letto il risultato</h3>
+            <p>La segmentazione principale usa Literacy e Fluency. Un punteggio basso in entrambe porta al profilo Beginner; alta Fluency ma bassa Literacy porta al profilo Curious; alta Literacy ma bassa Fluency porta al profilo Expert; punteggi alti in entrambe portano al profilo Champion. Il Mindset viene mostrato come lente aggiuntiva: non cambia il profilo principale, ma aiuta a capire se la persona e' pronta, cauta, scettica o propulsiva.</p>
+          </div>
+        </section>
+
+        <section id="profileView" class="view">
+          <div class="grid-2">
+            <div class="card">
+              <p class="kicker">Dati facoltativi</p>
+              <h2>Prima del test</h2>
+              <p>Puoi indicare nome, ruolo, team e una stima iniziale delle tue skill. Tutti i campi sono facoltativi: puoi iniziare anche lasciando tutto vuoto.</p>
+              <p class="muted">Le informazioni restano locali nella cache e nel localStorage del browser. Non vengono inviate automaticamente a server esterni. Servono solo a rendere piu' utile il report locale e l'eventuale export manuale.</p>
+              <p class="muted">Le skill dichiarate aiutano soprattutto a confrontare aspettative e risultati ottenuti: il report mostra lo scarto tra autopercezione iniziale e punteggio emerso dal test.</p>
+            </div>
+
+            <div class="card">
               <h2>Dati e autovalutazione iniziale</h2>
-              <p class="muted">I dati anagrafici sono facoltativi. Prima di iniziare puoi anche stimare, da 0 a 100, il tuo livello percepito: il report lo confronterà con ciò che emerge dal test.</p>
               <div class="form-row">
                 <div>
                   <label for="nameInput">Nome</label>
@@ -79,41 +113,37 @@
 
               <div class="self-assessment-box">
                 <h3>Quanto ti consideri competente oggi?</h3>
-                <p class="muted small">Inserisci una stima personale da 0 a 100. Puoi lasciare vuoto uno o più campi: in quel caso il relativo confronto non comparirà.</p>
+                <p class="muted small">Inserisci una stima personale da 0 a 100. Puoi lasciare vuoto uno o piu' campi: in quel caso il relativo confronto non comparira'.</p>
                 <div class="self-assessment-grid">
                   <div>
                     <label for="selfOverallInput">AI Skill</label>
-                    <input id="selfOverallInput" type="number" min="0" max="100" step="1" inputmode="numeric" placeholder="0–100" />
+                    <input id="selfOverallInput" type="number" min="0" max="100" step="1" inputmode="numeric" placeholder="0-100" />
                     <span class="field-note">Valutazione complessiva.</span>
                   </div>
                   <div>
                     <label for="selfLiteracyInput">Literacy</label>
-                    <input id="selfLiteracyInput" type="number" min="0" max="100" step="1" inputmode="numeric" placeholder="0–100" />
+                    <input id="selfLiteracyInput" type="number" min="0" max="100" step="1" inputmode="numeric" placeholder="0-100" />
                     <span class="field-note">Conoscenza e comprensione.</span>
                   </div>
                   <div>
                     <label for="selfFluencyInput">Fluency</label>
-                    <input id="selfFluencyInput" type="number" min="0" max="100" step="1" inputmode="numeric" placeholder="0–100" />
-                    <span class="field-note">Uso operativo dell’AI.</span>
+                    <input id="selfFluencyInput" type="number" min="0" max="100" step="1" inputmode="numeric" placeholder="0-100" />
+                    <span class="field-note">Uso operativo dell'AI.</span>
                   </div>
                   <div>
                     <label for="selfMindsetInput">Mindset</label>
-                    <input id="selfMindsetInput" type="number" min="0" max="100" step="1" inputmode="numeric" placeholder="0–100" />
+                    <input id="selfMindsetInput" type="number" min="0" max="100" step="1" inputmode="numeric" placeholder="0-100" />
                     <span class="field-note">Attitudine e apertura.</span>
                   </div>
                 </div>
               </div>
 
               <div class="actions">
-                <button class="btn-primary" id="startBtn">Inizia assessment</button>
+                <button class="btn-primary" id="startBtn">Inizia il test</button>
+                <button class="btn-secondary" id="profileBackBtn">Indietro</button>
                 <button class="btn-ghost" id="loadLastBtn">Mostra ultimo report</button>
               </div>
             </div>
-          </div>
-
-          <div class="card" style="margin-top: 18px;">
-            <h3>Come viene letto il risultato</h3>
-            <p>La segmentazione principale usa Literacy e Fluency. Un punteggio basso in entrambe porta al profilo Beginner; alta Fluency ma bassa Literacy porta al profilo Curious; alta Literacy ma bassa Fluency porta al profilo Expert; punteggi alti in entrambe portano al profilo Champion. Il Mindset viene mostrato come lente aggiuntiva: non cambia il profilo principale, ma aiuta a capire se la persona è pronta, cauta, scettica o propulsiva.</p>
           </div>
         </section>
 

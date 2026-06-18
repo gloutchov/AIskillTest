@@ -4,6 +4,8 @@ Questionario interattivo in italiano per valutare in modo pratico competenza, us
 
 L'assessment produce un profilo finale, una dashboard dei punteggi e suggerimenti formativi. E' pensato come strumento diagnostico interno e migliorabile, non come test psicometrico validato.
 
+Versione corrente dell'app: `1.2.0`.
+
 ## Nota sullo sviluppo
 
 Questo test e' stato realizzato in vibecoding, usando l'AI come supporto operativo per ideazione, sviluppo, revisione e affinamento dell'esperienza.
@@ -20,6 +22,8 @@ Questo test e' stato realizzato in vibecoding, usando l'AI come supporto operati
 ## Come usarlo
 
 Apri `ai_skill_test.html` in un browser moderno. Non servono build, dipendenze o server.
+
+La home descrive il test completo da 50 domande, mostra la distribuzione per tema e permette di aprire la bibliografia prima di iniziare. Il pulsante `Inizia` porta a uno step separato con dati e autovalutazione iniziale facoltativi; il test vero e proprio parte solo dal pulsante `Inizia il test`.
 
 Il test salva localmente nel browser lo storico degli ultimi report e permette di esportare i risultati in formato JSON o CSV.
 
@@ -42,7 +46,7 @@ Il punteggio composito usa questa ponderazione:
 
 ## Privacy e dati
 
-L'applicazione e' client-side. Le risposte restano nel browser dell'utente tramite `localStorage`, salvo esportazione manuale dei report.
+L'applicazione e' client-side. Dati facoltativi, risposte e report restano nel browser dell'utente tramite `localStorage`, salvo esportazione manuale dei report. Le skill dichiarate nello step iniziale servono al confronto tra aspettative e risultati ottenuti.
 
 Per raccolte strutturate in contesti aziendali, definire prima policy, base giuridica, consenso, tempi di conservazione, accessi e modalita' di analisi dei risultati.
 

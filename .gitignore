@@ -11,3 +11,6 @@ Thumbs.db
 *.log
 ai-skill-assessment-*.json
 ai-skill-assessment-*.csv
+
+# Local browser profiles used during validation
+.tmp-edge-profile/

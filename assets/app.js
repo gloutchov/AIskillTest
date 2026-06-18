@@ -155,16 +155,61 @@ function cloneQuestionData(value) {
       hintsVisible: {},
       meta: {},
       formId: null,
-      latestReport: null
+      latestReport: null,
+      bibliographyBackView: "introView"
     };
 
     const $ = (id) => document.getElementById(id);
 
     function showView(id) {
-      ["introView", "assessmentView", "dashboardView", "bibliographyView"].forEach(viewId => {
+      ["introView", "profileView", "assessmentView", "dashboardView", "bibliographyView"].forEach(viewId => {
         $(viewId).classList.toggle("active", viewId === id);
       });
       window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function openProfileStep() {
+      showView("profileView");
+    }
+
+    function showBibliography(backView = null) {
+      state.bibliographyBackView = backView || (state.latestReport ? "dashboardView" : "introView");
+      document.querySelectorAll("[data-bibliography-back]").forEach(button => {
+        button.textContent = state.bibliographyBackView === "dashboardView" ? "Torna ai risultati" : "Torna alla home";
+      });
+      showView("bibliographyView");
+    }
+
+    function closeBibliography() {
+      showView(state.bibliographyBackView || "introView");
+    }
+
+    function renderQuestionDistribution() {
+      const container = $("questionDistribution");
+      if (!container) return;
+      const sectionOrder = [
+        "Literacy",
+        "Fondamenti tecnici LLM",
+        "Fluency · Delegation",
+        "Fluency · Description",
+        "Fluency · Discernment",
+        "Fluency · Diligence",
+        "Mindset",
+        "Practical Lab"
+      ];
+      const counts = baseQuestions.reduce((acc, question) => {
+        acc[question.section] = (acc[question.section] || 0) + 1;
+        return acc;
+      }, {});
+      const rows = sectionOrder
+        .filter(section => counts[section])
+        .map(section => `<div class="topic-row"><span>${escapeHtml(section)}</span><strong>${counts[section]}</strong></div>`)
+        .join("");
+      const total = baseQuestions.length;
+      container.innerHTML = `
+        ${rows}
+        <div class="topic-row topic-total"><span>Totale</span><strong>${total}</strong></div>
+      `;
     }
 
     function showToast(message) {
@@ -190,7 +235,7 @@ function cloneQuestionData(value) {
         name: $("nameInput").value.trim(),
         role: $("roleInput").value.trim(),
         area: $("areaInput").value.trim(),
-        assessmentVersion: "1.1.0",
+        assessmentVersion: "1.2.0",
         formId: selectedForm,
         formVersion: FORM_VERSION,
         questionBankVersion: QUESTION_BANK_VERSION,
@@ -947,7 +992,7 @@ function cloneQuestionData(value) {
       $("exportJsonBtn").addEventListener("click", () => exportJson(state.latestReport));
       $("exportCsvBtn").addEventListener("click", () => exportCsv(state.latestReport));
       $("printBtn").addEventListener("click", () => window.print());
-      $("bibliographyBtn").addEventListener("click", () => showView("bibliographyView"));
+      $("bibliographyBtn").addEventListener("click", () => showBibliography("dashboardView"));
       $("clearHistoryBtn").addEventListener("click", () => {
         const ok = window.confirm("Svuotare lo storico locale salvato in questo browser?");
         if (!ok) return;
@@ -970,6 +1015,7 @@ function cloneQuestionData(value) {
       state.meta = {};
       state.formId = null;
       state.latestReport = null;
+      state.bibliographyBackView = "introView";
       $("progressFill").style.width = "0%";
       if (clearFields) {
         ["nameInput", "roleInput", "areaInput", "selfOverallInput", "selfLiteracyInput", "selfFluencyInput", "selfMindsetInput"].forEach(id => {
@@ -1107,11 +1153,15 @@ function cloneQuestionData(value) {
     }
 
     $("heroCount").textContent = baseQuestions.length;
+    renderQuestionDistribution();
+    $("introStartBtn").addEventListener("click", openProfileStep);
+    $("introBibliographyBtn").addEventListener("click", () => showBibliography("introView"));
+    $("profileBackBtn").addEventListener("click", () => showView("introView"));
     $("startBtn").addEventListener("click", startAssessment);
     $("loadLastBtn").addEventListener("click", loadLastReport);
     $("nextBtn").addEventListener("click", goNext);
     $("prevBtn").addEventListener("click", goPrev);
     $("finishBtn").addEventListener("click", finishAssessment);
     document.querySelectorAll("[data-bibliography-back]").forEach(button => {
-      button.addEventListener("click", () => showView("dashboardView"));
+      button.addEventListener("click", closeBibliography);
     });

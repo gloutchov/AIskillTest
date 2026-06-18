@@ -123,6 +123,7 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - dati facoltativi non bloccano l'avvio
   - i dati inseriti appaiono nel report/export
   - nessun dato lascia il browser
+- Stato: completata su `main`
 
 ## Milestone 3 - Avanzamento automatico sulle scelte singole
 
