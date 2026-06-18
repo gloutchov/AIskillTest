@@ -1,0 +1,208 @@
+# Piano di evoluzione
+
+Questo piano governa le prossime modifiche del progetto `AIskillTest`. Ogni milestone deve essere sviluppata su un branch dedicato, validata, poi committata, mergiata su `main`, pushata e taggata quando produce una nuova versione dell'app.
+
+Versione di partenza: `1.0.0`.
+
+## Regole di release
+
+- Modifica piccola: incremento `0.0.1`.
+- Modifica media: incremento `0.1.0`.
+- Modifica grossa: incremento `1.0.0`.
+- Ogni tag GitHub deve essere annotato nel formato `vX.Y.Z`.
+- Il tag va creato solo dopo merge su `main` e push del branch principale.
+- Se una milestone cambia solo documentazione e non il comportamento dell'app, non richiede tag salvo decisione esplicita.
+
+## Flusso operativo per ogni milestone
+
+1. Partire da `main` aggiornato e pulito.
+2. Creare un branch dedicato con nome descrittivo.
+3. Implementare una sola milestone per branch.
+4. Validare localmente.
+5. Far validare la modifica al maintainer.
+6. Solo dopo validazione, eseguire commit.
+7. Eseguire merge su `main`.
+8. Pushare `main`.
+9. Creare e pushare il tag se la milestone produce una nuova versione.
+10. Eliminare il branch locale e remoto.
+
+## Inventario attuale del test
+
+Ogni forma del test contiene 50 domande.
+
+| Area | Domande |
+| --- | ---: |
+| Literacy | 7 |
+| Fondamenti tecnici LLM | 13 |
+| Fluency - Delegation | 3 |
+| Fluency - Description | 4 |
+| Fluency - Discernment | 4 |
+| Fluency - Diligence | 3 |
+| Mindset | 9 |
+| Practical Lab | 7 |
+| Totale | 50 |
+
+Vista aggregata:
+
+| Macro-area | Domande |
+| --- | ---: |
+| Literacy inclusi fondamenti tecnici | 20 |
+| Fluency incluse le 4D e prove pratiche collegate | 21 |
+| Mindset incluse prove pratiche collegate | 10 |
+| Practical Lab trasversale | 7 |
+
+Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mindset. Per i test tematici bisognera' decidere se mostrarle dentro il tema misurato o tenerle come modulo separato.
+
+## Milestone 0 - Documentazione di governance
+
+- Branch: `plan/milestones-and-agents`
+- Tipo: documentazione
+- Versione target: nessun bump applicativo
+- Scope:
+  - aggiungere `PLAN.md`
+  - aggiungere `AGENTS.md`
+  - fissare regole di branch, validazione, merge, tag e versioning
+- Validazione:
+  - lettura del maintainer
+  - `git status --short --branch`
+- Stato: in lavorazione
+
+## Milestone 1 - Refactor file statici
+
+- Branch: `feature/static-file-refactor`
+- Tipo: modifica media
+- Versione target: `1.1.0`
+- Obiettivo:
+  - spezzare `ai_skill_test.html` in file piu' leggibili senza cambiare comportamento.
+- Scope consigliato:
+  - `index.html` o `ai_skill_test.html` come shell HTML principale
+  - `assets/styles.css` per gli stili
+  - `assets/app.js` per stato, navigazione, scoring ed export
+  - `assets/questions.js` per banca domande, forme e override
+  - eventuale `assets/bibliography.js` o markup dedicato se conviene
+- Vincoli:
+  - il sito deve restare statico e pubblicabile su GitHub Pages
+  - evitare bundler e dipendenze se non strettamente necessari
+  - preferire script classici caricabili anche da file locale; se si usano module script, documentare che serve server locale
+  - nessun cambio funzionale intenzionale in questa milestone
+- Validazione:
+  - apertura pagina principale
+  - avvio test
+  - completamento rapido di un percorso campione
+  - export JSON e CSV
+  - accesso alla bibliografia
+
+## Milestone 2 - Nuova pagina iniziale e step dati
+
+- Branch: `feature/landing-and-profile-flow`
+- Tipo: modifica media
+- Versione target: `1.2.0`
+- Obiettivo:
+  - separare la landing descrittiva dallo step di raccolta dati facoltativi.
+- Scope:
+  - home iniziale con descrizione del test
+  - riepilogo delle 50 domande e distribuzione per tema
+  - pulsante `Inizia`
+  - pulsante `Bibliografia`
+  - click su `Bibliografia` porta alla pagina bibliografia
+  - click su `Inizia` porta allo step dati
+  - step dati con nome, ruolo, team/area e autovalutazione skill
+  - nota chiara: le informazioni restano locali nella cache/localStorage del browser
+  - nota privacy: nessun invio automatico a server esterni
+  - spiegazione: le skill dichiarate servono a confrontare aspettative e risultati ottenuti
+  - campi tutti facoltativi
+  - pulsante finale per iniziare realmente il test
+- Decisione UX:
+  - versione e metadati restano visibili nella home/hero, non nel titolo del browser
+  - bibliografia resta disponibile anche dai risultati finali
+- Validazione:
+  - landing visibile al primo accesso
+  - bibliografia raggiungibile dalla landing
+  - ritorno dalla bibliografia funzionante
+  - dati facoltativi non bloccano l'avvio
+  - i dati inseriti appaiono nel report/export
+  - nessun dato lascia il browser
+
+## Milestone 3 - Avanzamento automatico sulle scelte singole
+
+- Branch: `feature/auto-advance-single-choice`
+- Tipo: modifica piccola
+- Versione target: `1.2.1`
+- Obiettivo:
+  - nelle domande a scelta singola, passare automaticamente alla domanda successiva dopo la risposta.
+- Scope:
+  - auto-advance per `choice`, `scenario`, `knowledge` e Likert, se rappresentati come scelta singola
+  - mantenere il pulsante `Indietro`
+  - evitare auto-advance per `multi`
+  - evitare auto-advance per `text`
+  - mantenere il pulsante `Avanti` dove necessario
+  - gestire ultima domanda senza salto improprio
+- Dettagli UX:
+  - usare un delay breve solo se serve a far percepire la selezione
+  - se l'utente torna indietro e cambia risposta, il comportamento deve restare prevedibile
+- Validazione:
+  - scelta singola avanza da sola
+  - scelta multipla richiede `Avanti`
+  - testo/prompt richiede `Avanti`
+  - `Indietro` conserva la risposta precedente
+  - completamento test ancora possibile
+
+## Milestone 4 - Modalita' di test
+
+- Branch: `feature/test-modes`
+- Tipo: modifica grossa
+- Versione target: `2.0.0`
+- Obiettivo:
+  - offrire un test completo e test tematici piu' brevi.
+- Modalita' previste:
+  - test completo da 50 domande
+  - Literacy
+  - Fondamenti tecnici LLM
+  - Fluency - Delegation
+  - Fluency - Description
+  - Fluency - Discernment
+  - Fluency - Diligence
+  - Mindset
+  - Practical Lab
+- Decisioni da prendere prima dell'implementazione:
+  - se i test tematici devono includere le prove pratiche collegate al tema o solo le domande della sezione
+  - se il risultato dei test brevi deve mostrare un profilo globale oppure solo un profilo tematico
+  - se lo storico deve distinguere chiaramente `complete` e `topic`
+  - se mantenere rotazione A/B/C anche sui test tematici
+- Scope:
+  - selettore di modalita' nella landing o nello step dati
+  - conteggio domande aggiornato in base alla modalita'
+  - scoring coerente anche quando alcune dimensioni non sono presenti
+  - dashboard adattata ai test brevi
+  - export JSON/CSV con `testMode`
+  - storico report con modalita' visibile
+- Validazione:
+  - test completo resta a 50 domande
+  - ogni test tematico contiene solo le domande attese
+  - risultati non mostrano aree assenti come punteggi fuorvianti
+  - export include modalita' e versione
+  - bibliografia resta raggiungibile
+
+## Milestone 5 - Revisione README e documentazione pubblica
+
+- Branch: `feature/readme-test-modes`
+- Tipo: modifica piccola
+- Versione target: `2.0.1`
+- Obiettivo:
+  - aggiornare README e documentazione dopo l'introduzione delle modalita' di test.
+- Scope:
+  - descrivere test completo e test tematici
+  - indicare privacy/localStorage
+  - aggiornare distribuzione domande
+  - aggiornare istruzioni GitHub Pages
+  - allineare riferimenti a versione e tag
+- Validazione:
+  - README coerente con UI e comportamento reale
+  - link principali funzionanti
+
+## Backlog opzionale
+
+- Aggiungere una checklist manuale di QA in `docs/QA.md`.
+- Aggiungere un piccolo smoke test Playwright se il progetto passa a una struttura servita da dev server.
+- Estrarre le fonti bibliografiche in un formato dati riutilizzabile.
+- Aggiungere una pagina changelog.
