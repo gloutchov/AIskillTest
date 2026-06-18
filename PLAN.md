@@ -148,6 +148,7 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - testo/prompt richiede `Avanti`
   - `Indietro` conserva la risposta precedente
   - completamento test ancora possibile
+- Stato: completata su `main`
 
 ## Milestone 4 - Modalita' di test
 

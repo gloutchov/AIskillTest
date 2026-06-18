@@ -156,8 +156,11 @@ function cloneQuestionData(value) {
       meta: {},
       formId: null,
       latestReport: null,
-      bibliographyBackView: "introView"
+      bibliographyBackView: "introView",
+      autoAdvanceTimer: null
     };
+
+    const AUTO_ADVANCE_DELAY_MS = 280;
 
     const $ = (id) => document.getElementById(id);
 
@@ -235,7 +238,7 @@ function cloneQuestionData(value) {
         name: $("nameInput").value.trim(),
         role: $("roleInput").value.trim(),
         area: $("areaInput").value.trim(),
-        assessmentVersion: "1.2.0",
+        assessmentVersion: "1.2.1",
         formId: selectedForm,
         formVersion: FORM_VERSION,
         questionBankVersion: QUESTION_BANK_VERSION,
@@ -251,6 +254,7 @@ function cloneQuestionData(value) {
       state.answers = {};
       state.optionOrders = {};
       state.hintsVisible = {};
+      clearAutoAdvance();
       showView("assessmentView");
       renderQuestion();
     }
@@ -362,14 +366,41 @@ function cloneQuestionData(value) {
 
         Array.from(document.querySelectorAll(`input[name="${q.id}"]`)).forEach(input => {
           input.addEventListener("change", (event) => {
-            state.answers[q.id] = Number(event.target.value);
+            const selectedValue = Number(event.target.value);
+            state.answers[q.id] = selectedValue;
             renderQuestion();
+            scheduleAutoAdvance(q, state.index, selectedValue);
           });
         });
         bindHintToggle(q);
       }
 
       updateNavigationState(q);
+    }
+
+    function isAutoAdvanceQuestion(question) {
+      return question.type !== "multi" && question.type !== "text";
+    }
+
+    function clearAutoAdvance() {
+      if (!state.autoAdvanceTimer) return;
+      window.clearTimeout(state.autoAdvanceTimer);
+      state.autoAdvanceTimer = null;
+    }
+
+    function scheduleAutoAdvance(question, expectedIndex, expectedValue) {
+      clearAutoAdvance();
+      if (!isAutoAdvanceQuestion(question)) return;
+      if (expectedIndex >= questions.length - 1) return;
+      state.autoAdvanceTimer = window.setTimeout(() => {
+        state.autoAdvanceTimer = null;
+        const currentQuestion = questions[state.index];
+        const sameQuestion = currentQuestion && currentQuestion.id === question.id && state.index === expectedIndex;
+        const sameAnswer = String(state.answers[question.id]) === String(expectedValue);
+        if (sameQuestion && sameAnswer && isAnswered(question)) {
+          goNext();
+        }
+      }, AUTO_ADVANCE_DELAY_MS);
     }
 
     function optionHintToggle(question, displayedOptions, visible) {
@@ -409,6 +440,7 @@ function cloneQuestionData(value) {
     }
 
     function goNext() {
+      clearAutoAdvance();
       const q = questions[state.index];
       if (!isAnswered(q)) {
         showToast(q.type === "text" ? "Inserisci una risposta prima di proseguire." : "Rispondi alla domanda prima di proseguire.");
@@ -421,6 +453,7 @@ function cloneQuestionData(value) {
     }
 
     function goPrev() {
+      clearAutoAdvance();
       if (state.index > 0) {
         state.index -= 1;
         renderQuestion();
@@ -1008,6 +1041,7 @@ function cloneQuestionData(value) {
     }
 
     function resetToInitialPage(clearFields = false) {
+      clearAutoAdvance();
       state.index = 0;
       state.answers = {};
       state.optionOrders = {};
