@@ -4,6 +4,10 @@ Questionario interattivo in italiano per valutare in modo pratico competenza, us
 
 L'assessment produce un profilo finale, una dashboard dei punteggi e suggerimenti formativi. E' pensato come strumento diagnostico interno e migliorabile, non come test psicometrico validato.
 
+## Nota sullo sviluppo
+
+Questo test e' stato realizzato in vibecoding, usando l'AI come supporto operativo per ideazione, sviluppo, revisione e affinamento dell'esperienza.
+
 ## Contenuto del repository
 
 - `ai_skill_test.html`: applicazione completa in un singolo file HTML, CSS e JavaScript.
