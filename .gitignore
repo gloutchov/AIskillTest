@@ -1,0 +1,13 @@
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Editor and IDE files
+.idea/
+.vscode/
+*.swp
+
+# Logs and local exports
+*.log
+ai-skill-assessment-*.json
+ai-skill-assessment-*.csv
