@@ -90,6 +90,31 @@
       line-height: 1;
     }
 
+    .language-switcher {
+      display: inline-flex;
+      gap: 4px;
+      padding: 3px;
+      border: 1px solid rgba(79, 70, 229, 0.18);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .language-btn {
+      min-width: 34px;
+      min-height: 24px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: transparent;
+      color: #475569;
+      font-size: 12px;
+      box-shadow: none;
+    }
+
+    .language-btn[aria-pressed="true"] {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
     h1 {
       margin: 0;
       line-height: 0.98;

@@ -22,7 +22,11 @@
         <div>
           <div class="hero-meta">
             <p class="kicker">AI Skill & Adoption Assessment</p>
-            <span class="version-badge">Versione 2.0.2</span>
+            <span class="version-badge" id="versionBadge">Versione 2.1.0</span>
+            <div class="language-switcher" aria-label="Lingua">
+              <button type="button" class="language-btn" data-language="it" aria-pressed="false">IT</button>
+              <button type="button" class="language-btn" data-language="en" aria-pressed="false">EN</button>
+            </div>
           </div>
           <h1>Misura pratica della competenza AI</h1>
           <p class="subtitle">Un questionario interattivo per stimare conoscenza, uso operativo, giudizio critico e attitudine verso la GenAI. Il risultato finale produce un profilo, una dashboard e suggerimenti formativi.</p>
@@ -353,6 +357,7 @@
   <div class="toast" id="toast">Operazione completata</div>
 
   <script src="assets/questions.js"></script>
+  <script src="assets/i18n.js"></script>
   <script src="assets/app.js"></script>
 </body>
 </html>

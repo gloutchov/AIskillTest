@@ -251,6 +251,39 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - repository pulito dopo commit e merge
 - Stato: completata su `main`
 
+## Milestone 8 - Localizzazione italiano/inglese
+
+- Branch: `feature/english-localization`
+- Tipo: modifica media
+- Versione target: `2.1.0`
+- Obiettivo:
+  - aggiungere la variante inglese del test e una scelta lingua manuale, mantenendo il comportamento statico e locale dell'app.
+- Scope:
+  - selettore `IT` / `EN` nella pagina di avvio
+  - default lingua da impostazioni browser: italiano se il browser e' in italiano, inglese per inglese o qualunque altra lingua
+  - salvataggio della preferenza manuale nel `localStorage`
+  - testi principali di landing, step dati, test, dashboard, bibliografia ed export localizzati
+  - traduzione inglese della banca domande base
+  - forma `EN` per gli assessment in inglese
+  - rotazione A/B/C preservata per gli assessment in italiano
+  - metadati lingua e origine scelta lingua negli export
+  - versione app e documentazione aggiornate
+- Vincoli:
+  - nessuna chiamata di rete
+  - nessun tracciamento o invio automatico dei risultati
+  - cambio lingua da fare prima dell'avvio del test, per evitare report con domande e risposte miste
+- Validazione:
+  - browser italiano apre di default la versione italiana
+  - browser inglese o non italiano apre di default la versione inglese
+  - selettore manuale `IT` / `EN` cambia lingua e mantiene la preferenza localmente
+  - test italiano continua a usare forme A/B/C
+  - test inglese usa forma `EN` e domande tradotte
+  - percorsi tematici restano a 10 domande
+  - test completo resta a 50 domande
+  - dashboard ed export includono lingua, origine lingua e versione `2.1.0`
+  - documentazione aggiornata
+- Stato: in validazione
+
 ## Backlog opzionale
 
 - Aggiungere una checklist manuale di QA in `docs/QA.md`.
