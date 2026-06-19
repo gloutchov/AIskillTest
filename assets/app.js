@@ -82,13 +82,25 @@ function cloneQuestionData(value) {
       return selected;
     }
 
-    const APP_VERSION = "2.2.0";
+    const APP_VERSION = "2.3.0";
     const DEFAULT_TEST_MODE_ID = "complete";
     const COMPLETE_TEST_COUNT = 50;
     const TOPIC_TEST_COUNT = 10;
+    const COMPLETE_QUESTION_IDS = [
+      "L1", "L2", "L3", "L4", "L5", "L6", "L7",
+      "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "TR_CITE",
+      "AG1", "AG2", "AG3", "AG4",
+      "F_DE_1", "F_DE_2", "F_DE_3",
+      "F_DS_1", "F_DS_2", "F_DS_3", "TR_PROMPT",
+      "F_DI_1", "F_DI_2", "F_DI_3", "TR_SURE",
+      "F_DG_1", "F_DG_2", "F_DG_3",
+      "M1", "M2", "M3", "M4", "M5", "M6", "M7",
+      "P_L_1", "P_DE_1", "P_DS_1", "P_DS_2", "P_DI_1", "P_DG_1", "P_M_1"
+    ];
     const SECTION_ORDER = [
       "Literacy",
       "Fondamenti tecnici LLM",
+      "AI Agents",
       "Fluency · Delegation",
       "Fluency · Description",
       "Fluency · Discernment",
@@ -105,7 +117,7 @@ function cloneQuestionData(value) {
         type: "complete",
         section: null,
         questionLimit: COMPLETE_TEST_COUNT,
-        description: "Tutte le 50 domande: Literacy, fondamenti tecnici, Fluency 4D, Mindset e prove pratiche.",
+        description: "Tutte le 50 domande: Literacy, fondamenti tecnici, AI Agents, Fluency 4D, Mindset e prove pratiche.",
         outputNote: "Profilo completo con indice AI Skill, quadrante Literacy x Fluency e radar competenze."
       },
       {
@@ -127,6 +139,16 @@ function cloneQuestionData(value) {
         questionLimit: TOPIC_TEST_COUNT,
         description: "Token, contesto, inferenza, reti neurali, Transformer, allucinazioni, RAG, embedding e citazioni.",
         outputNote: "Report tematico sui fondamenti tecnici, senza profilo globale."
+      },
+      {
+        id: "agents",
+        label: "AI Agents",
+        shortLabel: "Agents",
+        type: "topic",
+        section: "AI Agents",
+        questionLimit: TOPIC_TEST_COUNT,
+        description: "Agenti AI, strumenti, permessi, memoria, controllo umano, log e workflow operativo.",
+        outputNote: "Report tematico sugli AI Agents, senza profilo globale."
       },
       {
         id: "delegation",
@@ -203,6 +225,11 @@ function cloneQuestionData(value) {
         title: "Fondamenti tecnici LLM",
         text: "Verifica la comprensione effettiva di token, generazione, addestramento, contesto, reti neurali, Transformer, allucinazioni, RAG, embedding, citazioni e storia dell’AI.",
         items: ["Token e contesto", "Training e inferenza", "Reti neurali e Transformer", "Allucinazioni, RAG ed embedding"]
+      },
+      "AI Agents": {
+        title: "AI Agents",
+        text: "Misura la comprensione di agenti AI, strumenti, permessi, memoria, controllo umano e criteri di arresto nei workflow operativi.",
+        items: ["Agente vs chatbot", "Tool e permessi", "Human-in-the-loop", "Log, stato e rollback"]
       },
       "Fluency · Delegation": {
         title: "Delegation",
@@ -544,7 +571,6 @@ function cloneQuestionData(value) {
       autoAdvanceTimer: null,
       carouselTimer: null,
       carouselPaused: false,
-      carouselSuspended: false,
       language: readStoredLanguage() || browserDefaultLanguage()
     };
 
@@ -608,6 +634,11 @@ function cloneQuestionData(value) {
           title: "LLM technical foundations",
           text: "Checks practical understanding of tokens, generation, training, context, neural networks, Transformers, hallucinations, RAG, embeddings, citations, and AI history.",
           items: ["Tokens and context", "Training and inference", "Neural networks and Transformers", "Hallucinations, RAG, and embeddings"]
+        },
+        "AI Agents": {
+          title: "AI Agents",
+          text: "Measures understanding of AI agents, tools, permissions, memory, human control, and stop criteria in operational workflows.",
+          items: ["Agent vs chatbot", "Tools and permissions", "Human-in-the-loop", "Logs, state, and rollback"]
         },
         "Fluency · Delegation": {
           title: "Delegation",
@@ -814,6 +845,7 @@ function cloneQuestionData(value) {
         startTest: "Start the test",
         back: "Back",
         next: "Next",
+        interrupt: "Interrupt test",
         finish: "Calculate dashboard",
         showHints: "Show hints",
         hideHints: "Hide hints",
@@ -858,6 +890,7 @@ function cloneQuestionData(value) {
         startTest: "Inizia il test",
         back: "Indietro",
         next: "Avanti",
+        interrupt: "Interrompi il test",
         finish: "Calcola dashboard",
         showHints: "Mostra suggerimenti",
         hideHints: "Nascondi suggerimenti",
@@ -903,6 +936,7 @@ function cloneQuestionData(value) {
         ["#profileBackBtn", staticText.back],
         ["#prevBtn", staticText.back],
         ["#nextBtn", staticText.next],
+        ["#interruptBtn", staticText.interrupt],
         ["#finishBtn", staticText.finish],
         ["#loadLastBtn", staticText.lastReport]
       ];
@@ -953,7 +987,10 @@ function cloneQuestionData(value) {
     }
 
     function modePoolQuestions(sourceQuestions, mode) {
-      if (!mode || mode.id === DEFAULT_TEST_MODE_ID) return sourceQuestions.slice(0, COMPLETE_TEST_COUNT);
+      if (!mode || mode.id === DEFAULT_TEST_MODE_ID) {
+        const byId = new Map(sourceQuestions.map(question => [question.sourceId || question.id, question]));
+        return COMPLETE_QUESTION_IDS.map(id => byId.get(id)).filter(Boolean).slice(0, COMPLETE_TEST_COUNT);
+      }
       return sourceQuestions.filter(question => question.section === mode.section);
     }
 
@@ -1012,8 +1049,8 @@ function cloneQuestionData(value) {
     function modeTopics(mode) {
       if (mode.id === DEFAULT_TEST_MODE_ID) {
         return isEnglish()
-          ? ["Literacy", "LLM foundations", "Fluency 4D", "Mindset", "Practical Lab"]
-          : ["Literacy", "Fondamenti LLM", "Fluency 4D", "Mindset", "Practical Lab"];
+          ? ["Literacy", "LLM foundations", "AI Agents", "Fluency 4D", "Mindset", "Practical Lab"]
+          : ["Literacy", "Fondamenti LLM", "AI Agents", "Fluency 4D", "Mindset", "Practical Lab"];
       }
       const guide = localizedSectionGuide(mode.section);
       return guide ? guide.items : [sectionLabel(mode.section) || localizedMode(mode).label];
@@ -1099,7 +1136,7 @@ function cloneQuestionData(value) {
     }
 
     function shouldRunModeCarousel() {
-      return !state.carouselPaused && !state.carouselSuspended && $("introView").classList.contains("active");
+      return !state.carouselPaused && $("introView").classList.contains("active");
     }
 
     function restartModeCarouselTimer() {
@@ -1118,16 +1155,6 @@ function cloneQuestionData(value) {
     function toggleModeCarouselAutoplay() {
       state.carouselPaused = !state.carouselPaused;
       updateModeAutoplayButton();
-      restartModeCarouselTimer();
-    }
-
-    function suspendModeCarousel() {
-      state.carouselSuspended = true;
-      clearModeCarouselTimer();
-    }
-
-    function resumeModeCarousel() {
-      state.carouselSuspended = false;
       restartModeCarouselTimer();
     }
 
@@ -1156,13 +1183,6 @@ function cloneQuestionData(value) {
     function bindModeCarouselAutoplay() {
       if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
         state.carouselPaused = true;
-      }
-      const carousel = document.querySelector(".assessment-carousel");
-      if (carousel) {
-        carousel.addEventListener("mouseenter", suspendModeCarousel);
-        carousel.addEventListener("mouseleave", resumeModeCarousel);
-        carousel.addEventListener("focusin", suspendModeCarousel);
-        carousel.addEventListener("focusout", resumeModeCarousel);
       }
       const autoplayButton = $("modeAutoplayBtn");
       if (autoplayButton) {
@@ -1431,6 +1451,7 @@ function cloneQuestionData(value) {
       $("answeredText").textContent = isEnglish() ? `${answeredCount()} answers` : `${answeredCount()} risposte`;
       $("prevBtn").textContent = isEnglish() ? "Back" : "Indietro";
       $("nextBtn").textContent = isEnglish() ? "Next" : "Avanti";
+      $("interruptBtn").textContent = isEnglish() ? "Interrupt test" : "Interrompi il test";
       $("finishBtn").textContent = isEnglish() ? "Calculate dashboard" : "Calcola dashboard";
       $("prevBtn").disabled = state.index === 0;
       $("nextBtn").style.display = state.index === total - 1 ? "none" : "inline-flex";
@@ -1471,6 +1492,16 @@ function cloneQuestionData(value) {
         state.index -= 1;
         renderQuestion();
       }
+    }
+
+    function interruptAssessment() {
+      clearAutoAdvance();
+      const ok = window.confirm(isEnglish()
+        ? "Interrupt the current test and return to the home page? Your answers for this session will be discarded."
+        : "Interrompere il test corrente e tornare alla pagina principale? Le risposte di questa sessione verranno eliminate.");
+      if (!ok) return;
+      resetToInitialPage(false);
+      showToast(isEnglish() ? "Test interrupted." : "Test interrotto.");
     }
 
     function answerScore(question, rawAnswer) {
@@ -1583,6 +1614,7 @@ function cloneQuestionData(value) {
         literacy: [], mindset: [], delegation: [], description: [], discernment: [], diligence: []
       };
       const typeBuckets = { likert: [], scenario: [], practical: [], behavioral: [], technical: [] };
+      const sectionBuckets = { agents: [] };
       const answeredDetails = [];
       const practicalTypes = ["multi", "text", "choice"];
 
@@ -1595,6 +1627,7 @@ function cloneQuestionData(value) {
         const typeKey = q.type === "knowledge" ? "technical" : (practicalTypes.includes(q.type) ? "practical" : q.type);
         if (!typeBuckets[typeKey]) typeBuckets[typeKey] = [];
         typeBuckets[typeKey].push(score);
+        if (q.section === "AI Agents") sectionBuckets.agents.push(score);
         if (q.type !== "likert" && q.type !== "knowledge") typeBuckets.behavioral.push(score);
 
         let answer = "";
@@ -1644,6 +1677,7 @@ function cloneQuestionData(value) {
       score.execution = pctOrNull(typeBuckets.practical);
       score.behavioral = pctOrNull(typeBuckets.behavioral);
       score.technical = pctOrNull(typeBuckets.technical);
+      score.agents = pctOrNull(sectionBuckets.agents);
 
       const mode = getModeById(state.meta && state.meta.testMode && state.meta.testMode.id);
       const isCompleteMode = mode.id === DEFAULT_TEST_MODE_ID;
@@ -1719,6 +1753,7 @@ function cloneQuestionData(value) {
       const dims = (isEnglish() ? [
         ["Literacy", score.literacy, "Strengthen foundations, limits, sources, data, privacy, and the difference between plausible and verified output."],
         ["Technical foundations", score.technical, "Consolidate tokens, autoregressive generation, training, inference, context, neural networks, Transformers, hallucinations, RAG, and embeddings."],
+        ["AI Agents", score.agents, "Clarify goals, tools, permissions, human approvals, logs, memory, stop criteria, and rollback paths."],
         ["Delegation", score.delegation, "Map which parts of work are delegable, which require human control, and which should not be delegated."],
         ["Description", score.description, "Use structured briefs with context, constraints, examples, expected format, and quality criteria."],
         ["Discernment", score.discernment, "Introduce evaluation checklists, source checks, alternative comparison, and risk-proportionate review."],
@@ -1727,6 +1762,7 @@ function cloneQuestionData(value) {
       ] : [
         ["Literacy", score.literacy, "Rafforzare fondamenti, limiti, fonti, dati, privacy e differenza tra output plausibile e verificato."],
         ["Fondamenti tecnici", score.technical, "Consolidare token, generazione autoregressiva, addestramento, inferenza, contesto, reti neurali, Transformer, allucinazioni, RAG ed embedding."],
+        ["AI Agents", score.agents, "Chiarire obiettivi, strumenti, permessi, approvazioni umane, log, memoria, criteri di stop e rollback."],
         ["Delegation", score.delegation, "Mappare quali parti del lavoro sono delegabili, quali richiedono controllo umano e quali non vanno delegate."],
         ["Description", score.description, "Usare brief strutturati con contesto, vincoli, esempi, formato atteso e criteri di qualità."],
         ["Discernment", score.discernment, "Introdurre checklist di valutazione, controllo fonti, confronto alternative e revisione proporzionata al rischio."],
@@ -1995,6 +2031,7 @@ function cloneQuestionData(value) {
             : (isEnglish() ? "Average score calculated only on the questions in the selected mode." : "Punteggio medio calcolato solo sulle domande della modalita' selezionata.")
         ],
         ["Literacy", score.literacy, isEnglish() ? "Understanding of functioning, limits, data, sources, and privacy." : "Comprensione di funzionamento, limiti, dati, fonti e privacy."],
+        ["AI Agents", score.agents, isEnglish() ? "Understanding of agent workflows, tools, permissions, logs, and human control." : "Comprensione di workflow agentici, strumenti, permessi, log e controllo umano."],
         ["Fluency", score.fluency, isEnglish() ? "Average operational competence across the 4D present in the path." : "Competenza operativa media sulle 4D presenti nel percorso."],
         ["Mindset", score.mindset, isEnglish() ? "Attitude, calibrated trust, and openness to experimentation." : "Attitudine, fiducia calibrata e apertura alla sperimentazione."],
         ["Delegation", score.delegation, isEnglish() ? "Choice of delegable tasks and human responsibility." : "Scelta dei task delegabili e responsabilita' umana."],
@@ -2023,6 +2060,7 @@ function cloneQuestionData(value) {
       const rows = [
         ["Literacy", score.literacy],
         [isEnglish() ? "Technical foundations" : "Fondamenti tecnici", score.technical],
+        ["AI Agents", score.agents],
         ["Delegation", score.delegation],
         ["Description", score.description],
         ["Discernment", score.discernment],
@@ -2478,6 +2516,7 @@ function cloneQuestionData(value) {
     $("loadLastBtn").addEventListener("click", loadLastReport);
     $("nextBtn").addEventListener("click", goNext);
     $("prevBtn").addEventListener("click", goPrev);
+    $("interruptBtn").addEventListener("click", interruptAssessment);
     $("finishBtn").addEventListener("click", finishAssessment);
     document.querySelectorAll("[data-bibliography-back]").forEach(button => {
       button.addEventListener("click", closeBibliography);

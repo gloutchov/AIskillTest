@@ -10,6 +10,7 @@ const AI_SKILL_I18N = {
     sectionLabels: {
       "Literacy": "Literacy",
       "Fondamenti tecnici LLM": "LLM technical foundations",
+      "AI Agents": "AI Agents",
       "Fluency · Delegation": "Fluency · Delegation",
       "Fluency · Description": "Fluency · Description",
       "Fluency · Discernment": "Fluency · Discernment",
@@ -28,7 +29,7 @@ const AI_SKILL_I18N = {
       complete: {
         label: "Full test",
         shortLabel: "Full",
-        description: "All 50 questions: Literacy, technical foundations, Fluency 4D, Mindset, and practical tasks.",
+        description: "All 50 questions: Literacy, technical foundations, AI Agents, Fluency 4D, Mindset, and practical tasks.",
         outputNote: "Complete profile with AI Skill index, Literacy x Fluency quadrant, and competency radar."
       },
       literacy: {
@@ -48,6 +49,12 @@ const AI_SKILL_I18N = {
         shortLabel: "Delegation",
         description: "Choosing delegable tasks, decomposing work, and preserving human responsibility.",
         outputNote: "Thematic Delegation report, without a global profile."
+      },
+      agents: {
+        label: "AI Agents",
+        shortLabel: "Agents",
+        description: "AI agents, tools, permissions, memory, human control, logs, and operational workflows.",
+        outputNote: "Thematic report on AI Agents, without a global profile."
       },
       description: {
         label: "Fluency - Description",
@@ -82,6 +89,47 @@ const AI_SKILL_I18N = {
     },
     formOverrides: {
       B: {
+        AG1: {
+          text: "I recognize when a flow only needs chat, when automation is enough, and when it needs an agent with tools, state, and control criteria.",
+          hint: "Assess whether you distinguish text response, information retrieval, and governed action."
+        },
+        AG2: {
+          text: "An agent must complete a task with multiple steps and possible exceptions. What makes it different from a single prompt?",
+          hint: "Choose the characteristic most tied to operational behavior.",
+          options: [
+            ["It produces more creative text", "Creativity does not define an agent."],
+            ["It maintains state, uses tools, and moves toward a goal", "An agentic workflow combines instructions, context, tools, and progress rules."],
+            ["It does not need instructions", "More autonomy requires clearer instructions and limits."],
+            ["It always knows updated information", "Freshness depends on available tools and sources."]
+          ],
+          feedback: "An agent is useful when it must orchestrate steps and tools under explicit constraints, not when you only need a longer answer."
+        },
+        AG3: {
+          text: "You want to introduce an agent that triages supplier requests and proposes operational replies. What is the strongest first step?",
+          hint: "Assess delegability, data, and responsibility.",
+          options: [
+            ["Let it reply directly to suppliers", "External impact is transferred without control."],
+            ["Write a very detailed prompt", "The prompt is not enough if tools, logs, and limits are missing."],
+            ["Use it only on the simplest requests", "This reduces risk but does not define the operating model."],
+            ["Map request types, data, systems, and excluded cases", "This builds the perimeter before autonomy."],
+            ["Define permissions, approvals, metrics, logs, and fallback", "This establishes progressive autonomy and human control."]
+          ],
+          feedback: "Agent design starts from scope, tools, authorization, stop criteria, and responsibility."
+        },
+        AG4: {
+          text: "You want to connect an agent to invoices and an ERP system to propose master-data updates. Which constraints do you impose?",
+          hint: "Select controls on access, data, and changes.",
+          options: [
+            ["Read-only access where possible", "This reduces the impact of errors."],
+            ["Human approval before writing to the ERP", "Changes to core systems remain controlled."],
+            ["Logs of documents read, proposed fields, and rationale", "This makes behavior reconstructable."],
+            ["Blocking rules for ambiguous or inconsistent data", "This avoids updates on unreliable cases."],
+            ["Testing in an environment or controlled sample", "This lets you observe errors before production."],
+            ["Admin permissions for simplicity", "This unnecessarily increases operational risk."],
+            ["Automatic updates without logs", "This removes traceability and control."]
+          ],
+          feedback: "An agent connected to management systems needs least privilege, approvals, logs, stop conditions, and controlled testing."
+        },
         P_DS_1: {
           text: "Write the prompt you would use to ask AI to design a data-analysis dashboard from a CSV export with undocumented fields and some missing rows. You do not want it to invent KPIs, values, or interpretations.",
           hint: "Write the prompt you would actually use to get a controllable dashboard.",
@@ -122,6 +170,47 @@ const AI_SKILL_I18N = {
         }
       },
       C: {
+        AG1: {
+          text: "I can distinguish an assistant that answers, a RAG system that retrieves sources, and an agent that can choose steps, use tools, and maintain state.",
+          hint: "Consider architecture, autonomy, and control, not the commercial name of the tool."
+        },
+        AG2: {
+          text: "Which description best represents an agentic workflow?",
+          hint: "Choose the most complete option operationally.",
+          options: [
+            ["A chat with a more assertive tone", "Tone does not change the nature of the system."],
+            ["A cycle of planning, tool use, observation, and control", "The agent progresses using tools, state, and defined criteria."],
+            ["A model that is always connected to the web", "Connection to external sources is only one possible tool."],
+            ["A system that always decides without people", "Agents can and often should include human approvals."]
+          ],
+          feedback: "An agentic workflow is not a more powerful chat: it is a governed process connecting model, tools, state, and supervision."
+        },
+        AG3: {
+          text: "An agent should prepare project status reports and open tasks when it detects blockers. Where do you start?",
+          hint: "Assess data, actions, and approval points.",
+          options: [
+            ["Ask it for complete daily reports", "You produce output but do not govern actions and sources."],
+            ["Allow it to create tasks freely", "It opens operational actions without criteria."],
+            ["Limit it to less critical projects", "This reduces impact but remains weakly designed."],
+            ["Define sources, blocker signals, and reviewers", "This connects inputs, criteria, and human control."],
+            ["Design a workflow with thresholds, drafts, approvals, logs, and rollback", "This makes autonomy progressive and verifiable."]
+          ],
+          feedback: "Agents that open tasks or modify workflows need thresholds, approvals, observability, and recovery paths."
+        },
+        AG4: {
+          text: "You want to use an agent to read HR tickets and propose updates to the internal knowledge base. Which controls do you impose?",
+          hint: "Select measures that protect data, responsibility, and quality.",
+          options: [
+            ["Minimization and masking of personal data", "This reduces exposure of sensitive content."],
+            ["Proposals only, with approved publication", "The agent does not change official content by itself."],
+            ["A record of sources, tickets, and suggested changes", "This makes the proposal verifiable."],
+            ["Escalation for personal or disciplinary cases", "Sensitive cases remain outside automation."],
+            ["Periodic checking of errors and bias", "This measures quality and impact over time."],
+            ["Full access to personal files", "This exposes data that is not needed for the task."],
+            ["Automatic publication of changes", "This turns suggestions into official content without review."]
+          ],
+          feedback: "An agent on HR data requires minimization, approval, traceability, escalation, and effect monitoring."
+        },
         P_DS_1: {
           text: "Write the prompt you would use to create a draft decision document from a brief, scattered notes, and partial attachments. You want to distinguish facts, assumptions, decisions already made, and points to confirm.",
           hint: "Write the prompt you would actually use to get a document that can be reviewed.",
@@ -387,6 +476,175 @@ Object.assign(AI_SKILL_I18N.en.questions, {
       ["Bibliographic precision proves the model consulted the source", "The model can generate coherent details without retrieving or verifying the document."]
     ],
     feedback: "A complete citation is not proof of existence or relevance. Open the source and verify identity, content, date, and match with the claim."
+  }
+});
+
+Object.assign(AI_SKILL_I18N.en.questions, {
+  AG1: {
+    text: "I distinguish between a chatbot, traditional automation, RAG, and an AI agent that can plan steps and use tools.",
+    hint: "What matters is understanding when AI answers, when it retrieves information, and when it can execute actions."
+  },
+  AG2: {
+    text: "Which characteristic best distinguishes an AI agent from a normal chat with an LLM?",
+    hint: "Choose the most operational description.",
+    options: [
+      ["It always responds with longer text", "Output length does not define an agent."],
+      ["It can use tools and manage steps toward a goal", "An agent combines model, instructions, state, tools, and progress criteria."],
+      ["It always has access to the whole web", "Access to tools or sources depends on configuration."],
+      ["It is necessarily autonomous without supervision", "Many agents require human approvals and tight limits."]
+    ],
+    feedback: "An agent is not just a text response: it is a system that can orchestrate steps, tools, and state under defined constraints."
+  },
+  AG3: {
+    text: "A team proposes an agent to automatically manage complex customer requests. What is the first design check?",
+    hint: "Assess whether the task is truly delegable to an agent.",
+    options: [
+      ["Activate it immediately on real cases", "Scope and risk definition are skipped."],
+      ["Give it a very detailed prompt", "The prompt helps, but it is not enough to govern actions and data."],
+      ["Start only with the most frequent cases", "This reduces complexity, but does not clarify limits and responsibilities."],
+      ["Map tasks, data, tools, and excluded cases", "This creates a controllable basis for deciding the level of automation."],
+      ["Define scope, approvals, metrics, logs, and fallback", "This establishes what the agent can do, when it must stop, and when it must escalate."]
+    ],
+    feedback: "Agentic delegation requires boundaries, tools, data, success criteria, fallback, and responsibility before automation."
+  },
+  AG4: {
+    text: "You want to use an agent that reads tickets and updates the CRM. Which constraints do you impose before enabling it?",
+    hint: "Select controls on data, actions, and traceability.",
+    options: [
+      ["Minimum permissions on tools", "The agent must be able to do only what is needed."],
+      ["Human approval for sensitive changes", "High-impact actions remain supervised."],
+      ["Logs of reads and changes", "Traceability makes behavior auditable."],
+      ["Stop and escalation rules", "The agent must stop on ambiguous or risky cases."],
+      ["Testing on representative but controlled data", "The flow is tested first under safe conditions."],
+      ["Full access to avoid blockers", "This increases risk and makes the agent less controllable."],
+      ["No logs to protect speed", "Speed does not justify lack of audit."]
+    ],
+    feedback: "An operational agent requires minimum permissions, approvals, logs, stop conditions, and controlled testing."
+  },
+  AG5: {
+    text: "When I design an agent, I define objective, available tools, constraints, intermediate outputs, and stop conditions.",
+    hint: "An agentic brief must describe the process and controls, not only the final result."
+  },
+  AG6: {
+    text: "An agent can send emails to customers. Which configuration is most prudent at launch?",
+    hint: "Consider external impact and recoverability.",
+    options: [
+      ["Automatic sending of all emails", "This immediately exposes customers and the organization to unfiltered errors."],
+      ["Automatic sending if the tone is safe", "Tone does not measure correctness or appropriateness."],
+      ["Automatic drafts and sample checking", "This reduces risk but may let critical cases through."],
+      ["Drafts with approval for external recipients", "This keeps human control over impactful communications."],
+      ["Drafts, checklist, risk thresholds, and blocking uncertain cases", "This combines efficiency, verification, and fallback."]
+    ],
+    feedback: "External actions require progressive autonomy levels and approvals proportional to risk."
+  },
+  AG7: {
+    text: "What does it mean, in practice, to give tools to an AI agent?",
+    hint: "Think about what the system can do beyond generating text.",
+    options: [
+      ["Automatically increasing its general intelligence", "Tools expand possible actions; they do not guarantee better judgment."],
+      ["Allowing it to call functions or services within defined permissions", "It can search, read, write, or trigger procedures if authorized."],
+      ["Making it able to always verify every answer", "Verification depends on configured tools, sources, and criteria."],
+      ["Removing the need for instructions", "More tools require clearer instructions and limits."]
+    ],
+    feedback: "Tool use means connecting the agent to functions or services governed by permissions, inputs, outputs, and controls."
+  },
+  AG8: {
+    text: "An agent keeps retrying the same step and consumes time without improving the result. What do you do?",
+    hint: "Assess loops, stop criteria, and observability.",
+    options: [
+      ["Let it continue", "The loop can consume resources and amplify errors."],
+      ["Ask it to try harder", "This does not change criteria or available information."],
+      ["Restart the session", "It may unblock the case but does not solve the cause."],
+      ["Analyze logs and failed steps", "I understand where data, tools, or criteria are missing."],
+      ["Apply stop conditions, diagnosis, and human fallback", "I stop the loop and turn the error into an operating rule."]
+    ],
+    feedback: "Agents require observability and stop criteria: waiting for the process to improve on its own is not enough."
+  },
+  AG9: {
+    text: "Which information should be tracked to make an agent auditable?",
+    hint: "Select what allows decisions and actions to be reconstructed.",
+    options: [
+      ["Inputs received and sources consulted", "They are needed to understand the context used."],
+      ["Tools called and parameters used", "This makes operational actions verifiable."],
+      ["Intermediate outputs and rationale", "This helps diagnose errors and assumptions."],
+      ["Human approvals and overrides", "This shows where responsibility was exercised."],
+      ["Errors, blocks, and fallback", "This supports improvement and risk management."],
+      ["Only the final result", "This is not enough to reconstruct behavior."],
+      ["No logs to avoid complexity", "This reduces control and accountability."]
+    ],
+    feedback: "An auditable agent keeps traces of inputs, tools, intermediate outputs, approvals, errors, and fallback."
+  },
+  AG10: {
+    text: "Write the prompt/brief you would use to configure an agent that analyzes support tickets and proposes knowledge-base updates, without publishing unapproved changes.",
+    hint: "Include objective, tools, limits, approvals, and output format.",
+    feedback: "An agentic brief must govern tools, limits, intermediate outputs, approvals, and stop conditions.",
+    rubric: {
+      criteria: [
+        { label: "Objective and scope", points: 1, keywords: ["objective", "scope", "ticket", "knowledge base", "kb"] },
+        { label: "Tools and sources", points: 1, keywords: ["tools", "sources", "ticket", "knowledge base", "knowledge"] },
+        { label: "Action limits", points: 1, keywords: ["do not publish", "do not modify", "proposal only", "permissions", "limits"] },
+        { label: "Human approval", points: 1, keywords: ["approval", "review", "human", "validation"] },
+        { label: "Output format", points: 1, keywords: ["format", "table", "diff", "proposal", "priority"] },
+        { label: "Controls and stop", points: 1, keywords: ["check", "control", "log", "stop", "escalation", "uncertain"] }
+      ],
+      redFlags: [
+        { label: "automatic publication", points: 1, keywords: ["publish directly", "modify automatically", "without approval"] },
+        { label: "blind delegation", points: 1, keywords: ["you decide", "do everything", "without logs"] }
+      ]
+    }
+  },
+  AG11: {
+    text: "An agent can approve refunds below a certain threshold. Which control is most important?",
+    hint: "Consider economic impact, abuse, and edge cases.",
+    options: [
+      ["Let it approve every case below the threshold", "The monetary threshold alone does not cover fraud or exceptions."],
+      ["Ask for an explanation after approval", "Ex-post traceability does not prevent critical errors."],
+      ["Check only the highest refunds", "This reduces economic risk but ignores anomalous patterns."],
+      ["Use rules, sampling, and anomaly blocking", "This combines automation and control."],
+      ["Thresholds, anti-fraud signals, approvals, and periodic audit", "This governs autonomy, exceptions, and responsibility."]
+    ],
+    feedback: "Agentic autonomy on economic actions requires thresholds, exceptions, audit, and risk-proportionate approvals."
+  },
+  AG12: {
+    text: "Why are memory and state delicate in an AI agent?",
+    hint: "Think about operational continuity and error propagation.",
+    options: [
+      ["Because they make errors impossible", "Memory and state can also preserve wrong assumptions."],
+      ["Because they influence later actions and must be governed", "State, memory, and context can propagate wrong decisions or data."],
+      ["Because they replace logs", "Operational memory and audit logs are different concepts."],
+      ["Because they eliminate the need for permissions", "Permissions remain necessary even with persistent memory."]
+    ],
+    feedback: "An agent's state influences later steps: it must be visible, limited, and correctable."
+  },
+  AG13: {
+    text: "Which metric is most useful for evaluating an operational agent, beyond the final result?",
+    hint: "Choose a metric that reveals process quality.",
+    options: [
+      ["Number of words generated", "This does not measure quality or control."],
+      ["Average speed without distinguishing cases", "Speed must be read together with errors, escalation, and risk."],
+      ["Users' subjective satisfaction", "Useful, but insufficient alone."],
+      ["Success rate with errors and escalation", "This measures outcome and need for intervention."],
+      ["Success, errors, tool calls, escalation, rollback, and impact", "This observes the whole agentic workflow."]
+    ],
+    feedback: "An agent must be evaluated on its steps: actions, errors, escalation, rollback, and impact, not only on the final output."
+  },
+  AG14: {
+    text: "I can decompose a process into steps an agent can execute, steps that require approval, and steps that must remain with a person.",
+    hint: "Agentic competence includes designing progressive autonomy and checkpoints."
+  },
+  AG15: {
+    text: "Before connecting an agent to company systems, which checks do you perform on credentials and access?",
+    hint: "Select practices that reduce operational risk.",
+    options: [
+      ["Dedicated and revocable accounts or tokens", "They enable control and fast deactivation."],
+      ["Minimum permissions for each tool", "This limits the impact of errors or abuse."],
+      ["Secrets not inserted in the prompt", "Credentials must be managed outside free text."],
+      ["Monitoring and alerts on actions", "This helps detect anomalous behavior."],
+      ["Revocation and rollback procedure", "This is needed to react quickly."],
+      ["Use the user's personal credentials", "This mixes responsibility and increases exposure."],
+      ["Give administrator access for simplicity", "This violates the principle of least privilege."]
+    ],
+    feedback: "Agent credentials and access must be dedicated, limited, monitored, and revocable."
   }
 });
 

@@ -33,12 +33,13 @@ Ogni forma del test contiene 50 domande.
 | Area | Domande |
 | --- | ---: |
 | Literacy | 7 |
-| Fondamenti tecnici LLM | 13 |
+| Fondamenti tecnici LLM | 11 |
+| AI Agents | 4 |
 | Fluency - Delegation | 3 |
 | Fluency - Description | 4 |
 | Fluency - Discernment | 4 |
 | Fluency - Diligence | 3 |
-| Mindset | 9 |
+| Mindset | 7 |
 | Practical Lab | 7 |
 | Totale | 50 |
 
@@ -46,12 +47,12 @@ Vista aggregata:
 
 | Macro-area | Domande |
 | --- | ---: |
-| Literacy inclusi fondamenti tecnici | 20 |
+| Literacy inclusi fondamenti tecnici e item Agents collegati | 21 |
 | Fluency incluse le 4D e prove pratiche collegate | 21 |
-| Mindset incluse prove pratiche collegate | 10 |
+| Mindset incluse prove pratiche collegate | 8 |
 | Practical Lab trasversale | 7 |
 
-Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mindset. Per i test tematici bisognera' decidere se mostrarle dentro il tema misurato o tenerle come modulo separato.
+Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mindset. La sezione AI Agents ha 4 domande nel test completo e un pool tematico dedicato da 15 domande per alimentare la rotazione A/B/C.
 
 ## Milestone 0 - Documentazione di governance
 
@@ -327,6 +328,39 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - percorsi brevi ruotano A/B/C per lingua e modalita'
   - le varianti pratiche aperte B/C sono localizzate in inglese
   - export/report includono forma A/B/C, lingua, versione `2.2.0`, banca `2026.06-m5` e forma `1.1`
+  - sintassi JavaScript valida
+- Stato: completata su `main`
+
+## Milestone 11 - AI Agents e README bilingue
+
+- Branch: `feature/ai-agents-assessment`
+- Tipo: modifica media
+- Versione target: `2.3.0`
+- Obiettivo:
+  - introdurre una sezione dedicata agli AI Agents senza superare le 50 domande nel test completo e rendere il README bilingue.
+- Scope:
+  - aggiungere il percorso tematico `AI Agents` da 10 domande
+  - aggiungere 15 domande base sugli agenti in italiano e inglese
+  - inserire 4 domande AI Agents nel test completo mantenendo il totale a 50 domande
+  - aggiungere varianti equivalenti B/C per gli item Agents presenti nel completo
+  - includere punteggio, barre, raccomandazioni e guida sezione per AI Agents
+  - mantenere il carosello in autoplay ogni 5 secondi salvo pausa esplicita
+  - aggiungere `Interrompi il test` con conferma e annullamento della sessione corrente
+  - aggiornare UI, cache busting, versione app, banca domande e forma assessment
+  - trasformare `README.md` in documentazione bilingue italiano/inglese
+- Vincoli:
+  - nessuna chiamata di rete
+  - nessun tracciamento o invio automatico dei risultati
+  - dati e storico restano locali nel browser
+  - il test non deve essere presentato come psicometricamente validato
+- Validazione:
+  - test completo italiano e inglese restano a 50 domande
+  - percorso AI Agents italiano e inglese mostra 10 domande dal pool dedicato
+  - forme A/B/C ruotano anche per il percorso AI Agents
+  - il carosello avanza automaticamente ogni 5 secondi quando non e' in pausa
+  - `Interrompi il test` chiede conferma, scarta le risposte correnti e torna alla home
+  - report ed export includono versione `2.3.0`, banca `2026.06-m6` e forma `1.2`
+  - README bilingue coerente con comportamento pubblico
   - sintassi JavaScript valida
 - Stato: in validazione
 
