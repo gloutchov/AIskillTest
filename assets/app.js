@@ -62,7 +62,7 @@ function cloneQuestionData(value) {
       return selected;
     }
 
-    const APP_VERSION = "2.0.1";
+    const APP_VERSION = "2.0.2";
     const DEFAULT_TEST_MODE_ID = "complete";
     const COMPLETE_TEST_COUNT = 50;
     const TOPIC_TEST_COUNT = 10;
@@ -266,10 +266,14 @@ function cloneQuestionData(value) {
       selectedModeId: DEFAULT_TEST_MODE_ID,
       latestReport: null,
       bibliographyBackView: "introView",
-      autoAdvanceTimer: null
+      autoAdvanceTimer: null,
+      carouselTimer: null,
+      carouselPaused: false,
+      carouselSuspended: false
     };
 
     const AUTO_ADVANCE_DELAY_MS = 280;
+    const CAROUSEL_INTERVAL_MS = 5000;
 
     const $ = (id) => document.getElementById(id);
 
@@ -277,6 +281,11 @@ function cloneQuestionData(value) {
       ["introView", "profileView", "assessmentView", "dashboardView", "bibliographyView"].forEach(viewId => {
         $(viewId).classList.toggle("active", viewId === id);
       });
+      if (id === "introView") {
+        restartModeCarouselTimer();
+      } else {
+        clearModeCarouselTimer();
+      }
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -329,74 +338,205 @@ function cloneQuestionData(value) {
       return Math.min(limit, pool.length);
     }
 
+    function modeDuration(mode) {
+      return mode.id === DEFAULT_TEST_MODE_ID ? "12-15 minuti" : "3-5 minuti";
+    }
+
+    function modeBadge(mode) {
+      return mode.id === DEFAULT_TEST_MODE_ID ? "Profilo completo" : "Report tematico";
+    }
+
+    function modeTopics(mode) {
+      if (mode.id === DEFAULT_TEST_MODE_ID) {
+        return ["Literacy", "Fondamenti LLM", "Fluency 4D", "Mindset", "Practical Lab"];
+      }
+      const guide = sectionGuides[mode.section];
+      return guide ? guide.items : [mode.section || mode.label];
+    }
+
     function selectedTestModeId() {
-      const selected = document.querySelector('input[name="testMode"]:checked');
-      return selected ? selected.value : state.selectedModeId || DEFAULT_TEST_MODE_ID;
+      return state.selectedModeId || DEFAULT_TEST_MODE_ID;
     }
 
     function renderModeSelector() {
       const container = $("testModeSelector");
       if (!container) return;
+      const selectedIndex = TEST_MODES.findIndex(mode => mode.id === selectedTestModeId());
+      const activeIndex = selectedIndex >= 0 ? selectedIndex : 0;
+      container.style.transform = `translateX(-${activeIndex * 100}%)`;
       container.innerHTML = TEST_MODES.map(mode => {
         const count = questionCountForMode(mode);
-        const checked = mode.id === state.selectedModeId ? "checked" : "";
+        const selected = mode.id === state.selectedModeId;
+        const topicChips = modeTopics(mode)
+          .map(topic => `<span class="pill">${escapeHtml(topic)}</span>`)
+          .join("");
         return `
-          <label class="mode-card ${checked ? "selected" : ""}" for="mode_${escapeHtml(mode.id)}">
-            <input id="mode_${escapeHtml(mode.id)}" type="radio" name="testMode" value="${escapeHtml(mode.id)}" ${checked} />
-            <span class="mode-card-body">
-              <span class="mode-card-top">
-                <strong>${escapeHtml(mode.label)}</strong>
-                <span>${count} domande</span>
-              </span>
-              <span class="mode-card-desc">${escapeHtml(mode.description)}</span>
-            </span>
-          </label>
+          <article class="mode-card mode-slide ${selected ? "selected" : ""}" id="mode_${escapeHtml(mode.id)}" aria-label="${escapeHtml(mode.label)}" aria-hidden="${selected ? "false" : "true"}">
+            <div class="mode-card-top">
+              <div>
+                <span class="mode-eyebrow">${escapeHtml(modeBadge(mode))}</span>
+                <h3>${escapeHtml(mode.label)}</h3>
+              </div>
+              <strong>${count} domande</strong>
+            </div>
+            <p class="mode-card-desc">${escapeHtml(mode.description)}</p>
+            <div class="mode-facts" aria-label="Caratteristiche del percorso">
+              <div>
+                <span>Durata</span>
+                <strong>${escapeHtml(modeDuration(mode))}</strong>
+              </div>
+              <div>
+                <span>Risultato</span>
+                <strong>${escapeHtml(mode.outputNote)}</strong>
+              </div>
+            </div>
+            <div class="pill-row mode-topic-row" aria-label="Temi affrontati">
+              ${topicChips}
+            </div>
+          </article>
         `;
       }).join("");
-      Array.from(document.querySelectorAll('input[name="testMode"]')).forEach(input => {
-        input.addEventListener("change", (event) => updateSelectedMode(event.target.value));
-      });
+      renderModeDots();
     }
 
     function updateSelectedMode(modeId) {
       state.selectedModeId = getModeById(modeId).id;
-      Array.from(document.querySelectorAll(".mode-card")).forEach(card => {
-        const input = card.querySelector('input[name="testMode"]');
-        card.classList.toggle("selected", input && input.value === state.selectedModeId);
-      });
+      renderModeSelector();
       renderQuestionDistribution();
+      restartModeCarouselTimer();
+    }
+
+    function moveSelectedMode(delta) {
+      const currentIndex = TEST_MODES.findIndex(mode => mode.id === selectedTestModeId());
+      const nextIndex = (currentIndex + delta + TEST_MODES.length) % TEST_MODES.length;
+      updateSelectedMode(TEST_MODES[nextIndex].id);
+    }
+
+    function renderModeDots() {
+      const dots = $("testModeDots");
+      if (!dots) return;
+      dots.innerHTML = TEST_MODES.map(mode => {
+        const selected = mode.id === selectedTestModeId();
+        return `<button type="button" class="carousel-dot ${selected ? "active" : ""}" data-mode-id="${escapeHtml(mode.id)}" aria-label="Mostra ${escapeHtml(mode.label)}" aria-current="${selected ? "true" : "false"}"></button>`;
+      }).join("");
+      Array.from(dots.querySelectorAll("[data-mode-id]")).forEach(button => {
+        button.addEventListener("click", (event) => updateSelectedMode(event.currentTarget.dataset.modeId));
+      });
+    }
+
+    function clearModeCarouselTimer() {
+      if (state.carouselTimer) {
+        window.clearInterval(state.carouselTimer);
+        state.carouselTimer = null;
+      }
+    }
+
+    function shouldRunModeCarousel() {
+      return !state.carouselPaused && !state.carouselSuspended && $("introView").classList.contains("active");
+    }
+
+    function restartModeCarouselTimer() {
+      clearModeCarouselTimer();
+      if (!shouldRunModeCarousel()) return;
+      state.carouselTimer = window.setInterval(() => moveSelectedMode(1), CAROUSEL_INTERVAL_MS);
+    }
+
+    function updateModeAutoplayButton() {
+      const button = $("modeAutoplayBtn");
+      if (!button) return;
+      button.textContent = state.carouselPaused ? "Riprendi" : "Pausa";
+      button.setAttribute("aria-pressed", state.carouselPaused ? "true" : "false");
+    }
+
+    function toggleModeCarouselAutoplay() {
+      state.carouselPaused = !state.carouselPaused;
+      updateModeAutoplayButton();
+      restartModeCarouselTimer();
+    }
+
+    function suspendModeCarousel() {
+      state.carouselSuspended = true;
+      clearModeCarouselTimer();
+    }
+
+    function resumeModeCarousel() {
+      state.carouselSuspended = false;
+      restartModeCarouselTimer();
+    }
+
+    function bindModeCarouselGestures() {
+      const frame = $("modeCarouselFrame");
+      if (!frame) return;
+      let startX = 0;
+      let startY = 0;
+      frame.addEventListener("touchstart", (event) => {
+        const touch = event.changedTouches && event.changedTouches[0];
+        if (!touch) return;
+        startX = touch.clientX;
+        startY = touch.clientY;
+      }, { passive: true });
+      frame.addEventListener("touchend", (event) => {
+        const touch = event.changedTouches && event.changedTouches[0];
+        if (!touch) return;
+        const deltaX = touch.clientX - startX;
+        const deltaY = touch.clientY - startY;
+        if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY) * 1.4) {
+          moveSelectedMode(deltaX < 0 ? 1 : -1);
+        }
+      }, { passive: true });
+    }
+
+    function bindModeCarouselAutoplay() {
+      if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        state.carouselPaused = true;
+      }
+      const carousel = document.querySelector(".assessment-carousel");
+      if (carousel) {
+        carousel.addEventListener("mouseenter", suspendModeCarousel);
+        carousel.addEventListener("mouseleave", resumeModeCarousel);
+        carousel.addEventListener("focusin", suspendModeCarousel);
+        carousel.addEventListener("focusout", resumeModeCarousel);
+      }
+      const autoplayButton = $("modeAutoplayBtn");
+      if (autoplayButton) {
+        autoplayButton.addEventListener("click", toggleModeCarouselAutoplay);
+      }
+      updateModeAutoplayButton();
+      restartModeCarouselTimer();
     }
 
     function renderQuestionDistribution() {
-      const container = $("questionDistribution");
-      if (!container) return;
       const mode = getModeById(selectedTestModeId());
       const modeQuestions = questionsForMode(baseQuestions, mode);
       const counts = modeQuestions.reduce((acc, question) => {
         acc[question.section] = (acc[question.section] || 0) + 1;
         return acc;
       }, {});
-      const rows = SECTION_ORDER
-        .filter(section => counts[section])
-        .map(section => `<div class="topic-row"><span>${escapeHtml(section)}</span><strong>${counts[section]}</strong></div>`)
-        .join("");
       const total = modeQuestions.length;
-      container.innerHTML = `
-        ${rows}
-        <div class="topic-row topic-total"><span>${escapeHtml(mode.shortLabel || mode.label)}</span><strong>${total}</strong></div>
-      `;
-      $("heroCount").textContent = total;
+      const container = $("questionDistribution");
+      if (container) {
+        const rows = SECTION_ORDER
+          .filter(section => counts[section])
+          .map(section => `<div class="topic-row"><span>${escapeHtml(section)}</span><strong>${counts[section]}</strong></div>`)
+          .join("");
+        container.innerHTML = `
+          ${rows}
+          <div class="topic-row topic-total"><span>${escapeHtml(mode.shortLabel || mode.label)}</span><strong>${total}</strong></div>
+        `;
+      }
+      const heroCount = $("heroCount");
+      if (heroCount) heroCount.textContent = total;
       const heroDescription = $("heroCountDescription");
       if (heroDescription) {
         heroDescription.textContent = mode.id === DEFAULT_TEST_MODE_ID
           ? "domande estratte da una delle tre forme parallele, tra autovalutazione, quiz tecnico, scenari e prove pratiche"
           : "domande nel percorso tematico selezionato, con report locale dedicato alla sezione scelta";
       }
-      const distributionNote = $("distributionNote");
-      if (distributionNote) {
-        distributionNote.textContent = mode.id === DEFAULT_TEST_MODE_ID
-          ? "La distribuzione e' calcolata dalla banca domande del test completo."
-          : "La distribuzione mostra solo le domande incluse nella modalita' selezionata.";
+      const modeFootnote = $("modeFootnote");
+      if (modeFootnote) {
+        modeFootnote.textContent = mode.id === DEFAULT_TEST_MODE_ID
+          ? "All'avvio viene scelta una delle tre forme parallele disponibili. Le alternative vengono rimescolate a ogni assessment."
+          : "Il percorso tematico misura solo l'area scelta: non produce un profilo globale e non mostra punteggi su dimensioni assenti.";
       }
     }
 
@@ -1499,6 +1639,10 @@ function cloneQuestionData(value) {
 
     renderModeSelector();
     renderQuestionDistribution();
+    bindModeCarouselGestures();
+    bindModeCarouselAutoplay();
+    $("modePrevBtn").addEventListener("click", () => moveSelectedMode(-1));
+    $("modeNextBtn").addEventListener("click", () => moveSelectedMode(1));
     $("introStartBtn").addEventListener("click", openProfileStep);
     $("introBibliographyBtn").addEventListener("click", () => showBibliography("introView"));
     $("profileBackBtn").addEventListener("click", () => showView("introView"));

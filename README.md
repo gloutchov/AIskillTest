@@ -4,9 +4,9 @@ Questionario interattivo in italiano per valutare in modo pratico competenza, us
 
 L'assessment produce un profilo finale, una dashboard dei punteggi e suggerimenti formativi. E' pensato come strumento diagnostico interno e migliorabile, non come test psicometrico validato.
 
-Versione corrente dell'app: `2.0.1`.
+Versione corrente dell'app: `2.0.2`.
 
-Tag di riferimento: `v2.0.1`.
+Tag di riferimento: `v2.0.2`.
 
 ## Nota sullo sviluppo
 
@@ -25,12 +25,12 @@ Questo test e' stato realizzato in vibecoding, usando l'AI come supporto operati
 
 Apri `ai_skill_test.html` in un browser moderno. Non servono build, dipendenze o server.
 
-La home permette di scegliere tra:
+La home mostra un carosello orizzontale manuale per scegliere tra:
 
 - test completo da 50 domande;
 - percorsi tematici da 10 domande.
 
-Il conteggio e la distribuzione delle domande si aggiornano in base alla modalita' selezionata. Il pulsante `Inizia` porta a uno step separato con dati e autovalutazione iniziale facoltativi; il test vero e proprio parte solo dal pulsante `Inizia il test`.
+Ogni slide indica durata stimata, output atteso e temi affrontati. Il carosello avanza automaticamente ogni 5 secondi, ma frecce, indicatori, swipe touch e pulsante `Pausa` permettono di controllarlo. Il conteggio delle domande e la sintesi nel riquadro laterale si aggiornano in base alla modalita' selezionata. Il pulsante `Inizia questo test` porta a uno step separato con dati e autovalutazione iniziale facoltativi; il test vero e proprio parte solo dal pulsante `Inizia il test`.
 
 Durante il test, le domande a scelta singola avanzano automaticamente dopo la selezione. Le domande a scelta multipla e le prove testuali richiedono ancora il pulsante `Avanti`.
 
@@ -102,8 +102,8 @@ Il file `index.html` reindirizza automaticamente a `ai_skill_test.html`, quindi 
 
 ## Versioning
 
-- Versione app: `2.0.1`.
-- Tag Git: `v2.0.1`.
+- Versione app: `2.0.2`.
+- Tag Git: `v2.0.2`.
 - Banca domande: `2026.06-m4`.
 - Forma assessment: `1.0`.
 

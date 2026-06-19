@@ -22,7 +22,7 @@
         <div>
           <div class="hero-meta">
             <p class="kicker">AI Skill & Adoption Assessment</p>
-            <span class="version-badge">Versione 2.0.1</span>
+            <span class="version-badge">Versione 2.0.2</span>
           </div>
           <h1>Misura pratica della competenza AI</h1>
           <p class="subtitle">Un questionario interattivo per stimare conoscenza, uso operativo, giudizio critico e attitudine verso la GenAI. Il risultato finale produce un profilo, una dashboard e suggerimenti formativi.</p>
@@ -44,25 +44,34 @@
 
       <div class="content">
         <section id="introView" class="view active">
-          <div class="grid-2">
-            <div class="card landing-card">
-              <p class="kicker">Assessment AI</p>
-              <h2>Scegli test completo o percorso tematico</h2>
-              <p>Il test completo contiene 50 domande e combina autovalutazione, quiz sui fondamenti degli LLM, scenari decisionali e prove pratiche. I percorsi tematici contengono 10 domande estratte dall'area selezionata.</p>
-              <p class="muted">All'avvio viene scelta una delle tre forme parallele disponibili. Le alternative vengono rimescolate a ogni assessment e le spiegazioni restano nascoste finche' non vengono richieste.</p>
-              <div class="mode-selector" id="testModeSelector" aria-label="Modalita' di test"></div>
-              <div class="actions">
-                <button class="btn-primary" id="introStartBtn">Inizia</button>
-                <button class="btn-secondary" id="introBibliographyBtn">Bibliografia</button>
+          <section class="card landing-card assessment-carousel" aria-labelledby="modeCarouselTitle">
+            <div class="carousel-heading">
+              <div>
+                <p class="kicker">Assessment AI</p>
+                <h2 id="modeCarouselTitle">Scegli il tuo percorso</h2>
+                <p>Il test completo misura il profilo generale. I percorsi tematici sono piu' brevi e restituiscono un report locale limitato all'area scelta.</p>
+              </div>
+              <div class="carousel-controls" aria-label="Scorri percorsi">
+                <button class="carousel-toggle" id="modeAutoplayBtn" type="button" aria-pressed="false">Pausa</button>
+                <button class="icon-btn" id="modePrevBtn" type="button" aria-label="Percorso precedente">‹</button>
+                <button class="icon-btn" id="modeNextBtn" type="button" aria-label="Percorso successivo">›</button>
               </div>
             </div>
 
-            <div class="card">
-              <h2>Temi affrontati</h2>
-              <p class="muted" id="distributionNote">La distribuzione e' calcolata dalla banca domande del test completo.</p>
-              <div class="topic-summary" id="questionDistribution" aria-live="polite"></div>
+            <div class="carousel-frame" id="modeCarouselFrame" aria-live="polite">
+              <div class="mode-selector mode-track" id="testModeSelector" aria-label="Modalita' di test"></div>
             </div>
-          </div>
+
+            <div class="carousel-footer">
+              <div class="carousel-dots" id="testModeDots" aria-label="Seleziona percorso"></div>
+              <p class="muted small" id="modeFootnote">All'avvio viene scelta una delle tre forme parallele disponibili.</p>
+            </div>
+
+            <div class="actions">
+              <button class="btn-primary" id="introStartBtn">Inizia questo test</button>
+              <button class="btn-secondary" id="introBibliographyBtn">Bibliografia</button>
+            </div>
+          </section>
 
           <div class="grid-3 landing-metrics" aria-label="Sintesi del risultato finale">
             <div class="metric-card">

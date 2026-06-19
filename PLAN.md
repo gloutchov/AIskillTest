@@ -208,6 +208,32 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - link principali funzionanti
 - Stato: completata su `main`
 
+## Milestone 6 - Carosello scelta test in landing
+
+- Branch: `feature/landing-carousel`
+- Tipo: modifica piccola
+- Versione target: `2.0.2`
+- Obiettivo:
+  - sostituire l'elenco verticale dei test e il riquadro separato dei temi con un carosello orizzontale a scorrimento automatico ogni 5 secondi.
+- Scope:
+  - una sezione unica `Scegli il tuo percorso` nella landing
+  - slide per test completo e percorsi tematici
+  - autoplay ogni 5 secondi con pulsante `Pausa`
+  - frecce, indicatori e swipe touch per scorrere i percorsi
+  - durata stimata, output atteso e temi affrontati dentro ogni slide
+  - avvertenza chiara: i percorsi tematici non producono profilo globale
+  - aggiornamento del conteggio nel riquadro hero in base alla modalita' selezionata
+  - versione app e documentazione aggiornate
+- Validazione:
+  - carosello visibile al primo accesso
+  - autoplay cambia percorso con ritmo leggibile
+  - pulsante `Pausa`, frecce, indicatori e swipe touch controllano il percorso
+  - `Inizia questo test` apre lo step dati con la modalita' selezionata
+  - test completo resta a 50 domande
+  - percorsi tematici restano a 10 domande e mostrano report tematico
+  - layout leggibile su desktop e mobile
+- Stato: completata su `main`
+
 ## Backlog opzionale
 
 - Aggiungere una checklist manuale di QA in `docs/QA.md`.
