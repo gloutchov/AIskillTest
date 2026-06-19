@@ -234,6 +234,23 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - layout leggibile su desktop e mobile
 - Stato: completata su `main`
 
+## Milestone 7 - Riconoscimento licenza GitHub
+
+- Branch: `fix/apache-license-detection`
+- Tipo: correzione repository metadata
+- Versione target: nessun bump applicativo
+- Obiettivo:
+  - sostituire il file `LICENSE` incompleto con il testo canonico completo Apache License 2.0.
+- Scope:
+  - aggiornare solo `LICENSE`
+  - mantenere invariata la versione dell'app
+  - nessun tag applicativo
+- Validazione:
+  - presenza di `END OF TERMS AND CONDITIONS`
+  - presenza dell'appendice canonica Apache 2.0
+  - repository pulito dopo commit e merge
+- Stato: completata su `main`
+
 ## Backlog opzionale
 
 - Aggiungere una checklist manuale di QA in `docs/QA.md`.
