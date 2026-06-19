@@ -301,6 +301,33 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - caricamento degli asset con query string `v=2.1.1`
   - full test inglese da 50 domande con controlli e dashboard localizzati
   - sintassi JavaScript valida
+- Stato: completata su `main`
+
+## Milestone 10 - Rotazione forme e varianti pratiche
+
+- Branch: `feature/form-rotation-all-modes`
+- Tipo: modifica media
+- Versione target: `2.2.0`
+- Obiettivo:
+  - ridurre la ripetizione percepita dei quesiti quando una persona ripete lo stesso test o lo stesso percorso tematico.
+- Scope:
+  - usare la rotazione A/B/C per italiano e inglese
+  - separare il ciclo delle forme per lingua e modalita' di test
+  - mantenere test completo a 50 domande e percorsi tematici a 10 domande
+  - arricchire gli slot pratici aperti con varianti equivalenti su action plan, dashboard dati, deep search, creazione documenti e verifica dashboard
+  - localizzare in inglese le varianti pratiche form-specific B/C
+  - aggiornare versione app, versione banca domande, versione forma, query string asset, README e piano
+- Vincoli:
+  - nessuna chiamata di rete
+  - nessun tracciamento o invio automatico dei risultati
+  - rubriche degli slot pratici mantenute a 6 criteri con red flag equivalenti
+- Validazione:
+  - test completo italiano ruota A/B/C e resta a 50 domande
+  - test completo inglese ruota A/B/C e resta a 50 domande
+  - percorsi brevi ruotano A/B/C per lingua e modalita'
+  - le varianti pratiche aperte B/C sono localizzate in inglese
+  - export/report includono forma A/B/C, lingua, versione `2.2.0`, banca `2026.06-m5` e forma `1.1`
+  - sintassi JavaScript valida
 - Stato: in validazione
 
 ## Backlog opzionale

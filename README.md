@@ -4,9 +4,9 @@ Questionario interattivo in italiano e inglese per valutare in modo pratico comp
 
 L'assessment produce un profilo finale, una dashboard dei punteggi e suggerimenti formativi. E' pensato come strumento diagnostico interno e migliorabile, non come test psicometrico validato.
 
-Versione corrente dell'app: `2.1.1`.
+Versione corrente dell'app: `2.2.0`.
 
-Tag di riferimento: `v2.1.1`.
+Tag di riferimento: `v2.2.0`.
 
 ## Nota sullo sviluppo
 
@@ -17,7 +17,7 @@ Questo test e' stato realizzato in vibecoding, usando l'AI come supporto operati
 - `ai_skill_test.html`: shell HTML dell'applicazione.
 - `assets/styles.css`: stili dell'interfaccia.
 - `assets/questions.js`: banca domande, forme parallele e override.
-- `assets/i18n.js`: testi localizzati e traduzione inglese della banca domande base.
+- `assets/i18n.js`: testi localizzati, traduzione inglese della banca domande e varianti pratiche form-specific.
 - `assets/app.js`: logica client-side, navigazione, scoring, dashboard ed export.
 - `index.html`: pagina di ingresso che rimanda al test.
 - `LICENSE`: licenza Apache 2.0.
@@ -39,7 +39,7 @@ Ogni slide indica durata stimata, output atteso e temi affrontati. Il carosello 
 
 Durante il test, le domande a scelta singola avanzano automaticamente dopo la selezione. Le domande a scelta multipla e le prove testuali richiedono ancora il pulsante `Avanti`.
 
-Il test salva localmente nel browser lo storico degli ultimi report e permette di esportare i risultati in formato JSON o CSV. Storico ed export includono modalita' svolta, lingua, origine della scelta lingua, forma A/B/C o forma `EN`, versione dell'assessment e versione della banca domande.
+Il test salva localmente nel browser lo storico degli ultimi report e permette di esportare i risultati in formato JSON o CSV. Storico ed export includono modalita' svolta, lingua, origine della scelta lingua, forma A/B/C, versione dell'assessment e versione della banca domande.
 
 Per sviluppo locale e verifica manuale e' possibile aprire direttamente `ai_skill_test.html`, perche' il progetto usa solo file statici.
 
@@ -64,9 +64,9 @@ Le modalita' disponibili sono:
 - Mindset: 10 domande.
 - Practical Lab: 10 domande.
 
-Nei percorsi tematici, le 10 domande vengono estratte casualmente dal pool disponibile per l'area scelta, cosi' due sessioni consecutive dello stesso tema non propongono necessariamente lo stesso set.
+Nei percorsi tematici, le 10 domande vengono estratte casualmente dal pool disponibile per l'area scelta. La rotazione A/B/C e' separata per lingua e modalita', cosi' due sessioni consecutive dello stesso tema non partono dalla stessa forma quando sono disponibili alternative.
 
-La banca contiene 100 domande base. In italiano, considerando la rotazione sulle tre forme A/B/C, il carnet erogabile arriva a 300 item. In inglese viene usata la traduzione localizzata della banca base, identificata negli export come forma `EN`.
+La banca contiene 100 domande base. Le sessioni ruotano tra forme A/B/C sia in italiano sia in inglese. In italiano le forme B/C includono override equivalenti per il test completo; in inglese la forma selezionata viene localizzata e gli slot pratici aperti hanno varianti dedicate per dashboard dati, deep search e creazione documenti.
 
 Nel test completo, il profilo globale usa questa ponderazione:
 
@@ -107,10 +107,10 @@ Il file `index.html` reindirizza automaticamente a `ai_skill_test.html`, quindi 
 
 ## Versioning
 
-- Versione app: `2.1.1`.
-- Tag Git: `v2.1.1`.
-- Banca domande: `2026.06-m4`.
-- Forma assessment: `1.0`.
+- Versione app: `2.2.0`.
+- Tag Git: `v2.2.0`.
+- Banca domande: `2026.06-m5`.
+- Forma assessment: `1.1`.
 
 I tag seguono il formato `vX.Y.Z`. Le modifiche patch aggiornano documentazione o correzioni piccole; le modifiche minor o major introducono cambiamenti funzionali piu' ampi.
 

@@ -80,6 +80,88 @@ const AI_SKILL_I18N = {
         outputNote: "Thematic report on practical tasks, without a global profile."
       }
     },
+    formOverrides: {
+      B: {
+        P_DS_1: {
+          text: "Write the prompt you would use to ask AI to design a data-analysis dashboard from a CSV export with undocumented fields and some missing rows. You do not want it to invent KPIs, values, or interpretations.",
+          hint: "Write the prompt you would actually use to get a controllable dashboard.",
+          feedback: "The prompt should define the objective, available data, allowed KPIs, visualizations, handling of gaps, and dataset quality checks.",
+          rubric: {
+            criteria: [
+              { label: "Dashboard objective", points: 1, keywords: ["dashboard", "analysis", "objective", "goal", "decision", "monitor"] },
+              { label: "Dataset and fields", points: 1, keywords: ["csv", "data", "dataset", "fields", "columns", "rows"] },
+              { label: "Do not invent KPIs or values", points: 1, keywords: ["do not invent", "don't invent", "do not assume", "kpi", "values", "missing"] },
+              { label: "Visualizations and format", points: 1, keywords: ["charts", "visualizations", "layout", "table", "format"] },
+              { label: "Gaps and clarifications", points: 1, keywords: ["missing", "incomplete", "ambiguous", "clarify", "questions", "flag"] },
+              { label: "Final verification", points: 1, keywords: ["verify", "check", "quality", "review", "validation"] }
+            ],
+            redFlags: [
+              { label: "blind delegation", points: 1, keywords: ["you decide", "choose the kpis", "without asking", "final version"] },
+              { label: "invented data", points: 1, keywords: ["invent data", "estimate freely", "fill in the values"] }
+            ]
+          }
+        },
+        P_DI_1: {
+          text: "A deep search result cites three sources to support the claim that 'GenAI reduces onboarding time by 35%'. One source is not accessible and two appear to repeat the same press release. Write the checks you would perform before using the conclusion.",
+          hint: "List the real checks on sources, independence, and relevance.",
+          feedback: "Deep search does not remove the need for verification: check accessibility, primary source, independence, relevance, and the limits of the conclusion.",
+          rubric: {
+            criteria: [
+              { label: "Source accessibility", points: 1, keywords: ["source", "link", "accessible", "open", "publication"] },
+              { label: "Primary source", points: 1, keywords: ["primary", "original", "study", "report", "author"] },
+              { label: "Date and context", points: 1, keywords: ["date", "version", "context", "sector", "onboarding"] },
+              { label: "Source independence", points: 1, keywords: ["independent", "same press release", "repeat", "cross-check", "compare"] },
+              { label: "Claim relevance", points: 1, keywords: ["35", "metric", "sample", "definition", "support"] },
+              { label: "Prudent use and citation", points: 1, keywords: ["do not use", "remove", "caution", "cite", "note", "trace"] }
+            ],
+            redFlags: [
+              { label: "trust in precision", points: 1, keywords: ["35% so", "precise figure", "looks credible"] },
+              { label: "model confirmation", points: 1, keywords: ["ask ai", "ask the model if", "are you sure"] }
+            ]
+          }
+        }
+      },
+      C: {
+        P_DS_1: {
+          text: "Write the prompt you would use to create a draft decision document from a brief, scattered notes, and partial attachments. You want to distinguish facts, assumptions, decisions already made, and points to confirm.",
+          hint: "Write the prompt you would actually use to get a document that can be reviewed.",
+          feedback: "The prompt should produce a useful but reviewable document, separating available inputs, facts, assumptions, decisions, and points to confirm.",
+          rubric: {
+            criteria: [
+              { label: "Objective and document", points: 1, keywords: ["document", "draft", "decision", "objective", "audience", "stakeholders"] },
+              { label: "Available input", points: 1, keywords: ["notes", "brief", "attachments", "material", "sources"] },
+              { label: "Facts versus assumptions", points: 1, keywords: ["facts", "assumptions", "uncertain", "decisions", "do not invent", "to confirm"] },
+              { label: "Format and structure", points: 1, keywords: ["format", "structure", "sections", "executive summary", "table"] },
+              { label: "Clarifications and gaps", points: 1, keywords: ["questions", "clarify", "missing", "ambiguous", "assumptions"] },
+              { label: "Review", points: 1, keywords: ["verify", "check", "review", "consistency", "approval"] }
+            ],
+            redFlags: [
+              { label: "artificial certainty", points: 1, keywords: ["make it certain", "present as fact", "hide doubts", "invent"] },
+              { label: "automatic publication", points: 1, keywords: ["publish directly", "send without review", "final version"] }
+            ]
+          }
+        },
+        P_DI_1: {
+          text: "AI generates a mini-dashboard and concludes: 'sales grew by 18% thanks to the new campaign', but it does not show queries, filters, comparison period, or excluded data. Write the checks you would perform before presenting the dashboard.",
+          hint: "Describe the real verification process for data, metrics, and interpretation.",
+          feedback: "A dashboard must be checked for data origin, queries, filters, metric definition, comparison period, and causal interpretation before presentation.",
+          rubric: {
+            criteria: [
+              { label: "Data origin and query", points: 1, keywords: ["data", "query", "origin", "source", "dataset"] },
+              { label: "Filters and scope", points: 1, keywords: ["filters", "scope", "excluded", "segments", "sample"] },
+              { label: "Metric definition", points: 1, keywords: ["sales", "definition", "measure", "18", "metric"] },
+              { label: "Period and baseline", points: 1, keywords: ["period", "comparison", "baseline", "before", "after"] },
+              { label: "Causality and alternatives", points: 1, keywords: ["cause", "correlation", "factors", "selection", "confounding"] },
+              { label: "Prudent use", points: 1, keywords: ["do not use", "remove", "caution", "cite", "note", "verify"] }
+            ],
+            redFlags: [
+              { label: "accepting the number", points: 1, keywords: ["18% is precise", "looks realistic", "put it in"] },
+              { label: "self-confirmation", points: 1, keywords: ["ask ai", "are you sure", "ask the model to confirm"] }
+            ]
+          }
+        }
+      }
+    },
     questions: {
       L1: ["I can explain in simple terms how a language model generates an answer and why it can be wrong.", "You do not need a researcher-level technical explanation: what matters is understanding the principle and the general limits."],
       L2: ["I distinguish between training data, conversation context, uploaded documents, memory, and external sources.", "This distinction matters because it affects reliability, freshness, and verifiability of the output."],

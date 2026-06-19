@@ -24,29 +24,49 @@ function cloneQuestionData(value) {
       return copy;
     }
 
-    function readFormCycle() {
+    function formCycleKey(language, modeId) {
+      return `${language || "it"}:${modeId || DEFAULT_TEST_MODE_ID}`;
+    }
+
+    function normalizeFormCycle(value) {
+      const cycle = value && typeof value === "object" ? value : {};
+      return {
+        remaining: Array.isArray(cycle.remaining) ? cycle.remaining.filter(id => FORM_IDS.includes(id)) : [],
+        last: FORM_IDS.includes(cycle.last) ? cycle.last : null
+      };
+    }
+
+    function readFormCycles() {
       try {
         const raw = localStorage.getItem(FORM_CYCLE_STORAGE_KEY);
         const parsed = raw ? JSON.parse(raw) : {};
-        return {
-          remaining: Array.isArray(parsed.remaining) ? parsed.remaining.filter(id => FORM_IDS.includes(id)) : [],
-          last: FORM_IDS.includes(parsed.last) ? parsed.last : null
-        };
+        if (Array.isArray(parsed.remaining) || parsed.last) {
+          return { legacy: normalizeFormCycle(parsed) };
+        }
+        return parsed && typeof parsed === "object" ? parsed : {};
       } catch (error) {
-        return { remaining: [], last: null };
+        return {};
       }
     }
 
-    function writeFormCycle(cycle) {
+    function readFormCycle(language, modeId) {
+      const cycles = readFormCycles();
+      return normalizeFormCycle(cycles[formCycleKey(language, modeId)] || cycles.legacy);
+    }
+
+    function writeFormCycle(language, modeId, cycle) {
       try {
-        localStorage.setItem(FORM_CYCLE_STORAGE_KEY, JSON.stringify(cycle));
+        const cycles = readFormCycles();
+        delete cycles.legacy;
+        cycles[formCycleKey(language, modeId)] = normalizeFormCycle(cycle);
+        localStorage.setItem(FORM_CYCLE_STORAGE_KEY, JSON.stringify(cycles));
       } catch (error) {
         console.warn("Impossibile salvare la rotazione delle forme", error);
       }
     }
 
-    function selectNextForm() {
-      const cycle = readFormCycle();
+    function selectNextForm(modeId, language) {
+      const cycle = readFormCycle(language, modeId);
       if (!cycle.remaining.length) {
         cycle.remaining = shuffledValues(FORM_IDS);
         if (cycle.last && cycle.remaining[0] === cycle.last) {
@@ -58,11 +78,11 @@ function cloneQuestionData(value) {
       }
       const selected = cycle.remaining.shift() || shuffledValues(FORM_IDS)[0];
       cycle.last = selected;
-      writeFormCycle(cycle);
+      writeFormCycle(language, modeId, cycle);
       return selected;
     }
 
-    const APP_VERSION = "2.1.1";
+    const APP_VERSION = "2.2.0";
     const DEFAULT_TEST_MODE_ID = "complete";
     const COMPLETE_TEST_COUNT = 50;
     const TOPIC_TEST_COUNT = 10;
@@ -636,7 +656,8 @@ function cloneQuestionData(value) {
     function applyQuestionTranslation(question) {
       if (!isEnglish()) return question;
       const sourceId = question.sourceId || question.id;
-      const translation = i18n().questions && i18n().questions[sourceId];
+      const formTranslations = i18n().formOverrides && i18n().formOverrides[question.formId];
+      const translation = (formTranslations && formTranslations[sourceId]) || (i18n().questions && i18n().questions[sourceId]);
       if (!translation) return question;
       const localized = { ...question };
       if (Array.isArray(translation)) {
@@ -662,12 +683,12 @@ function cloneQuestionData(value) {
       return sourceQuestions.map(question => applyQuestionTranslation(question));
     }
 
-    function buildEnglishQuestionForm() {
+    function buildEnglishQuestionForm(formId) {
       return localizeQuestions(baseQuestions.map(baseQuestion => ({
         ...cloneQuestionData(baseQuestion),
         sourceId: baseQuestion.id,
-        formId: "EN",
-        id: `EN_${baseQuestion.id}`
+        formId,
+        id: `${formId}_${baseQuestion.id}`
       })));
     }
 
@@ -936,20 +957,38 @@ function cloneQuestionData(value) {
       return sourceQuestions.filter(question => question.section === mode.section);
     }
 
-    function sampleQuestions(sourceQuestions, count) {
+    function formWindowQuestions(sourceQuestions, count, formId, requiredIds = []) {
       const copy = [...sourceQuestions];
+      const limit = Math.min(count, copy.length);
+      const requiredSet = new Set(requiredIds);
+      const required = copy.filter(question => requiredSet.has(question.sourceId || question.id)).slice(0, limit);
+      const remaining = copy.filter(question => !requiredSet.has(question.sourceId || question.id));
+      const remainingLimit = Math.max(0, limit - required.length);
+      if (!FORM_IDS.includes(formId) || remainingLimit >= remaining.length) {
+        return required.concat(remaining.slice(0, remainingLimit));
+      }
+      const formIndex = FORM_IDS.indexOf(formId);
+      const offset = Math.floor((remaining.length * formIndex) / FORM_IDS.length);
+      const selected = remaining.slice(offset).concat(remaining.slice(0, offset)).slice(0, remainingLimit);
+      return required.concat(selected);
+    }
+
+    function sampleQuestions(sourceQuestions, count, formId = null, requiredIds = []) {
+      const selected = formWindowQuestions(sourceQuestions, count, formId, requiredIds);
+      const copy = [...selected];
       for (let i = copy.length - 1; i > 0; i -= 1) {
         const j = Math.floor(Math.random() * (i + 1));
         [copy[i], copy[j]] = [copy[j], copy[i]];
       }
-      return copy.slice(0, Math.min(count, copy.length));
+      return copy;
     }
 
-    function questionsForMode(sourceQuestions, mode, randomize = false) {
+    function questionsForMode(sourceQuestions, mode, randomize = false, formId = null) {
       const selectedMode = mode || getModeById(DEFAULT_TEST_MODE_ID);
       const pool = modePoolQuestions(sourceQuestions, selectedMode);
       const limit = selectedMode.questionLimit || pool.length;
-      if (randomize) return sampleQuestions(pool, limit);
+      const requiredIds = selectedMode.id === "practical" ? ["P_DS_1", "P_DI_1"] : [];
+      if (randomize) return sampleQuestions(pool, limit, formId, requiredIds);
       return pool.slice(0, Math.min(limit, pool.length));
     }
 
@@ -1157,14 +1196,14 @@ function cloneQuestionData(value) {
       const heroDescription = $("heroCountDescription");
       if (heroDescription) {
         heroDescription.textContent = mode.id === DEFAULT_TEST_MODE_ID
-          ? (isEnglish() ? "questions from the localized base item set, across self-assessment, technical quiz, scenarios, and practical tasks" : "domande estratte da una delle tre forme parallele, tra autovalutazione, quiz tecnico, scenari e prove pratiche")
-          : (isEnglish() ? "questions in the selected thematic path, with a local report dedicated to the chosen section" : "domande nel percorso tematico selezionato, con report locale dedicato alla sezione scelta");
+          ? (isEnglish() ? "questions from one of three parallel forms, across self-assessment, technical quiz, scenarios, and practical tasks" : "domande estratte da una delle tre forme parallele, tra autovalutazione, quiz tecnico, scenari e prove pratiche")
+          : (isEnglish() ? "questions from one of three forms in the selected thematic path, with a local report dedicated to that section" : "domande da una delle tre forme del percorso tematico selezionato, con report locale dedicato alla sezione scelta");
       }
       const modeFootnote = $("modeFootnote");
       if (modeFootnote) {
         modeFootnote.textContent = mode.id === DEFAULT_TEST_MODE_ID
-          ? (isEnglish() ? "English uses the localized base item set. Italian still rotates the three parallel forms." : "All'avvio viene scelta una delle tre forme parallele disponibili. Le alternative vengono rimescolate a ogni assessment.")
-          : (isEnglish() ? "The thematic path measures only the selected area: it does not produce a global profile or show scores for absent dimensions." : "Il percorso tematico misura solo l'area scelta: non produce un profilo globale e non mostra punteggi su dimensioni assenti.");
+          ? (isEnglish() ? "At start, the app selects one of the three available forms for the current language. Alternatives are shuffled for each assessment." : "All'avvio viene scelta una delle tre forme parallele disponibili per la lingua corrente. Le alternative vengono rimescolate a ogni assessment.")
+          : (isEnglish() ? "The thematic path rotates three forms for the selected area, measures only that area, and does not produce a global profile." : "Il percorso tematico ruota tre forme per l'area scelta, misura solo quell'area e non produce un profilo globale.");
       }
     }
 
@@ -1184,10 +1223,10 @@ function cloneQuestionData(value) {
     }
 
     function startAssessment() {
-      const selectedForm = isEnglish() ? "EN" : selectNextForm();
       const selectedMode = getModeById(selectedTestModeId());
-      const sourceQuestions = isEnglish() ? buildEnglishQuestionForm() : buildQuestionForm(selectedForm);
-      questions = questionsForMode(sourceQuestions, selectedMode, true);
+      const selectedForm = selectNextForm(selectedMode.id, currentLanguage());
+      const sourceQuestions = isEnglish() ? buildEnglishQuestionForm(selectedForm) : buildQuestionForm(selectedForm);
+      questions = questionsForMode(sourceQuestions, selectedMode, true, selectedForm);
       state.formId = selectedForm;
       state.selectedModeId = selectedMode.id;
       const visibleMode = localizedMode(selectedMode);

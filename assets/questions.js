@@ -927,8 +927,8 @@ const likertOptions = [
       }
     ];
 
-    const QUESTION_BANK_VERSION = "2026.06-m4";
-    const FORM_VERSION = "1.0";
+    const QUESTION_BANK_VERSION = "2026.06-m5";
+    const FORM_VERSION = "1.1";
     const FORM_IDS = ["A", "B", "C"];
     const FORM_CYCLE_STORAGE_KEY = "aiSkillAssessmentFormCycle";
 
@@ -1760,60 +1760,61 @@ const likertOptions = [
       "feedback": "L’AI può strutturare, interrogare e ampliare l’analisi; priorità e decisioni richiedono criteri, evidenze e responsabilità umana."
     },
     "P_DS_1": {
-      "text": "Scrivi il prompt che useresti per confrontare due procedure aziendali e produrre una tabella delle differenze. Alcune sezioni potrebbero mancare o usare termini diversi: non vuoi che l’AI inventi equivalenze.",
-      "hint": "Scrivi ciò che useresti davvero, anche se molto breve.",
+      "text": "Scrivi il prompt che useresti per chiedere all’AI di progettare una dashboard di analisi dati partendo da un export CSV con campi non documentati e alcune righe mancanti. Non vuoi che inventi KPI, valori o interpretazioni.",
+      "hint": "Scrivi il prompt che useresti davvero per ottenere una dashboard controllabile.",
       "rubric": {
         "criteria": [
           {
-            "label": "Obiettivo del confronto",
+            "label": "Obiettivo della dashboard",
             "points": 1,
             "keywords": [
-              "confront",
-              "differenz",
-              "procedur",
-              "tabella"
+              "dashboard",
+              "analisi",
+              "obiettivo",
+              "decisione",
+              "monitor"
             ]
           },
           {
-            "label": "Input e perimetro",
+            "label": "Dataset e campi",
             "points": 1,
             "keywords": [
-              "document",
-              "procedura a",
-              "procedura b",
-              "sezion",
-              "testi"
+              "csv",
+              "dati",
+              "campi",
+              "colonne",
+              "righe"
             ]
           },
           {
-            "label": "Non inventare equivalenze",
+            "label": "Non inventare KPI o valori",
             "points": 1,
             "keywords": [
               "non invent",
               "non assum",
-              "non dedurre",
-              "nessuna equivalenza",
-              "se manca"
+              "non calcolare se manca",
+              "kpi",
+              "valori"
             ]
           },
           {
-            "label": "Formato e tracciabilità",
+            "label": "Visualizzazioni e formato",
             "points": 1,
             "keywords": [
+              "grafici",
+              "visualizzazioni",
+              "layout",
               "tabella",
-              "colonne",
-              "riferimento",
-              "paragrafo",
-              "sezione",
-              "cit"
+              "formato"
             ]
           },
           {
-            "label": "Ambiguità",
+            "label": "Lacune e chiarimenti",
             "points": 1,
             "keywords": [
+              "mancant",
+              "incomplet",
               "ambig",
-              "termini diversi",
               "chiariment",
               "domande",
               "segnala"
@@ -1825,7 +1826,8 @@ const likertOptions = [
             "keywords": [
               "verifica",
               "controll",
-              "coeren",
+              "qualita",
+              "qualità",
               "revision",
               "check"
             ]
@@ -1837,23 +1839,23 @@ const likertOptions = [
             "points": 1,
             "keywords": [
               "decidi tu",
-              "equivalenti automaticamente",
+              "scegli tu i kpi",
               "senza domande",
               "versione definitiva"
             ]
           },
           {
-            "label": "assenza di fonti",
+            "label": "dati inventati",
             "points": 1,
             "keywords": [
-              "senza riferimenti",
-              "non citare",
-              "ignora le sezioni"
+              "inventa dati",
+              "stima liberamente",
+              "riempi i valori"
             ]
           }
         ]
       },
-      "feedback": "Il prompt dovrebbe definire documenti, criteri di confronto, riferimenti, gestione delle lacune e controllo delle equivalenze."
+      "feedback": "Il prompt dovrebbe definire obiettivo, dati disponibili, KPI ammessi, visualizzazioni, gestione delle lacune e controlli sulla qualità del dataset."
     },
     "P_DS_2": {
       "text": "Quale richiesta useresti per ottenere una prima analisi affidabile di un ritardo ricorrente in un processo?",
@@ -1888,64 +1890,63 @@ const likertOptions = [
       "feedback": "Per un problema complesso, un buon prompt fa emergere dati mancanti, distingue ipotesi da evidenze e prevede una verifica."
     },
     "P_DI_1": {
-      "text": "L’AI afferma: “Nel 2025 il tempo medio di introduzione di un nuovo prodotto nelle PMI europee è sceso del 31% grazie alla GenAI”, citando un osservatorio non collegato. Scrivi i controlli che eseguiresti prima di usare il dato.",
-      "hint": "Indica i controlli reali, anche in forma sintetica.",
+      "text": "Un risultato di deep search cita tre fonti per sostenere che “la GenAI riduce del 35% i tempi di onboarding”. Una fonte non è accessibile e due sembrano riprendere lo stesso comunicato. Scrivi i controlli che faresti prima di usare la conclusione.",
+      "hint": "Indica i controlli reali su fonti, indipendenza e pertinenza.",
       "rubric": {
         "criteria": [
           {
-            "label": "Esistenza della fonte",
+            "label": "Accessibilità delle fonti",
             "points": 1,
             "keywords": [
               "fonte",
-              "osservatorio",
-              "esiste",
               "link",
-              "pubblicazione",
+              "accessibile",
+              "aprire",
+              "pubblicazione"
+            ]
+          },
+          {
+            "label": "Fonte primaria",
+            "points": 1,
+            "keywords": [
+              "primaria",
+              "originale",
+              "studio",
+              "report",
               "autore"
             ]
           },
           {
-            "label": "Definizione della metrica",
+            "label": "Data e contesto",
             "points": 1,
             "keywords": [
-              "tempo medio",
-              "definiz",
-              "metrica",
-              "31",
-              "calcolo"
+              "data",
+              "versione",
+              "contesto",
+              "settore",
+              "onboarding"
             ]
           },
           {
-            "label": "Campione e metodologia",
+            "label": "Indipendenza delle fonti",
             "points": 1,
             "keywords": [
-              "campione",
-              "metodologia",
-              "pmi",
-              "paesi",
-              "settore"
-            ]
-          },
-          {
-            "label": "Causalità",
-            "points": 1,
-            "keywords": [
-              "causa",
-              "correl",
-              "grazie alla",
-              "attribuzione",
-              "fattori"
-            ]
-          },
-          {
-            "label": "Confronto indipendente",
-            "points": 1,
-            "keywords": [
-              "altre fonti",
-              "confront",
+              "indipendent",
+              "stesso comunicato",
+              "riprendono",
               "cross",
-              "indipendente",
-              "benchmark"
+              "confront"
+            ]
+          },
+          {
+            "label": "Pertinenza dell’affermazione",
+            "points": 1,
+            "keywords": [
+              "35",
+              "metrica",
+              "campione",
+              "definiz",
+              "supporta"
             ]
           },
           {
@@ -1966,7 +1967,7 @@ const likertOptions = [
             "label": "fiducia nella precisione",
             "points": 1,
             "keywords": [
-              "31% quindi",
+              "35% quindi",
               "dato preciso",
               "sembra credibile"
             ]
@@ -1982,7 +1983,7 @@ const likertOptions = [
           }
         ]
       },
-      "feedback": "Occorre verificare fonte, metrica, campione e soprattutto il nesso causale implicito nell’espressione “grazie alla”."
+      "feedback": "Il deep search non elimina la verifica: bisogna controllare accessibilità, fonte primaria, indipendenza, pertinenza e limiti della conclusione."
     },
     "P_DG_1": {
       "text": "Devi usare l’AI per classificare commenti dei dipendenti raccolti in un’indagine interna. Seleziona le azioni preliminari che adotteresti.",
@@ -2906,19 +2907,20 @@ const likertOptions = [
       "feedback": "L’AI può supportare struttura e varianti, ma non deve alterare decisioni, inventare motivazioni o sostituire l’approvazione."
     },
     "P_DS_1": {
-      "text": "Scrivi il prompt che useresti per trasformare note tecniche sparse in una comunicazione per utenti non specialisti. Alcuni punti sono incerti e non vuoi che vengano presentati come fatti.",
-      "hint": "Scrivi il prompt che useresti davvero, anche se molto breve.",
+      "text": "Scrivi il prompt che useresti per creare una bozza di documento decisionale partendo da un brief, alcune note sparse e allegati parziali. Vuoi distinguere fatti, ipotesi, decisioni già prese e punti da confermare.",
+      "hint": "Scrivi il prompt che useresti davvero per ottenere un documento revisionabile.",
       "rubric": {
         "criteria": [
           {
-            "label": "Obiettivo e pubblico",
+            "label": "Obiettivo e documento",
             "points": 1,
             "keywords": [
-              "comunicazione",
-              "utenti",
-              "non specialist",
+              "documento",
+              "bozza",
+              "decision",
+              "obiettivo",
               "pubblico",
-              "comprensib"
+              "destinatari"
             ]
           },
           {
@@ -2926,37 +2928,37 @@ const likertOptions = [
             "points": 1,
             "keywords": [
               "note",
-              "appunti",
-              "tecnic",
-              "testo",
-              "materiale"
+              "brief",
+              "allegati",
+              "materiale",
+              "fonti"
             ]
           },
           {
-            "label": "Gestione dell’incertezza",
+            "label": "Distinzione fatti e ipotesi",
             "points": 1,
             "keywords": [
+              "fatti",
+              "ipotesi",
               "incert",
-              "non verific",
+              "decisioni",
               "non invent",
-              "segnala",
               "da confermare"
             ]
           },
           {
-            "label": "Formato e tono",
+            "label": "Formato e struttura",
             "points": 1,
             "keywords": [
               "formato",
               "struttura",
-              "titolo",
-              "punti",
-              "tono",
-              "linguaggio"
+              "sezioni",
+              "executive summary",
+              "tabella"
             ]
           },
           {
-            "label": "Chiarimenti",
+            "label": "Chiarimenti e lacune",
             "points": 1,
             "keywords": [
               "domande",
@@ -3000,7 +3002,7 @@ const likertOptions = [
           }
         ]
       },
-      "feedback": "Il prompt dovrebbe adattare il contenuto al pubblico mantenendo separati fatti, incertezze e punti da confermare."
+      "feedback": "Il prompt dovrebbe produrre un documento utile ma revisionabile, distinguendo input disponibili, fatti, ipotesi, decisioni e punti da confermare."
     },
     "P_DS_2": {
       "text": "Quale prompt useresti per confrontare possibili soluzioni a un problema tecnico con informazioni ancora incomplete?",
@@ -3035,53 +3037,52 @@ const likertOptions = [
       "feedback": "Quando i dati sono incompleti, la qualità del prompt dipende soprattutto dalla gestione esplicita di lacune, assunzioni e criteri."
     },
     "P_DI_1": {
-      "text": "L’AI scrive: “Un’indagine 2026 dimostra che i team che usano copiloti AI commettono il 40% di errori in meno”, senza indicare campione, definizione di errore o link. Scrivi i controlli che faresti.",
-      "hint": "Indica il processo reale, anche con poche parole.",
+      "text": "L’AI genera una mini-dashboard e conclude: “le vendite sono cresciute del 18% grazie alla nuova campagna”, ma non mostra query, filtri, periodo di confronto né dati esclusi. Scrivi i controlli che faresti prima di presentare la dashboard.",
+      "hint": "Indica il processo reale di verifica su dati, metriche e interpretazione.",
       "rubric": {
         "criteria": [
           {
-            "label": "Fonte e pubblicazione",
+            "label": "Origine dati e query",
             "points": 1,
             "keywords": [
+              "dati",
+              "query",
+              "origine",
               "fonte",
-              "indagine",
-              "link",
-              "autore",
-              "pubblicazione",
-              "esiste"
+              "dataset"
             ]
           },
           {
-            "label": "Campione",
+            "label": "Filtri e perimetro",
             "points": 1,
             "keywords": [
-              "campione",
-              "team",
-              "numero",
-              "settore",
-              "selezione"
+              "filtri",
+              "perimetro",
+              "esclusi",
+              "segmenti",
+              "campione"
             ]
           },
           {
-            "label": "Definizione e misura",
+            "label": "Definizione della metrica",
             "points": 1,
             "keywords": [
-              "errore",
+              "vendite",
               "definiz",
               "misura",
-              "40",
+              "18",
               "metrica"
             ]
           },
           {
-            "label": "Disegno e confronto",
+            "label": "Periodo e baseline",
             "points": 1,
             "keywords": [
-              "gruppo",
+              "periodo",
               "confronto",
               "baseline",
-              "metodo",
-              "controllo"
+              "prima",
+              "dopo"
             ]
           },
           {
@@ -3113,7 +3114,7 @@ const likertOptions = [
             "label": "accettazione del numero",
             "points": 1,
             "keywords": [
-              "40% è preciso",
+              "18% è preciso",
               "sembra realistico",
               "lo inserisco"
             ]
@@ -3129,7 +3130,7 @@ const likertOptions = [
           }
         ]
       },
-      "feedback": "Il dato richiede fonte, definizioni, campione, disegno di confronto e attenzione alla causalità."
+      "feedback": "Una dashboard va verificata su origine dati, query, filtri, metrica, periodo di confronto e nesso causale prima di presentarla."
     },
     "P_DG_1": {
       "text": "Vuoi usare l’AI per analizzare bozze di brevetto e documenti di sviluppo non ancora pubblici. Seleziona le precauzioni preliminari.",
