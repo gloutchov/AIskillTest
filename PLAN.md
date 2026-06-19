@@ -282,6 +282,25 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - test completo resta a 50 domande
   - dashboard ed export includono lingua, origine lingua e versione `2.1.0`
   - documentazione aggiornata
+- Stato: completata su `main`
+
+## Milestone 9 - Cache busting asset statici
+
+- Branch: `fix/english-dashboard-strings`
+- Tipo: modifica piccola
+- Versione target: `2.1.1`
+- Obiettivo:
+  - evitare che browser e GitHub Pages riusino versioni obsolete di JavaScript e CSS dopo patch di localizzazione.
+- Scope:
+  - aggiornare la versione app a `2.1.1`
+  - aggiungere query string di versione a `assets/styles.css`, `assets/questions.js`, `assets/i18n.js` e `assets/app.js`
+  - mantenere invariati banca domande, privacy, export e logica di scoring
+  - aggiornare README e piano
+- Validazione:
+  - apertura della pagina con badge `2.1.1`
+  - caricamento degli asset con query string `v=2.1.1`
+  - full test inglese da 50 domande con controlli e dashboard localizzati
+  - sintassi JavaScript valida
 - Stato: in validazione
 
 ## Backlog opzionale

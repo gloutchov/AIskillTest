@@ -4,9 +4,9 @@ Questionario interattivo in italiano e inglese per valutare in modo pratico comp
 
 L'assessment produce un profilo finale, una dashboard dei punteggi e suggerimenti formativi. E' pensato come strumento diagnostico interno e migliorabile, non come test psicometrico validato.
 
-Versione corrente dell'app: `2.1.0`.
+Versione corrente dell'app: `2.1.1`.
 
-Tag di riferimento: `v2.1.0`.
+Tag di riferimento: `v2.1.1`.
 
 ## Nota sullo sviluppo
 
@@ -27,6 +27,8 @@ Questo test e' stato realizzato in vibecoding, usando l'AI come supporto operati
 Apri `ai_skill_test.html` in un browser moderno. Non servono build, dipendenze o server.
 
 La lingua iniziale segue le impostazioni del browser: se la lingua di sistema e' italiana, l'app parte in italiano; se e' inglese o qualunque altra lingua, parte in inglese. Il selettore `IT` / `EN` nella home consente il cambio manuale e salva la preferenza nel `localStorage` del browser. Landing, test, dashboard e bibliografia vengono localizzati. Per evitare report misti, il cambio lingua va fatto prima di iniziare un assessment.
+
+Gli asset statici sono caricati con query string di versione, cosi' GitHub Pages e il browser non riutilizzano script o fogli stile obsoleti dopo una patch.
 
 La home mostra un carosello orizzontale manuale per scegliere tra:
 
@@ -105,8 +107,8 @@ Il file `index.html` reindirizza automaticamente a `ai_skill_test.html`, quindi 
 
 ## Versioning
 
-- Versione app: `2.1.0`.
-- Tag Git: `v2.1.0`.
+- Versione app: `2.1.1`.
+- Tag Git: `v2.1.1`.
 - Banca domande: `2026.06-m4`.
 - Forma assessment: `1.0`.
 
