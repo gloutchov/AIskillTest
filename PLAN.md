@@ -364,6 +364,152 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - sintassi JavaScript valida
 - Stato: in validazione
 
+## Milestone 12 - Chiarezza delle risposte dichiarative
+
+- Branch: `fix/declarative-answer-details`
+- Tipo: modifica piccola
+- Versione target: `2.3.1`
+- Obiettivo:
+  - rendere piu' distinguibili i livelli delle domande dichiarative senza reintrodurre numeri, ordine crescente o altri segnali che favoriscano la selezione automatica del livello massimo.
+- Motivazione:
+  - nei test preliminari, la scala ordinata induceva alcuni partecipanti molto esposti a tutorial, newsletter e contenuti AI a scegliere sistematicamente il livello piu' alto
+  - il mescolamento delle alternative ha favorito risposte piu' meditate, ma la differenza tra autonomia occasionale, metodo stabile e pratica trasferibile puo' risultare poco chiara
+  - la revisione deve preservare la frizione utile, riducendo l'ambiguita' semantica e il carico di decodifica
+- Scope:
+  - mantenere il mescolamento delle alternative dichiarative e l'assenza di etichette numeriche o livelli espliciti
+  - riscrivere titoli e dettagli delle cinque alternative usando evidenze comportamentali osservabili
+  - distinguere con chiarezza: comportamento non applicato, applicazione con supporto, autonomia caso per caso, metodo stabile e pratica verificata/trasferibile
+  - evitare che familiarita' con il linguaggio AI, capacita' di spiegare un concetto o consumo di contenuti siano presentati come prova sufficiente di pratica operativa
+  - sostituire `Mostra suggerimenti` / `Nascondi suggerimenti` con `Mostra i dettagli` / `Nascondi i dettagli`, e con equivalenti naturali in inglese
+  - aggiungere una breve istruzione che inviti a rispondere in base a cio' che si fa abitualmente e a usare i dettagli quando due alternative sembrano simili
+  - verificare che il comando sia visibile prima della selezione, considerato l'auto-advance delle scelte singole
+  - aggiornare localizzazione italiana e inglese, versione app, cache busting, versione banca/forma se necessario, README e piano
+- Vincoli:
+  - non rendere visibile quale alternativa assegna il punteggio piu' alto
+  - non modificare pesi, scoring o composizione dei percorsi salvo necessita' documentata
+  - non presentare la scala come psicometricamente validata
+  - nessuna chiamata di rete e nessun cambiamento alla gestione locale dei dati
+- Validazione:
+  - alternative dichiarative mostrate in ordine casuale in italiano e inglese
+  - dettagli comprensibili anche fuori dall'ordine gerarchico originale
+  - differenza riconoscibile tra autonomia, metodo ripetibile e trasferibilita'
+  - comando `Mostra i dettagli` apre e richiude correttamente i testi
+  - selezione, auto-advance, ritorno con `Indietro` e cambio risposta restano prevedibili
+  - test completo e percorsi interessati mantengono conteggi e scoring attesi
+  - report, export, privacy e bibliografia restano invariati salvo versionamento
+  - README italiano/inglese e metadati di versione allineati
+- Criterio di validazione del maintainer:
+  - lettura comparativa delle cinque alternative senza numeri e in almeno tre ordini differenti
+  - conferma che la scala richieda attenzione ma non la ricostruzione ambigua della gerarchia
+- Stato: completata su `main`
+
+## Milestone 13 - Blueprint del percorso introduttivo
+
+- Branch: `plan/novice-learning-path`
+- Tipo: documentazione e progettazione contenuti
+- Versione target: nessun bump applicativo
+- Obiettivo:
+  - definire prima dell'implementazione la matrice didattica, le tre forme parallele, le unita' di apprendimento e le fonti del percorso rivolto a persone con poca o nessuna esperienza di AI.
+- Posizionamento:
+  - il percorso e' un'esperienza di apprendimento, non una versione facile dell'assessment e non una certificazione
+  - nome di lavoro italiano: `Primi passi con l'AI`
+  - nome di lavoro inglese: `AI First Steps`
+  - il risultato non e' confrontabile con l'indice AI Skill del test completo
+- Deliverable documentali:
+  - aggiungere un documento dedicato, per esempio `LEARNING_PATH.md`, mantenuto in italiano e con le stringhe pubbliche previste anche in inglese
+  - definire dieci obiettivi verificabili distribuiti in cinque aree: possibilita' della GenAI, limiti/falsa sicurezza, richieste e contesto, verifica di fonti/output, privacy/responsabilita'
+  - progettare tre forme A/B/C da 10 domande con la stessa matrice di aree e difficolta', per una banca minima di 30 domande introduttive
+  - definire quali domande siano di comprensione, scenario o scelta operativa; limitare gli item dichiarativi perche' non producono errori didattici interpretabili
+  - definire un insieme ridotto di unita' didattiche riutilizzabili, collegate a piu' domande e condivise tra le tre forme
+  - per ogni unita' specificare: principio, errore tipico, spiegazione, esempio, micro-azione, fonte, lingua, difficolta', tempo stimato e data di verifica della fonte
+  - classificare le letture in tre livelli: spiegazione locale breve, approfondimento introduttivo, studio avanzato
+  - mappare le fonti gia' presenti che possono essere riutilizzate e identificare le lacune, in particolare privacy/dati, verifica delle fonti, copyright e uso proporzionato al rischio
+  - preferire fonti primarie, istituzionali, gratuite, accessibili e stabili; distinguere la bibliografia metodologica dai materiali consigliati al neofita
+  - documentare la logica con cui errori e risposte corrette alimentano il tutorial personalizzato
+- Vincoli:
+  - equivalenza delle forme progettata ma non dichiarata come dimostrata psicometricamente
+  - nessuna domanda deve richiedere gergo tecnico non spiegato o conoscenze specialistiche estranee agli obiettivi introduttivi
+  - il tutorial locale deve essere comprensibile senza obbligare l'utente ad aprire collegamenti esterni
+  - nessuna incorporazione automatica di video, widget o contenuti di terze parti
+- Validazione:
+  - ogni forma contiene esattamente 10 domande e copre la stessa matrice 2+2+2+2+2
+  - ogni domanda e' collegata ad almeno un obiettivo e a un'unita' didattica
+  - ogni unita' didattica ha almeno una fonte tracciabile e una spiegazione locale autonoma
+  - revisione del linguaggio da parte del maintainer con attenzione a neofiti e persone non appassionate di AI
+  - controllo che fonti metodologiche e letture consigliate siano presentate con funzioni distinte
+- Criterio di validazione del maintainer:
+  - approvazione della matrice, delle 30 domande, delle unita' didattiche e della selezione delle fonti prima di iniziare l'implementazione applicativa
+- Stato: pianificata
+
+## Milestone 14 - Percorso guidato Primi passi con l'AI
+
+- Branch: `feature/novice-learning-path`
+- Tipo: modifica media
+- Versione target: `2.4.0`
+- Dipendenza:
+  - milestone 13 validata dal maintainer
+- Obiettivo:
+  - introdurre un percorso statico e bilingue da 10 domande che trasformi gli errori in un tutorial personalizzato e offra una continuazione di studio graduata.
+- Scope percorso:
+  - aggiungere `Primi passi con l'AI` / `AI First Steps` al selettore dei percorsi in landing
+  - descrivere chiaramente destinatari, durata, finalita' didattica e non confrontabilita' con il test completo
+  - mantenere facoltativi gli eventuali dati iniziali e mostrare la nota privacy esistente
+  - selezionare a ogni sessione una forma A/B/C completa da 10 domande secondo il ciclo locale gia' adottato, separato per lingua e modalita'
+  - mescolare ordine delle domande e alternative senza alterare la copertura fissa delle cinque aree
+  - usare scenari quotidiani, domande di comprensione e scelte operative con linguaggio accessibile
+  - non mostrare indice AI Skill, profilo globale Beginner/Curious/Expert/Champion o punteggi di dimensioni non misurate
+  - presentare un risultato denominato `Preparazione sulle basi` o equivalente validato nella milestone 13
+- Scope tutorial personalizzato:
+  - mostrare al termine le unita' didattiche collegate agli errori, senza duplicare la stessa spiegazione per domande diverse
+  - per ogni errore mostrare situazione, limite della scelta, principio da ricordare, esempio e micro-azione concreta
+  - riconoscere anche le risposte corrette con un rinforzo breve e non celebrativo
+  - mantenere disponibili localmente tutte le spiegazioni essenziali
+  - proporre approfondimenti in livelli di impegno, con tempo stimato e indicazione della fonte
+  - aprire fonti esterne solo dopo un'azione esplicita dell'utente e in una nuova scheda
+  - offrire al termine la possibilita' di ripetere il percorso con una forma successiva o passare a un test tematico, chiarendo che la ripetizione ha finalita' didattica
+- Struttura tecnica consigliata:
+  - mantenere compatibilita' diretta con GitHub Pages, senza build tool o dipendenze runtime
+  - separare, se utile, banca domande introduttive, unita' didattiche e fonti in file statici dedicati
+  - collegare domande e unita' tramite identificatori stabili, senza generare contenuti o spiegazioni tramite servizi esterni
+  - salvare report e storico solo in `localStorage`, usando la modalita' e la forma per distinguere il percorso introduttivo dagli assessment
+  - includere in JSON/CSV almeno modalita', forma, lingua, versione, risposte e identificatori delle unita' consigliate, senza esportazioni automatiche
+- Bibliografia e studio:
+  - mantenere la bibliografia metodologica attuale
+  - aggiungere una sezione distinta per le risorse di apprendimento introduttive
+  - indicare per ogni risorsa livello, lingua, tempo stimato e data dell'ultima verifica
+  - includere solo collegamenti scelti nella milestone 13 e verificati prima della release
+- Privacy e accessibilita':
+  - nessun dato del rispondente, errore o risultato inviato a server esterni
+  - nessun analytics, tracking, embed o caricamento preventivo di risorse esterne
+  - link esterni attivati solo dal click dell'utente e descritti come tali
+  - tutorial leggibile su desktop e mobile, navigabile da tastiera e comprensibile senza affidarsi solo a colore o icone
+- Documentazione e versioning:
+  - aggiornare UI, `assessmentVersion`, versione banca domande, versione forme, cache busting e tag previsti
+  - aggiornare `README.md` in italiano e inglese con modalita', finalita', privacy, storico, export e pubblicazione GitHub Pages
+  - aggiornare `PLAN.md` con esito e versione finale
+  - aggiornare `AGENTS.md` solo se l'implementazione introduce nuove regole operative o vincoli permanenti
+  - mantenere `LEARNING_PATH.md` allineato a domande, unita' e fonti effettivamente pubblicate
+- Validazione funzionale:
+  - percorso introduttivo italiano e inglese contiene esattamente 10 domande
+  - tre sessioni complete possono attraversare A/B/C senza rompere il ciclo delle altre modalita'
+  - ogni forma rispetta la matrice 2+2+2+2+2 approvata
+  - tutorial finale mostra contenuti pertinenti agli errori e non duplica unita' condivise
+  - risposte corrette ricevono un rinforzo coerente e gli errori una spiegazione non giudicante
+  - nessun profilo o punteggio globale fuorviante appare nel percorso
+  - ripetizione del percorso e passaggio ai test tematici funzionano
+  - storico, JSON e CSV distinguono percorso, forma, lingua e versione
+  - bibliografia e approfondimenti sono raggiungibili dalla landing e dal risultato
+- Validazione tecnica e privacy:
+  - apertura diretta di `ai_skill_test.html` e pubblicazione GitHub Pages funzionano senza build
+  - test manuale equivalente su desktop e mobile per landing, avvio, navigazione, risultato, tutorial, storico, export e bibliografia
+  - ispezione del traffico conferma assenza di richieste esterne durante test e tutorial; sono ammesse solo navigazioni esplicite dopo click su una fonte
+  - refresh e ritorno non inviano ne' perdono dati oltre il comportamento locale documentato
+  - sintassi JavaScript valida e nessun errore in console nei flussi principali
+- Criterio di validazione del maintainer:
+  - completamento manuale di almeno una forma in italiano e una in inglese, includendo risposte corrette ed errate
+  - revisione del tutorial come esperienza di apprendimento autonoma, accessibile e capace di suggerire un passo successivo senza obbligarlo
+- Stato: pianificata
+
 ## Backlog opzionale
 
 - Aggiungere una checklist manuale di QA in `docs/QA.md`.

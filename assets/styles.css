@@ -752,7 +752,7 @@
 
     .options {
       display: grid;
-      gap: 10px;
+      gap: 8px;
       margin-top: 20px;
     }
 
@@ -762,10 +762,12 @@
       gap: 12px;
       align-items: start;
       border: 1px solid #cbd5e1;
-      border-radius: 18px;
-      padding: 14px;
+      border-radius: 16px;
+      padding: 12px 14px;
       background: #f8fafc;
       cursor: pointer;
+      font-weight: 400;
+      margin: 0;
       transition: border 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
     }
 
@@ -803,10 +805,22 @@
 
     .option .option-detail {
       display: block;
-      margin-top: 4px;
+      margin-top: 2px;
       color: #64748b;
       font-size: 13px;
-      line-height: 1.48;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    .response-guide {
+      margin: -4px 0 14px;
+      padding: 10px 12px;
+      color: #475569;
+      background: #f8fafc;
+      border-left: 3px solid #94a3b8;
+      border-radius: 0 8px 8px 0;
+      font-size: 13px;
+      line-height: 1.5;
     }
 
     .hint-toggle-row {

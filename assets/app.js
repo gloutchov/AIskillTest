@@ -82,7 +82,7 @@ function cloneQuestionData(value) {
       return selected;
     }
 
-    const APP_VERSION = "2.3.0";
+    const APP_VERSION = "2.3.1";
     const DEFAULT_TEST_MODE_ID = "complete";
     const COMPLETE_TEST_COUNT = 50;
     const TOPIC_TEST_COUNT = 10;
@@ -847,8 +847,8 @@ function cloneQuestionData(value) {
         next: "Next",
         interrupt: "Interrupt test",
         finish: "Calculate dashboard",
-        showHints: "Show hints",
-        hideHints: "Hide hints",
+        showHints: "Show details",
+        hideHints: "Hide details",
         answerRequired: "Answer the question before continuing.",
         textAnswerRequired: "Enter an answer before continuing.",
         lastReport: "Show last report",
@@ -892,8 +892,8 @@ function cloneQuestionData(value) {
         next: "Avanti",
         interrupt: "Interrompi il test",
         finish: "Calcola dashboard",
-        showHints: "Mostra suggerimenti",
-        hideHints: "Nascondi suggerimenti",
+        showHints: "Mostra i dettagli",
+        hideHints: "Nascondi i dettagli",
         answerRequired: "Rispondi alla domanda prima di proseguire.",
         textAnswerRequired: "Inserisci una risposta prima di proseguire.",
         lastReport: "Mostra ultimo report",
@@ -1336,6 +1336,13 @@ function cloneQuestionData(value) {
       $("sectionBadge").textContent = sectionLabel(q.section);
       $("questionTitle").textContent = q.text;
       $("questionHint").textContent = q.hint || "";
+      const responseGuide = $("responseGuide");
+      responseGuide.hidden = q.type !== "likert";
+      responseGuide.textContent = q.type === "likert"
+        ? (isEnglish()
+          ? "Choose what you regularly do in practice, not only what you know or could explain. If two options seem similar, show the details before answering."
+          : "Scegli ciò che fai abitualmente nella pratica, non soltanto ciò che conosci o sapresti spiegare. Se due alternative sembrano simili, mostra i dettagli prima di rispondere.")
+        : "";
 
       const guide = localizedSectionGuide(q.section);
       $("sideTitle").textContent = guide.title;
@@ -1432,8 +1439,8 @@ function cloneQuestionData(value) {
       const hasDetails = displayedOptions.some(item => item.option && item.option.text);
       if (!hasDetails) return "";
       const label = visible
-        ? (isEnglish() ? "Hide hints" : "Nascondi suggerimenti")
-        : (isEnglish() ? "Show hints" : "Mostra suggerimenti");
+        ? (isEnglish() ? "Hide details" : "Nascondi i dettagli")
+        : (isEnglish() ? "Show details" : "Mostra i dettagli");
       return `<div class="hint-toggle-row"><button type="button" class="hint-toggle" id="optionHintToggle">${label}</button></div>`;
     }
 

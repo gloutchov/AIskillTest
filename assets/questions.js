@@ -1,9 +1,9 @@
 const likertOptions = [
-      { value: 1, score: 1, title: "Non riconosco questo comportamento nel mio modo di lavorare", text: "Non saprei applicarlo senza guida oppure non lo considero parte del mio approccio." },
-      { value: 2, score: 2, title: "Lo riconosco soprattutto quando seguo un supporto esterno", text: "Riesco a procedere usando esempi, template o indicazioni già predisposte." },
-      { value: 3, score: 3, title: "Lo applico autonomamente nei casi ordinari", text: "Riesco a farlo, ma il metodo non è sempre stabile, esplicito o trasferibile." },
-      { value: 4, score: 4, title: "Fa parte del mio metodo di lavoro", text: "Lo applico con criteri, controlli e passaggi ripetibili." },
-      { value: 5, score: 5, title: "Lo traduco in una pratica riutilizzabile e condivisibile", text: "Ne valuto gli esiti, definisco standard e so supportare altre persone nell’applicazione." }
+      { value: 1, score: 1, title: "Non lo applico nella mia pratica", text: "Nella pratica non lo faccio, oppure non saprei da dove iniziare senza indicazioni specifiche." },
+      { value: 2, score: 2, title: "Lo applico seguendo un supporto esterno", text: "Riesco a farlo se parto da un esempio, un tutorial, un template o una procedura già preparata." },
+      { value: 3, score: 3, title: "Lo applico autonomamente, caso per caso", text: "Nei casi che conosco procedo senza guida, ma decido ancora volta per volta e non seguo sempre un metodo stabile." },
+      { value: 4, score: 4, title: "Lo applico con un metodo stabile", text: "Lo faccio abitualmente usando criteri, controlli o passaggi che riesco a ripetere anche in situazioni diverse." },
+      { value: 5, score: 5, title: "Ne faccio una pratica verificata e condivisibile", text: "Ne verifico gli esiti, so documentare il metodo e posso aiutare altre persone ad applicarlo e adattarlo." }
     ];
 
     const baseQuestions = [
@@ -1113,8 +1113,8 @@ const likertOptions = [
       }
     ];
 
-    const QUESTION_BANK_VERSION = "2026.06-m6";
-    const FORM_VERSION = "1.2";
+    const QUESTION_BANK_VERSION = "2026.07-m7";
+    const FORM_VERSION = "1.3";
     const FORM_IDS = ["A", "B", "C"];
     const FORM_CYCLE_STORAGE_KEY = "aiSkillAssessmentFormCycle";
 

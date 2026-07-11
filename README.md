@@ -6,9 +6,9 @@ Questionario interattivo in italiano e inglese per valutare in modo pratico comp
 
 L'assessment produce un profilo finale, una dashboard dei punteggi e suggerimenti formativi. E' pensato come strumento diagnostico interno e migliorabile, non come test psicometrico validato.
 
-Versione corrente dell'app: `2.3.0`.
+Versione corrente dell'app: `2.3.1`.
 
-Tag di riferimento: `v2.3.0`.
+Tag di riferimento: `v2.3.1`.
 
 ### Nota sullo sviluppo
 
@@ -33,6 +33,8 @@ La lingua iniziale segue le impostazioni del browser: italiano se il browser e' 
 La home mostra un carosello con test completo e percorsi tematici. Il carosello avanza automaticamente ogni 5 secondi e resta controllabile con frecce, indicatori, swipe touch e pulsante `Pausa`.
 
 Durante il test, le domande a scelta singola avanzano automaticamente dopo la selezione. Domande a scelta multipla e prove testuali richiedono il pulsante `Avanti`. Il pulsante `Interrompi il test` annulla la sessione corrente, previa conferma, e torna alla home senza salvare un report.
+
+Nelle domande dichiarative, le alternative restano senza livelli numerici e sono presentate in ordine casuale per favorire la lettura del comportamento descritto. Il comando `Mostra i dettagli` chiarisce le differenze tra applicazione con supporto, autonomia caso per caso, metodo stabile e pratica verificata e condivisibile.
 
 ### Cosa misura
 
@@ -95,10 +97,10 @@ Il file `index.html` reindirizza automaticamente a `ai_skill_test.html`, quindi 
 
 ### Versioning
 
-- Versione app: `2.3.0`.
-- Tag Git: `v2.3.0`.
-- Banca domande: `2026.06-m6`.
-- Forma assessment: `1.2`.
+- Versione app: `2.3.1`.
+- Tag Git: `v2.3.1`.
+- Banca domande: `2026.07-m7`.
+- Forma assessment: `1.3`.
 
 I tag seguono il formato `vX.Y.Z`. Le modifiche patch aggiornano documentazione o correzioni piccole; le modifiche minor o major introducono cambiamenti funzionali piu' ampi.
 
@@ -129,9 +131,9 @@ Interactive questionnaire in Italian and English for practical assessment of Gen
 
 The assessment produces a final profile, score dashboard, and training recommendations. It is intended as an internal diagnostic tool that can evolve over time, not as a psychometrically validated test.
 
-Current app version: `2.3.0`.
+Current app version: `2.3.1`.
 
-Reference tag: `v2.3.0`.
+Reference tag: `v2.3.1`.
 
 ### Development Note
 
@@ -156,6 +158,8 @@ The initial language follows the browser settings: Italian if the browser is in 
 The home page shows a carousel with the full test and thematic paths. The carousel advances automatically every 5 seconds and remains controllable through arrows, indicators, touch swipe, and the `Pause` button.
 
 During the test, single-choice questions advance automatically after selection. Multiple-choice questions and text tasks still require the `Next` button. The `Interrupt test` button cancels the current session after confirmation and returns to the home page without saving a report.
+
+In declarative questions, options remain unnumbered and are presented in random order to encourage reading the described behavior. The `Show details` control clarifies the differences between applying something with support, working independently case by case, using a stable method, and maintaining a verified, shareable practice.
 
 ### What It Measures
 
@@ -218,10 +222,10 @@ To publish it as a web page:
 
 ### Versioning
 
-- App version: `2.3.0`.
-- Git tag: `v2.3.0`.
-- Question bank: `2026.06-m6`.
-- Assessment form: `1.2`.
+- App version: `2.3.1`.
+- Git tag: `v2.3.1`.
+- Question bank: `2026.07-m7`.
+- Assessment form: `1.3`.
 
 Tags follow the `vX.Y.Z` format. Patch releases cover documentation or small fixes; minor and major releases introduce broader functional changes.
 

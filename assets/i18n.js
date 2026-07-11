@@ -19,11 +19,11 @@ const AI_SKILL_I18N = {
       "Practical Lab": "Practical Lab"
     },
     likertOptions: [
-      ["I do not recognize this behavior in how I work", "I would not know how to apply it without guidance, or I do not consider it part of my approach."],
-      ["I recognize it mostly when I follow external support", "I can proceed using examples, templates, or prepared guidance."],
-      ["I apply it independently in ordinary cases", "I can do it, but the method is not always stable, explicit, or transferable."],
-      ["It is part of my working method", "I apply it with repeatable criteria, checks, and steps."],
-      ["I turn it into a reusable and shareable practice", "I evaluate outcomes, define standards, and can support others in applying it."]
+      ["I do not apply it in my work", "In practice I do not do it, or I would not know where to begin without specific guidance."],
+      ["I apply it with external support", "I can do it when I start from an example, tutorial, template, or ready-made procedure."],
+      ["I apply it independently, case by case", "In familiar situations I proceed without guidance, but I still decide each time and do not always follow a stable method."],
+      ["I apply it using a stable method", "I do it regularly using criteria, checks, or steps that I can repeat in different situations."],
+      ["I turn it into a verified, shareable practice", "I check its outcomes, can document the method, and can help other people apply and adapt it."]
     ],
     modes: {
       complete: {
