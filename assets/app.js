@@ -82,7 +82,7 @@ function cloneQuestionData(value) {
       return selected;
     }
 
-    const APP_VERSION = "2.3.1";
+    const APP_VERSION = "2.4.0";
     const DEFAULT_TEST_MODE_ID = "complete";
     const COMPLETE_TEST_COUNT = 50;
     const TOPIC_TEST_COUNT = 10;
@@ -121,13 +121,23 @@ function cloneQuestionData(value) {
         outputNote: "Profilo completo con indice AI Skill, quadrante Literacy x Fluency e radar competenze."
       },
       {
+        id: "first-steps",
+        label: "Primi passi con l'AI",
+        shortLabel: "Primi passi",
+        type: "learning",
+        section: "Primi passi con l'AI",
+        questionLimit: 10,
+        description: "Dieci situazioni guidate per scoprire le basi dell'AI generativa.",
+        outputNote: "Tutorial personalizzato sugli argomenti da consolidare, senza profilo globale."
+      },
+      {
         id: "literacy",
         label: "Literacy",
         shortLabel: "Literacy",
         type: "topic",
         section: "Literacy",
         questionLimit: TOPIC_TEST_COUNT,
-        description: "Comprensione di funzionamento, limiti, dati, fonti, privacy e affidabilita'.",
+        description: "Comprensione di funzionamento, limiti, dati, fonti, privacy e affidabilità.",
         outputNote: "Report tematico sulla Literacy, senza profilo globale."
       },
       {
@@ -157,7 +167,7 @@ function cloneQuestionData(value) {
         type: "topic",
         section: "Fluency · Delegation",
         questionLimit: TOPIC_TEST_COUNT,
-        description: "Scelta dei task delegabili, scomposizione del lavoro e responsabilita' umana.",
+        description: "Scelta dei task delegabili, scomposizione del lavoro e responsabilità umana.",
         outputNote: "Report tematico sulla Delegation, senza profilo globale."
       },
       {
@@ -167,7 +177,7 @@ function cloneQuestionData(value) {
         type: "topic",
         section: "Fluency · Description",
         questionLimit: TOPIC_TEST_COUNT,
-        description: "Qualita' del brief: obiettivi, vincoli, contesto, formato e criteri di qualita'.",
+        description: "Qualità del brief: obiettivi, vincoli, contesto, formato e criteri di qualità.",
         outputNote: "Report tematico sulla Description, senza profilo globale."
       },
       {
@@ -177,7 +187,7 @@ function cloneQuestionData(value) {
         type: "topic",
         section: "Fluency · Discernment",
         questionLimit: TOPIC_TEST_COUNT,
-        description: "Valutazione critica di output, dati, fonti, utilita' e rischi prima dell'uso.",
+        description: "Valutazione critica di output, dati, fonti, utilità e rischi prima dell'uso.",
         outputNote: "Report tematico sul Discernment, senza profilo globale."
       },
       {
@@ -197,7 +207,7 @@ function cloneQuestionData(value) {
         type: "topic",
         section: "Mindset",
         questionLimit: TOPIC_TEST_COUNT,
-        description: "Attitudine, fiducia calibrata, sperimentazione e disponibilita' a cambiare workflow.",
+        description: "Attitudine, fiducia calibrata, sperimentazione e disponibilità a cambiare workflow.",
         outputNote: "Report tematico sul Mindset, senza profilo globale."
       },
       {
@@ -216,6 +226,11 @@ function cloneQuestionData(value) {
 
 
     const sectionGuides = {
+      "Primi passi con l'AI": {
+        title: "Primi passi con l'AI",
+        text: "Un percorso guidato per comprendere possibilità, limiti e comportamenti essenziali nell'uso della GenAI.",
+        items: ["Possibilità", "Limiti", "Richieste", "Verifica", "Privacy"]
+      },
       "Literacy": {
         title: "Literacy",
         text: "Misura la comprensione dei principi di funzionamento, dei limiti, dei dati e delle condizioni di affidabilità della GenAI.",
@@ -625,6 +640,11 @@ function cloneQuestionData(value) {
       const guide = sectionGuides[section] || sectionGuides.Literacy;
       if (!isEnglish()) return guide;
       const englishGuides = {
+        "Primi passi con l'AI": {
+          title: "AI First Steps",
+          text: "A guided path through essential GenAI capabilities, limitations, and responsible behaviors.",
+          items: ["Capabilities", "Limits", "Requests", "Verification", "Privacy"]
+        },
         "Literacy": {
           title: "Literacy",
           text: "Measures understanding of GenAI principles, limits, data, and reliability conditions.",
@@ -859,7 +879,7 @@ function cloneQuestionData(value) {
         subtitle: "Un questionario interattivo per stimare conoscenza, uso operativo, giudizio critico e attitudine verso la GenAI. Il risultato finale produce un profilo, una dashboard e suggerimenti formativi.",
         sourceNote: "Modello operativo ispirato alle dimensioni Literacy, Fluency e Mindset e alle 4D della Fluency: Delegation, Description, Discernment, Diligence. Non è un test psicometrico validato: è uno strumento diagnostico interno e migliorabile.",
         carouselTitle: "Scegli il tuo percorso",
-        carouselIntro: "Il test completo misura il profilo generale. I percorsi tematici sono piu' brevi e restituiscono un report locale limitato all'area scelta.",
+        carouselIntro: "Il test completo misura il profilo generale. I percorsi tematici sono più brevi e restituiscono un report locale limitato all'area scelta.",
         autoplayPause: state.carouselPaused ? "Riprendi" : "Pausa",
         start: "Inizia questo test",
         bibliography: "Bibliografia",
@@ -870,11 +890,11 @@ function cloneQuestionData(value) {
         report: "Report",
         jsonCsv: "JSON e CSV",
         resultReadingTitle: "Come viene letto il risultato",
-        resultReading: "La segmentazione principale usa Literacy e Fluency. Un punteggio basso in entrambe porta al profilo Beginner; alta Fluency ma bassa Literacy porta al profilo Curious; alta Literacy ma bassa Fluency porta al profilo Expert; punteggi alti in entrambe portano al profilo Champion. Il Mindset viene mostrato come lente aggiuntiva: non cambia il profilo principale, ma aiuta a capire se la persona e' pronta, cauta, scettica o propulsiva.",
+        resultReading: "La segmentazione principale usa Literacy e Fluency. Un punteggio basso in entrambe porta al profilo Beginner; alta Fluency ma bassa Literacy porta al profilo Curious; alta Literacy ma bassa Fluency porta al profilo Expert; punteggi alti in entrambe portano al profilo Champion. Il Mindset viene mostrato come lente aggiuntiva: non cambia il profilo principale, ma aiuta a capire se la persona è pronta, cauta, scettica o propulsiva.",
         profileDataKicker: "Dati facoltativi",
         beforeTest: "Prima del test",
         profileIntro: "Puoi indicare nome, ruolo, team e una stima iniziale delle tue skill. Tutti i campi sono facoltativi: puoi iniziare anche lasciando tutto vuoto.",
-        privacy: "Le informazioni restano locali nella cache e nel localStorage del browser. Non vengono inviate automaticamente a server esterni. Servono solo a rendere piu' utile il report locale e l'eventuale export manuale.",
+        privacy: "Le informazioni restano locali nella cache e nel localStorage del browser. Non vengono inviate automaticamente a server esterni. Servono solo a rendere più utile il report locale e l'eventuale export manuale.",
         selfIntro: "Le skill dichiarate aiutano soprattutto a confrontare aspettative e risultati ottenuti: il report mostra lo scarto tra autopercezione iniziale e punteggio emerso dal test.",
         profileFormTitle: "Dati e autovalutazione iniziale",
         name: "Nome",
@@ -882,7 +902,7 @@ function cloneQuestionData(value) {
         area: "Area / team",
         optional: "Facoltativo",
         selfTitle: "Quanto ti consideri competente oggi?",
-        selfHelp: "Inserisci una stima personale da 0 a 100. Puoi lasciare vuoto uno o piu' campi: in quel caso il relativo confronto non comparira'.",
+        selfHelp: "Inserisci una stima personale da 0 a 100. Puoi lasciare vuoto uno o più campi: in quel caso il relativo confronto non comparirà.",
         selfOverallNote: "Valutazione complessiva.",
         selfLiteracyNote: "Conoscenza e comprensione.",
         selfFluencyNote: "Uso operativo dell'AI.",
@@ -952,6 +972,14 @@ function cloneQuestionData(value) {
       if (legalFooter) legalFooter.setAttribute("aria-label", staticText.footerAria);
       const licenseLink = document.querySelector(".legal-footer a");
       if (licenseLink) licenseLink.textContent = staticText.footerLicense;
+      const noviceBadge = document.querySelector(".novice-callout-badge");
+      const noviceTitle = $("noviceCalloutTitle");
+      const noviceText = document.querySelector(".novice-callout p");
+      const noviceButton = $("noviceQuickStartBtn");
+      if (noviceBadge) noviceBadge.textContent = isEnglish() ? "New · Guided path" : "Nuovo · Percorso guidato";
+      if (noviceTitle) noviceTitle.textContent = isEnglish() ? "Is this your first step into AI?" : "È la prima volta che ti avvicini all'AI?";
+      if (noviceText) noviceText.textContent = isEnglish() ? "Start with 10 simple questions and a tutorial built around your mistakes." : "Inizia con 10 domande semplici e un tutorial costruito sui tuoi errori.";
+      if (noviceButton) noviceButton.textContent = isEnglish() ? "Explore AI First Steps" : "Scopri Primi passi";
       applyBibliographyText();
     }
 
@@ -987,6 +1015,7 @@ function cloneQuestionData(value) {
     }
 
     function modePoolQuestions(sourceQuestions, mode) {
+      if (mode && mode.type === "learning") return FIRST_STEPS_QUESTIONS.it.filter(question => question.formId === "A");
       if (!mode || mode.id === DEFAULT_TEST_MODE_ID) {
         const byId = new Map(sourceQuestions.map(question => [question.sourceId || question.id, question]));
         return COMPLETE_QUESTION_IDS.map(id => byId.get(id)).filter(Boolean).slice(0, COMPLETE_TEST_COUNT);
@@ -1031,6 +1060,7 @@ function cloneQuestionData(value) {
 
     function questionCountForMode(mode) {
       const selectedMode = mode || getModeById(DEFAULT_TEST_MODE_ID);
+      if (selectedMode.type === "learning") return selectedMode.questionLimit;
       const pool = modePoolQuestions(baseQuestions, selectedMode);
       const limit = selectedMode.questionLimit || pool.length;
       return Math.min(limit, pool.length);
@@ -1042,11 +1072,15 @@ function cloneQuestionData(value) {
     }
 
     function modeBadge(mode) {
+      if (mode.type === "learning") return isEnglish() ? "Guided learning" : "Apprendimento guidato";
       if (isEnglish()) return mode.id === DEFAULT_TEST_MODE_ID ? "Complete profile" : "Thematic report";
       return mode.id === DEFAULT_TEST_MODE_ID ? "Profilo completo" : "Report tematico";
     }
 
     function modeTopics(mode) {
+      if (mode.type === "learning") return isEnglish()
+        ? ["What GenAI can do", "Limits", "Requests", "Verification", "Privacy"]
+        : ["Cosa può fare", "Limiti", "Richieste", "Verifica", "Privacy"];
       if (mode.id === DEFAULT_TEST_MODE_ID) {
         return isEnglish()
           ? ["Literacy", "LLM foundations", "AI Agents", "Fluency 4D", "Mindset", "Practical Lab"]
@@ -1104,6 +1138,8 @@ function cloneQuestionData(value) {
 
     function updateSelectedMode(modeId) {
       state.selectedModeId = getModeById(modeId).id;
+      const selfBox = document.querySelector(".self-assessment-box");
+      if (selfBox) selfBox.hidden = getModeById(state.selectedModeId).type === "learning";
       renderModeSelector();
       renderQuestionDistribution();
       restartModeCarouselTimer();
@@ -1194,7 +1230,7 @@ function cloneQuestionData(value) {
 
     function renderQuestionDistribution() {
       const mode = getModeById(selectedTestModeId());
-      const modeQuestions = questionsForMode(baseQuestions, mode);
+      const modeQuestions = mode.type === "learning" ? FIRST_STEPS_QUESTIONS.it.filter(question => question.formId === "A") : questionsForMode(baseQuestions, mode);
       const counts = modeQuestions.reduce((acc, question) => {
         acc[question.section] = (acc[question.section] || 0) + 1;
         return acc;
@@ -1213,17 +1249,41 @@ function cloneQuestionData(value) {
       }
       const heroCount = $("heroCount");
       if (heroCount) heroCount.textContent = total;
+      const heroPills = document.querySelector(".hero-card .pill-row");
+      if (heroPills) heroPills.innerHTML = modeTopics(mode).slice(0, 5).map(topic => `<span class="pill">${escapeHtml(topic)}</span>`).join("");
       const heroDescription = $("heroCountDescription");
       if (heroDescription) {
-        heroDescription.textContent = mode.id === DEFAULT_TEST_MODE_ID
+        heroDescription.textContent = mode.type === "learning"
+          ? (isEnglish() ? "guided questions followed by a personalized local tutorial" : "domande guidate seguite da un tutorial personalizzato locale")
+          : mode.id === DEFAULT_TEST_MODE_ID
           ? (isEnglish() ? "questions from one of three parallel forms, across self-assessment, technical quiz, scenarios, and practical tasks" : "domande estratte da una delle tre forme parallele, tra autovalutazione, quiz tecnico, scenari e prove pratiche")
           : (isEnglish() ? "questions from one of three forms in the selected thematic path, with a local report dedicated to that section" : "domande da una delle tre forme del percorso tematico selezionato, con report locale dedicato alla sezione scelta");
       }
       const modeFootnote = $("modeFootnote");
       if (modeFootnote) {
-        modeFootnote.textContent = mode.id === DEFAULT_TEST_MODE_ID
+        modeFootnote.textContent = mode.type === "learning"
+          ? (isEnglish() ? "Three forms rotate locally. The result supports learning and is not comparable with the AI Skill index." : "Tre forme ruotano localmente. Il risultato serve all'apprendimento e non è confrontabile con l'indice AI Skill.")
+          : mode.id === DEFAULT_TEST_MODE_ID
           ? (isEnglish() ? "At start, the app selects one of the three available forms for the current language. Alternatives are shuffled for each assessment." : "All'avvio viene scelta una delle tre forme parallele disponibili per la lingua corrente. Le alternative vengono rimescolate a ogni assessment.")
           : (isEnglish() ? "The thematic path rotates three forms for the selected area, measures only that area, and does not produce a global profile." : "Il percorso tematico ruota tre forme per l'area scelta, misura solo quell'area e non produce un profilo globale.");
+      }
+      const metricValues = document.querySelectorAll(".landing-metrics .metric-card strong");
+      if (metricValues.length >= 3 && mode.type === "learning") {
+        metricValues[0].textContent = isEnglish() ? "Learning tutorial" : "Tutorial didattico";
+        metricValues[1].textContent = isEnglish() ? "Objectives out of 10" : "Obiettivi su 10";
+        metricValues[2].textContent = "JSON e CSV";
+      }
+      const readingTitle = document.querySelector(".landing-metrics + .card h3");
+      const readingText = document.querySelector(".landing-metrics + .card p");
+      if (mode.type === "learning" && readingTitle && readingText) {
+        readingTitle.textContent = isEnglish() ? "How learning feedback works" : "Come funziona il feedback didattico";
+        readingText.textContent = isEnglish() ? "Mistakes select short learning units. The result is not an AI Skill score and is not compared with the assessment." : "Gli errori selezionano brevi unità di apprendimento. Il risultato non è un punteggio AI Skill e non viene confrontato con l'assessment.";
+      } else if (metricValues.length >= 3 && readingTitle && readingText) {
+        metricValues[0].textContent = isEnglish() ? "Profile + dashboard" : "Profilo + dashboard";
+        metricValues[1].textContent = isEnglish() ? "0-100 index" : "Indice 0-100";
+        metricValues[2].textContent = isEnglish() ? "JSON and CSV" : "JSON e CSV";
+        readingTitle.textContent = isEnglish() ? "How the result is read" : "Come viene letto il risultato";
+        readingText.textContent = isEnglish() ? "The main segmentation uses Literacy and Fluency. Mindset is shown as an additional lens." : "La segmentazione principale usa Literacy e Fluency. Il Mindset viene mostrato come lente aggiuntiva.";
       }
     }
 
@@ -1246,7 +1306,17 @@ function cloneQuestionData(value) {
       const selectedMode = getModeById(selectedTestModeId());
       const selectedForm = selectNextForm(selectedMode.id, currentLanguage());
       const sourceQuestions = isEnglish() ? buildEnglishQuestionForm(selectedForm) : buildQuestionForm(selectedForm);
-      questions = questionsForMode(sourceQuestions, selectedMode, true, selectedForm);
+      questions = selectedMode.type === "learning"
+        ? shuffledValues(FIRST_STEPS_QUESTIONS[currentLanguage()].filter(question => question.formId === selectedForm)).map(question => ({
+            ...cloneQuestionData(question),
+            id: question.id,
+            sourceId: question.id,
+            section: selectedMode.section,
+            dimension: "literacy",
+            hint: isEnglish() ? "Choose the most useful and verifiable behavior." : "Scegli il comportamento più utile e verificabile.",
+            options: question.options.map(option => ({ title: option.title, text: "", score: option.correct ? 5 : 1, correct: option.correct }))
+          }))
+        : questionsForMode(sourceQuestions, selectedMode, true, selectedForm);
       state.formId = selectedForm;
       state.selectedModeId = selectedMode.id;
       const visibleMode = localizedMode(selectedMode);
@@ -1258,8 +1328,8 @@ function cloneQuestionData(value) {
         language: currentLanguage(),
         languageSource: languageSource(),
         formId: selectedForm,
-        formVersion: FORM_VERSION,
-        questionBankVersion: QUESTION_BANK_VERSION,
+        formVersion: selectedMode.type === "learning" ? "first-steps-1.0" : FORM_VERSION,
+        questionBankVersion: selectedMode.type === "learning" ? "2026.07-first-steps-1" : QUESTION_BANK_VERSION,
         testMode: {
           id: selectedMode.id,
           label: visibleMode.label,
@@ -1617,6 +1687,8 @@ function cloneQuestionData(value) {
     }
 
     function calculateResults() {
+      const activeMode = getModeById(state.meta && state.meta.testMode && state.meta.testMode.id);
+      if (activeMode.type === "learning") return calculateLearningResults();
       const buckets = {
         literacy: [], mindset: [], delegation: [], description: [], discernment: [], diligence: []
       };
@@ -1728,6 +1800,17 @@ function cloneQuestionData(value) {
       return report;
     }
 
+    function calculateLearningResults() {
+      const answers = questions.map(question => {
+        const selected = question.options[Number(state.answers[question.id])];
+        return { id: question.id, sourceId: question.id, formId: question.formId, section: question.section, dimension: question.dimension, sub: question.objectiveId, type: question.type, question: question.text, answer: selected ? selected.title : "", answerText: "", score: selected && selected.correct ? 5 : 1, correct: Boolean(selected && selected.correct), objectiveId: question.objectiveId, learningUnitId: question.learningUnitId };
+      });
+      const correctCount = answers.filter(answer => answer.correct).length;
+      const recommendedUnitIds = [...new Set(answers.filter(answer => !answer.correct).map(answer => answer.learningUnitId))];
+      const profile = correctCount <= 3 ? (isEnglish() ? "Start with the foundations" : "Inizia dalle basi") : correctCount <= 6 ? (isEnglish() ? "Foundations in progress" : "Basi in costruzione") : correctCount <= 8 ? (isEnglish() ? "Foundations in place, keep practicing" : "Basi presenti, continua ad allenarle") : (isEnglish() ? "Ready for a thematic path" : "Pronto per un percorso tematico");
+      return { meta: { ...state.meta, completedAt: new Date().toISOString() }, score: { overall: correctCount * 10 }, profile, answers, correctCount, recommendedUnitIds, recommendations: { profile: [], dimensions: [] } };
+    }
+
     function getMindsetLens(score) {
       if (isEnglish()) {
         if (typeof score !== "number") return { label: "Not measured", text: "This mode does not include enough Mindset questions to produce a dedicated lens." };
@@ -1736,7 +1819,7 @@ function cloneQuestionData(value) {
         if (score < 80) return { label: "Open and manageable", text: "Good predisposition toward controlled experimentation and workflow improvement." };
         return { label: "Enabling", text: "Strong willingness to experiment, share, and guide adoption if supported by method and governance." };
       }
-      if (typeof score !== "number") return { label: "Non misurato", text: "Questa modalita' non include abbastanza domande Mindset per produrre una lente dedicata." };
+      if (typeof score !== "number") return { label: "Non misurato", text: "Questa modalità non include abbastanza domande Mindset per produrre una lente dedicata." };
       if (score < 40) return { label: "Cauto / resistente", text: "L’adozione richiede casi d’uso concreti, rischio basso e accompagnamento ravvicinato." };
       if (score < 60) return { label: "Pragmatico ma incerto", text: "C’è apertura, ma servono obiettivi chiari, regole e risultati misurabili." };
       if (score < 80) return { label: "Aperto e gestibile", text: "Buona predisposizione alla sperimentazione controllata e al miglioramento del workflow." };
@@ -1750,7 +1833,7 @@ function cloneQuestionData(value) {
         if (gap <= -18) return { label: "Tasks stronger than self-assessment", text: "The person tends to underestimate themselves or is cautious in declaring competence. Correct practical examples should be valued and turned into method." };
         return { label: "Self-assessment aligned", text: "Declared answers, scenarios, and practical tasks are reasonably aligned." };
       }
-      if (typeof gap !== "number") return { label: "Non disponibile", text: "La calibrazione richiede sia risposte dichiarative sia prove comportamentali nella stessa modalita'." };
+      if (typeof gap !== "number") return { label: "Non disponibile", text: "La calibrazione richiede sia risposte dichiarative sia prove comportamentali nella stessa modalità." };
       if (gap >= 18) return { label: "Autovalutazione alta rispetto alle prove", text: "Le risposte dichiarative sono più forti delle scelte comportamentali e delle prove pratiche. Conviene lavorare su esercizi guidati, rubriche e verifica degli output." };
       if (gap <= -18) return { label: "Prove migliori dell’autovalutazione", text: "La persona tende a sottostimarsi o è prudente nel dichiarare competenza. Conviene valorizzare esempi pratici già corretti e trasformarli in metodo." };
       return { label: "Autovalutazione coerente", text: "Le risposte dichiarative, gli scenari e le prove pratiche sono abbastanza allineati." };
@@ -1783,7 +1866,7 @@ function cloneQuestionData(value) {
         "Review low-score answers and turn them into examples or operating checklists.",
         "Complete the full test when a comparable view across Literacy, Fluency, and Mindset is needed."
       ] : [
-        `Usare il risultato di ${mode ? mode.label : "questa modalita'"} come diagnosi mirata, non come profilo globale della persona.`,
+        `Usare il risultato di ${mode ? mode.label : "questa modalità"} come diagnosi mirata, non come profilo globale della persona.`,
         "Rivedere le risposte a punteggio basso e trasformarle in esempi o checklist operative.",
         "Completare il test completo quando serve una lettura comparabile su Literacy, Fluency e Mindset."
       ];
@@ -1891,6 +1974,12 @@ function cloneQuestionData(value) {
 
     function renderDashboard(report) {
       syncLanguageForReport(report);
+      if (getReportMode(report).type === "learning") {
+        state.latestReport = report;
+        saveReport(report);
+        renderLearningDashboard(report);
+        return;
+      }
       state.latestReport = report;
       saveReport(report);
       const mode = getReportMode(report);
@@ -1905,7 +1994,7 @@ function cloneQuestionData(value) {
       const profileKicker = isCompleteMode ? (isEnglish() ? "Main profile" : "Profilo principale") : (isEnglish() ? "Thematic profile" : "Profilo tematico");
       const profileDescription = isCompleteMode
         ? (isEnglish() ? englishProfileDescription(report.profile) : profileDescriptions[report.profile])
-        : `${visibleMode.outputNote} ${isEnglish() ? "The score is calculated only on the" : "Il punteggio e' calcolato solo sulle"} ${modeQuestionCount(report)} ${isEnglish() ? "answered questions." : "domande svolte."}`;
+        : `${visibleMode.outputNote} ${isEnglish() ? "The score is calculated only on the" : "Il punteggio è calcolato solo sulle"} ${modeQuestionCount(report)} ${isEnglish() ? "answered questions." : "domande svolte."}`;
       const calibrationGapText = typeof report.calibrationGap === "number"
         ? (isEnglish() ? ` Declared/behavioral gap: <strong>${report.calibrationGap > 0 ? "+" : ""}${report.calibrationGap}</strong> points.` : ` Gap dichiarato/comportamentale: <strong>${report.calibrationGap > 0 ? "+" : ""}${report.calibrationGap}</strong> punti.`)
         : "";
@@ -1936,7 +2025,7 @@ function cloneQuestionData(value) {
       ` : `
         <section class="card chart-card" style="margin-bottom: 18px;">
           <h3>${isEnglish() ? "Thematic path detail" : "Dettaglio percorso tematico"}</h3>
-          <p class="muted small">${isEnglish() ? "Only areas actually measured by the selected mode are shown." : "Sono mostrate solo le aree effettivamente misurate dalla modalita' selezionata."}</p>
+          <p class="muted small">${isEnglish() ? "Only areas actually measured by the selected mode are shown." : "Sono mostrate solo le aree effettivamente misurate dalla modalità selezionata."}</p>
           <div class="bar-list">${dimensionBarRows(s)}</div>
         </section>
       `;
@@ -1991,7 +2080,7 @@ function cloneQuestionData(value) {
           <section class="card">
             <h3>${isEnglish() ? "Areas to strengthen" : "Aree da rafforzare"}</h3>
             <div class="analysis-list">
-              ${recommendationRows(visibleRecommendations.weakest, isEnglish() ? "There are no measured areas to prioritize." : "Non ci sono aree misurate da ordinare per priorita'.")}
+              ${recommendationRows(visibleRecommendations.weakest, isEnglish() ? "There are no measured areas to prioritize." : "Non ci sono aree misurate da ordinare per priorità.")}
             </div>
           </section>
           <section class="card">
@@ -2011,6 +2100,25 @@ function cloneQuestionData(value) {
 
       $("progressFill").style.width = "100%";
       bindDashboardEvents();
+      showView("dashboardView");
+    }
+
+    function renderLearningDashboard(report) {
+      const titlesEn = { "U-CAP-1": "Generating is not searching", "U-CAP-2": "Decision support, not authority", "U-LIM-1": "Plausible does not mean verified", "U-LIM-2": "Date, scope, and missing context", "U-REQ-1": "Make the task clear", "U-REQ-2": "The first output is a draft", "U-VER-1": "Verify outside the answer", "U-VER-2": "More impact, more oversight", "U-DAT-1": "Data first, tool second", "U-DAT-2": "Responsibility remains human" };
+      const actionsEn = { "U-CAP-1": "Ask what information the system actually received.", "U-CAP-2": "Define what AI may propose and what a person must decide.", "U-LIM-1": "Mark facts and references that need checking before reuse.", "U-LIM-2": "State the reference date, available sources, and missing context.", "U-REQ-1": "Add an expected result and one verifiable constraint.", "U-REQ-2": "Give feedback using keep, correct, and add.", "U-VER-1": "Trace one important claim back to its primary source.", "U-VER-2": "Classify the next use as low, medium, or high impact.", "U-DAT-1": "Remove every field that is unnecessary for the result.", "U-DAT-2": "Assign a human reviewer and an approval criterion." };
+      const sourceLinks = {
+        "U-CAP-1": ["Google for Developers", "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml"], "U-CAP-2": ["European Commission · AI literacy", "https://digital-strategy.ec.europa.eu/en/faqs/ai-literacy-questions-answers"],
+        "U-LIM-1": ["Google Cloud · AI hallucinations", "https://cloud.google.com/discover/what-are-ai-hallucinations"], "U-LIM-2": ["Google for Developers · LLMs", "https://developers.google.com/machine-learning/crash-course/llm"],
+        "U-REQ-1": ["Google · Prompt engineering", "https://developers.google.com/machine-learning/crash-course/llm/tuning#prompt_engineering"], "U-REQ-2": ["Ethan Mollick · One Useful Thing", "https://www.oneusefulthing.org/p/management-as-ai-superpower"],
+        "U-VER-1": ["NIST · Generative AI Profile", "https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=958388"], "U-VER-2": ["Microsoft Learn · Responsible AI", "https://learn.microsoft.com/en-us/training/modules/responsible-ai/"],
+        "U-DAT-1": ["EDPB · AI and personal data", "https://www.edpb.europa.eu/news/edpb-opinion-on-ai-models-gdpr-principles-support-responsible-ai_en"], "U-DAT-2": ["EUIPO · Copyright and GenAI", "https://www.euipo.europa.eu/en/copyright-knowledge-centre/copyright-and-genai"]
+      };
+      const units = report.recommendedUnitIds.map(id => FIRST_STEPS_UNITS.find(unit => unit.id === id)).filter(Boolean);
+      const cards = units.map(unit => { const source = sourceLinks[unit.id]; return `<article class="card learning-unit"><p class="kicker">${isEnglish() ? "Review this" : "Da rivedere"}</p><h3>${escapeHtml(isEnglish() ? titlesEn[unit.id] : unit.title.it)}</h3><p>${escapeHtml(isEnglish() ? unit.principle.en : unit.principle.it)}</p><p><strong>${isEnglish() ? "Try this:" : "Prova così:"}</strong> ${escapeHtml(isEnglish() ? actionsEn[unit.id] : unit.action)}</p><a class="bibliography-link" href="${source[1]}" target="_blank" rel="noopener noreferrer">${escapeHtml(source[0])} ↗</a></article>`; }).join("");
+      $("dashboard").innerHTML = `<div class="actions" style="margin-top:0;margin-bottom:18px"><button class="btn-primary" id="restartBtn">${isEnglish() ? "Back to paths" : "Torna ai percorsi"}</button><button class="btn-secondary" id="repeatLearningBtn">${isEnglish() ? "Repeat another form" : "Ripeti un'altra forma"}</button><button class="btn-ghost" id="exportJsonBtn">Export JSON</button><button class="btn-ghost" id="exportCsvBtn">Export CSV</button><button class="btn-ghost" id="printBtn">${isEnglish() ? "Print / save PDF" : "Stampa / salva PDF"}</button><button class="btn-ghost" id="bibliographyBtn">${isEnglish() ? "Bibliography" : "Bibliografia"}</button><button class="btn-danger" id="clearHistoryBtn">${isEnglish() ? "Clear local history" : "Svuota storico locale"}</button></div><section class="profile-band"><div class="profile-card"><p class="kicker" style="color:#a5b4fc">${isEnglish() ? "Foundational readiness" : "Preparazione sulle basi"}</p><div class="profile-title">${escapeHtml(report.profile)}</div><p>${report.correctCount}/10 ${isEnglish() ? "learning objectives consolidated. This is learning feedback, not an AI Skill score." : "obiettivi consolidati. È un feedback didattico, non un punteggio AI Skill."}</p></div><div class="card"><h3>${isEnglish() ? "Your next step" : "Il tuo prossimo passo"}</h3><p>${units.length ? (isEnglish() ? "Review the units below, then repeat or continue with a thematic path." : "Rivedi le unità qui sotto, poi ripeti o continua con un percorso tematico.") : (isEnglish() ? "All foundations are consolidated: you can continue with Literacy." : "Tutte le basi sono consolidate: puoi continuare con Literacy.")}</p></div></section><div class="learning-grid">${cards}</div>`;
+      bindDashboardEvents();
+      $("repeatLearningBtn").addEventListener("click", () => { state.selectedModeId = "first-steps"; showView("profileView"); });
+      $("progressFill").style.width = "100%";
       showView("dashboardView");
     }
 
@@ -2035,15 +2143,15 @@ function cloneQuestionData(value) {
           score.overall,
           isCompleteMode
             ? (isEnglish() ? "Composite score of the full test: 35% Literacy, 45% Fluency, 20% Mindset." : "Punteggio composito del test completo: 35% Literacy, 45% Fluency, 20% Mindset.")
-            : (isEnglish() ? "Average score calculated only on the questions in the selected mode." : "Punteggio medio calcolato solo sulle domande della modalita' selezionata.")
+            : (isEnglish() ? "Average score calculated only on the questions in the selected mode." : "Punteggio medio calcolato solo sulle domande della modalità selezionata.")
         ],
         ["Literacy", score.literacy, isEnglish() ? "Understanding of functioning, limits, data, sources, and privacy." : "Comprensione di funzionamento, limiti, dati, fonti e privacy."],
         ["AI Agents", score.agents, isEnglish() ? "Understanding of agent workflows, tools, permissions, logs, and human control." : "Comprensione di workflow agentici, strumenti, permessi, log e controllo umano."],
         ["Fluency", score.fluency, isEnglish() ? "Average operational competence across the 4D present in the path." : "Competenza operativa media sulle 4D presenti nel percorso."],
         ["Mindset", score.mindset, isEnglish() ? "Attitude, calibrated trust, and openness to experimentation." : "Attitudine, fiducia calibrata e apertura alla sperimentazione."],
-        ["Delegation", score.delegation, isEnglish() ? "Choice of delegable tasks and human responsibility." : "Scelta dei task delegabili e responsabilita' umana."],
-        ["Description", score.description, isEnglish() ? "Quality of brief, context, constraints, and expected format." : "Qualita' di brief, contesto, vincoli e formato atteso."],
-        ["Discernment", score.discernment, isEnglish() ? "Critical assessment of outputs, sources, usefulness, and risks." : "Valutazione critica di output, fonti, utilita' e rischi."],
+        ["Delegation", score.delegation, isEnglish() ? "Choice of delegable tasks and human responsibility." : "Scelta dei task delegabili e responsabilità umana."],
+        ["Description", score.description, isEnglish() ? "Quality of brief, context, constraints, and expected format." : "Qualità di brief, contesto, vincoli e formato atteso."],
+        ["Discernment", score.discernment, isEnglish() ? "Critical assessment of outputs, sources, usefulness, and risks." : "Valutazione critica di output, fonti, utilità e rischi."],
         ["Diligence", score.diligence, isEnglish() ? "Responsible, transparent, and proportionate use of GenAI." : "Uso responsabile, trasparente e proporzionato della GenAI."]
       ];
       return entries
@@ -2320,7 +2428,7 @@ function cloneQuestionData(value) {
           <p class="muted">${isEnglish() ? `Latest ${Math.min(8, history.length)} reports saved in this browser. Average path result:` : `Ultimi ${Math.min(8, history.length)} report salvati in questo browser. Media risultato percorso:`} <strong>${scoreText(avgOverall)}/100</strong>.</p>
           <div style="overflow:auto;">
             <table class="history-table">
-              <thead><tr><th>${isEnglish() ? "Date" : "Data"}</th><th>${isEnglish() ? "Name" : "Nome"}</th><th>${isEnglish() ? "Mode" : "Modalita'"}</th><th>${isEnglish() ? "Form" : "Forma"}</th><th>${isEnglish() ? "Profile" : "Profilo"}</th><th>${isEnglish() ? "Result" : "Risultato"}</th><th>Literacy</th><th>Fluency</th><th>Mindset</th><th>${isEnglish() ? "Technical" : "Tecnica"}</th><th>${isEnglish() ? "Practical" : "Pratica"}</th></tr></thead>
+              <thead><tr><th>${isEnglish() ? "Date" : "Data"}</th><th>${isEnglish() ? "Name" : "Nome"}</th><th>${isEnglish() ? "Mode" : "Modalità"}</th><th>${isEnglish() ? "Form" : "Forma"}</th><th>${isEnglish() ? "Profile" : "Profilo"}</th><th>${isEnglish() ? "Result" : "Risultato"}</th><th>Literacy</th><th>Fluency</th><th>Mindset</th><th>${isEnglish() ? "Technical" : "Tecnica"}</th><th>${isEnglish() ? "Practical" : "Pratica"}</th></tr></thead>
               <tbody>${rows}</tbody>
             </table>
           </div>
@@ -2517,6 +2625,10 @@ function cloneQuestionData(value) {
     $("modePrevBtn").addEventListener("click", () => moveSelectedMode(-1));
     $("modeNextBtn").addEventListener("click", () => moveSelectedMode(1));
     $("introStartBtn").addEventListener("click", openProfileStep);
+    $("noviceQuickStartBtn").addEventListener("click", () => {
+      updateSelectedMode("first-steps");
+      openProfileStep();
+    });
     $("introBibliographyBtn").addEventListener("click", () => showBibliography("introView"));
     $("profileBackBtn").addEventListener("click", () => showView("introView"));
     $("startBtn").addEventListener("click", startAssessment);

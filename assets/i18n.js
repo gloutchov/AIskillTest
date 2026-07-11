@@ -26,6 +26,12 @@ const AI_SKILL_I18N = {
       ["I turn it into a verified, shareable practice", "I check its outcomes, can document the method, and can help other people apply and adapt it."]
     ],
     modes: {
+      "first-steps": {
+        label: "AI First Steps",
+        shortLabel: "First Steps",
+        description: "Ten guided situations to discover the foundations of generative AI.",
+        outputNote: "A personalized tutorial on topics to strengthen, without a global profile."
+      },
       complete: {
         label: "Full test",
         shortLabel: "Full",

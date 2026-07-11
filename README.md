@@ -4,15 +4,15 @@
 
 Questionario interattivo in italiano e inglese per valutare in modo pratico competenza, uso operativo, giudizio critico e attitudine verso la GenAI.
 
-L'assessment produce un profilo finale, una dashboard dei punteggi e suggerimenti formativi. E' pensato come strumento diagnostico interno e migliorabile, non come test psicometrico validato.
+L'assessment produce un profilo finale, una dashboard dei punteggi e suggerimenti formativi. È pensato come strumento diagnostico interno e migliorabile, non come test psicometrico validato.
 
-Versione corrente dell'app: `2.3.1`.
+Versione corrente dell'app: `2.4.0`.
 
-Tag di riferimento: `v2.3.1`.
+Tag di riferimento: `v2.4.0`.
 
 ### Nota sullo sviluppo
 
-Questo test e' stato realizzato in vibecoding, usando l'AI come supporto operativo per ideazione, sviluppo, revisione e affinamento dell'esperienza.
+Questo test è stato realizzato in vibecoding, usando l'AI come supporto operativo per ideazione, sviluppo, revisione e affinamento dell'esperienza.
 
 ### Contenuto del repository
 
@@ -20,8 +20,10 @@ Questo test e' stato realizzato in vibecoding, usando l'AI come supporto operati
 - `assets/styles.css`: stili dell'interfaccia.
 - `assets/questions.js`: banca domande, forme parallele e override.
 - `assets/i18n.js`: testi localizzati, traduzione inglese della banca domande e varianti form-specific.
+- `assets/learning.js`: forme A/B/C e unità didattiche del percorso introduttivo.
 - `assets/app.js`: logica client-side, navigazione, scoring, dashboard ed export.
-- `LEARNING_PATH.md`: blueprint bilingue del percorso introduttivo pianificato, con domande, unita' didattiche e fonti.
+- `scripts/build-learning-data.mjs`: genera l'asset didattico dal blueprint senza dipendenze.
+- `LEARNING_PATH.md`: blueprint bilingue del percorso introduttivo pianificato, con domande, unità didattiche e fonti.
 - `index.html`: pagina di ingresso che rimanda al test.
 - `LICENSE`: licenza Apache 2.0.
 
@@ -29,7 +31,7 @@ Questo test e' stato realizzato in vibecoding, usando l'AI come supporto operati
 
 Apri `ai_skill_test.html` in un browser moderno. Non servono build, dipendenze o server.
 
-La lingua iniziale segue le impostazioni del browser: italiano se il browser e' in italiano; inglese se il browser e' in inglese o in qualunque altra lingua. Il selettore `IT` / `EN` nella home consente il cambio manuale e salva la preferenza nel `localStorage`. Per evitare report misti, il cambio lingua va fatto prima di iniziare un assessment.
+La lingua iniziale segue le impostazioni del browser: italiano se il browser è in italiano; inglese se il browser è in inglese o in qualunque altra lingua. Il selettore `IT` / `EN` nella home consente il cambio manuale e salva la preferenza nel `localStorage`. Per evitare report misti, il cambio lingua va fatto prima di iniziare un assessment.
 
 La home mostra un carosello con test completo e percorsi tematici. Il carosello avanza automaticamente ogni 5 secondi e resta controllabile con frecce, indicatori, swipe touch e pulsante `Pausa`.
 
@@ -41,15 +43,16 @@ Nelle domande dichiarative, le alternative restano senza livelli numerici e sono
 
 L'assessment combina autovalutazione, scenari, quiz tecnici e prove pratiche su:
 
-- AI Literacy: funzionamento, limiti, dati, fonti, privacy e affidabilita' della GenAI.
+- AI Literacy: funzionamento, limiti, dati, fonti, privacy e affidabilità della GenAI.
 - Fondamenti LLM: token, contesto, inferenza, Transformer, allucinazioni, RAG, embedding e citazioni.
 - AI Agents: agenti, tool, permessi, memoria/stato, controllo umano, log e rollback.
 - AI Fluency: Delegation, Description, Discernment e Diligence.
 - Mindset: apertura alla sperimentazione, fiducia calibrata e adozione responsabile.
 - Practical Lab: mini-task operativi, prompt, checklist e controlli su casi concreti.
 
-Modalita' disponibili:
+Modalità disponibili:
 
+- Primi passi con l'AI: 10 domande guidate e tutorial personalizzato.
 - Test completo: 50 domande.
 - Literacy: 10 domande.
 - Fondamenti tecnici LLM: 10 domande.
@@ -61,7 +64,9 @@ Modalita' disponibili:
 - Mindset: 10 domande.
 - Practical Lab: 10 domande.
 
-La banca contiene 115 domande base. Il test completo resta a 50 domande e include 4 domande AI Agents. Il percorso AI Agents usa un pool di 15 domande per alimentare la rotazione A/B/C. Le sessioni ruotano tra forme A/B/C separatamente per lingua e modalita'.
+La banca contiene 115 domande base. Il test completo resta a 50 domande e include 4 domande AI Agents. Il percorso AI Agents usa un pool di 15 domande per alimentare la rotazione A/B/C. Le sessioni ruotano tra forme A/B/C separatamente per lingua e modalità.
+
+`Primi passi con l'AI` è un'esperienza di apprendimento, non un assessment comparabile con l'indice AI Skill. Usa tre forme da 10 domande e propone spiegazioni locali e letture facoltative. I link esterni si aprono soltanto dopo un click esplicito.
 
 Nel test completo, il profilo globale usa questa ponderazione:
 
@@ -69,19 +74,19 @@ Nel test completo, il profilo globale usa questa ponderazione:
 - 45% Fluency
 - 20% Mindset
 
-Nei percorsi tematici, il risultato e' calcolato solo sulle domande presenti nella modalita' scelta. Le dashboard tematiche non mostrano punteggi globali o aree non misurate.
+Nei percorsi tematici, il risultato è calcolato solo sulle domande presenti nella modalità scelta. Le dashboard tematiche non mostrano punteggi globali o aree non misurate.
 
 ### Privacy e dati
 
-L'applicazione e' client-side. Dati facoltativi, risposte e report restano nel browser dell'utente tramite `localStorage`, salvo esportazione manuale dei report.
+L'applicazione è client-side. Dati facoltativi, risposte e report restano nel browser dell'utente tramite `localStorage`, salvo esportazione manuale dei report.
 
 Lo step iniziale consente di inserire nome, ruolo, area/team e autovalutazione delle skill. Tutti questi dati sono facoltativi. L'app non invia automaticamente dati a server esterni, non contiene analytics e non richiede account.
 
 ### Export e storico
 
-- JSON: contiene metadati, modalita' di test, forma, punteggi, risposte e raccomandazioni.
+- JSON: contiene metadati, modalità di test, forma, punteggi, risposte e raccomandazioni.
 - CSV: contiene metadati principali, lingua, origine della scelta lingua, autovalutazione, punteggi e risposte in formato tabellare.
-- Storico locale: conserva gli ultimi report nel browser e mostra la modalita' svolta.
+- Storico locale: conserva gli ultimi report nel browser e mostra la modalità svolta.
 
 Gli export sono sempre azioni manuali dell'utente.
 
@@ -94,16 +99,18 @@ Per pubblicarlo come pagina web:
 3. Seleziona il branch principale e la root del repository.
 4. Salva e attendi la generazione dell'URL.
 
-Il file `index.html` reindirizza automaticamente a `ai_skill_test.html`, quindi GitHub Pages puo' servire la root del repository senza build step.
+Il file `index.html` reindirizza automaticamente a `ai_skill_test.html`, quindi GitHub Pages può servire la root del repository senza build step.
 
 ### Versioning
 
-- Versione app: `2.3.1`.
-- Tag Git: `v2.3.1`.
+- Versione app: `2.4.0`.
+- Tag Git: `v2.4.0`.
 - Banca domande: `2026.07-m7`.
 - Forma assessment: `1.3`.
+- Banca Primi passi: `2026.07-first-steps-1`.
+- Forma Primi passi: `first-steps-1.0`.
 
-I tag seguono il formato `vX.Y.Z`. Le modifiche patch aggiornano documentazione o correzioni piccole; le modifiche minor o major introducono cambiamenti funzionali piu' ampi.
+I tag seguono il formato `vX.Y.Z`. Le modifiche patch aggiornano documentazione o correzioni piccole; le modifiche minor o major introducono cambiamenti funzionali più ampi.
 
 ### Riferimenti
 
@@ -132,9 +139,9 @@ Interactive questionnaire in Italian and English for practical assessment of Gen
 
 The assessment produces a final profile, score dashboard, and training recommendations. It is intended as an internal diagnostic tool that can evolve over time, not as a psychometrically validated test.
 
-Current app version: `2.3.1`.
+Current app version: `2.4.0`.
 
-Reference tag: `v2.3.1`.
+Reference tag: `v2.4.0`.
 
 ### Development Note
 
@@ -146,7 +153,9 @@ This test was built through vibecoding, using AI as operational support for idea
 - `assets/styles.css`: interface styles.
 - `assets/questions.js`: question bank, parallel forms, and overrides.
 - `assets/i18n.js`: localized texts, English question-bank translation, and form-specific variants.
+- `assets/learning.js`: A/B/C forms and learning units for the introductory path.
 - `assets/app.js`: client-side logic, navigation, scoring, dashboard, and export.
+- `scripts/build-learning-data.mjs`: generates the learning asset from the blueprint without dependencies.
 - `LEARNING_PATH.md`: bilingual blueprint for the planned introductory path, including questions, learning units, and sources.
 - `index.html`: entry page that redirects to the test.
 - `LICENSE`: Apache 2.0 license.
@@ -176,6 +185,7 @@ The assessment combines self-evaluation, scenarios, technical quizzes, and pract
 
 Available modes:
 
+- AI First Steps: 10 guided questions and a personalized tutorial.
 - Full test: 50 questions.
 - Literacy: 10 questions.
 - LLM technical foundations: 10 questions.
@@ -188,6 +198,8 @@ Available modes:
 - Practical Lab: 10 questions.
 
 The bank contains 115 base questions. The full test remains at 50 questions and includes 4 AI Agents questions. The AI Agents path uses a 15-question pool to support A/B/C rotation. Sessions rotate across A/B/C forms separately by language and test mode.
+
+`AI First Steps` is a learning experience, not an assessment comparable with the AI Skill index. It uses three 10-question forms and provides local explanations and optional readings. External links open only after an explicit click.
 
 In the full test, the global profile uses this weighting:
 
@@ -224,10 +236,12 @@ To publish it as a web page:
 
 ### Versioning
 
-- App version: `2.3.1`.
-- Git tag: `v2.3.1`.
+- App version: `2.4.0`.
+- Git tag: `v2.4.0`.
 - Question bank: `2026.07-m7`.
 - Assessment form: `1.3`.
+- First Steps bank: `2026.07-first-steps-1`.
+- First Steps form: `first-steps-1.0`.
 
 Tags follow the `vX.Y.Z` format. Patch releases cover documentation or small fixes; minor and major releases introduce broader functional changes.
 

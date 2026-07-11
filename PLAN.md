@@ -74,7 +74,7 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
 - Tipo: modifica media
 - Versione target: `1.1.0`
 - Obiettivo:
-  - spezzare `ai_skill_test.html` in file piu' leggibili senza cambiare comportamento.
+  - spezzare `ai_skill_test.html` in file più leggibili senza cambiare comportamento.
 - Scope consigliato:
   - `index.html` o `ai_skill_test.html` come shell HTML principale
   - `assets/styles.css` per gli stili
@@ -151,14 +151,14 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - completamento test ancora possibile
 - Stato: completata su `main`
 
-## Milestone 4 - Modalita' di test
+## Milestone 4 - Modalità di test
 
 - Branch: `feature/test-modes`
 - Tipo: modifica grossa
 - Versione target: `2.0.0`
 - Obiettivo:
-  - offrire un test completo e test tematici piu' brevi.
-- Modalita' previste:
+  - offrire un test completo e test tematici più brevi.
+- Modalità previste:
   - test completo da 50 domande
   - Literacy da 10 domande
   - Fondamenti tecnici LLM da 10 domande
@@ -169,25 +169,25 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - Mindset da 10 domande
   - Practical Lab da 10 domande
 - Decisioni applicate:
-  - i test tematici includono solo le domande della sezione scelta; il Practical Lab resta una modalita' dedicata
+  - i test tematici includono solo le domande della sezione scelta; il Practical Lab resta una modalità dedicata
   - i test brevi mostrano un profilo tematico, non il profilo globale Beginner/Curious/Expert/Champion
   - lo storico distingue chiaramente `complete` e `topic`
   - la rotazione A/B/C resta attiva anche sui test tematici
   - ogni test tematico estrae casualmente 10 domande dal pool della sezione, ampliato dove necessario
   - la banca domande passa a 100 domande base, pari a 300 item erogabili sulle tre forme A/B/C
 - Scope:
-  - selettore di modalita' nella landing o nello step dati
-  - conteggio domande aggiornato in base alla modalita'
+  - selettore di modalità nella landing o nello step dati
+  - conteggio domande aggiornato in base alla modalità
   - scoring coerente anche quando alcune dimensioni non sono presenti
   - dashboard adattata ai test brevi
   - export JSON/CSV con `testMode`
-  - storico report con modalita' visibile
+  - storico report con modalità visibile
 - Validazione:
   - test completo resta a 50 domande
   - ogni test tematico contiene 10 domande della sezione attesa
   - due sessioni consecutive dello stesso tema possono mostrare set di domande diversi
   - risultati non mostrano aree assenti come punteggi fuorvianti
-  - export include modalita' e versione
+  - export include modalità e versione
   - bibliografia resta raggiungibile
 - Stato: completata su `main`
 
@@ -197,7 +197,7 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
 - Tipo: modifica piccola
 - Versione target: `2.0.1`
 - Obiettivo:
-  - aggiornare README e documentazione dopo l'introduzione delle modalita' di test.
+  - aggiornare README e documentazione dopo l'introduzione delle modalità di test.
 - Scope:
   - descrivere test completo e test tematici
   - indicare privacy/localStorage
@@ -223,13 +223,13 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - frecce, indicatori e swipe touch per scorrere i percorsi
   - durata stimata, output atteso e temi affrontati dentro ogni slide
   - avvertenza chiara: i percorsi tematici non producono profilo globale
-  - aggiornamento del conteggio nel riquadro hero in base alla modalita' selezionata
+  - aggiornamento del conteggio nel riquadro hero in base alla modalità selezionata
   - versione app e documentazione aggiornate
 - Validazione:
   - carosello visibile al primo accesso
   - autoplay cambia percorso con ritmo leggibile
   - pulsante `Pausa`, frecce, indicatori e swipe touch controllano il percorso
-  - `Inizia questo test` apre lo step dati con la modalita' selezionata
+  - `Inizia questo test` apre lo step dati con la modalità selezionata
   - test completo resta a 50 domande
   - percorsi tematici restano a 10 domande e mostrano report tematico
   - layout leggibile su desktop e mobile
@@ -261,7 +261,7 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - aggiungere la variante inglese del test e una scelta lingua manuale, mantenendo il comportamento statico e locale dell'app.
 - Scope:
   - selettore `IT` / `EN` nella pagina di avvio
-  - default lingua da impostazioni browser: italiano se il browser e' in italiano, inglese per inglese o qualunque altra lingua
+  - default lingua da impostazioni browser: italiano se il browser è in italiano, inglese per inglese o qualunque altra lingua
   - salvataggio della preferenza manuale nel `localStorage`
   - testi principali di landing, step dati, test, dashboard, bibliografia ed export localizzati
   - traduzione inglese della banca domande base
@@ -313,7 +313,7 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - ridurre la ripetizione percepita dei quesiti quando una persona ripete lo stesso test o lo stesso percorso tematico.
 - Scope:
   - usare la rotazione A/B/C per italiano e inglese
-  - separare il ciclo delle forme per lingua e modalita' di test
+  - separare il ciclo delle forme per lingua e modalità di test
   - mantenere test completo a 50 domande e percorsi tematici a 10 domande
   - arricchire gli slot pratici aperti con varianti equivalenti su action plan, dashboard dati, deep search, creazione documenti e verifica dashboard
   - localizzare in inglese le varianti pratiche form-specific B/C
@@ -325,7 +325,7 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
 - Validazione:
   - test completo italiano ruota A/B/C e resta a 50 domande
   - test completo inglese ruota A/B/C e resta a 50 domande
-  - percorsi brevi ruotano A/B/C per lingua e modalita'
+  - percorsi brevi ruotano A/B/C per lingua e modalità
   - le varianti pratiche aperte B/C sono localizzate in inglese
   - export/report includono forma A/B/C, lingua, versione `2.2.0`, banca `2026.06-m5` e forma `1.1`
   - sintassi JavaScript valida
@@ -357,12 +357,12 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - test completo italiano e inglese restano a 50 domande
   - percorso AI Agents italiano e inglese mostra 10 domande dal pool dedicato
   - forme A/B/C ruotano anche per il percorso AI Agents
-  - il carosello avanza automaticamente ogni 5 secondi quando non e' in pausa
+  - il carosello avanza automaticamente ogni 5 secondi quando non è in pausa
   - `Interrompi il test` chiede conferma, scarta le risposte correnti e torna alla home
   - report ed export includono versione `2.3.0`, banca `2026.06-m6` e forma `1.2`
   - README bilingue coerente con comportamento pubblico
   - sintassi JavaScript valida
-- Stato: in validazione
+- Stato: completata su `main`
 
 ## Milestone 12 - Chiarezza delle risposte dichiarative
 
@@ -370,10 +370,10 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
 - Tipo: modifica piccola
 - Versione target: `2.3.1`
 - Obiettivo:
-  - rendere piu' distinguibili i livelli delle domande dichiarative senza reintrodurre numeri, ordine crescente o altri segnali che favoriscano la selezione automatica del livello massimo.
+  - rendere più distinguibili i livelli delle domande dichiarative senza reintrodurre numeri, ordine crescente o altri segnali che favoriscano la selezione automatica del livello massimo.
 - Motivazione:
-  - nei test preliminari, la scala ordinata induceva alcuni partecipanti molto esposti a tutorial, newsletter e contenuti AI a scegliere sistematicamente il livello piu' alto
-  - il mescolamento delle alternative ha favorito risposte piu' meditate, ma la differenza tra autonomia occasionale, metodo stabile e pratica trasferibile puo' risultare poco chiara
+  - nei test preliminari, la scala ordinata induceva alcuni partecipanti molto esposti a tutorial, newsletter e contenuti AI a scegliere sistematicamente il livello più alto
+  - il mescolamento delle alternative ha favorito risposte più meditate, ma la differenza tra autonomia occasionale, metodo stabile e pratica trasferibile può risultare poco chiara
   - la revisione deve preservare la frizione utile, riducendo l'ambiguita' semantica e il carico di decodifica
 - Scope:
   - mantenere il mescolamento delle alternative dichiarative e l'assenza di etichette numeriche o livelli espliciti
@@ -381,18 +381,18 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - distinguere con chiarezza: comportamento non applicato, applicazione con supporto, autonomia caso per caso, metodo stabile e pratica verificata/trasferibile
   - evitare che familiarita' con il linguaggio AI, capacita' di spiegare un concetto o consumo di contenuti siano presentati come prova sufficiente di pratica operativa
   - sostituire `Mostra suggerimenti` / `Nascondi suggerimenti` con `Mostra i dettagli` / `Nascondi i dettagli`, e con equivalenti naturali in inglese
-  - aggiungere una breve istruzione che inviti a rispondere in base a cio' che si fa abitualmente e a usare i dettagli quando due alternative sembrano simili
+  - aggiungere una breve istruzione che inviti a rispondere in base a ciò che si fa abitualmente e a usare i dettagli quando due alternative sembrano simili
   - verificare che il comando sia visibile prima della selezione, considerato l'auto-advance delle scelte singole
   - aggiornare localizzazione italiana e inglese, versione app, cache busting, versione banca/forma se necessario, README e piano
 - Vincoli:
-  - non rendere visibile quale alternativa assegna il punteggio piu' alto
-  - non modificare pesi, scoring o composizione dei percorsi salvo necessita' documentata
+  - non rendere visibile quale alternativa assegna il punteggio più alto
+  - non modificare pesi, scoring o composizione dei percorsi salvo necessità documentata
   - non presentare la scala come psicometricamente validata
   - nessuna chiamata di rete e nessun cambiamento alla gestione locale dei dati
 - Validazione:
   - alternative dichiarative mostrate in ordine casuale in italiano e inglese
   - dettagli comprensibili anche fuori dall'ordine gerarchico originale
-  - differenza riconoscibile tra autonomia, metodo ripetibile e trasferibilita'
+  - differenza riconoscibile tra autonomia, metodo ripetibile e trasferibilità
   - comando `Mostra i dettagli` apre e richiude correttamente i testi
   - selezione, auto-advance, ritorno con `Indietro` e cambio risposta restano prevedibili
   - test completo e percorsi interessati mantengono conteggi e scoring attesi
@@ -409,21 +409,21 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
 - Tipo: documentazione e progettazione contenuti
 - Versione target: nessun bump applicativo
 - Obiettivo:
-  - definire prima dell'implementazione la matrice didattica, le tre forme parallele, le unita' di apprendimento e le fonti del percorso rivolto a persone con poca o nessuna esperienza di AI.
+  - definire prima dell'implementazione la matrice didattica, le tre forme parallele, le unità di apprendimento e le fonti del percorso rivolto a persone con poca o nessuna esperienza di AI.
 - Posizionamento:
-  - il percorso e' un'esperienza di apprendimento, non una versione facile dell'assessment e non una certificazione
+  - il percorso è un'esperienza di apprendimento, non una versione facile dell'assessment e non una certificazione
   - nome di lavoro italiano: `Primi passi con l'AI`
   - nome di lavoro inglese: `AI First Steps`
-  - il risultato non e' confrontabile con l'indice AI Skill del test completo
+  - il risultato non è confrontabile con l'indice AI Skill del test completo
 - Deliverable documentali:
   - aggiungere un documento dedicato, per esempio `LEARNING_PATH.md`, mantenuto in italiano e con le stringhe pubbliche previste anche in inglese
-  - definire dieci obiettivi verificabili distribuiti in cinque aree: possibilita' della GenAI, limiti/falsa sicurezza, richieste e contesto, verifica di fonti/output, privacy/responsabilita'
-  - progettare tre forme A/B/C da 10 domande con la stessa matrice di aree e difficolta', per una banca minima di 30 domande introduttive
-  - definire quali domande siano di comprensione, scenario o scelta operativa; limitare gli item dichiarativi perche' non producono errori didattici interpretabili
-  - definire un insieme ridotto di unita' didattiche riutilizzabili, collegate a piu' domande e condivise tra le tre forme
-  - per ogni unita' specificare: principio, errore tipico, spiegazione, esempio, micro-azione, fonte, lingua, difficolta', tempo stimato e data di verifica della fonte
+  - definire dieci obiettivi verificabili distribuiti in cinque aree: possibilità della GenAI, limiti/falsa sicurezza, richieste e contesto, verifica di fonti/output, privacy/responsabilità
+  - progettare tre forme A/B/C da 10 domande con la stessa matrice di aree e difficoltà, per una banca minima di 30 domande introduttive
+  - definire quali domande siano di comprensione, scenario o scelta operativa; limitare gli item dichiarativi perché non producono errori didattici interpretabili
+  - definire un insieme ridotto di unità didattiche riutilizzabili, collegate a più domande e condivise tra le tre forme
+  - per ogni unità specificare: principio, errore tipico, spiegazione, esempio, micro-azione, fonte, lingua, difficoltà, tempo stimato e data di verifica della fonte
   - classificare le letture in tre livelli: spiegazione locale breve, approfondimento introduttivo, studio avanzato
-  - mappare le fonti gia' presenti che possono essere riutilizzate e identificare le lacune, in particolare privacy/dati, verifica delle fonti, copyright e uso proporzionato al rischio
+  - mappare le fonti già presenti che possono essere riutilizzate e identificare le lacune, in particolare privacy/dati, verifica delle fonti, copyright e uso proporzionato al rischio
   - preferire fonti primarie, istituzionali, gratuite, accessibili e stabili; distinguere la bibliografia metodologica dai materiali consigliati al neofita
   - documentare la logica con cui errori e risposte corrette alimentano il tutorial personalizzato
 - Vincoli:
@@ -433,12 +433,12 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - nessuna incorporazione automatica di video, widget o contenuti di terze parti
 - Validazione:
   - ogni forma contiene esattamente 10 domande e copre la stessa matrice 2+2+2+2+2
-  - ogni domanda e' collegata ad almeno un obiettivo e a un'unita' didattica
-  - ogni unita' didattica ha almeno una fonte tracciabile e una spiegazione locale autonoma
+  - ogni domanda è collegata ad almeno un obiettivo e a un'unità didattica
+  - ogni unità didattica ha almeno una fonte tracciabile e una spiegazione locale autonoma
   - revisione del linguaggio da parte del maintainer con attenzione a neofiti e persone non appassionate di AI
   - controllo che fonti metodologiche e letture consigliate siano presentate con funzioni distinte
 - Criterio di validazione del maintainer:
-  - approvazione della matrice, delle 30 domande, delle unita' didattiche e della selezione delle fonti prima di iniziare l'implementazione applicativa
+  - approvazione della matrice, delle 30 domande, delle unità didattiche e della selezione delle fonti prima di iniziare l'implementazione applicativa
 - Stato: completata su `main`
 
 ## Milestone 14 - Percorso guidato Primi passi con l'AI
@@ -452,48 +452,48 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - introdurre un percorso statico e bilingue da 10 domande che trasformi gli errori in un tutorial personalizzato e offra una continuazione di studio graduata.
 - Scope percorso:
   - aggiungere `Primi passi con l'AI` / `AI First Steps` al selettore dei percorsi in landing
-  - descrivere chiaramente destinatari, durata, finalita' didattica e non confrontabilita' con il test completo
+  - descrivere chiaramente destinatari, durata, finalità didattica e non confrontabilità con il test completo
   - mantenere facoltativi gli eventuali dati iniziali e mostrare la nota privacy esistente
-  - selezionare a ogni sessione una forma A/B/C completa da 10 domande secondo il ciclo locale gia' adottato, separato per lingua e modalita'
+  - selezionare a ogni sessione una forma A/B/C completa da 10 domande secondo il ciclo locale già adottato, separato per lingua e modalità
   - mescolare ordine delle domande e alternative senza alterare la copertura fissa delle cinque aree
   - usare scenari quotidiani, domande di comprensione e scelte operative con linguaggio accessibile
   - non mostrare indice AI Skill, profilo globale Beginner/Curious/Expert/Champion o punteggi di dimensioni non misurate
   - presentare un risultato denominato `Preparazione sulle basi` o equivalente validato nella milestone 13
 - Scope tutorial personalizzato:
-  - mostrare al termine le unita' didattiche collegate agli errori, senza duplicare la stessa spiegazione per domande diverse
+  - mostrare al termine le unità didattiche collegate agli errori, senza duplicare la stessa spiegazione per domande diverse
   - per ogni errore mostrare situazione, limite della scelta, principio da ricordare, esempio e micro-azione concreta
   - riconoscere anche le risposte corrette con un rinforzo breve e non celebrativo
   - mantenere disponibili localmente tutte le spiegazioni essenziali
   - proporre approfondimenti in livelli di impegno, con tempo stimato e indicazione della fonte
   - aprire fonti esterne solo dopo un'azione esplicita dell'utente e in una nuova scheda
-  - offrire al termine la possibilita' di ripetere il percorso con una forma successiva o passare a un test tematico, chiarendo che la ripetizione ha finalita' didattica
+  - offrire al termine la possibilità di ripetere il percorso con una forma successiva o passare a un test tematico, chiarendo che la ripetizione ha finalità didattica
 - Struttura tecnica consigliata:
   - mantenere compatibilita' diretta con GitHub Pages, senza build tool o dipendenze runtime
-  - separare, se utile, banca domande introduttive, unita' didattiche e fonti in file statici dedicati
-  - collegare domande e unita' tramite identificatori stabili, senza generare contenuti o spiegazioni tramite servizi esterni
-  - salvare report e storico solo in `localStorage`, usando la modalita' e la forma per distinguere il percorso introduttivo dagli assessment
-  - includere in JSON/CSV almeno modalita', forma, lingua, versione, risposte e identificatori delle unita' consigliate, senza esportazioni automatiche
+  - separare, se utile, banca domande introduttive, unità didattiche e fonti in file statici dedicati
+  - collegare domande e unità tramite identificatori stabili, senza generare contenuti o spiegazioni tramite servizi esterni
+  - salvare report e storico solo in `localStorage`, usando la modalità e la forma per distinguere il percorso introduttivo dagli assessment
+  - includere in JSON/CSV almeno modalità, forma, lingua, versione, risposte e identificatori delle unità consigliate, senza esportazioni automatiche
 - Bibliografia e studio:
   - mantenere la bibliografia metodologica attuale
   - aggiungere una sezione distinta per le risorse di apprendimento introduttive
   - indicare per ogni risorsa livello, lingua, tempo stimato e data dell'ultima verifica
   - includere solo collegamenti scelti nella milestone 13 e verificati prima della release
-- Privacy e accessibilita':
+- Privacy e accessibilità:
   - nessun dato del rispondente, errore o risultato inviato a server esterni
   - nessun analytics, tracking, embed o caricamento preventivo di risorse esterne
   - link esterni attivati solo dal click dell'utente e descritti come tali
   - tutorial leggibile su desktop e mobile, navigabile da tastiera e comprensibile senza affidarsi solo a colore o icone
 - Documentazione e versioning:
   - aggiornare UI, `assessmentVersion`, versione banca domande, versione forme, cache busting e tag previsti
-  - aggiornare `README.md` in italiano e inglese con modalita', finalita', privacy, storico, export e pubblicazione GitHub Pages
+  - aggiornare `README.md` in italiano e inglese con modalità, finalità, privacy, storico, export e pubblicazione GitHub Pages
   - aggiornare `PLAN.md` con esito e versione finale
   - aggiornare `AGENTS.md` solo se l'implementazione introduce nuove regole operative o vincoli permanenti
-  - mantenere `LEARNING_PATH.md` allineato a domande, unita' e fonti effettivamente pubblicate
+  - mantenere `LEARNING_PATH.md` allineato a domande, unità e fonti effettivamente pubblicate
 - Validazione funzionale:
   - percorso introduttivo italiano e inglese contiene esattamente 10 domande
-  - tre sessioni complete possono attraversare A/B/C senza rompere il ciclo delle altre modalita'
+  - tre sessioni complete possono attraversare A/B/C senza rompere il ciclo delle altre modalità
   - ogni forma rispetta la matrice 2+2+2+2+2 approvata
-  - tutorial finale mostra contenuti pertinenti agli errori e non duplica unita' condivise
+  - tutorial finale mostra contenuti pertinenti agli errori e non duplica unità condivise
   - risposte corrette ricevono un rinforzo coerente e gli errori una spiegazione non giudicante
   - nessun profilo o punteggio globale fuorviante appare nel percorso
   - ripetizione del percorso e passaggio ai test tematici funzionano
@@ -503,12 +503,12 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - apertura diretta di `ai_skill_test.html` e pubblicazione GitHub Pages funzionano senza build
   - test manuale equivalente su desktop e mobile per landing, avvio, navigazione, risultato, tutorial, storico, export e bibliografia
   - ispezione del traffico conferma assenza di richieste esterne durante test e tutorial; sono ammesse solo navigazioni esplicite dopo click su una fonte
-  - refresh e ritorno non inviano ne' perdono dati oltre il comportamento locale documentato
+  - refresh e ritorno non inviano né perdono dati oltre il comportamento locale documentato
   - sintassi JavaScript valida e nessun errore in console nei flussi principali
 - Criterio di validazione del maintainer:
   - completamento manuale di almeno una forma in italiano e una in inglese, includendo risposte corrette ed errate
   - revisione del tutorial come esperienza di apprendimento autonoma, accessibile e capace di suggerire un passo successivo senza obbligarlo
-- Stato: pianificata
+- Stato: completata e approvata dal maintainer; release `v2.4.0`
 
 ## Backlog opzionale
 
