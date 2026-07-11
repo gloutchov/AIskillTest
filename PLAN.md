@@ -439,7 +439,7 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - controllo che fonti metodologiche e letture consigliate siano presentate con funzioni distinte
 - Criterio di validazione del maintainer:
   - approvazione della matrice, delle 30 domande, delle unita' didattiche e della selezione delle fonti prima di iniziare l'implementazione applicativa
-- Stato: pianificata
+- Stato: completata su `main`
 
 ## Milestone 14 - Percorso guidato Primi passi con l'AI
 

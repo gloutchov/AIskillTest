@@ -21,6 +21,7 @@ Questo test e' stato realizzato in vibecoding, usando l'AI come supporto operati
 - `assets/questions.js`: banca domande, forme parallele e override.
 - `assets/i18n.js`: testi localizzati, traduzione inglese della banca domande e varianti form-specific.
 - `assets/app.js`: logica client-side, navigazione, scoring, dashboard ed export.
+- `LEARNING_PATH.md`: blueprint bilingue del percorso introduttivo pianificato, con domande, unita' didattiche e fonti.
 - `index.html`: pagina di ingresso che rimanda al test.
 - `LICENSE`: licenza Apache 2.0.
 
@@ -146,6 +147,7 @@ This test was built through vibecoding, using AI as operational support for idea
 - `assets/questions.js`: question bank, parallel forms, and overrides.
 - `assets/i18n.js`: localized texts, English question-bank translation, and form-specific variants.
 - `assets/app.js`: client-side logic, navigation, scoring, dashboard, and export.
+- `LEARNING_PATH.md`: bilingual blueprint for the planned introductory path, including questions, learning units, and sources.
 - `index.html`: entry page that redirects to the test.
 - `LICENSE`: Apache 2.0 license.
 
