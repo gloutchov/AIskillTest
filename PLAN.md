@@ -530,7 +530,7 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - apertura locale, navigazione principale ed export continuano a funzionare
 - Criterio di validazione del maintainer:
   - revisione manuale del diff e controllo del sito prima di commit, merge, tag e push
-- Stato: in validazione del maintainer; commit, merge, tag e push sospesi
+- Stato: completata e approvata dal maintainer; release `v2.4.1`
 
 ## Backlog opzionale
 
