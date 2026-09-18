@@ -4,7 +4,7 @@ Questo file definisce come lavorare nel repository `AIskillTest`.
 
 ## Principi
 
-- L'app e' un test statico pubblicabile su GitHub Pages.
+- L'app e' un test statico pubblicato su `https://aiskilltest.glaucosilvestri.it`.
 - La privacy e' parte del prodotto: nessun dato del rispondente deve essere inviato a server esterni senza richiesta esplicita.
 - Le risposte e lo storico devono restare locali nel browser, tramite `localStorage` o meccanismo equivalente documentato.
 - Il test non deve essere presentato come psicometricamente validato.
@@ -75,7 +75,7 @@ Prima di proporre una modifica per la validazione:
 - Evitare build tool e dipendenze finche' non servono davvero.
 - Se si introducono piu' file:
   - tenere HTML, CSS, logica app, banca domande e bibliografia separabili
-  - preservare compatibilita' con GitHub Pages
+  - preservare compatibilita' con hosting statico e dominio personalizzato
   - documentare se serve un server locale per lo sviluppo
 - Non introdurre chiamate di rete per salvare risposte o profilazioni.
 

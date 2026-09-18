@@ -902,7 +902,7 @@ Struttura concettuale di un'unità:
 }
 ```
 
-Gli esempi descrivono la struttura, non impongono l'introduzione di moduli JavaScript o build tool. L'implementazione deve restare compatibile con script statici e GitHub Pages.
+Gli esempi descrivono la struttura, non impongono l'introduzione di moduli JavaScript o build tool. L'implementazione deve restare compatibile con un hosting statico senza build step.
 
 ## 11. Checklist di validazione contenuti
 

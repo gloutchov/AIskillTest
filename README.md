@@ -6,9 +6,9 @@ Questionario interattivo in italiano e inglese per valutare in modo pratico comp
 
 L'assessment produce un profilo finale, una dashboard dei punteggi e suggerimenti formativi. È pensato come strumento diagnostico interno e migliorabile, non come test psicometrico validato.
 
-Versione corrente dell'app: `2.4.0`.
+Versione corrente dell'app: `2.4.1`.
 
-Tag di riferimento: `v2.4.0`.
+Tag di riferimento previsto: `v2.4.1`.
 
 ### Nota sullo sviluppo
 
@@ -22,6 +22,7 @@ Questo test è stato realizzato in vibecoding, usando l'AI come supporto operati
 - `assets/i18n.js`: testi localizzati, traduzione inglese della banca domande e varianti form-specific.
 - `assets/learning.js`: forme A/B/C e unità didattiche del percorso introduttivo.
 - `assets/app.js`: logica client-side, navigazione, scoring, dashboard ed export.
+- `aiskilltest_icon.png`: icona del sito e dei collegamenti salvati su dispositivo.
 - `scripts/build-learning-data.mjs`: genera l'asset didattico dal blueprint senza dipendenze.
 - `LEARNING_PATH.md`: blueprint bilingue del percorso introduttivo pianificato, con domande, unità didattiche e fonti.
 - `index.html`: pagina di ingresso che rimanda al test.
@@ -90,21 +91,20 @@ Lo step iniziale consente di inserire nome, ruolo, area/team e autovalutazione d
 
 Gli export sono sempre azioni manuali dell'utente.
 
-### Pubblicazione con GitHub Pages
+### Sito pubblico
 
-Per pubblicarlo come pagina web:
+L'applicazione è disponibile all'indirizzo:
 
-1. Apri le impostazioni del repository su GitHub.
-2. Vai in `Pages`.
-3. Seleziona il branch principale e la root del repository.
-4. Salva e attendi la generazione dell'URL.
+- [https://aiskilltest.glaucosilvestri.it](https://aiskilltest.glaucosilvestri.it)
 
-Il file `index.html` reindirizza automaticamente a `ai_skill_test.html`, quindi GitHub Pages può servire la root del repository senza build step.
+Il file `CNAME` associa il dominio personalizzato al progetto. `index.html` reindirizza automaticamente a `ai_skill_test.html`, quindi la root del sito funziona senza build step.
+
+L'icona a forma di casa accanto al selettore della lingua rimanda al sito principale [glaucosilvestri.it](https://www.glaucosilvestri.it).
 
 ### Versioning
 
-- Versione app: `2.4.0`.
-- Tag Git: `v2.4.0`.
+- Versione app: `2.4.1`.
+- Tag Git previsto: `v2.4.1`.
 - Banca domande: `2026.07-m7`.
 - Forma assessment: `1.3`.
 - Banca Primi passi: `2026.07-first-steps-1`.
@@ -139,9 +139,9 @@ Interactive questionnaire in Italian and English for practical assessment of Gen
 
 The assessment produces a final profile, score dashboard, and training recommendations. It is intended as an internal diagnostic tool that can evolve over time, not as a psychometrically validated test.
 
-Current app version: `2.4.0`.
+Current app version: `2.4.1`.
 
-Reference tag: `v2.4.0`.
+Planned reference tag: `v2.4.1`.
 
 ### Development Note
 
@@ -155,6 +155,7 @@ This test was built through vibecoding, using AI as operational support for idea
 - `assets/i18n.js`: localized texts, English question-bank translation, and form-specific variants.
 - `assets/learning.js`: A/B/C forms and learning units for the introductory path.
 - `assets/app.js`: client-side logic, navigation, scoring, dashboard, and export.
+- `aiskilltest_icon.png`: site icon and saved-link icon on supported devices.
 - `scripts/build-learning-data.mjs`: generates the learning asset from the blueprint without dependencies.
 - `LEARNING_PATH.md`: bilingual blueprint for the planned introductory path, including questions, learning units, and sources.
 - `index.html`: entry page that redirects to the test.
@@ -223,21 +224,20 @@ The initial step can collect name, role, area/team, and self-assessed skills. Al
 
 Exports are always explicit user actions.
 
-### Publishing With GitHub Pages
+### Public Website
 
-To publish it as a web page:
+The application is available at:
 
-1. Open the repository settings on GitHub.
-2. Go to `Pages`.
-3. Select the main branch and the repository root.
-4. Save and wait for the generated URL.
+- [https://aiskilltest.glaucosilvestri.it](https://aiskilltest.glaucosilvestri.it)
 
-`index.html` automatically redirects to `ai_skill_test.html`, so GitHub Pages can serve the repository root without a build step.
+The `CNAME` file associates the custom domain with the project. `index.html` automatically redirects to `ai_skill_test.html`, so the site root works without a build step.
+
+The home icon next to the language selector links to the main website, [glaucosilvestri.it](https://www.glaucosilvestri.it).
 
 ### Versioning
 
-- App version: `2.4.0`.
-- Git tag: `v2.4.0`.
+- App version: `2.4.1`.
+- Planned Git tag: `v2.4.1`.
 - Question bank: `2026.07-m7`.
 - Assessment form: `1.3`.
 - First Steps bank: `2026.07-first-steps-1`.

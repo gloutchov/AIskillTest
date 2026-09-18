@@ -82,7 +82,7 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - `assets/questions.js` per banca domande, forme e override
   - eventuale `assets/bibliography.js` o markup dedicato se conviene
 - Vincoli:
-  - il sito deve restare statico e pubblicabile su GitHub Pages
+  - il sito deve restare statico e pubblicabile senza build step
   - evitare bundler e dipendenze se non strettamente necessari
   - preferire script classici caricabili anche da file locale; se si usano module script, documentare che serve server locale
   - nessun cambio funzionale intenzionale in questa milestone
@@ -202,7 +202,7 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - descrivere test completo e test tematici
   - indicare privacy/localStorage
   - aggiornare distribuzione domande
-  - aggiornare istruzioni GitHub Pages
+  - aggiornare le istruzioni di pubblicazione statica
   - allineare riferimenti a versione e tag
 - Validazione:
   - README coerente con UI e comportamento reale
@@ -291,7 +291,7 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
 - Tipo: modifica piccola
 - Versione target: `2.1.1`
 - Obiettivo:
-  - evitare che browser e GitHub Pages riusino versioni obsolete di JavaScript e CSS dopo patch di localizzazione.
+  - evitare che browser e hosting statico riusino versioni obsolete di JavaScript e CSS dopo patch di localizzazione.
 - Scope:
   - aggiornare la versione app a `2.1.1`
   - aggiungere query string di versione a `assets/styles.css`, `assets/questions.js`, `assets/i18n.js` e `assets/app.js`
@@ -468,7 +468,7 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - aprire fonti esterne solo dopo un'azione esplicita dell'utente e in una nuova scheda
   - offrire al termine la possibilità di ripetere il percorso con una forma successiva o passare a un test tematico, chiarendo che la ripetizione ha finalità didattica
 - Struttura tecnica consigliata:
-  - mantenere compatibilita' diretta con GitHub Pages, senza build tool o dipendenze runtime
+  - mantenere compatibilita' diretta con hosting statico, senza build tool o dipendenze runtime
   - separare, se utile, banca domande introduttive, unità didattiche e fonti in file statici dedicati
   - collegare domande e unità tramite identificatori stabili, senza generare contenuti o spiegazioni tramite servizi esterni
   - salvare report e storico solo in `localStorage`, usando la modalità e la forma per distinguere il percorso introduttivo dagli assessment
@@ -485,7 +485,7 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - tutorial leggibile su desktop e mobile, navigabile da tastiera e comprensibile senza affidarsi solo a colore o icone
 - Documentazione e versioning:
   - aggiornare UI, `assessmentVersion`, versione banca domande, versione forme, cache busting e tag previsti
-  - aggiornare `README.md` in italiano e inglese con modalità, finalità, privacy, storico, export e pubblicazione GitHub Pages
+  - aggiornare `README.md` in italiano e inglese con modalità, finalità, privacy, storico, export e pubblicazione statica
   - aggiornare `PLAN.md` con esito e versione finale
   - aggiornare `AGENTS.md` solo se l'implementazione introduce nuove regole operative o vincoli permanenti
   - mantenere `LEARNING_PATH.md` allineato a domande, unità e fonti effettivamente pubblicate
@@ -500,7 +500,7 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - storico, JSON e CSV distinguono percorso, forma, lingua e versione
   - bibliografia e approfondimenti sono raggiungibili dalla landing e dal risultato
 - Validazione tecnica e privacy:
-  - apertura diretta di `ai_skill_test.html` e pubblicazione GitHub Pages funzionano senza build
+  - apertura diretta di `ai_skill_test.html` e pubblicazione statica funzionano senza build
   - test manuale equivalente su desktop e mobile per landing, avvio, navigazione, risultato, tutorial, storico, export e bibliografia
   - ispezione del traffico conferma assenza di richieste esterne durante test e tutorial; sono ammesse solo navigazioni esplicite dopo click su una fonte
   - refresh e ritorno non inviano né perdono dati oltre il comportamento locale documentato
@@ -509,6 +509,28 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - completamento manuale di almeno una forma in italiano e una in inglese, includendo risposte corrette ed errate
   - revisione del tutorial come esperienza di apprendimento autonoma, accessibile e capace di suggerire un passo successivo senza obbligarlo
 - Stato: completata e approvata dal maintainer; release `v2.4.0`
+
+## Milestone 15 - Dominio pubblico e pulizia riferimenti di hosting
+
+- Branch: `fix/custom-domain-references`
+- Tipo: correzione piccola
+- Versione target: `2.4.1`
+- Obiettivo:
+  - indicare `https://aiskilltest.glaucosilvestri.it` come indirizzo pubblico ufficiale
+  - rimuovere dalla documentazione e dai vincoli tecnici i riferimenti al precedente indirizzo di hosting
+  - aggiungere accanto al selettore della lingua un collegamento accessibile a `https://www.glaucosilvestri.it`
+  - usare `aiskilltest_icon.png` come favicon e icona per i collegamenti salvati su dispositivo
+  - mantenere invariati comportamento, contenuti e versioni delle banche domande e delle forme
+- Validazione:
+  - nessuna citazione del precedente servizio di hosting resta nei file del progetto
+  - badge UI, `assessmentVersion`, cache busting e README riportano `2.4.1`
+  - il dominio in `CNAME` coincide con quello documentato
+  - l'icona della home è raggiungibile da tastiera e apre `https://www.glaucosilvestri.it`
+  - `index.html` e `ai_skill_test.html` usano `aiskilltest_icon.png` come favicon e `apple-touch-icon`, senza icone incorporate obsolete
+  - apertura locale, navigazione principale ed export continuano a funzionare
+- Criterio di validazione del maintainer:
+  - revisione manuale del diff e controllo del sito prima di commit, merge, tag e push
+- Stato: in validazione del maintainer; commit, merge, tag e push sospesi
 
 ## Backlog opzionale
 
