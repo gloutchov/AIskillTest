@@ -4,6 +4,8 @@ Questo piano governa le prossime modifiche del progetto `AIskillTest`. Ogni mile
 
 Versione di partenza: `1.0.0`.
 
+Versione applicativa corrente: `2.4.1`, milestone 0-15 completate. Le milestone 16-22 costituiscono la proposta di evoluzione descritta sotto; la loro pianificazione non modifica la versione pubblicata.
+
 ## Regole di release
 
 - Modifica piccola: incremento `0.0.1`.
@@ -24,7 +26,7 @@ Versione di partenza: `1.0.0`.
 7. Eseguire merge su `main`.
 8. Pushare `main`.
 9. Creare e pushare il tag se la milestone produce una nuova versione.
-10. Eliminare il branch locale e remoto.
+10. Eliminare il branch locale e remoto solo dopo conferma del maintainer che la milestone è chiusa.
 
 ## Inventario attuale del test
 
@@ -53,6 +55,54 @@ Vista aggregata:
 | Practical Lab trasversale | 7 |
 
 Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mindset. La sezione AI Agents ha 4 domande nel test completo e un pool tematico dedicato da 15 domande per alimentare la rotazione A/B/C.
+
+### Evoluzione pianificata: AI moderne, agenti, harness e valutazione
+
+- Revisione del piano: `2026-11-24`.
+- Branch di questa proposta documentale: `plan/modern-ai-assessment-roadmap`.
+- Stato della proposta: pronta per validazione del maintainer; nessuna milestone applicativa avviata.
+- Finalità: mantenere il valore introduttivo del test e distinguere conoscenze, pratica dichiarata ed evidenze ottenute in esercizi simulati.
+- Destinatari: persone che iniziano, utilizzatori operativi e persone che configurano o supervisionano agenti; i livelli devono essere riconoscibili senza imporre un percorso lineare.
+
+La revisione della versione `2.4.1` ha rilevato questi punti di partenza:
+
+- la banca contiene 115 domande base; nel test completo 21 domande su 50 sono dichiarative e solo 4 sono dedicate agli agenti
+- le rubriche delle risposte aperte assegnano punti tramite presenza di parole chiave; un elenco pertinente può ottenere il massimo senza costituire una soluzione operativa
+- nella simulazione con punteggio minimo sui quattro item Agents e massimo sugli altri item, il risultato globale è `92/100` con profilo `Champion`
+- multimodalità, scelta di modelli e strumenti, MCP, skill e funzionamento complessivo degli harness non hanno una copertura dedicata adeguata
+
+Per harness si intende qui il sistema di esecuzione che coordina modello, istruzioni, strumenti, ambiente, permessi, contesto, stato, avanzamento, recupero dagli errori e verifiche. Un eventuale harness usato per valutare agenti deve essere distinto da quello che ne governa l'esecuzione.
+
+| Ordine | Milestone | Risultato atteso | Dipendenza | Versione target |
+| --- | --- | --- | --- | --- |
+| 1 | 16 - Matrice delle competenze e valutazione | Blueprint approvato per contenuti, prove e significato dei risultati | 15 completata | Nessun bump |
+| 2 | 17 - Scoring, profili e storico | Evidenze separate e risultati senza qualifiche operative non supportate | 16 approvata | `3.0.0` |
+| 3 | 18 - AI moderne e scelta degli strumenti | Percorso su capacità, modalità e compromessi operativi | 17 chiusa | `3.1.0` |
+| 4 | 19 - Attività e workflow agentici | Scenari su delega, strumenti, supervisione ed errori | 18 chiusa | `3.2.0` |
+| 5 | 20 - Harness, contesto e integrazioni | Percorso dedicato a esecuzione, stato, MCP e skill | 19 chiusa | `3.3.0` |
+| 6 | 21 - Laboratorio operativo locale | Esercizi simulati con esiti verificabili nel browser | 20 chiusa | `3.4.0` |
+| 7 | 22 - Test completo e validazione integrata | Copertura bilanciata e verifica dei percorsi aggiornati | 21 chiusa | `3.5.0` |
+
+Le versioni sono target sequenziali: eventuali release intermedie richiedono di riallineare i target prima dell'implementazione. Il passaggio a `3.0.0` segnala il cambiamento del modello di valutazione; non implica una validazione psicometrica. Ogni milestone applicativa deve essere utilizzabile e documentata autonomamente; il test completo resta a 50 domande e i percorsi esistenti a 10 fino alla revisione prevista nella milestone 22. Le coperture non ancora introdotte devono essere dichiarate come tali.
+
+Vincoli comuni alle milestone 16-22:
+
+- una milestone per branch, con validazione del maintainer prima di commit e chiusura secondo il flusso operativo
+- applicazione statica senza build o dipendenze runtime aggiuntive salvo necessità approvata e documentata
+- dati iniziali facoltativi, risposte e storico locali; nessuna API AI, telemetria o valutazione esterna delle risposte
+- esercizi con dati sintetici e strumenti simulati; nessuna azione reale su account, file del dispositivo o sistemi aziendali
+- contenuti, interfaccia, feedback ed export in italiano e inglese; forme A/B/C con matrice e difficoltà progettate in modo coerente
+- risultati limitati alle aree e al tipo di evidenza effettivamente raccolti, senza equivalenza fra simulazione e prestazione sul lavoro
+- aggiornamento dei Markdown impattati, della bibliografia e dei metadati; nessun cambiamento al percorso Primi passi senza motivazione e aggiornamento di `LEARNING_PATH.md`
+
+Riferimenti tecnici iniziali consultati per la revisione; ricontrollare pertinenza e aggiornamento quando si progettano i singoli contenuti:
+
+- [Anthropic - Effective context engineering for AI agents](https://www.anthropic.com/research/effective-context-engineering-for-ai-agents)
+- [Anthropic - Effective harnesses for long-running agents](https://www.anthropic.com/research/effective-harnesses-for-long-running-agents)
+- [OpenAI - Evaluate agent workflows](https://developers.openai.com/api/docs/guides/agent-evals)
+- [OpenAI - Model selection](https://developers.openai.com/api/docs/guides/model-selection)
+- [Model Context Protocol - Introduzione](https://modelcontextprotocol.io/docs/getting-started/intro)
+- [Agent Skills - Panoramica](https://agentskills.io/home)
 
 ## Milestone 0 - Documentazione di governance
 
@@ -532,9 +582,199 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
   - revisione manuale del diff e controllo del sito prima di commit, merge, tag e push
 - Stato: completata e approvata dal maintainer; release `v2.4.1`
 
+## Milestone 16 - Matrice delle competenze e contratto di valutazione
+
+- Branch: `plan/assessment-competency-blueprint`
+- Tipo: documentazione e progettazione contenuti
+- Versione target: nessun bump applicativo
+- Dipendenza: milestone 15 completata; proposta di roadmap validata dal maintainer.
+- Obiettivo:
+  - definire quali capacità il test intende esplorare e quali evidenze possono sostenere ciascun risultato, prima di cambiare scoring e domande.
+- Deliverable:
+  - creare `ASSESSMENT_BLUEPRINT.md` con livelli, aree, obiettivi osservabili, tipi di prova e collegamenti alle modalità esistenti e future
+  - classificare gli item attuali e i nuovi slot come conoscenza/scenario, autovalutazione, esercizio simulato o testo con feedback formativo
+  - definire una matrice per fondamenti, uso operativo e multimodale, agenti e harness, con una proposta di distribuzione per il completo da 50 domande
+  - stabilire il limite degli item dichiarativi e la copertura minima per area, con un asse primario per i conteggi e tag secondari per gli item trasversali
+  - definire i percorsi AI moderne e Harness da 10 domande e numero, durata e struttura del laboratorio; prevedere almeno due casi pratici per forma
+  - specificare rubriche, descrizioni dei risultati, gestione delle aree assenti e delle lacune critiche; motivare pesi e soglie come scelte editoriali da verificare
+  - definire metadati per versione dello scoring, tipo di evidenza e copertura, e regole di compatibilità con lo storico `2.x`
+  - preparare esempi di risposta corretta, parziale, errata e di semplice elenco di parole chiave per verificare i limiti delle rubriche
+  - mappare le fonti primarie agli obiettivi, distinguendo principi stabili da dettagli legati a prodotti o versioni; registrare data e motivi della revisione
+- Vincoli:
+  - familiarità con marchi, sigle e tutorial non costituisce da sola competenza operativa
+  - le forme sono equivalenti per progetto, senza dichiararne equivalenza psicometrica
+  - Primi passi conserva finalità didattica e risultati separati dall'assessment
+- Validazione:
+  - ogni obiettivo ha almeno un tipo di prova, una fonte e un criterio di esito leggibile
+  - matrice, conteggi, durata e corrispondenza A/B/C sono espliciti e verificabili
+  - il blueprint spiega come evitare i due casi limite dello scoring rilevati nella revisione
+- Criterio di validazione del maintainer:
+  - approvazione di destinatari, matrice, rubriche, significato dei risultati e regole sullo storico prima della milestone 17.
+- Stato: pianificata; da avviare dopo validazione della roadmap.
+
+## Milestone 17 - Scoring trasparente, profili e compatibilità dello storico
+
+- Branch: `feature/evidence-based-scoring`
+- Tipo: modifica grossa
+- Versione target: `3.0.0`
+- Dipendenza: milestone 16 approvata dal maintainer.
+- Obiettivo:
+  - rendere i risultati coerenti con il tipo di evidenza raccolta e impedire che un punteggio aggregato attribuisca capacità operative non verificate.
+- Scope:
+  - separare conoscenze/scenari, pratica dichiarata ed esercizi simulati nei calcoli e nella presentazione; non chiamare comportamento osservato una risposta ipotetica
+  - trattare il testo libero con feedback e checklist trasparenti; non usarne la sola corrispondenza lessicale come prova di qualità o come contributo al punteggio oggettivo
+  - rivedere indice globale, pesi e profili secondo il blueprint; rimuovere o circoscrivere etichette come Expert e Champion quando mancano evidenze sufficienti
+  - mostrare copertura, limiti e lacune per area; nessuna qualifica di competenza agentica o sugli harness se le relative evidenze sono assenti o insufficienti
+  - aggiungere versione dello scoring e metadati delle evidenze a report, storico, JSON e CSV, documentando i nuovi campi
+  - mantenere leggibili i report precedenti senza ricalcolarli; distinguere versioni e modalità ed evitare confronti o medie fra risultati incompatibili
+  - aggiungere verifiche deterministiche mirate per scoring, dati mancanti, profili e caricamento dei report `2.x`, senza introdurre un framework se non necessario
+  - aggiornare UI IT/EN, `assessmentVersion`, cache busting, README e piano; aggiornare banca e forma solo se cambiano gli item
+- Validazione:
+  - un elenco di parole chiave non produce un punteggio di competenza pratica
+  - minimo su tutti gli item Agents e massimo sugli altri non attribuisce qualifiche agentiche né nasconde la lacuna nel risultato
+  - risposte dichiarative e testo formativo non alzano il punteggio delle prove oggettive
+  - report vecchi, percorsi brevi e aree assenti restano leggibili senza ricostruire evidenze inesistenti
+  - storico, JSON e CSV conservano modalità, lingua, forma e versioni necessarie a interpretare il risultato
+- Criterio di validazione del maintainer:
+  - revisione di report campione con profili divergenti fra conoscenza, autovalutazione e prove; approvazione della nuova terminologia e della non confrontabilità con `2.x`.
+- Stato: pianificata; non avviata.
+
+## Milestone 18 - AI moderne, multimodalità e scelta degli strumenti
+
+- Branch: `feature/modern-ai-capabilities`
+- Tipo: modifica media
+- Versione target: `3.1.0`
+- Dipendenza: milestone 17 chiusa.
+- Obiettivo:
+  - verificare la scelta di capacità e strumenti adatti al compito, oltre alla conoscenza del chatbot testuale.
+- Scope:
+  - introdurre il percorso AI moderne da 10 domande con copertura fissa degli obiettivi approvati e forme A/B/C in IT/EN
+  - distinguere capacità del modello, modalità di input/output, applicazione, architettura del sistema e ambiente di esecuzione; chiarire che queste caratteristiche possono coesistere
+  - includere comprensione e generazione di immagini, documenti scansionati, grafici, audio e video, con i relativi limiti e controlli
+  - includere scelta fra chat, ricerca documentale/web, esecuzione di codice, uso di browser/computer e workflow; distinguere comprensione di una schermata da azione sull'interfaccia
+  - proporre scenari su livello di ragionamento, qualità, tempo, costo, località dell'elaborazione e riservatezza, senza richiedere listini o nomi di modelli a memoria
+  - distinguere quando servono generazione, classificazione, previsione o una semplice procedura deterministica
+  - mantenere le domande introduttive comprensibili e riservare i dettagli tecnici agli obiettivi pertinenti
+  - aggiornare descrizioni dei percorsi, feedback, bibliografia, versioni di app/banca/forme, export e README bilingue
+- Validazione:
+  - ogni forma copre gli stessi obiettivi con dati e alternative plausibili, senza rendere sistematicamente corretta la risposta più lunga
+  - il percorso distingue scelta dello strumento da capacità pratica di utilizzarlo
+  - avvio, navigazione, risultati, storico, export e bibliografia funzionano nelle due lingue
+- Criterio di validazione del maintainer:
+  - revisione di tutte le nuove domande e completamento di una forma IT e una EN, con verifica dell'utilità per un utilizzatore operativo.
+- Stato: pianificata; non avviata.
+
+## Milestone 19 - Attività agentiche, supervisione e diagnosi dei workflow
+
+- Branch: `feature/agentic-workflow-assessment`
+- Tipo: modifica media
+- Versione target: `3.2.0`
+- Dipendenza: milestone 18 chiusa.
+- Obiettivo:
+  - ampliare il percorso AI Agents dalla conoscenza dei controlli iniziali alla gestione di decisioni ed errori lungo un processo.
+- Scope:
+  - rivedere il pool Agents secondo la matrice approvata, garantendo in ogni forma da 10 domande la copertura richiesta anziché affidarla al solo campionamento casuale
+  - valutare quando bastano un workflow predefinito o un singolo agente e quando più agenti giustificano costo, coordinamento e complessità
+  - proporre casi su scelta dello strumento, verifica degli argomenti e dell'esito, approvazioni proporzionate all'impatto e gestione delle eccezioni
+  - includere lettura di brevi tracce operative, diagnosi dei loop, dati mancanti, criteri di stop, escalation e verifica del completamento
+  - includere prompt injection in documenti o output degli strumenti, separazione fra dati e istruzioni, e prevenzione di divulgazioni o azioni non autorizzate
+  - conservare e approfondire permessi minimi, credenziali revocabili, memoria, log e rollback; distinguere ciò che può essere annullato da ciò che richiede prevenzione o compensazione
+  - usare alternative realistiche e casi con compromessi, evitando che un elenco più lungo di cautele sia sempre la soluzione migliore
+  - aggiornare IT/EN, raccomandazioni, fonti, versioni di app/banca/forme, export e README
+- Validazione:
+  - ogni forma include scelta del processo, supervisione, diagnosi e sicurezza secondo il blueprint
+  - almeno un caso richiede riconoscere un'istruzione non autorizzata presente in una fonte
+  - il report espone gli obiettivi esplorati e distingue giudizio su scenario da esecuzione reale
+  - il test completo conserva i conteggi previsti fino alla milestone 22
+- Criterio di validazione del maintainer:
+  - revisione delle tracce e delle motivazioni delle alternative, con completamento IT/EN di casi corretti, parziali ed errati.
+- Stato: pianificata; non avviata.
+
+## Milestone 20 - Harness, gestione del contesto e integrazioni
+
+- Branch: `feature/agent-harness-assessment`
+- Tipo: modifica media
+- Versione target: `3.3.0`
+- Dipendenza: milestone 19 chiusa.
+- Obiettivo:
+  - introdurre un percorso Harness da 10 domande che esplori il sistema di esecuzione dell'agente e la continuità delle attività lunghe.
+- Scope:
+  - distinguere modello, prompt, agente, harness di esecuzione e strumenti di valutazione mediante casi concreti
+  - includere selezione delle fonti, limiti del contesto, compattazione, memoria persistente e passaggi di consegne fra sessioni
+  - distinguere istruzioni applicative, dati non fidati e permessi effettivamente imposti dall'ambiente; un divieto nel prompt non equivale a un controllo degli accessi
+  - includere contratti di input/output degli strumenti, validazione degli schemi, timeout, tentativi limitati e prevenzione delle azioni duplicate
+  - includere stato salvato, checkpoint, ripresa dopo interruzione, isolamento dell'esecuzione e verifica indipendente degli artefatti prodotti
+  - distinguere tool/API, collegamenti MCP, skill con procedure e risorse, e file di istruzioni come `AGENTS.md`; nessuno di questi rende automaticamente affidabile o autorizzata un'azione
+  - esplorare metriche di successo, errori, interventi umani, costo e durata, oltre a casi di prova ripetibili e regressioni dopo modifiche a modello o harness
+  - offrire fonti e spiegazioni locali con termini tecnici definiti; aggiornare IT/EN, versioni, report/export e README
+- Validazione:
+  - ogni forma copre la stessa matrice di esecuzione, contesto, stato, integrazioni e verifica
+  - un caso verifica la ripresa senza ripetere un'azione già completata e un altro distingue permesso tecnico da istruzione testuale
+  - il report distingue conoscenza dell'harness da capacità dimostrata di costruirlo o amministrarlo
+  - tutti gli strumenti descritti restano simulati; il percorso non richiede installazioni, credenziali o connessioni reali
+- Criterio di validazione del maintainer:
+  - revisione di copertura, correttezza tecnica e comprensibilità delle forme IT/EN, evitando dipendenze da una singola piattaforma.
+- Stato: pianificata; non avviata.
+
+## Milestone 21 - Laboratorio operativo con simulazioni locali
+
+- Branch: `feature/local-operational-lab`
+- Tipo: modifica media
+- Versione target: `3.4.0`
+- Dipendenza: milestone 20 chiusa.
+- Obiettivo:
+  - raccogliere evidenze di esecuzione in esercizi controllati, preservando funzionamento statico e privacy.
+- Scope:
+  - introdurre il laboratorio definito nel blueprint, coordinandolo con il Practical Lab esistente e distinguendo chiaramente quiz, testo formativo ed esercizi simulati
+  - preparare almeno due casi per forma con dati sintetici, esiti attesi e più decisioni osservabili; mantenere obiettivi e difficoltà coerenti fra A/B/C
+  - includere un caso su documenti o dati con un errore da individuare e un caso agentico su tracce, permessi, interruzione e ripresa
+  - far scegliere o correggere configurazioni e sequenze di azioni, verificare artefatti e decidere quando un'attività è conclusa
+  - valutare azioni ed esiti tramite regole locali esplicite, con credito parziale motivato e senza ricorrere a valutatori AI esterni
+  - documentare gli errori critici e i loro effetti sul risultato secondo il blueprint, senza confondere un errore di conoscenza con un'azione rischiosa simulata
+  - lasciare il testo libero come spiegazione formativa quando manca una verifica affidabile; feedback consultabile dopo il completamento senza suggerire le risposte durante la prova
+  - registrare nei report solo le decisioni necessarie alla spiegazione del risultato; salvare lo stato degli esercizi localmente per navigazione e recupero nei limiti documentati
+  - rendere gli esercizi usabili da tastiera e su mobile; aggiornare IT/EN, fonti, versioni, export, privacy documentata e README
+- Validazione:
+  - casi corretti, parziali, errati e sequenze alternative ammesse producono esiti ripetibili
+  - un elenco di parole chiave non sostituisce le decisioni richieste dall'esercizio
+  - ritorno alla decisione precedente, modifica della scelta e recupero dello stato non duplicano azioni né lasciano punteggi obsoleti
+  - il risultato dichiara che l'evidenza proviene da una simulazione, senza attestare prestazioni in produzione
+  - nessuna risposta o traccia lascia il browser; apertura diretta, storico ed export funzionano senza account o server
+- Criterio di validazione del maintainer:
+  - esecuzione di almeno un caso corretto e uno con errore critico, nelle due lingue e su desktop/mobile, con revisione del feedback.
+- Stato: pianificata; non avviata.
+
+## Milestone 22 - Ribilanciamento del completo e validazione integrata
+
+- Branch: `feature/balanced-complete-assessment`
+- Tipo: modifica media
+- Versione target: `3.5.0`
+- Dipendenza: milestone 21 chiusa.
+- Obiettivo:
+  - applicare al test completo la copertura approvata e verificare che l'esperienza complessiva mantenga promesse comprensibili e risultati interpretabili.
+- Scope:
+  - ricomporre il completo da 50 domande secondo la matrice approvata nella milestone 16, riducendo la prevalenza dichiarativa e includendo AI moderne, agenti, harness ed evidenze simulate
+  - garantire la copertura minima per area in tutte le forme IT/EN, con selezione vincolata degli obiettivi e senza duplicare il contributo di item trasversali
+  - aggiornare landing, conteggi, durata, descrizioni dei livelli, dashboard e raccomandazioni alle capacità effettivamente esplorate
+  - mantenere separati il percorso didattico Primi passi, le autovalutazioni e i risultati delle prove; verificare la continuità delle modalità tematiche
+  - verificare scoring e profili su casi limite: conoscenza alta con esercizi deboli, autovalutazione alta con prove deboli, lacune agentiche e aree non misurate
+  - completare le verifiche mirate per composizione delle forme, scoring e compatibilità dello storico; aggiornare un'unica checklist manuale riutilizzabile in `docs/QA.md`
+  - sottoporre domande, alternative e feedback a una revisione editoriale del maintainer; eventuali prove con volontari e raccolta di feedback richiedono un accordo esplicito su dati e modalità, senza aggiungere raccolta automatica
+  - aggiornare README bilingue, inventario iniziale di questo piano, blueprint, bibliografia e versioni di app/banca/forme; modificare AGENTS o LEARNING_PATH solo se effettivamente impattati
+- Validazione integrata:
+  - completo da 50 domande, percorsi da 10 e laboratorio rispettano i conteggi e la matrice documentati in IT/EN e A/B/C
+  - avvio, navigazione, auto-advance reversibile, interruzione, risultati, storico, JSON, CSV e bibliografia funzionano su desktop e mobile
+  - report `2.x` e `3.x` restano leggibili e non vengono confrontati o mediati come se usassero lo stesso metro
+  - nessun profilo suggerisce capacità non esplorate o una certificazione; ogni lacuna critica resta visibile
+  - apertura locale e hosting statico funzionano, console senza errori nei flussi verificati e traffico privo di invii di risposte o caricamenti esterni automatici
+  - fonti ricontrollate e limiti delle prove documentati; annotare ciò che non è stato possibile verificare
+- Criterio di validazione del maintainer:
+  - approvazione della distribuzione finale e di report campione; completamento manuale di almeno una forma IT e una EN prima di commit, merge, push e tag.
+- Stato: pianificata; non avviata.
+
 ## Backlog opzionale
 
-- Aggiungere una checklist manuale di QA in `docs/QA.md`.
+- Estendere la checklist `docs/QA.md` prevista dalla milestone 22 quando emergono nuovi casi.
 - Aggiungere un piccolo smoke test Playwright se il progetto passa a una struttura servita da dev server.
 - Estrarre le fonti bibliografiche in un formato dati riutilizzabile.
 - Aggiungere una pagina changelog.
