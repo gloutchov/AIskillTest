@@ -130,6 +130,8 @@ Q = conoscenze/scenari; D = pratiche dichiarate; T = testo con feedback. Area e 
 
 ## Controlli e copertura
 
+Nella milestone 17 questa stessa classificazione è implementata in `assets/assessment.js`. Il comando `node tests/assessment.test.mjs` verifica la corrispondenza fra mappa Markdown e metadati runtime; la banca e le forme restano invariate. La classificazione è parte delle regole di scoring, documentate in [SCORING.md](SCORING.md).
+
 Totale: **115 ID**; **56 Q, 55 D, 4 T, 0 E**. Il completo attuale seleziona 50 ID: **27 Q, 21 D, 2 T, 0 E**. Le autovalutazioni facoltative iniziali sono escluse.
 
 Obiettivi senza item primari attuali: **U02, U03, U05, H01, H03, H04, H05**. Alcuni sono richiamati indirettamente in altri quesiti: un richiamo non conta come copertura dedicata. A04 ha solo una dichiarazione (L9), quindi non ha ancora una prova Q dedicata. T10 è collegato a F06 solo come supporto storico (`supporting`): non verifica la scelta della famiglia di soluzione e non soddisfa la copertura dedicata di F06. Questi vuoti motivano le milestone 18-22.

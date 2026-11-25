@@ -2,6 +2,8 @@
 
 Questo documento definisce il blueprint editoriale e didattico del percorso introduttivo previsto dalla milestone 13. Il percorso è un'esperienza di apprendimento statica e bilingue, non una versione facile dell'assessment, una certificazione o un test psicometricamente validato.
 
+Nota di compatibilità della milestone 17: l'assessment 3.x usa un quadro delle evidenze separato, mentre Primi passi mantiene domande, tutorial, feedback e risultato didattico esistenti. I report didattici riportano la versione dell'app ma non adottano scoring/schema dell'assessment 3.x, né vengono mediati o confrontati con esso. Lo storico comune è accessibile anche dai risultati didattici per poter aprire i report precedenti quando l'ultima sessione è Primi passi. Questo aggiornamento riguarda navigazione dello storico e contesto dei report, senza cambiare il percorso didattico.
+
 Stato del documento: proposta per validazione del maintainer.
 
 Data di verifica delle fonti: 2026-07-11.

@@ -1,5 +1,7 @@
 # Design QA - M14 landing refinements
 
+Nota M17 (`2026-11-25`): le schermate e le verifiche sotto sono evidenze storiche della M14. La M17 aggiorna testi della landing e dashboard con il quadro delle evidenze; non è stato possibile eseguire QA visiva perché il runtime Browser non dispone di un browser. Le verifiche del markup e degli eventi con adattatore DOM non sostituiscono il controllo visivo desktop/mobile. Il maintainer ha approvato la milestone e la release `v3.0.0`, senza riportare gli esiti dettagliati della checklist manuale. Checklist corrente in [docs/SCORING.md](docs/SCORING.md).
+
 - Source visual truth: `/Users/gloutchov/Desktop/Screenshot 2026-07-11 alle 14.54.24.png`
 - Final desktop implementation: `docs/design-qa/m14-landing-desktop.png`
 - Mobile implementation: `docs/design-qa/m14-landing-mobile.png`

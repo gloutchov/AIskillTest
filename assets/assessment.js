@@ -1,0 +1,326 @@
+/* Milestone 17. Pure local assessment rules; approved blueprint 1.0.0. */
+const ASSESSMENT_V3 = (() => {
+  "use strict";
+  const SCORING_VERSION = "3.0.0";
+  const BLUEPRINT_VERSION = "1.0.0";
+  const REPORT_SCHEMA_VERSION = 3;
+  const AREA_LABELS = {
+    F: ["Fondamenti", "Foundations"], U: ["Uso operativo e multimodale", "Operational and multimodal use"],
+    A: ["Agenti", "Agents"], H: ["Harness", "Harnesses"]
+  };
+  const OBJECTIVES = {
+    F01: ["Token, generazione e variabilità", "Tokens, generation, and variability"],
+    F02: ["Addestramento, inferenza e contesto", "Training, inference, and context"],
+    F03: ["Affermazioni e fonti verificabili", "Verifiable claims and sources"],
+    F04: ["RAG, ricerca ed embedding", "RAG, search, and embeddings"],
+    F05: ["Reti neurali e attention", "Neural networks and attention"],
+    F06: ["Famiglie di soluzioni AI", "Families of AI solutions"],
+    U01: ["Scelta degli strumenti e delega", "Tool choice and delegation"],
+    U02: ["Immagini, scansioni e grafici", "Images, scans, and charts"],
+    U03: ["Audio e video", "Audio and video"],
+    U04: ["Brief, vincoli e ambiguità", "Briefs, constraints, and ambiguity"],
+    U05: ["Qualità, tempo, costo e località", "Quality, time, cost, and locality"],
+    U06: ["Verifica degli artefatti", "Artifact verification"],
+    U07: ["Dati, diritti e responsabilità", "Data, rights, and responsibility"],
+    U08: ["Esperimenti e adozione", "Experiments and adoption"],
+    A01: ["Workflow e architetture agentiche", "Workflows and agent architectures"],
+    A02: ["Tool, argomenti ed esiti", "Tools, arguments, and outcomes"],
+    A03: ["Supervisione e mandato", "Supervision and scope of authority"],
+    A04: ["Istruzioni non fidate e divulgazione", "Untrusted instructions and disclosure"],
+    A05: ["Diagnosi, loop e arresto", "Diagnosis, loops, and stopping"],
+    H01: ["Componenti dell'harness", "Harness components"],
+    H02: ["Contesto, memoria e continuità", "Context, memory, and continuity"],
+    H03: ["API, MCP, skill e istruzioni", "APIs, MCP, skills, and instructions"],
+    H04: ["Contratti e permessi effettivi", "Contracts and enforced permissions"],
+    H05: ["Checkpoint e ripresa", "Checkpoints and recovery"],
+    H06: ["Tracce e valutazioni ripetibili", "Traces and repeatable evaluations"]
+  };
+  // Filled from docs/ASSESSMENT_ITEM_MAP.md; changing a mapping changes scoring.
+  const ITEM_MAP = {
+    "L1": {"evidenceType":"D","primaryArea":"F","objectiveId":"F01","objectiveAlignment":"direct","taskLevel":"B","secondaryTags":[]},
+    "L2": {"evidenceType":"D","primaryArea":"F","objectiveId":"F02","objectiveAlignment":"direct","taskLevel":"B","secondaryTags":[]},
+    "L3": {"evidenceType":"D","primaryArea":"F","objectiveId":"F03","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["verification"]},
+    "L4": {"evidenceType":"D","primaryArea":"F","objectiveId":"F04","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["context"]},
+    "L5": {"evidenceType":"D","primaryArea":"U","objectiveId":"U07","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["diligence","privacy"]},
+    "L6": {"evidenceType":"Q","primaryArea":"F","objectiveId":"F03","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["verification"]},
+    "L7": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U07","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["diligence","privacy"]},
+    "T1": {"evidenceType":"Q","primaryArea":"F","objectiveId":"F01","objectiveAlignment":"direct","taskLevel":"B","secondaryTags":[]},
+    "T2": {"evidenceType":"Q","primaryArea":"F","objectiveId":"F01","objectiveAlignment":"direct","taskLevel":"B","secondaryTags":[]},
+    "T3": {"evidenceType":"Q","primaryArea":"F","objectiveId":"F02","objectiveAlignment":"direct","taskLevel":"B","secondaryTags":[]},
+    "T4": {"evidenceType":"Q","primaryArea":"F","objectiveId":"F02","objectiveAlignment":"direct","taskLevel":"B","secondaryTags":[]},
+    "T5": {"evidenceType":"Q","primaryArea":"F","objectiveId":"F02","objectiveAlignment":"direct","taskLevel":"B","secondaryTags":[]},
+    "T6": {"evidenceType":"Q","primaryArea":"F","objectiveId":"F05","objectiveAlignment":"direct","taskLevel":"B","secondaryTags":[]},
+    "T7": {"evidenceType":"Q","primaryArea":"F","objectiveId":"F05","objectiveAlignment":"direct","taskLevel":"B","secondaryTags":[]},
+    "T8": {"evidenceType":"Q","primaryArea":"F","objectiveId":"F03","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["verification"]},
+    "T9": {"evidenceType":"Q","primaryArea":"F","objectiveId":"F04","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["context"]},
+    "T10": {"evidenceType":"Q","primaryArea":"F","objectiveId":"F06","objectiveAlignment":"supporting","taskLevel":"B","secondaryTags":[]},
+    "T11": {"evidenceType":"Q","primaryArea":"F","objectiveId":"F03","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["verification"]},
+    "T12": {"evidenceType":"Q","primaryArea":"F","objectiveId":"F04","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["context"]},
+    "TR_CITE": {"evidenceType":"Q","primaryArea":"F","objectiveId":"F03","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["verification"]},
+    "F_DE_1": {"evidenceType":"D","primaryArea":"U","objectiveId":"U01","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["delegation"]},
+    "F_DE_2": {"evidenceType":"D","primaryArea":"U","objectiveId":"U01","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["delegation"]},
+    "F_DE_3": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U01","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["delegation"]},
+    "F_DS_1": {"evidenceType":"D","primaryArea":"U","objectiveId":"U04","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["description"]},
+    "F_DS_2": {"evidenceType":"D","primaryArea":"U","objectiveId":"U04","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["description"]},
+    "F_DS_3": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U04","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["description"]},
+    "TR_PROMPT": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U04","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["description"]},
+    "F_DI_1": {"evidenceType":"D","primaryArea":"U","objectiveId":"U06","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["discernment","verification"]},
+    "F_DI_2": {"evidenceType":"D","primaryArea":"U","objectiveId":"U06","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["discernment","verification"]},
+    "F_DI_3": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U06","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["discernment","verification"]},
+    "TR_SURE": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U06","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["discernment","verification"]},
+    "F_DG_1": {"evidenceType":"D","primaryArea":"U","objectiveId":"U07","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["diligence","privacy"]},
+    "F_DG_2": {"evidenceType":"D","primaryArea":"U","objectiveId":"U07","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["diligence","privacy"]},
+    "F_DG_3": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U07","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["diligence","privacy"]},
+    "M1": {"evidenceType":"D","primaryArea":"U","objectiveId":"U08","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["mindset"]},
+    "M2": {"evidenceType":"D","primaryArea":"U","objectiveId":"U08","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["mindset"]},
+    "M3": {"evidenceType":"D","primaryArea":"U","objectiveId":"U08","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["mindset"]},
+    "M4": {"evidenceType":"D","primaryArea":"U","objectiveId":"U08","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["mindset"]},
+    "M5": {"evidenceType":"D","primaryArea":"U","objectiveId":"U08","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["mindset"]},
+    "M6": {"evidenceType":"D","primaryArea":"U","objectiveId":"U08","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["mindset"]},
+    "M7": {"evidenceType":"D","primaryArea":"U","objectiveId":"U08","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["mindset"]},
+    "M8": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U08","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["mindset"]},
+    "M9": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U08","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["mindset"]},
+    "P_L_1": {"evidenceType":"Q","primaryArea":"F","objectiveId":"F03","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["verification"]},
+    "P_DE_1": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U01","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["delegation"]},
+    "P_DS_1": {"evidenceType":"T","primaryArea":"U","objectiveId":"U04","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["description"]},
+    "P_DS_2": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U04","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["description"]},
+    "P_DI_1": {"evidenceType":"T","primaryArea":"U","objectiveId":"U06","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["discernment","verification"]},
+    "P_DG_1": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U07","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["diligence","privacy"]},
+    "P_M_1": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U08","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["mindset"]},
+    "L8": {"evidenceType":"D","primaryArea":"U","objectiveId":"U06","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["discernment","verification"]},
+    "L9": {"evidenceType":"D","primaryArea":"A","objectiveId":"A04","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["privacy"]},
+    "L10": {"evidenceType":"D","primaryArea":"F","objectiveId":"F01","objectiveAlignment":"direct","taskLevel":"B","secondaryTags":[]},
+    "L11": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U07","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["diligence","privacy"]},
+    "L12": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U07","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["diligence","privacy"]},
+    "F_DE_4": {"evidenceType":"D","primaryArea":"U","objectiveId":"U01","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["delegation"]},
+    "F_DE_5": {"evidenceType":"D","primaryArea":"U","objectiveId":"U01","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["delegation"]},
+    "F_DE_6": {"evidenceType":"D","primaryArea":"U","objectiveId":"U01","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["delegation"]},
+    "F_DE_7": {"evidenceType":"D","primaryArea":"U","objectiveId":"U01","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["delegation"]},
+    "F_DE_8": {"evidenceType":"D","primaryArea":"U","objectiveId":"U01","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["delegation"]},
+    "F_DE_9": {"evidenceType":"D","primaryArea":"U","objectiveId":"U01","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["delegation"]},
+    "F_DE_10": {"evidenceType":"D","primaryArea":"U","objectiveId":"U01","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["delegation"]},
+    "F_DE_11": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U01","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["delegation"]},
+    "F_DE_12": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U01","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["delegation"]},
+    "F_DS_4": {"evidenceType":"D","primaryArea":"U","objectiveId":"U04","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["description"]},
+    "F_DS_5": {"evidenceType":"D","primaryArea":"U","objectiveId":"U04","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["description"]},
+    "F_DS_6": {"evidenceType":"D","primaryArea":"U","objectiveId":"U04","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["description"]},
+    "F_DS_7": {"evidenceType":"D","primaryArea":"U","objectiveId":"U04","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["description"]},
+    "F_DS_8": {"evidenceType":"D","primaryArea":"U","objectiveId":"U04","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["description"]},
+    "F_DS_9": {"evidenceType":"D","primaryArea":"U","objectiveId":"U04","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["description"]},
+    "F_DS_10": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U04","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["description"]},
+    "F_DS_11": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U04","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["description"]},
+    "F_DI_4": {"evidenceType":"D","primaryArea":"U","objectiveId":"U06","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["discernment","verification"]},
+    "F_DI_5": {"evidenceType":"D","primaryArea":"U","objectiveId":"U06","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["discernment","verification"]},
+    "F_DI_6": {"evidenceType":"D","primaryArea":"U","objectiveId":"U06","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["discernment","verification"]},
+    "F_DI_7": {"evidenceType":"D","primaryArea":"U","objectiveId":"U06","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["discernment","verification"]},
+    "F_DI_8": {"evidenceType":"D","primaryArea":"U","objectiveId":"U06","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["discernment","verification"]},
+    "F_DI_9": {"evidenceType":"D","primaryArea":"U","objectiveId":"U06","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["discernment","verification"]},
+    "F_DI_10": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U06","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["discernment","verification"]},
+    "F_DI_11": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U06","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["discernment","verification"]},
+    "F_DG_4": {"evidenceType":"D","primaryArea":"U","objectiveId":"U07","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["diligence","privacy"]},
+    "F_DG_5": {"evidenceType":"D","primaryArea":"U","objectiveId":"U07","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["diligence","privacy"]},
+    "F_DG_6": {"evidenceType":"D","primaryArea":"U","objectiveId":"U07","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["diligence","privacy"]},
+    "F_DG_7": {"evidenceType":"D","primaryArea":"U","objectiveId":"U07","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["diligence","privacy"]},
+    "F_DG_8": {"evidenceType":"D","primaryArea":"U","objectiveId":"U07","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["diligence","privacy"]},
+    "F_DG_9": {"evidenceType":"D","primaryArea":"U","objectiveId":"U07","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["diligence","privacy"]},
+    "F_DG_10": {"evidenceType":"D","primaryArea":"U","objectiveId":"U07","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["diligence","privacy"]},
+    "F_DG_11": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U07","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["diligence","privacy"]},
+    "F_DG_12": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U07","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["diligence","privacy"]},
+    "M10": {"evidenceType":"D","primaryArea":"U","objectiveId":"U08","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["mindset"]},
+    "M11": {"evidenceType":"D","primaryArea":"U","objectiveId":"U08","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["mindset"]},
+    "M12": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U08","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["mindset"]},
+    "P_L_2": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U06","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["discernment","verification"]},
+    "P_DE_2": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U01","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["delegation"]},
+    "P_DS_3": {"evidenceType":"T","primaryArea":"U","objectiveId":"U04","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["description"]},
+    "P_DI_2": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U06","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["discernment","verification"]},
+    "P_DG_2": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U07","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["diligence","privacy"]},
+    "T13": {"evidenceType":"Q","primaryArea":"F","objectiveId":"F02","objectiveAlignment":"direct","taskLevel":"B","secondaryTags":[]},
+    "M13": {"evidenceType":"D","primaryArea":"U","objectiveId":"U08","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["mindset"]},
+    "P_M_2": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U08","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["mindset"]},
+    "AG1": {"evidenceType":"D","primaryArea":"A","objectiveId":"A01","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["delegation"]},
+    "AG2": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A01","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["delegation"]},
+    "AG3": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A03","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["delegation","diligence"]},
+    "AG4": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A03","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["delegation","diligence"]},
+    "AG5": {"evidenceType":"D","primaryArea":"A","objectiveId":"A03","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["delegation","diligence"]},
+    "AG6": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A03","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["delegation","diligence"]},
+    "AG7": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A02","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["verification"]},
+    "AG8": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A05","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["verification"]},
+    "AG9": {"evidenceType":"Q","primaryArea":"H","objectiveId":"H06","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["verification"]},
+    "AG10": {"evidenceType":"T","primaryArea":"A","objectiveId":"A03","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["delegation","diligence"]},
+    "AG11": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A03","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["delegation","diligence"]},
+    "AG12": {"evidenceType":"Q","primaryArea":"H","objectiveId":"H02","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["context"]},
+    "AG13": {"evidenceType":"Q","primaryArea":"H","objectiveId":"H06","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["verification"]},
+    "AG14": {"evidenceType":"D","primaryArea":"A","objectiveId":"A03","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["delegation","diligence"]},
+    "AG15": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A03","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["delegation","diligence"]}
+  };
+  const isRecord = value => value !== null && typeof value === "object" && !Array.isArray(value);
+  const mean = values => values.reduce((sum, value) => sum + value, 0) / values.length;
+  const clampCredit = value => Math.max(0, Math.min(1, value));
+  const label = (labels, language) => labels[language === "en" ? 1 : 0];
+  const objectiveIds = area => Object.keys(OBJECTIVES).filter(id => id[0] === area);
+  const indexValue = value => (typeof value === "number" || (typeof value === "string" && /^\d+$/.test(value))) && Number.isInteger(Number(value)) ? Number(value) : null;
+
+  function responseStatus(question, raw) {
+    if (raw === undefined || raw === null || raw === "" || (Array.isArray(raw) && !raw.length)) return "missing";
+    if (question.type === "text") return typeof raw === "string" && raw.trim().length >= (question.proceedChars || 1) ? "valid" : "invalid";
+    if (question.type === "likert") return indexValue(raw) !== null && Number(raw) >= 1 && Number(raw) <= 5 ? "valid" : "invalid";
+    const options = question.options || [];
+    const validIndex = value => indexValue(value) !== null && Number(value) >= 0 && Number(value) < options.length;
+    if (question.type === "multi") return Array.isArray(raw) && raw.every(validIndex) && new Set(raw.map(Number)).size === raw.length ? "valid" : "invalid";
+    return validIndex(raw) ? "valid" : "invalid";
+  }
+
+  function classify(question) {
+    const sourceId = question.sourceId || question.id;
+    const definition = ITEM_MAP[sourceId];
+    if (!definition) throw new Error(`Missing assessment mapping: ${sourceId}`);
+    return { ...definition, secondaryTags: [...definition.secondaryTags] };
+  }
+
+  function itemResult(question, raw, meta) {
+    const classification = classify(question);
+    const status = responseStatus(question, raw);
+    const options = question.options || [];
+    const selected = status !== "valid" || question.type === "text" || question.type === "likert" ? []
+      : (question.type === "multi" ? raw : [raw]).map(index => options[Number(index)]);
+    let credit = null;
+    if (classification.evidenceType === "Q" && status === "valid") {
+      if (question.type === "multi") {
+        const maximum = options.reduce((sum, option) => sum + Math.max(0, Number(option.score) || 0), 0);
+        credit = maximum ? clampCredit(selected.reduce((sum, option) => sum + (Number(option.score) || 0), 0) / maximum) : null;
+      } else {
+        credit = Number.isFinite(selected[0]?.score) ? clampCredit((selected[0].score - 1) / 4) : null;
+      }
+    }
+    const item = {
+      id: question.id, sourceId: question.sourceId || question.id, formId: question.formId || meta.formId || null,
+      itemVersion: `${meta.questionBankVersion || "unversioned"}:${meta.formVersion || "unversioned"}`,
+      section: question.section, dimension: question.dimension, sub: question.sub || question.dimension,
+      type: question.type, ...classification, questionKind: classification.evidenceType === "D" ? "self-report"
+        : classification.evidenceType === "T" ? "formative-text" : question.type === "knowledge" ? "knowledge" : "scenario",
+      responseFormat: question.type === "text" ? "text" : question.type === "multi" ? "multi" : "choice",
+      question: question.text, responseStatus: status, rawAnswer: raw === undefined ? null : raw,
+      answer: selected.map(option => option.title).join(" | "),
+      answerText: question.type === "text" && typeof raw === "string" ? raw.trim() : selected.map(option => option.text || "").join(" | "),
+      credit, maxCredit: classification.evidenceType === "Q" ? 1 : null,
+      score: credit, scored: credit !== null, feedback: question.feedback || "",
+      declaredValue: classification.evidenceType === "D" && status === "valid" ? Number(raw) : null
+    };
+    if (classification.evidenceType === "D" && status === "valid") {
+      const declared = options.find(option => option.value === Number(raw));
+      item.answer = declared?.title || String(raw);
+      item.answerText = declared?.text || "";
+    }
+    if (question.type === "multi") {
+      const indexes = status === "valid" ? raw.map(Number) : [];
+      item.selectionReview = status === "valid" ? {
+        omitted: options.filter((option, index) => option.score > 0 && !indexes.includes(index)).map(option => option.title),
+        incompatible: selected.filter(option => option.score < 0).map(option => option.title)
+      } : null;
+    }
+    if (classification.evidenceType === "T") item.checklist = (question.rubric?.criteria || []).map(criterion => criterion.label);
+    return item;
+  }
+
+  function counts(items) {
+    return { planned: items.length, proposed: items.length, valid: items.filter(item => item.responseStatus === "valid").length,
+      missing: items.filter(item => item.responseStatus === "missing").length, invalid: items.filter(item => item.responseStatus === "invalid").length };
+  }
+
+  function aggregate(items, plannedCount = items.length) {
+    const knowledgeByArea = {};
+    const byArea = {};
+    const byEvidence = Object.fromEntries(["Q", "D", "T", "E"].map(type => [type, counts(items.filter(item => item.evidenceType === type))]));
+    for (const area of Object.keys(AREA_LABELS)) {
+      const areaItems = items.filter(item => item.primaryArea === area);
+      const proposedQ = areaItems.filter(item => item.evidenceType === "Q" && item.objectiveAlignment === "direct");
+      const validQ = proposedQ.filter(item => item.responseStatus === "valid" && item.credit !== null);
+      const expected = objectiveIds(area);
+      const objectives = expected.map(id => {
+        const qs = validQ.filter(item => item.objectiveId === id);
+        return { id, count: qs.length, credit: qs.length ? mean(qs.map(item => item.credit)) : null };
+      });
+      const covered = objectives.filter(objective => objective.count).map(objective => objective.id);
+      const partial = validQ.length >= 3 && covered.length >= 2;
+      const reached = validQ.length >= 6 && covered.length === expected.length && proposedQ.length === validQ.length && plannedCount === items.length;
+      const value = partial ? 100 * mean(objectives.filter(objective => objective.count).map(objective => objective.credit)) : null;
+      const status = !validQ.length ? "not-assessed" : !partial ? "limited" : reached ? "reached" : "partial";
+      knowledgeByArea[area] = { value, status, band: reached ? (value < 40 ? "review" : value < 70 ? "developing" : "strong") : null,
+        objectives, validCount: validQ.length, missingCount: proposedQ.length - validQ.length };
+      byArea[area] = { expectedObjectives: expected, proposedObjectives: [...new Set(proposedQ.map(item => item.objectiveId))], coveredObjectives: covered,
+        missingObjectives: expected.filter(id => !covered.includes(id)), status,
+        byEvidence: Object.fromEntries(["Q", "D", "T", "E"].map(type => [type, counts(areaItems.filter(item => item.evidenceType === type))])),
+        supportingCount: areaItems.filter(item => item.objectiveAlignment === "supporting").length };
+    }
+    const declaredPractices = items.filter(item => item.evidenceType === "D");
+    const contrasts = [];
+    for (const id of Object.keys(OBJECTIVES)) {
+      const declared = declaredPractices.filter(item => item.objectiveId === id && item.declaredValue !== null);
+      const objective = knowledgeByArea[id[0]].objectives.find(objective => objective.id === id);
+      if (declared.length && mean(declared.map(item => item.declaredValue)) >= 4 && objective.credit !== null && objective.credit < 0.4) contrasts.push(id);
+    }
+    return {
+      results: { knowledgeByArea, declaredPractices, declaredContrasts: contrasts,
+        formativeFeedback: items.filter(item => item.evidenceType === "T"),
+        simulatedCases: [], simulatedSummary: { value: null, status: "not-assessed", expectedCases: 0, completedCases: 0 } },
+      coverage: { plannedCount, proposedCount: items.length, unproposedCount: Math.max(0, plannedCount - items.length), byArea, byEvidence,
+        cases: { expected: 0, proposed: 0, completed: 0, status: "not-assessed" } }
+    };
+  }
+
+  function comparisonKey(meta, items) {
+    return JSON.stringify([SCORING_VERSION, BLUEPRINT_VERSION, REPORT_SCHEMA_VERSION, meta.testMode?.id || "", meta.language || "", meta.formId || "",
+      meta.questionBankVersion || "", meta.formVersion || "", items.map(item => [item.sourceId, item.itemVersion, item.evidenceType, item.objectiveId, item.objectiveAlignment]).sort((a, b) => a[0].localeCompare(b[0]))]);
+  }
+
+  function evaluate(questions, answers, inputMeta, completedAt) {
+    const meta = { ...inputMeta, scoringVersion: SCORING_VERSION, reportSchemaVersion: REPORT_SCHEMA_VERSION, blueprintVersion: BLUEPRINT_VERSION, completedAt };
+    const items = questions.map(question => itemResult(question, answers[question.id], meta));
+    meta.comparisonKey = comparisonKey(meta, items);
+    const aggregation = aggregate(items, meta.testMode?.questionCount ?? questions.length);
+    return { meta, profile: label(["Quadro delle evidenze", "Evidence overview"], meta.language), answers: items, ...aggregation, criticalFindings: [] };
+  }
+
+  function reportKind(report) {
+    if (!isRecord(report)) return "unknown";
+    const meta = isRecord(report.meta) ? report.meta : {};
+    const hasSchema = meta.reportSchemaVersion !== undefined;
+    const hasScoring = meta.scoringVersion !== undefined;
+    const appVersion = String(meta.assessmentVersion || "");
+    if (hasSchema || hasScoring) {
+      const validCounts = value => isRecord(value) && ["planned", "proposed", "valid", "missing", "invalid"].every(key => Number.isInteger(value[key]) && value[key] >= 0);
+      const validEvidenceCounts = value => isRecord(value) && ["Q", "D", "T", "E"].every(type => validCounts(value[type]));
+      if (meta.reportSchemaVersion === REPORT_SCHEMA_VERSION && meta.scoringVersion === SCORING_VERSION && meta.blueprintVersion === BLUEPRINT_VERSION
+          && isRecord(report.results?.knowledgeByArea) && validEvidenceCounts(report.coverage?.byEvidence) && isRecord(report.coverage?.byArea)
+          && Array.isArray(report.answers) && report.answers.every(item => isRecord(item) && typeof item.sourceId === "string" && AREA_LABELS[item.primaryArea] && ["Q", "D", "T"].includes(item.evidenceType))
+          && Array.isArray(report.results.declaredPractices) && report.results.declaredPractices.every(isRecord)
+          && Array.isArray(report.results.formativeFeedback) && report.results.formativeFeedback.every(isRecord)
+          && Array.isArray(report.results.declaredContrasts) && report.results.declaredContrasts.every(id => OBJECTIVES[id])
+          && Array.isArray(report.results.simulatedCases) && !report.results.simulatedCases.length && report.coverage.byEvidence.E.proposed === 0 && Array.isArray(report.criticalFindings)
+          && Object.keys(AREA_LABELS).every(area => isRecord(report.results.knowledgeByArea[area]) && Array.isArray(report.results.knowledgeByArea[area].objectives)
+            && report.results.knowledgeByArea[area].objectives.every(isRecord)
+            && isRecord(report.coverage.byArea[area]) && validEvidenceCounts(report.coverage.byArea[area].byEvidence)
+            && Array.isArray(report.coverage.byArea[area].coveredObjectives) && Array.isArray(report.coverage.byArea[area].missingObjectives))) return "evidence";
+      return "unknown";
+    }
+    if (appVersion && !/^[123]\./.test(appVersion)) return "unknown";
+    if ((meta.testMode?.id === "first-steps" || meta.testMode?.type === "learning") && Number.isFinite(report.correctCount) && Array.isArray(report.recommendedUnitIds)) return "learning";
+    if (appVersion && !/^[12]\./.test(appVersion)) return "unknown";
+    return isRecord(report.score) && Array.isArray(report.answers) && typeof report.profile === "string" && Object.values(report.score).some(value => typeof value === "number" && Number.isFinite(value)) ? "legacy" : "unknown";
+  }
+
+  function csvRows(report) {
+    // Flatten without interpreting or recalculating stored results. Safe for future/unknown formats.
+    const rows = [["type", "field", "value"]];
+    const visit = (value, path) => {
+      if (value === null || typeof value !== "object") { rows.push([path.split(".")[0] || "report", path || "report", value ?? ""]); return; }
+      if (!Object.keys(value).length) rows.push([path.split(".")[0] || "report", path, JSON.stringify(value)]);
+      else Object.entries(value).forEach(([key, child]) => visit(child, path ? `${path}.${key}` : key));
+    };
+    visit(report, "");
+    return rows;
+  }
+
+  return { SCORING_VERSION, BLUEPRINT_VERSION, REPORT_SCHEMA_VERSION, AREA_LABELS, OBJECTIVES, ITEM_MAP, label, objectiveIds, responseStatus,
+    classify, itemResult, aggregate, comparisonKey, evaluate, reportKind, csvRows };
+})();

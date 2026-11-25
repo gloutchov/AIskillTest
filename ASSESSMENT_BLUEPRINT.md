@@ -418,3 +418,11 @@ Decisioni approvate dal maintainer il `2026-11-25` per la milestone 17:
 5. Storico 2.x conservato senza ricalcolo e senza confronti diretti con 3.x; nuove versioni e metadati tracciabili.
 
 Il blueprint approvato è il riferimento per la milestone 17. Schermate e implementazioni delle milestone successive richiedono la propria validazione secondo PLAN.md.
+
+## 13. Attuazione nella milestone 17
+
+La milestone 17, sviluppata sul branch `feature/evidence-based-scoring`, implementa il contratto Q/D/T della banca esistente, con versione app e scoring `3.0.0`, schema report `3` e blueprint `1.0.0`. Il maintainer ha approvato la milestone e la release `v3.0.0` il `2026-11-25`; la versione pubblicata precedente è `2.4.1`.
+
+La classificazione è riportata in `assets/assessment.js` e verificata contro la mappa Markdown. La banca e le forme restano invariate: il completo ha ancora 27 Q, 21 D e 2 T; nessun E è stato introdotto e la matrice target da 50 slot della sezione 5 resta prevista per la milestone 22. I report non possono dichiarare copertura piena degli obiettivi mancanti.
+
+Scoring, schema, compatibilità dello storico, nuovo CSV e checklist di validazione sono documentati in [docs/SCORING.md](docs/SCORING.md). I [report sintetici](tests/fixtures/m17-reports.json) illustrano dichiarazioni e quiz divergenti, lacuna Agents e formato legacy; non contengono dati di rispondenti e non vengono caricati automaticamente dall'app. La verifica automatica comprende 19 controlli, 60 composizioni assessment e 6 forme didattiche. La verifica dell'agente in un browser reale non è stata possibile nell'ambiente disponibile; il maintainer ha approvato la chiusura, senza riportare gli esiti dettagliati della checklist manuale nella conversazione.

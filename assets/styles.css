@@ -1361,6 +1361,22 @@
       }
     }
 
+    .evidence-section, .evidence-intro, .evidence-counts { margin: 18px 0; }
+    .report-actions { margin: 0 0 18px; }
+    .evidence-areas { align-items: start; }
+    .evidence-area h3, .formative-item h3, .analysis-item h4 { overflow-wrap: anywhere; }
+    .evidence-value { font-size: 2rem; font-weight: 800; margin: 12px 0; }
+    .evidence-note { padding: 12px 14px; border-left: 3px solid #b45309; background: #fffbeb; color: #78350f; overflow-wrap: anywhere; }
+    .has-review { border-top: 3px solid #b45309; }
+    .evidence-area details, .evidence-section details { margin-top: 12px; }
+    .evidence-area summary, .evidence-section summary { cursor: pointer; font-weight: 650; padding: 8px 0; }
+    .evidence-area ul, .evidence-section ul { padding-left: 24px; }
+    .answer-text, .raw-report { white-space: pre-wrap; overflow-wrap: anywhere; }
+    .raw-report { max-height: 34rem; overflow: auto; font-size: 12px; }
+    .history-scroll { overflow-x: auto; }
+    .legacy-notice { border-left: 4px solid #b45309; margin-bottom: 18px; }
+    summary:focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; }
+
     @media print {
       body { background: white; }
       .shell { width: 100%; padding: 0; }

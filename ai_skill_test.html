@@ -4,12 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AI Skill & Adoption Assessment</title>
-  <link rel="icon" type="image/png" href="aiskilltest_icon.png?v=2.4.1" />
-  <link rel="apple-touch-icon" href="aiskilltest_icon.png?v=2.4.1" />
+  <link rel="icon" type="image/png" href="aiskilltest_icon.png?v=3.0.0" />
+  <link rel="apple-touch-icon" href="aiskilltest_icon.png?v=3.0.0" />
   <meta name="theme-color" content="#0f172a" />
   <meta name="application-name" content="AI Skill Assessment" />
   <meta name="theme-color" content="#0f172a" />
-  <link rel="stylesheet" href="assets/styles.css?v=2.4.1" />
+  <link rel="stylesheet" href="assets/styles.css?v=3.0.0" />
 </head>
 <body>
   <main class="shell">
@@ -18,7 +18,7 @@
         <div>
           <div class="hero-meta">
             <p class="kicker">AI Skill & Adoption Assessment</p>
-            <span class="version-badge" id="versionBadge">Versione 2.4.1</span>
+            <span class="version-badge" id="versionBadge">Versione 3.0.0</span>
             <div class="language-switcher" aria-label="Lingua">
               <button type="button" class="language-btn" data-language="it" aria-pressed="false">IT</button>
               <button type="button" class="language-btn" data-language="en" aria-pressed="false">EN</button>
@@ -29,14 +29,14 @@
               </svg>
             </a>
           </div>
-          <h1>Misura pratica della competenza AI</h1>
-          <p class="subtitle">Un questionario interattivo per stimare conoscenza, uso operativo, giudizio critico e attitudine verso la GenAI. Il risultato finale produce un profilo, una dashboard e suggerimenti formativi.</p>
+          <h1>Conoscenze e pratiche nell'uso dell'AI</h1>
+          <p class="subtitle">Esplora conoscenze e giudizio su scenari, pratiche dichiarate e prompt scritti. Il risultato distingue ciascun tipo di evidenza e la sua copertura.</p>
           <p class="source-note">Modello operativo ispirato alle dimensioni Literacy, Fluency e Mindset e alle 4D della Fluency: Delegation, Description, Discernment, Diligence. Non è un test psicometrico validato: è uno strumento diagnostico interno e migliorabile.</p>
         </div>
         <aside class="hero-card" aria-label="Sintesi assessment">
           <div>
             <div class="big-number" id="heroCount">50</div>
-            <p id="heroCountDescription">domande estratte da una delle tre forme parallele, tra autovalutazione, quiz tecnico, scenari e prove pratiche</p>
+            <p id="heroCountDescription">domande: 27 quiz/scenari, 21 dichiarazioni e 2 testi formativi; nessun esercizio simulato</p>
           </div>
           <div class="pill-row">
             <span class="pill">Literacy</span>
@@ -62,7 +62,7 @@
               <div>
                 <p class="kicker">Assessment AI</p>
                 <h2 id="modeCarouselTitle">Scegli il tuo percorso</h2>
-                <p>Il test completo misura il profilo generale. I percorsi tematici sono più brevi e restituiscono un report locale limitato all'area scelta.</p>
+                <p>Il completo copre le sezioni attuali. I percorsi tematici più brevi mostrano soltanto le evidenze raccolte, con copertura e limiti.</p>
               </div>
               <div class="carousel-controls" aria-label="Scorri percorsi">
                 <button class="carousel-toggle" id="modeAutoplayBtn" type="button" aria-pressed="false">Pausa</button>
@@ -89,11 +89,11 @@
           <div class="grid-3 landing-metrics" aria-label="Sintesi del risultato finale">
             <div class="metric-card">
               <span>Output</span>
-              <strong>Profilo + dashboard</strong>
+              <strong>Quadro delle evidenze</strong>
             </div>
             <div class="metric-card">
               <span>Punteggio</span>
-              <strong>Indice 0-100</strong>
+              <strong>Copertura per area</strong>
             </div>
             <div class="metric-card">
               <span>Report</span>
@@ -103,7 +103,7 @@
 
           <div class="card" style="margin-top: 18px;">
             <h3>Come viene letto il risultato</h3>
-            <p>La segmentazione principale usa Literacy e Fluency. Un punteggio basso in entrambe porta al profilo Beginner; alta Fluency ma bassa Literacy porta al profilo Curious; alta Literacy ma bassa Fluency porta al profilo Expert; punteggi alti in entrambe portano al profilo Champion. Il Mindset viene mostrato come lente aggiuntiva: non cambia il profilo principale, ma aiuta a capire se la persona è pronta, cauta, scettica o propulsiva.</p>
+            <p>Risultati dei quiz/scenari, dichiarazioni e testi formativi restano separati. Le percentuali per area richiedono abbastanza quesiti pertinenti; le aree non esplorate sono segnalate. Non ci sono indice globale o qualifiche operative.</p>
           </div>
         </section>
 
@@ -114,7 +114,7 @@
               <h2>Prima del test</h2>
               <p>Puoi indicare nome, ruolo, team e una stima iniziale delle tue skill. Tutti i campi sono facoltativi: puoi iniziare anche lasciando tutto vuoto.</p>
               <p class="muted">Le informazioni restano locali nella cache e nel localStorage del browser. Non vengono inviate automaticamente a server esterni. Servono solo a rendere più utile il report locale e l'eventuale export manuale.</p>
-              <p class="muted">Le skill dichiarate aiutano soprattutto a confrontare aspettative e risultati ottenuti: il report mostra lo scarto tra autopercezione iniziale e punteggio emerso dal test.</p>
+              <p class="muted">Le stime iniziali sono aspettative personali. Restano separate, senza scarti automatici o modifiche ai risultati dei quesiti.</p>
             </div>
 
             <div class="card">
@@ -136,10 +136,10 @@
 
               <div class="self-assessment-box">
                 <h3>Quanto ti consideri competente oggi?</h3>
-                <p class="muted small">Inserisci una stima personale da 0 a 100. Puoi lasciare vuoto uno o più campi: in quel caso il relativo confronto non comparirà.</p>
+                <p class="muted small">Inserisci una stima personale facoltativa da 0 a 100. Non è un punteggio del test e non viene confrontata direttamente con i risultati.</p>
                 <div class="self-assessment-grid">
                   <div>
-                    <label for="selfOverallInput">AI Skill</label>
+                    <label for="selfOverallInput">Stima complessiva</label>
                     <input id="selfOverallInput" type="number" min="0" max="100" step="1" inputmode="numeric" placeholder="0-100" />
                     <span class="field-note">Valutazione complessiva.</span>
                   </div>
@@ -219,7 +219,7 @@
 
           <section class="card bibliography-section">
             <h2>Assessment, adozione e competenza percepita</h2>
-            <p class="muted">Riferimenti utili per comprendere la scelta delle dimensioni Literacy, Fluency e Mindset e il confronto tra autopercezione e comportamento osservato.</p>
+            <p class="muted">Riferimenti storici per Literacy, Fluency e Mindset. Non validano questo assessment; dichiarazioni e scelte ipotetiche sono evidenze distinte.</p>
             <div class="bibliography-grid">
               <article class="bibliography-item">
                 <div class="bibliography-source">Datapizza · articolo di riferimento</div>
@@ -264,7 +264,7 @@
               </article>
 
               <article class="bibliography-item">
-                <div class="bibliography-source">Southworth et al. · AI Fluency Framework</div>
+                <div class="bibliography-source">Dakan e Feller · AI Fluency Framework</div>
                 <h3>Le quattro D della AI Fluency</h3>
                 <p>Framework operativo che articola la competenza d’uso in Delegation, Description, Discernment e Diligence.</p>
                 <a class="bibliography-link" href="https://aifluencyframework.org/" target="_blank" rel="noopener noreferrer">Apri il framework ↗</a>
@@ -350,7 +350,7 @@
 
           <section class="card bibliography-section">
             <h3>Nota metodologica</h3>
-            <p>Questo assessment è uno strumento diagnostico interno. Le tre forme A, B e C sono state costruite con la stessa matrice di dimensioni, tipologie e pesi, ma la loro equivalenza è progettata e non dimostrata psicometricamente. Le soglie, i pesi, le domande a trabocchetto e le rubriche locali non costituiscono una validazione psicometrica; per impieghi formali occorrerebbero analisi di affidabilità, validità, bias, difficoltà ed equivalenza delle forme su un campione adeguato.</p>
+            <p>Il modello 3.x separa conoscenze e scenari, pratiche dichiarate e testi formativi. Gli obiettivi pesano uguale nella propria area; le percentuali richiedono almeno 3 quesiti e 2 obiettivi. Le fasce editoriali richiedono almeno 6 quesiti e tutti gli obiettivi dell’area. Un elenco di parole chiave non riceve un punteggio di qualità. Nessun esercizio simulato è ancora presente. Le forme sono equivalenti per progetto, non psicometricamente; pesi e soglie non sono validati. I report 2.x restano leggibili con il modello originale e non sono confrontabili con 3.x.</p>
           </section>
 
           <div class="actions">
@@ -367,9 +367,11 @@
 
   <div class="toast" id="toast">Operazione completata</div>
 
-  <script src="assets/questions.js?v=2.4.1"></script>
-  <script src="assets/i18n.js?v=2.4.1"></script>
-  <script src="assets/learning.js?v=2.4.1"></script>
-  <script src="assets/app.js?v=2.4.1"></script>
+  <script src="assets/questions.js?v=3.0.0"></script>
+  <script src="assets/i18n.js?v=3.0.0"></script>
+  <script src="assets/learning.js?v=3.0.0"></script>
+  <script src="assets/assessment.js?v=3.0.0"></script>
+  <script src="assets/report-ui.js?v=3.0.0"></script>
+  <script src="assets/app.js?v=3.0.0"></script>
 </body>
 </html>

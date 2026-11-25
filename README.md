@@ -2,13 +2,13 @@
 
 ## Italiano
 
-Questionario interattivo in italiano e inglese per valutare in modo pratico competenza, uso operativo, giudizio critico e attitudine verso la GenAI.
+Questionario interattivo in italiano e inglese per esplorare conoscenze, giudizio su scenari e pratiche dichiarate nell’uso della GenAI.
 
-L'assessment produce un profilo finale, una dashboard dei punteggi e suggerimenti formativi. È pensato come strumento diagnostico interno e migliorabile, non come test psicometrico validato.
+L'assessment produce un quadro delle evidenze: conoscenze/scenari, pratiche dichiarate e testi con feedback restano separati, con copertura e limiti per area. È pensato come strumento diagnostico interno e migliorabile, non come test psicometrico validato.
 
-Versione corrente dell'app: `2.4.1`.
+Versione corrente dell'app: `3.0.0`, milestone 17 approvata dal maintainer il `2026-11-25`.
 
-Tag di riferimento previsto: `v2.4.1`.
+Tag di riferimento: `v3.0.0`.
 
 ### Nota sullo sviluppo
 
@@ -21,7 +21,11 @@ Questo test è stato realizzato in vibecoding, usando l'AI come supporto operati
 - `assets/questions.js`: banca domande, forme parallele e override.
 - `assets/i18n.js`: testi localizzati, traduzione inglese della banca domande e varianti form-specific.
 - `assets/learning.js`: forme A/B/C e unità didattiche del percorso introduttivo.
-- `assets/app.js`: logica client-side, navigazione, scoring, dashboard ed export.
+- `assets/app.js`: navigazione client-side, storico, dashboard legacy/didattica ed export.
+- `assets/assessment.js`: regole pure dello scoring 3.x e metadati degli item.
+- `assets/report-ui.js`: quadro delle evidenze IT/EN.
+- `docs/SCORING.md`: schema, compatibilità e verifica della milestone 17.
+- `tests/assessment.test.mjs`: controlli deterministici senza dipendenze.
 - `aiskilltest_icon.png`: icona del sito e dei collegamenti salvati su dispositivo.
 - `scripts/build-learning-data.mjs`: genera l'asset didattico dal blueprint senza dipendenze.
 - `LEARNING_PATH.md`: blueprint bilingue del percorso introduttivo pianificato, con domande, unità didattiche e fonti.
@@ -52,7 +56,7 @@ L'assessment combina autovalutazione, scenari, quiz tecnici e prove pratiche su:
 - AI Agents: agenti, tool, permessi, memoria/stato, controllo umano, log e rollback.
 - AI Fluency: Delegation, Description, Discernment e Diligence.
 - Mindset: apertura alla sperimentazione, fiducia calibrata e adozione responsabile.
-- Practical Lab: mini-task operativi, prompt, checklist e controlli su casi concreti.
+- Practical Lab: quiz su scelte ipotetiche e prompt con checklist formative; nessuna esecuzione simulata.
 
 Modalità disponibili:
 
@@ -70,15 +74,13 @@ Modalità disponibili:
 
 La banca contiene 115 domande base. Il test completo resta a 50 domande e include 4 domande AI Agents. Il percorso AI Agents usa un pool di 15 domande per alimentare la rotazione A/B/C. Le sessioni ruotano tra forme A/B/C separatamente per lingua e modalità.
 
-`Primi passi con l'AI` è un'esperienza di apprendimento, non un assessment comparabile con l'indice AI Skill. Usa tre forme da 10 domande e propone spiegazioni locali e letture facoltative. I link esterni si aprono soltanto dopo un click esplicito.
+`Primi passi con l'AI` è un'esperienza di apprendimento, non un assessment comparabile con gli altri risultati. Usa tre forme da 10 domande e propone spiegazioni locali e letture facoltative. I link esterni si aprono soltanto dopo un click esplicito.
 
-Nel test completo, il profilo globale usa questa ponderazione:
+Il completo mantiene 50 domande: 27 quiz/scenari, 21 dichiarazioni e 2 testi formativi. Nessun item attuale è un esercizio simulato. Le aree di risultato sono Fondamenti, Uso operativo e multimodale, Agenti e Harness; le coperture moderne ancora mancanti sono indicate.
 
-- 35% Literacy
-- 45% Fluency
-- 20% Mindset
+Le percentuali usano soltanto quiz e scenari direttamente pertinenti, con peso uguale per obiettivo. Servono almeno 3 quesiti validi e 2 obiettivi per mostrare una percentuale d'area; le fasce editoriali richiedono almeno 6 quesiti e tutti gli obiettivi dell'area. Dichiarazioni e stime iniziali non modificano i quiz. I testi aperti offrono checklist formative senza scoring lessicale.
 
-Nei percorsi tematici, il risultato è calcolato solo sulle domande presenti nella modalità scelta. Le dashboard tematiche non mostrano punteggi globali o aree non misurate.
+I nuovi report non producono indice globale, quadrante, radar o profili Beginner/Curious/Expert/Champion. Nei tematici sono mostrati solo risultati sostenuti dalle evidenze presenti, con le altre aree dichiarate non esplorate. Regole, metadati, limiti e checklist di verifica sono in [docs/SCORING.md](docs/SCORING.md).
 
 ### Privacy e dati
 
@@ -88,11 +90,11 @@ Lo step iniziale consente di inserire nome, ruolo, area/team e autovalutazione d
 
 ### Export e storico
 
-- JSON: contiene metadati, modalità di test, forma, punteggi, risposte e raccomandazioni.
-- CSV: contiene metadati principali, lingua, origine della scelta lingua, autovalutazione, punteggi e risposte in formato tabellare.
-- Storico locale: conserva gli ultimi report nel browser e mostra la modalità svolta.
+- JSON: contiene il record completo originale, con versioni di app/scoring/schema/blueprint, lingua, modalità, forma, evidenze, copertura e risposte.
+- CSV: formato `type,field,value` con percorsi di campo stabili, compresi metadati, risposte, evidenze e copertura; sostituisce il precedente CSV a sezioni.
+- Storico locale: conserva fino a 100 report apribili singolarmente. I report 2.x restano originali con avviso, senza ricalcolo, medie o confronti diretti con 3.x. Formati sconosciuti sono consultabili ed esportabili senza alterare i dati.
 
-Gli export sono sempre azioni manuali dell'utente.
+Gli export sono sempre azioni manuali dell'utente. Se lo storico è danneggiato o la quota del browser è esaurita, un avviso invita a esportare il report corrente senza sovrascrivere i dati precedenti.
 
 ### Sito pubblico
 
@@ -106,8 +108,8 @@ L'icona a forma di casa accanto al selettore della lingua rimanda al sito princi
 
 ### Versioning
 
-- Versione app: `2.4.1`.
-- Tag Git previsto: `v2.4.1`.
+- Versione app: `3.0.0`.
+- Tag Git: `v3.0.0`.
 - Banca domande: `2026.07-m7`.
 - Forma assessment: `1.3`.
 - Banca Primi passi: `2026.07-first-steps-1`.
@@ -119,7 +121,11 @@ I tag seguono il formato `vX.Y.Z`. Le modifiche patch aggiornano documentazione 
 
 La milestone 16 definisce il [blueprint delle competenze e della valutazione](ASSESSMENT_BLUEPRINT.md) `1.0.0`, approvato dal maintainer il `2026-11-25`, con la [mappa dei 115 item attuali](docs/ASSESSMENT_ITEM_MAP.md). Il blueprint distingue conoscenze/scenari, pratiche dichiarate, esercizi simulati e testi con feedback; definisce copertura, rubriche, percorsi futuri e conservazione dei report 2.x senza ricalcolo. Matrice, soglie, tempi e terminologia sono scelte editoriali da verificare durante l'implementazione.
 
-Questi documenti descrivono lavoro futuro: l'app pubblicata resta alla versione `2.4.1`, con modalità, scoring e trattamento dei dati descritti sopra. L'implementazione è suddivisa nelle milestone 17-22 di [PLAN.md](PLAN.md).
+La milestone 17 introduce il nuovo modello di valutazione nella release `3.0.0`, approvata dal maintainer il `2026-11-25`. Banca e forme restano invariate; i nuovi percorsi e il laboratorio arriveranno nelle milestone 18-22 di [PLAN.md](PLAN.md). La versione pubblicata precedente è `2.4.1`.
+
+### Verifica locale
+
+Eseguire `node tests/assessment.test.mjs`. Non servono installazioni; controlli e limiti del test senza browser sono in [docs/SCORING.md](docs/SCORING.md).
 
 ### Riferimenti
 
@@ -144,13 +150,13 @@ Distribuito con licenza Apache 2.0. Vedi `LICENSE`.
 
 ## English
 
-Interactive questionnaire in Italian and English for practical assessment of GenAI competence, operational use, critical judgment, and adoption attitude.
+Interactive questionnaire in Italian and English exploring GenAI knowledge, judgment on scenarios, and self-reported practices.
 
-The assessment produces a final profile, score dashboard, and training recommendations. It is intended as an internal diagnostic tool that can evolve over time, not as a psychometrically validated test.
+The assessment produces an evidence overview: knowledge/scenarios, self-reported practices, and text with feedback remain separate, with area coverage and limits. It is intended as an internal diagnostic tool that can evolve over time, not as a psychometrically validated test.
 
-Current app version: `2.4.1`.
+Current app version: `3.0.0`, milestone 17 approved by the maintainer on `2026-11-25`.
 
-Planned reference tag: `v2.4.1`.
+Reference tag: `v3.0.0`.
 
 ### Development Note
 
@@ -163,7 +169,11 @@ This test was built through vibecoding, using AI as operational support for idea
 - `assets/questions.js`: question bank, parallel forms, and overrides.
 - `assets/i18n.js`: localized texts, English question-bank translation, and form-specific variants.
 - `assets/learning.js`: A/B/C forms and learning units for the introductory path.
-- `assets/app.js`: client-side logic, navigation, scoring, dashboard, and export.
+- `assets/app.js`: client-side navigation, history, legacy/learning dashboards, and export.
+- `assets/assessment.js`: pure 3.x scoring rules and item metadata.
+- `assets/report-ui.js`: IT/EN evidence overview.
+- `docs/SCORING.md`: schema, compatibility, and milestone 17 verification.
+- `tests/assessment.test.mjs`: dependency-free deterministic checks.
 - `aiskilltest_icon.png`: site icon and saved-link icon on supported devices.
 - `scripts/build-learning-data.mjs`: generates the learning asset from the blueprint without dependencies.
 - `LEARNING_PATH.md`: bilingual blueprint for the planned introductory path, including questions, learning units, and sources.
@@ -194,7 +204,7 @@ The assessment combines self-evaluation, scenarios, technical quizzes, and pract
 - AI Agents: agents, tools, permissions, memory/state, human control, logs, and rollback.
 - AI Fluency: Delegation, Description, Discernment, and Diligence.
 - Mindset: openness to experimentation, calibrated trust, and responsible adoption.
-- Practical Lab: operational mini-tasks, prompts, checklists, and controls on concrete cases.
+- Practical Lab: hypothetical-choice questions and prompts with formative checklists; no simulated execution.
 
 Available modes:
 
@@ -212,15 +222,13 @@ Available modes:
 
 The bank contains 115 base questions. The full test remains at 50 questions and includes 4 AI Agents questions. The AI Agents path uses a 15-question pool to support A/B/C rotation. Sessions rotate across A/B/C forms separately by language and test mode.
 
-`AI First Steps` is a learning experience, not an assessment comparable with the AI Skill index. It uses three 10-question forms and provides local explanations and optional readings. External links open only after an explicit click.
+`AI First Steps` is a learning experience, not an assessment comparable with the other results. It uses three 10-question forms and provides local explanations and optional readings. External links open only after an explicit click.
 
-In the full test, the global profile uses this weighting:
+The full test keeps 50 questions: 27 knowledge/scenarios, 21 self-reports, and 2 formative texts. No current item is a simulated exercise. Result areas are Foundations, Operational and multimodal use, Agents, and Harnesses; missing modern coverage is identified.
 
-- 35% Literacy
-- 45% Fluency
-- 20% Mindset
+Percentages use only directly relevant questions/scenarios, with equal weight per objective. An area percentage requires at least 3 valid questions and 2 objectives; editorial bands require at least 6 questions and all area objectives. Self-reports and initial estimates do not change question results. Open text receives formative checklists without keyword scoring.
 
-In thematic paths, the result is calculated only on the questions present in the selected mode. Thematic dashboards do not show global scores or unmeasured areas.
+New reports produce no global index, quadrant, radar, or Beginner/Curious/Expert/Champion profile. Thematic paths show only results supported by collected evidence, identifying other areas as not assessed. Rules, metadata, limitations, and the verification checklist are documented in [docs/SCORING.md](docs/SCORING.md).
 
 ### Privacy And Data
 
@@ -230,11 +238,11 @@ The initial step can collect name, role, area/team, and self-assessed skills. Al
 
 ### Export And History
 
-- JSON: includes metadata, test mode, form, scores, answers, and recommendations.
-- CSV: includes main metadata, language, language source, self-evaluation, scores, and answers in tabular format.
-- Local history: stores recent reports in the browser and shows the completed mode.
+- JSON: includes the complete original record, with app/scoring/schema/blueprint versions, language, mode, form, evidence, coverage, and answers.
+- CSV: uses `type,field,value` with stable field paths for metadata, answers, evidence, and coverage; replaces the previous section-based CSV.
+- Local history: keeps up to 100 individually openable reports. Reports from 2.x remain original with a notice, without recalculation, averaging, or direct comparison with 3.x. Unknown formats can be inspected and exported without altering data.
 
-Exports are always explicit user actions.
+Exports are always explicit user actions. If history is damaged or browser storage is full, a notice asks the user to export the current report without overwriting previous data.
 
 ### Public Website
 
@@ -248,8 +256,8 @@ The home icon next to the language selector links to the main website, [glaucosi
 
 ### Versioning
 
-- App version: `2.4.1`.
-- Planned Git tag: `v2.4.1`.
+- App version: `3.0.0`.
+- Git tag: `v3.0.0`.
 - Question bank: `2026.07-m7`.
 - Assessment form: `1.3`.
 - First Steps bank: `2026.07-first-steps-1`.
@@ -261,7 +269,11 @@ Tags follow the `vX.Y.Z` format. Patch releases cover documentation or small fix
 
 Milestone 16 defines the [competency and assessment blueprint](ASSESSMENT_BLUEPRINT.md) `1.0.0`, approved by the maintainer on `2026-11-25`, with a [map of all 115 current items](docs/ASSESSMENT_ITEM_MAP.md). The blueprint separates knowledge/scenarios, self-reported practices, simulated exercises, and text with formative feedback; it defines coverage, rubrics, future paths, and preservation of 2.x reports without recalculation. The matrix, thresholds, timing, and terminology are editorial choices to verify during implementation.
 
-These documents describe future work: the published app remains at `2.4.1`, with the modes, scoring, and data handling described above. Implementation is split across milestones 17-22 in [PLAN.md](PLAN.md).
+Milestone 17 introduces the new assessment model in release `3.0.0`, approved by the maintainer on `2026-11-25`. The bank and forms are unchanged; new paths and the lab follow in milestones 18-22 of [PLAN.md](PLAN.md). The previous published version is `2.4.1`.
+
+### Local Verification
+
+Run `node tests/assessment.test.mjs`. No installation is needed; checks and limitations of testing without a browser are documented in [docs/SCORING.md](docs/SCORING.md).
 
 ### References
 

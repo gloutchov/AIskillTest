@@ -35,8 +35,8 @@ const AI_SKILL_I18N = {
       complete: {
         label: "Full test",
         shortLabel: "Full",
-        description: "All 50 questions: Literacy, technical foundations, AI Agents, Fluency 4D, Mindset, and practical tasks.",
-        outputNote: "Complete profile with AI Skill index, Literacy x Fluency quadrant, and competency radar."
+        description: "50 questions across knowledge/scenarios, self-reports, and formative text on Literacy, LLMs, Agents, Fluency 4D, and Mindset.",
+        outputNote: "Evidence overview with area coverage, self-reports, and formative text shown separately."
       },
       literacy: {
         label: "Literacy",
@@ -89,8 +89,8 @@ const AI_SKILL_I18N = {
       practical: {
         label: "Practical Lab",
         shortLabel: "Practical Lab",
-        description: "Operational mini-tasks, prompts, checklists, and controls applied to concrete cases.",
-        outputNote: "Thematic report on practical tasks, without a global profile."
+        description: "Hypothetical choices, written prompts, and formative checklists; no execution is observed.",
+        outputNote: "Questions and formative text; no simulated execution evidence."
       }
     },
     formOverrides: {

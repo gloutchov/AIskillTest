@@ -4,7 +4,7 @@ Questo piano governa le prossime modifiche del progetto `AIskillTest`. Ogni mile
 
 Versione di partenza: `1.0.0`.
 
-Versione applicativa corrente: `2.4.1`, milestone 0-16 completate. La roadmap delle milestone 16-22 e il blueprint `1.0.0` della milestone 16 sono stati approvati dal maintainer il `2026-11-25`. La milestone 17 è la prossima attività; nessuna modifica applicativa della serie 3.x è stata avviata.
+Versione applicativa corrente: `3.0.0`, milestone 0-17 completate. La roadmap, il blueprint `1.0.0` e la milestone 17 sono stati approvati dal maintainer il `2026-11-25`. Release di riferimento: `v3.0.0`; la prossima attività è la milestone 18.
 
 ## Regole di release
 
@@ -60,7 +60,7 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
 
 - Revisione del piano: `2026-11-24`.
 - Branch di questa proposta documentale: `plan/modern-ai-assessment-roadmap`.
-- Stato della roadmap: approvata dal maintainer il `2026-11-25` e integrata su `main`; milestone 16 completata e approvata con blueprint `1.0.0`; milestone 17 pianificata, nessuna milestone applicativa avviata.
+- Stato della roadmap: approvata dal maintainer il `2026-11-25` e integrata su `main`; milestone 16 completata con blueprint `1.0.0`; milestone 17 completata e approvata, release `v3.0.0`; milestone 18-22 non avviate.
 - Finalità: mantenere il valore introduttivo del test e distinguere conoscenze, pratica dichiarata ed evidenze ottenute in esercizi simulati.
 - Destinatari: persone che iniziano, utilizzatori operativi e persone che configurano o supervisionano agenti; i livelli devono essere riconoscibili senza imporre un percorso lineare.
 
@@ -625,7 +625,7 @@ Riferimenti tecnici iniziali consultati per la revisione; ricontrollare pertinen
   - riprodotti i due limiti legacy: Agents minimo con 92/100 e Champion; elenco di parole chiave con 5/5 in P_DS_1
   - verifica visiva/interattiva non eseguita: nessun browser disponibile nel runtime; nessun cambiamento a file applicativi, versioni o Primi passi
   - dettagli e limiti della verifica nella sezione 12 del blueprint
-- Stato: completata e approvata dal maintainer il `2026-11-25`; blueprint `1.0.0`, nessun bump applicativo e nessun tag. La milestone 17 è pronta per l'avvio su un branch dedicato.
+- Stato: completata e approvata dal maintainer il `2026-11-25`; blueprint `1.0.0`, nessun bump applicativo e nessun tag. Il blueprint è il riferimento per la milestone 17.
 
 ## Milestone 17 - Scoring trasparente, profili e compatibilità dello storico
 
@@ -652,7 +652,18 @@ Riferimenti tecnici iniziali consultati per la revisione; ricontrollare pertinen
   - storico, JSON e CSV conservano modalità, lingua, forma e versioni necessarie a interpretare il risultato
 - Criterio di validazione del maintainer:
   - revisione di report campione con profili divergenti fra conoscenza, autovalutazione e prove; approvazione della nuova terminologia e della non confrontabilità con `2.x`.
-- Stato: pianificata; non avviata.
+- Implementazione:
+  - `assets/assessment.js`: regole pure, mappa dei 115 item, credito Q e medie per obiettivo, versioni e copertura; D/T senza contributo numerico ed E esplicitamente assente
+  - `assets/report-ui.js`: quadro delle evidenze bilingue, senza indice globale o qualifiche operative; risposte, checklist formative, lacune e limiti consultabili
+  - storico senza medie, con apertura dei singoli report e conservazione dei dati 2.x; formati sconosciuti esportabili e protezione dello storico danneggiato
+  - JSON completo e CSV `type,field,value` con metadati, risposte ed evidenze; versione app e cache busting `3.0.0`, banca `2026.07-m7` e forme `1.3` invariate
+  - documentazione del contratto implementato e checklist in [docs/SCORING.md](docs/SCORING.md), esempi sintetici in [tests/fixtures/m17-reports.json](tests/fixtures/m17-reports.json)
+- Verifiche del `2026-11-25`:
+  - `node tests/assessment.test.mjs`: 19 controlli superati; inclusi 60 assessment IT/EN A/B/C, 6 forme didattiche, assenze, pesi, rubriche, casi limite, storico misto, export e navigazione
+  - startup, markup e collegamento eventi verificati con adattatore DOM in memoria; nessun dato del browser reale letto
+  - verifica visiva/interattiva non eseguita: runtime Browser senza browser disponibile; desktop/mobile, download, console e traffico reali restano nella checklist manuale
+- Validazione del maintainer: approvata il `2026-11-25`, con autorizzazione a commit, merge, push e release. Gli esiti dettagliati della checklist manuale non sono stati riportati nella conversazione; resta documentato il limite della verifica dell'agente senza browser reale.
+- Stato: completata e approvata dal maintainer; release `v3.0.0`. La milestone 18 resta non avviata.
 
 ## Milestone 18 - AI moderne, multimodalità e scelta degli strumenti
 
