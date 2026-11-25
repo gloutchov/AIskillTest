@@ -4,7 +4,7 @@
 - Revisione: `2026-11-25`; mappa dei 115 item approvata nella milestone 16, estesa con MA01–MA10 nella M18 approvata; AW01–AW10 nella M19 approvata; HR01–HR10 aggiunti nella M20 approvata dal maintainer; blueprint `1.0.0`.
 - Contratto e definizioni: [ASSESSMENT_BLUEPRINT.md](../ASSESSMENT_BLUEPRINT.md).
 
-La tabella classifica tutti i 145 `sourceId` di `baseQuestions`, ciascuno una sola volta. È implementata nei metadati JavaScript e non assegna retroattivamente punteggi ai report storici. Il widget attuale è mantenuto come informazione tecnica; il tipo di evidenza dipende dal compito. Tutti i multi/choice attuali sono Q, nessuno è un esercizio E.
+La tabella classifica tutti i 145 `sourceId` di `baseQuestions`, ciascuno una sola volta. È implementata nei metadati JavaScript e non assegna retroattivamente punteggi ai report storici. Il widget attuale è mantenuto come informazione tecnica; il tipo di evidenza dipende dal compito. Tutti i multi/choice della banca restano Q. La M21 aggiunge sei decisioni E di tipo simulation in un inventario separato qui sotto (151 ID totali), senza inserirle in baseQuestions.
 
 Le righe valgono come mappa degli obiettivi comuni per le forme A/B/C e le traduzioni IT/EN. Gli override attuali richiedono revisione editoriale quando si riusano gli item: la classificazione non dimostra equivalenza di difficoltà. Non si assegna automaticamente un nuovo slot C01-C50 a un vecchio ID.
 
@@ -177,3 +177,18 @@ AI Agents seleziona sempre AW01–AW10: due Q diretti per ciascun obiettivo A01�
 ## Nuovo percorso Harness nella milestone 20
 
 Harness seleziona HR01–HR10: H01, H02×2, H03×2, H04×2, H05×2, H06; dieci Q diretti di livello S con varianti A/B/C IT/EN. I 135 item precedenti conservano testi e classificazione, compresi gli item storici AG12 (H02) e AG9/AG13 (H06); non entrano nel nuovo percorso Harness. Il completo rimane da 50 domande fino alla M22. [Scenari, motivazioni e fonti](HARNESS_REVIEW.md). App `3.3.0`, banca `2026.11-m20`, forma `1.6`; scoring `3.0.0` e blueprint `1.0.0` invariati. Stato: approvata dal maintainer il `2026-11-25`, release `v3.3.0`.
+
+## Decisioni E del Laboratorio operativo — M21 approvata
+
+Sei ID separati dai 145 quesiti base: 151 ID complessivi. In ogni forma A/B/C IT/EN il widget simulation produce effetti locali derivati da decisioni confermate. I casi K1/K2 e le rubriche hanno versione 1.0.0; assegnazioni e credito E entrano nello scoring 3.1.0/schema 4. Non modificano i crediti Q né la composizione del completo prima della M22. Stato: approvata dal maintainer il `2026-11-25`, release `v3.4.0`.
+
+| ID | Widget | Evidenza | Area | Obiettivo | Allineamento | Livello | Tag |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| LAB_K1_VERIFY | simulation | E | U | U06 | direct | O | simulation, verification |
+| LAB_K1_CORRECT | simulation | E | U | U06 | direct | O | simulation, verification |
+| LAB_K1_RELEASE | simulation | E | U | U06 | direct | O | simulation, verification |
+| LAB_K2_SOURCE | simulation | E | A | A04 | direct | S | simulation, verification |
+| LAB_K2_SCOPE | simulation | E | A | A03 | direct | S | simulation, verification |
+| LAB_K2_RESUME | simulation | E | H | H05 | direct | S | simulation, verification |
+
+[Varianti e rubriche bilingui, effetti e stato recuperabile](OPERATIONAL_LAB_REVIEW.md). I sei passi sono due casi, non sei contesti operativi indipendenti. Nessun obiettivo Q riceve punti o copertura grazie a questi E.

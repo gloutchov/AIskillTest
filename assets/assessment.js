@@ -1,9 +1,9 @@
 /* Milestone 17. Pure local assessment rules; approved blueprint 1.0.0. */
 const ASSESSMENT_V3 = (() => {
   "use strict";
-  const SCORING_VERSION = "3.0.0";
+  const SCORING_VERSION = "3.1.0";
   const BLUEPRINT_VERSION = "1.0.0";
-  const REPORT_SCHEMA_VERSION = 3;
+  const REPORT_SCHEMA_VERSION = 4;
   const AREA_LABELS = {
     F: ["Fondamenti", "Foundations"], U: ["Uso operativo e multimodale", "Operational and multimodal use"],
     A: ["Agenti", "Agents"], H: ["Harness", "Harnesses"]
@@ -183,6 +183,9 @@ const ASSESSMENT_V3 = (() => {
     "HR09": {"evidenceType":"Q","primaryArea":"H","objectiveId":"H05","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["context","verification"]},
     "HR10": {"evidenceType":"Q","primaryArea":"H","objectiveId":"H06","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["verification"]}
   };
+  ["U06", "U06", "U06", "A04", "A03", "H05"].forEach((objectiveId, i) => {
+    ITEM_MAP[LOCAL_LAB.IDS[i]] = { evidenceType: "E", primaryArea: objectiveId[0], objectiveId, objectiveAlignment: "direct", taskLevel: i < 3 ? "O" : "S", secondaryTags: ["simulation", "verification"] };
+  });
   const isRecord = value => value !== null && typeof value === "object" && !Array.isArray(value);
   const mean = values => values.reduce((sum, value) => sum + value, 0) / values.length;
   const clampCredit = value => Math.max(0, Math.min(1, value));
@@ -191,6 +194,7 @@ const ASSESSMENT_V3 = (() => {
   const indexValue = value => (typeof value === "number" || (typeof value === "string" && /^\d+$/.test(value))) && Number.isInteger(Number(value)) ? Number(value) : null;
 
   function responseStatus(question, raw) {
+    if (question.type === "simulation") return LOCAL_LAB.status(question.sourceId, raw);
     if (raw === undefined || raw === null || raw === "" || (Array.isArray(raw) && !raw.length)) return "missing";
     if (question.type === "text") return typeof raw === "string" && raw.trim().length >= (question.proceedChars || 1) ? "valid" : "invalid";
     if (question.type === "likert") return indexValue(raw) !== null && Number(raw) >= 1 && Number(raw) <= 5 ? "valid" : "invalid";
@@ -211,7 +215,7 @@ const ASSESSMENT_V3 = (() => {
     const classification = classify(question);
     const status = responseStatus(question, raw);
     const options = question.options || [];
-    const selected = status !== "valid" || question.type === "text" || question.type === "likert" ? []
+    const selected = status !== "valid" || question.type === "text" || question.type === "likert" || question.type === "simulation" ? []
       : (question.type === "multi" ? raw : [raw]).map(index => options[Number(index)]);
     let credit = null;
     if (classification.evidenceType === "Q" && status === "valid") {
@@ -224,9 +228,9 @@ const ASSESSMENT_V3 = (() => {
     }
     const item = {
       id: question.id, sourceId: question.sourceId || question.id, formId: question.formId || meta.formId || null,
-      itemVersion: `${meta.questionBankVersion || "unversioned"}:${meta.formVersion || "unversioned"}`,
+      itemVersion: `${meta.questionBankVersion || "unversioned"}:${meta.formVersion || "unversioned"}${question.type === "simulation" ? `:${LOCAL_LAB.VERSION}` : ""}`,
       section: question.section, dimension: question.dimension, sub: question.sub || question.dimension,
-      type: question.type, ...classification, questionKind: classification.evidenceType === "D" ? "self-report"
+      type: question.type, ...classification, questionKind: question.type === "simulation" ? "simulation" : classification.evidenceType === "D" ? "self-report"
         : classification.evidenceType === "T" ? "formative-text" : question.type === "knowledge" ? "knowledge" : "scenario",
       responseFormat: question.type === "text" ? "text" : question.type === "multi" ? "multi" : "choice",
       question: question.context ? `${question.context}\n${question.text}` : question.text,
@@ -310,15 +314,28 @@ const ASSESSMENT_V3 = (() => {
 
   function evaluate(questions, answers, inputMeta, completedAt) {
     const meta = { ...inputMeta, scoringVersion: SCORING_VERSION, reportSchemaVersion: REPORT_SCHEMA_VERSION, blueprintVersion: BLUEPRINT_VERSION, completedAt };
-    const items = questions.map(question => itemResult(question, answers[question.id], meta));
+    const hasLab = questions.some(q => q.type === "simulation");
+    const lab = hasLab ? LOCAL_LAB.evaluate(meta.formId, meta.language, Object.fromEntries(questions.filter(q => q.type === "simulation").map(q => [q.id, answers[q.id]]))) : null;
+    const items = questions.map(question => {
+      const item = itemResult(question, answers[question.id], meta);
+      if (question.type !== "simulation") return item;
+      const d = lab.decisions.find(decision => decision.id === question.id);
+      return { ...item, ...d, score: d.credit, scored: d.credit !== null, responseFormat: typeof d.rawAnswer === "object" ? "composite" : "choice", answer: d.actionLabel, answerText: "", feedback: d.explanation };
+    });
+    if (hasLab) meta.labVersion = LOCAL_LAB.VERSION;
     meta.comparisonKey = comparisonKey(meta, items);
     const aggregation = aggregate(items, meta.testMode?.questionCount ?? questions.length);
+    if (lab) {
+      aggregation.results.simulatedCases = lab.cases;
+      aggregation.results.simulatedSummary = lab.summary;
+      aggregation.coverage.cases = { expected: 2, proposed: new Set(items.filter(item => item.evidenceType === "E").map(item => item.caseId)).size, completed: lab.summary.completedCases, status: lab.summary.status };
+    }
     const nextSteps = new Map();
     for (const item of items) {
-      if (item.nextStep && typeof item.credit === "number" && item.credit < 1) nextSteps.set(item.objectiveId, { objectiveId: item.objectiveId, text: item.nextStep });
+      if (item.evidenceType === "Q" && item.nextStep && typeof item.credit === "number" && item.credit < 1) nextSteps.set(item.objectiveId, { objectiveId: item.objectiveId, text: item.nextStep });
     }
     if (nextSteps.size) aggregation.results.nextSteps = [...nextSteps.values()];
-    return { meta, profile: label(["Quadro delle evidenze", "Evidence overview"], meta.language), answers: items, ...aggregation, criticalFindings: [] };
+    return { meta, profile: label(["Quadro delle evidenze", "Evidence overview"], meta.language), answers: items, ...aggregation, criticalFindings: lab?.criticalFindings || [] };
   }
 
   function reportKind(report) {
@@ -330,13 +347,31 @@ const ASSESSMENT_V3 = (() => {
     if (hasSchema || hasScoring) {
       const validCounts = value => isRecord(value) && ["planned", "proposed", "valid", "missing", "invalid"].every(key => Number.isInteger(value[key]) && value[key] >= 0);
       const validEvidenceCounts = value => isRecord(value) && ["Q", "D", "T", "E"].every(type => validCounts(value[type]));
-      if (meta.reportSchemaVersion === REPORT_SCHEMA_VERSION && meta.scoringVersion === SCORING_VERSION && meta.blueprintVersion === BLUEPRINT_VERSION
+      const historical = meta.reportSchemaVersion === 3 && meta.scoringVersion === "3.0.0";
+      const current = meta.reportSchemaVersion === REPORT_SCHEMA_VERSION && meta.scoringVersion === SCORING_VERSION;
+      const finite = (v, max) => typeof v === "number" && Number.isFinite(v) && v >= 0 && v <= max;
+      const finding = f => isRecord(f) && f.kind === "simulated-action" && ["K1", "K2"].includes(f.caseId) && typeof f.decisionId === "string" && typeof f.effect === "string"
+        && ["unverified-release", "unauthorized-disclosure", "unauthorized-action", "duplicate-action"].includes(f.code);
+      const validLab = !historical && Array.isArray(report.results?.simulatedCases) && report.results.simulatedCases.length === 2
+        && new Set(report.results.simulatedCases.map(c => c?.caseId)).size === 2
+        && report.results.simulatedCases.every(c => isRecord(c) && typeof c.title === "string" && typeof c.caseVersion === "string" && ["K1", "K2"].includes(c.caseId)
+          && finite(c.credit, 6) && c.maxCredit === 6 && ["complete", "incomplete"].includes(c.status) && isRecord(c.initialState) && isRecord(c.effects)
+          && (c.caseId === "K1" ? Array.isArray(c.initialState.rows) && c.initialState.rows.length === 3 && c.initialState.rows.every(n => finite(n, 1000000)) && typeof c.effects.artifact === "string"
+            : typeof c.initialState.receipt === "string" && typeof c.effects.updateId === "string" && [1, 2].includes(c.effects.journalEntries) && ["pending", "resumed", "falsely-completed"].includes(c.effects.pendingWork))
+          && Array.isArray(c.decisions) && c.decisions.length === 3 && c.decisions.every(d => isRecord(d) && typeof d.decisionId === "string" && typeof d.title === "string" && typeof d.actionLabel === "string" && typeof d.explanation === "string" && (d.credit === null || finite(d.credit, 2)) && d.maxCredit === 2)
+          && Array.isArray(c.criticalFindings) && c.criticalFindings.every(finding))
+        && isRecord(report.results.simulatedSummary) && (report.results.simulatedSummary.value === null || finite(report.results.simulatedSummary.value, 100))
+        && finite(report.results.simulatedSummary.credit, 12) && report.results.simulatedSummary.maxCredit === 12
+        && [null, "critical", "retry", "partial", "conform"].includes(report.results.simulatedSummary.band)
+        && Array.isArray(report.criticalFindings) && report.criticalFindings.every(finding);
+      const emptyLab = Array.isArray(report.results?.simulatedCases) && !report.results.simulatedCases.length && report.coverage?.byEvidence?.E?.proposed === 0;
+      if ((historical || current) && meta.blueprintVersion === BLUEPRINT_VERSION
           && isRecord(report.results?.knowledgeByArea) && validEvidenceCounts(report.coverage?.byEvidence) && isRecord(report.coverage?.byArea)
-          && Array.isArray(report.answers) && report.answers.every(item => isRecord(item) && typeof item.sourceId === "string" && AREA_LABELS[item.primaryArea] && ["Q", "D", "T"].includes(item.evidenceType))
+          && Array.isArray(report.answers) && report.answers.every(item => isRecord(item) && typeof item.sourceId === "string" && AREA_LABELS[item.primaryArea] && (historical ? ["Q", "D", "T"] : ["Q", "D", "T", "E"]).includes(item.evidenceType))
           && Array.isArray(report.results.declaredPractices) && report.results.declaredPractices.every(isRecord)
           && Array.isArray(report.results.formativeFeedback) && report.results.formativeFeedback.every(isRecord)
           && Array.isArray(report.results.declaredContrasts) && report.results.declaredContrasts.every(id => OBJECTIVES[id])
-          && Array.isArray(report.results.simulatedCases) && !report.results.simulatedCases.length && report.coverage.byEvidence.E.proposed === 0 && Array.isArray(report.criticalFindings)
+          && (emptyLab || validLab) && Array.isArray(report.criticalFindings) && report.criticalFindings.every(isRecord)
           && Object.keys(AREA_LABELS).every(area => isRecord(report.results.knowledgeByArea[area]) && Array.isArray(report.results.knowledgeByArea[area].objectives)
             && report.results.knowledgeByArea[area].objectives.every(isRecord)
             && isRecord(report.coverage.byArea[area]) && validEvidenceCounts(report.coverage.byArea[area].byEvidence)

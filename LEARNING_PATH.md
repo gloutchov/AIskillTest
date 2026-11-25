@@ -936,3 +936,8 @@ Prima della milestone 14 vanno approvati o modificati:
 6. uso del conteggio `obiettivi consolidati su 10` oppure sole etichette formative
 7. fasce formative proposte
 8. percorsi successivi suggeriti in base agli errori
+
+
+## Compatibilità M21
+
+Primi passi conserva forme, contenuti, tutorial e contratto didattico autonomo nella release 3.4.0, M21 approvata dal maintainer il 2026-11-25. Il nuovo Laboratorio operativo è un percorso separato e non modifica il risultato didattico. L'azione comune “Cancella dati locali” nei risultati elimina con conferma anche l'eventuale bozza incompleta del laboratorio, oltre a storico e rotazione delle forme; non esegue migrazioni o confronti fra evidenze.

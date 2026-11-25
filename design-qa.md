@@ -56,3 +56,14 @@ The focused comparison concerned the carousel footer and new novice callout. Des
 No remaining P0, P1, or P2 findings. Minor P3 spacing adjustments can be considered after broader device testing.
 
 final result: passed
+
+
+## M21 — Operational lab, release 3.4.0 (2026-11-25)
+
+Questa nota riguarda il nuovo laboratorio; il precedente “passed” descrive soltanto la revisione storica delle schermate allora disponibili. Il maintainer ha approvato la chiusura M21 e la release v3.4.0 il 2026-11-25, senza riportare gli esiti dettagliati della checklist manuale.
+
+Due casi, sei decisioni E, forme A/B/C IT/EN: registro con alternativa testuale completa, calcolatore numerico, anteprima dell'artefatto e conferma esplicita; mandato/checkpoint/ricevuta, bozza generata e registro degli effetti simulati. Nessun drag, controlli nativi etichettati e raggruppati con fieldset/legend, focus dopo conferma/navigazione. Nessuna auto-advance; report e rubriche solo dopo il completamento. Carosello con quattordici percorsi, Practical Lab distinto da Laboratorio operativo.
+
+La home espone recupero/eliminazione della singola bozza locale. Lo step dati spiega salvataggio, eliminazione e limiti di storage. Gli errori di persistenza hanno un messaggio stabile e un toast; nessun pannello fisso copre i pulsanti. Il report separa Q/D/T/E, spiega i crediti e mette in evidenza le azioni critiche; nessuna qualifica operativa.
+
+La skill Browser è stata applicata; discovery dopo troubleshooting restituisce nessun browser disponibile. Verificati markup ed eventi con un adattatore DOM, senza affermare verifica visiva. Desktop/mobile, rendering dei controlli nativi, focus effettivo e screen reader, download e stampa reali, console e richieste di rete non sono attestati dalla verifica dell’agente; l’approvazione del maintainer non contiene esiti dettagliati di questi controlli. [Checklist concreta IT/EN, corretta e critica](docs/OPERATIONAL_LAB_REVIEW.md#validazione-del-maintainer-prima-del-commit).

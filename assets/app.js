@@ -82,7 +82,7 @@ function cloneQuestionData(value) {
       return selected;
     }
 
-    const APP_VERSION = "3.3.0";
+    const APP_VERSION = "3.4.0";
     const DEFAULT_TEST_MODE_ID = "complete";
     const COMPLETE_TEST_COUNT = 50;
     const TOPIC_TEST_COUNT = 10;
@@ -108,7 +108,8 @@ function cloneQuestionData(value) {
       "Fluency · Discernment",
       "Fluency · Diligence",
       "Mindset",
-      "Practical Lab"
+      "Practical Lab",
+      "Laboratorio operativo"
     ];
 
     const TEST_MODES = [
@@ -241,6 +242,11 @@ function cloneQuestionData(value) {
         questionLimit: TOPIC_TEST_COUNT,
         description: "Scelte ipotetiche, prompt scritti e checklist formative; nessuna esecuzione osservata.",
         outputNote: "Report su quiz e testi formativi; nessuna evidenza di esecuzione simulata."
+      },
+      {
+        id: "operational-lab", label: "Laboratorio operativo", shortLabel: "Laboratorio", type: "simulation", section: "Laboratorio operativo", questionLimit: 6,
+        description: "Due casi con dati sintetici e sei decisioni: correggi un riepilogo e riprendi un'attività agentica interrotta.",
+        outputNote: "Esiti simulati e credito parziale separati dai quiz. Bozza solo locale per riprendere dopo una chiusura."
       }
     ];
 
@@ -629,15 +635,18 @@ function cloneQuestionData(value) {
     }
 
     function sectionLabel(section) {
+      if (section === "Laboratorio operativo") return labText("Laboratorio operativo", "Operational lab");
       return (i18n().sectionLabels && i18n().sectionLabels[section]) || section;
     }
 
     function localizedMode(mode) {
+      if (mode.id === "operational-lab" && isEnglish()) return { ...mode, label: "Operational lab", shortLabel: "Lab", description: "Two synthetic cases and six decisions: correct a summary and resume an interrupted agentic task.", outputNote: "Simulated outcomes and partial credit stay separate from questions. A local draft allows recovery after closing." };
       const translation = i18n().modes && i18n().modes[mode.id];
       return translation ? { ...mode, ...translation } : mode;
     }
 
     function localizedSectionGuide(section) {
+      if (section === "Laboratorio operativo") return {title: labText("Laboratorio operativo", "Operational lab"), text: labText("Due casi sintetici, sei decisioni osservabili.", "Two synthetic cases, six observable decisions."), items: modeTopics(getModeById("operational-lab"))};
       const guide = sectionGuides[section] || sectionGuides.Literacy;
       if (section === "Harness") return {
         title: "Harness",
@@ -853,6 +862,8 @@ function cloneQuestionData(value) {
         ? `Primary sources reviewed on ${AGENTIC_WORKFLOWS.REVIEW_DATE}. Traces and rubrics are original editorial scenarios, not validated measures of practical execution. Links open on a click.`
         : `Fonti primarie ricontrollate il ${AGENTIC_WORKFLOWS.REVIEW_DATE}. Tracce e rubriche sono scenari editoriali originali, non misure validate di esecuzione pratica. Link aperti su click.`;
       if (agentsList) agentsList.innerHTML = AGENTIC_WORKFLOWS.SOURCES.map(source => `<article class="bibliography-item"><div class="bibliography-source">${escapeHtml(source.id)}</div><h3>${escapeHtml(source.title)}</h3><p>${escapeHtml(source.note[isEnglish() ? 1 : 0])}</p><a class="bibliography-link" href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${isEnglish() ? "Open source ↗" : "Apri la fonte ↗"}</a></article>`).join("");
+      $("labSourcesTitle").textContent = labText("Laboratorio: stato, ripresa e limiti", "Lab: state, recovery, and limitations");
+      $("labSourcesList").innerHTML = LOCAL_LAB.SOURCES.map(source => `<article class="bibliography-item"><h3>${escapeHtml(source.title)}</h3><p>${escapeHtml(source.note[isEnglish() ? 1 : 0])}</p><a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${labText("Apri la fonte", "Open source")}</a></article>`).join("");
       const harnessTitle = $("harnessSourcesTitle");
       const harnessNote = $("harnessSourcesNote");
       const harnessList = $("harnessSourcesList");
@@ -1024,6 +1035,7 @@ function cloneQuestionData(value) {
       if (noviceTitle) noviceTitle.textContent = isEnglish() ? "Is this your first step into AI?" : "È la prima volta che ti avvicini all'AI?";
       if (noviceText) noviceText.textContent = isEnglish() ? "Start with 10 simple questions and a tutorial built around your mistakes." : "Inizia con 10 domande semplici e un tutorial costruito sui tuoi errori.";
       if (noviceButton) noviceButton.textContent = isEnglish() ? "Explore AI First Steps" : "Scopri Primi passi";
+      $("labPrivacyNote").textContent = labText("Nel laboratorio conserviamo una sola bozza locale delle decisioni confermate, senza dati del profilo. Riprendi dalla pagina iniziale; Interrompi, Elimina bozza o Cancella dati locali la cancellano. Nessun invio a server. Il recupero richiede che il browser consenta il salvataggio locale.", "The lab retains one local draft of confirmed decisions, without profile data. Resume from the home page; Interrupt, Discard draft, or Clear local data deletes it. No server transfer. Recovery requires the browser to allow local storage.");
       applyBibliographyText();
     }
 
@@ -1043,6 +1055,7 @@ function cloneQuestionData(value) {
       applyLanguageChrome();
       renderModeSelector();
       renderQuestionDistribution();
+      renderLabDraftNotice();
       if ($("assessmentView").classList.contains("active")) renderQuestion();
       if ($("dashboardView").classList.contains("active") && state.latestReport) renderDashboardWithoutSaving(state.latestReport);
     }
@@ -1055,7 +1068,7 @@ function cloneQuestionData(value) {
     }
 
     function getModeById(modeId) {
-      return TEST_MODES.find(mode => mode.id === modeId) || TEST_MODES[0];
+      return TEST_MODES.find(mode => mode.id === modeId) || TEST_MODES.find(mode => mode.id === DEFAULT_TEST_MODE_ID);
     }
 
     function modePoolQuestions(sourceQuestions, mode) {
@@ -1095,6 +1108,7 @@ function cloneQuestionData(value) {
 
     function questionsForMode(sourceQuestions, mode, randomize = false, formId = null) {
       const selectedMode = mode || getModeById(DEFAULT_TEST_MODE_ID);
+      if (selectedMode.id === "operational-lab") return LOCAL_LAB.questions(formId || sourceQuestions[0]?.formId || "A", currentLanguage());
       const pool = modePoolQuestions(sourceQuestions, selectedMode);
       const slots = { "modern-ai": MODERN_AI.SLOTS, agents: AGENTIC_WORKFLOWS.SLOTS, harness: HARNESS_ASSESSMENT.SLOTS }[selectedMode.id];
       if (slots) {
@@ -1110,6 +1124,7 @@ function cloneQuestionData(value) {
 
     function questionCountForMode(mode) {
       const selectedMode = mode || getModeById(DEFAULT_TEST_MODE_ID);
+      if (selectedMode.id === "operational-lab") return 6;
       if (selectedMode.type === "learning") return selectedMode.questionLimit;
       const pool = modePoolQuestions(baseQuestions, selectedMode);
       const limit = selectedMode.questionLimit || pool.length;
@@ -1117,18 +1132,21 @@ function cloneQuestionData(value) {
     }
 
     function modeDuration(mode) {
+      if (mode.id === "operational-lab") return isEnglish() ? "12-16 minutes (estimate)" : "12-16 minuti (stima)";
       if (["modern-ai", "agents", "harness"].includes(mode.id)) return isEnglish() ? "8-12 minutes (estimate)" : "8-12 minuti (stima)";
       if (isEnglish()) return mode.id === DEFAULT_TEST_MODE_ID ? "12-15 minutes" : "3-5 minutes";
       return mode.id === DEFAULT_TEST_MODE_ID ? "12-15 minuti" : "3-5 minuti";
     }
 
     function modeBadge(mode) {
+      if (mode.id === "operational-lab") return isEnglish() ? "2 cases · 6 decisions" : "2 casi · 6 decisioni";
       if (mode.type === "learning") return isEnglish() ? "Guided learning" : "Apprendimento guidato";
       if (isEnglish()) return mode.id === DEFAULT_TEST_MODE_ID ? "Evidence overview" : "Thematic report";
       return mode.id === DEFAULT_TEST_MODE_ID ? "Quadro delle evidenze" : "Report tematico";
     }
 
     function modeTopics(mode) {
+      if (mode.id === "operational-lab") return isEnglish() ? ["Data summary", "Permissions", "Checkpoint", "Local simulations"] : ["Riepilogo dati", "Permessi", "Checkpoint", "Simulazioni locali"];
       if (mode.type === "learning") return isEnglish()
         ? ["What GenAI can do", "Limits", "Requests", "Verification", "Privacy"]
         : ["Cosa può fare", "Limiti", "Richieste", "Verifica", "Privacy"];
@@ -1165,7 +1183,7 @@ function cloneQuestionData(value) {
                 <span class="mode-eyebrow">${escapeHtml(modeBadge(mode))}</span>
                 <h3>${escapeHtml(mode.label)}</h3>
               </div>
-              <strong>${count} ${isEnglish() ? "questions" : "domande"}</strong>
+              <strong>${mode.id === "operational-lab" ? modeBadge(mode) : `${count} ${isEnglish() ? "questions" : "domande"}`}</strong>
             </div>
             <p class="mode-card-desc">${escapeHtml(mode.description)}</p>
             <div class="mode-facts" aria-label="${isEnglish() ? "Path characteristics" : "Caratteristiche del percorso"}">
@@ -1299,12 +1317,12 @@ function cloneQuestionData(value) {
         `;
       }
       const heroCount = $("heroCount");
-      if (heroCount) heroCount.textContent = total;
+      if (heroCount) heroCount.textContent = mode.id === "operational-lab" ? (isEnglish() ? "2 cases" : "2 casi") : total;
       const heroPills = document.querySelector(".hero-card .pill-row");
       if (heroPills) heroPills.innerHTML = modeTopics(mode).slice(0, 5).map(topic => `<span class="pill">${escapeHtml(topic)}</span>`).join("");
       const heroDescription = $("heroCountDescription");
       if (heroDescription) {
-        heroDescription.textContent = mode.type === "learning"
+        heroDescription.textContent = mode.id === "operational-lab" ? labText("6 decisioni con azioni locali e feedback dopo il completamento", "6 decisions with local actions and feedback after completion") : mode.type === "learning"
           ? (isEnglish() ? "guided questions followed by a personalized local tutorial" : "domande guidate seguite da un tutorial personalizzato locale")
           : mode.id === DEFAULT_TEST_MODE_ID
           ? (isEnglish() ? "questions: 27 knowledge/scenarios, 21 self-reports, and 2 formative texts; no simulated exercises" : "domande: 27 quiz/scenari, 21 dichiarazioni e 2 testi formativi; nessun esercizio simulato")
@@ -1312,7 +1330,7 @@ function cloneQuestionData(value) {
       }
       const modeFootnote = $("modeFootnote");
       if (modeFootnote) {
-        modeFootnote.textContent = mode.type === "learning"
+        modeFootnote.textContent = mode.id === "operational-lab" ? labText("Forme A/B/C ruotate localmente. Puoi invertire verifica e calcolo nel primo caso. Nessuna azione esce dal simulatore.", "A/B/C forms rotate locally. You may swap verification and calculation in the first case. No action leaves the simulator.") : mode.type === "learning"
           ? (isEnglish() ? "Three forms rotate locally. The result supports learning and is not comparable with the AI Skill index." : "Tre forme ruotano localmente. Il risultato serve all'apprendimento e non è confrontabile con l'indice AI Skill.")
           : mode.id === DEFAULT_TEST_MODE_ID
           ? (isEnglish() ? "At start, the app selects one of the three available forms for the current language. Alternatives are shuffled for each assessment." : "All'avvio viene scelta una delle tre forme parallele disponibili per la lingua corrente. Le alternative vengono rimescolate a ogni assessment.")
@@ -1355,6 +1373,12 @@ function cloneQuestionData(value) {
 
     function startAssessment() {
       const selectedMode = getModeById(selectedTestModeId());
+      if (selectedMode.id === "operational-lab") {
+        const saved = readLabDraft();
+        if (!["absent", "unavailable"].includes(saved.status)) {
+          if (!window.confirm(labText("Una bozza esiste già. Eliminarla e avviare un nuovo laboratorio? Puoi annullare e riprenderla dalla pagina iniziale.", "A draft already exists. Discard it and start a new lab? Cancel to resume it from the home page.")) || !removeLabDraft()) return;
+        }
+      }
       const selectedForm = selectNextForm(selectedMode.id, currentLanguage());
       const sourceQuestions = isEnglish() ? buildEnglishQuestionForm(selectedForm) : buildQuestionForm(selectedForm);
       questions = selectedMode.type === "learning"
@@ -1397,12 +1421,15 @@ function cloneQuestionData(value) {
         startedAt: new Date().toISOString()
       };
       state.index = 0;
+      state.labOrder = "verify-first";
       state.answers = {};
       state.optionOrders = {};
       state.hintsVisible = {};
       clearAutoAdvance();
+      saveLabDraft();
       showView("assessmentView");
       renderQuestion();
+      if (selectedMode.id === "operational-lab") $("questionTitle").focus();
     }
 
     function optionSource(question) {
@@ -1474,6 +1501,7 @@ function cloneQuestionData(value) {
       $("sideList").innerHTML = guide.items.map(item => `<div class="mini-item">${escapeHtml(item)}</div>`).join("");
 
       const currentValue = state.answers[q.id];
+      if (q.type === "simulation") { renderLabQuestion(q); return; }
 
       if (q.type === "text") {
         $("options").innerHTML = `
@@ -1535,7 +1563,7 @@ function cloneQuestionData(value) {
     }
 
     function isAutoAdvanceQuestion(question) {
-      return question.type !== "multi" && question.type !== "text";
+      return question.type !== "multi" && question.type !== "text" && question.type !== "simulation";
     }
 
     function clearAutoAdvance() {
@@ -1579,11 +1607,11 @@ function cloneQuestionData(value) {
 
     function updateNavigationState(q) {
       const total = questions.length;
-      $("answeredText").textContent = isEnglish() ? `${answeredCount()} answers` : `${answeredCount()} risposte`;
+      $("answeredText").textContent = q.type === "simulation" ? labText(`${answeredCount()} decisioni confermate`, `${answeredCount()} confirmed decisions`) : isEnglish() ? `${answeredCount()} answers` : `${answeredCount()} risposte`;
       $("prevBtn").textContent = isEnglish() ? "Back" : "Indietro";
       $("nextBtn").textContent = isEnglish() ? "Next" : "Avanti";
       $("interruptBtn").textContent = isEnglish() ? "Interrupt test" : "Interrompi il test";
-      $("finishBtn").textContent = isEnglish() ? "Calculate dashboard" : "Calcola dashboard";
+      $("finishBtn").textContent = q.type === "simulation" ? labText("Mostra esiti simulati", "Show simulated outcomes") : isEnglish() ? "Calculate dashboard" : "Calcola dashboard";
       $("prevBtn").disabled = state.index === 0;
       $("nextBtn").style.display = state.index === total - 1 ? "none" : "inline-flex";
       $("finishBtn").style.display = state.index === total - 1 ? "inline-flex" : "none";
@@ -1593,6 +1621,7 @@ function cloneQuestionData(value) {
 
     function isAnswered(question) {
       const value = state.answers[question.id];
+      if (question.type === "simulation") return LOCAL_LAB.valid(question.sourceId, value);
       if (question.type === "text") return typeof value === "string" && value.trim().length >= (question.proceedChars || 1);
       if (question.type === "multi") return Array.isArray(value) && value.length >= 1;
       return typeof value !== "undefined";
@@ -1613,7 +1642,9 @@ function cloneQuestionData(value) {
       }
       if (state.index < questions.length - 1) {
         state.index += 1;
+        saveLabDraft();
         renderQuestion();
+        if (q.type === "simulation") $("questionTitle").focus();
       }
     }
 
@@ -1621,7 +1652,9 @@ function cloneQuestionData(value) {
       clearAutoAdvance();
       if (state.index > 0) {
         state.index -= 1;
+        saveLabDraft();
         renderQuestion();
+        if (questions[state.index].type === "simulation") $("questionTitle").focus();
       }
     }
 
@@ -1631,6 +1664,7 @@ function cloneQuestionData(value) {
         ? "Interrupt the current test and return to the home page? Your answers for this session will be discarded."
         : "Interrompere il test corrente e tornare alla pagina principale? Le risposte di questa sessione verranno eliminate.");
       if (!ok) return;
+      if (state.meta?.testMode?.id === "operational-lab" && !removeLabDraft()) return;
       resetToInitialPage(false);
       showToast(isEnglish() ? "Test interrupted." : "Test interrotto.");
     }
@@ -1785,7 +1819,7 @@ function cloneQuestionData(value) {
           <button class="btn-ghost" id="exportCsvBtn">${isEnglish() ? "Export CSV" : "Esporta CSV"}</button>
           <button class="btn-ghost" id="printBtn">${isEnglish() ? "Print / save PDF" : "Stampa / salva PDF"}</button>
           <button class="btn-ghost" id="bibliographyBtn">${isEnglish() ? "Bibliography" : "Bibliografia"}</button>
-          <button class="btn-danger" id="clearHistoryBtn">${isEnglish() ? "Clear local history" : "Svuota storico locale"}</button>
+          <button class="btn-danger" id="clearHistoryBtn">${isEnglish() ? "Clear local data" : "Cancella dati locali"}</button>
         </div>
 
         <section class="card legacy-notice"><h2>${isEnglish() ? "Previous assessment (2.x)" : "Valutazione precedente (2.x)"}</h2><p>${isEnglish() ? "Original scores and labels are shown without recalculation. These results use the previous model and cannot be compared directly or averaged with 3.x reports." : "Punteggi ed etichette originali sono mostrati senza ricalcolo. Questi risultati usano il modello precedente e non sono confrontabili direttamente o mediabili con i report 3.x."}</p><p>App ${escapeHtml(report.meta?.assessmentVersion || (isEnglish() ? "not recorded" : "non registrata"))}</p></section>
@@ -1864,7 +1898,7 @@ function cloneQuestionData(value) {
       };
       const units = report.recommendedUnitIds.map(id => FIRST_STEPS_UNITS.find(unit => unit.id === id)).filter(Boolean);
       const cards = units.map(unit => { const source = sourceLinks[unit.id]; return `<article class="card learning-unit"><p class="kicker">${isEnglish() ? "Review this" : "Da rivedere"}</p><h3>${escapeHtml(isEnglish() ? titlesEn[unit.id] : unit.title.it)}</h3><p>${escapeHtml(isEnglish() ? unit.principle.en : unit.principle.it)}</p><p><strong>${isEnglish() ? "Try this:" : "Prova così:"}</strong> ${escapeHtml(isEnglish() ? actionsEn[unit.id] : unit.action)}</p><a class="bibliography-link" href="${source[1]}" target="_blank" rel="noopener noreferrer">${escapeHtml(source[0])} ↗</a></article>`; }).join("");
-      $("dashboard").innerHTML = `<div class="actions" style="margin-top:0;margin-bottom:18px"><button class="btn-primary" id="restartBtn">${isEnglish() ? "Back to paths" : "Torna ai percorsi"}</button><button class="btn-secondary" id="repeatLearningBtn">${isEnglish() ? "Repeat another form" : "Ripeti un'altra forma"}</button><button class="btn-ghost" id="exportJsonBtn">Export JSON</button><button class="btn-ghost" id="exportCsvBtn">Export CSV</button><button class="btn-ghost" id="printBtn">${isEnglish() ? "Print / save PDF" : "Stampa / salva PDF"}</button><button class="btn-ghost" id="bibliographyBtn">${isEnglish() ? "Bibliography" : "Bibliografia"}</button><button class="btn-danger" id="clearHistoryBtn">${isEnglish() ? "Clear local history" : "Svuota storico locale"}</button></div><section class="profile-band"><div class="profile-card"><p class="kicker" style="color:#a5b4fc">${isEnglish() ? "Foundational readiness" : "Preparazione sulle basi"}</p><div class="profile-title">${escapeHtml(report.profile)}</div><p>${report.correctCount}/10 ${isEnglish() ? "learning objectives consolidated. This is learning feedback, not an AI Skill score." : "obiettivi consolidati. È un feedback didattico, non un punteggio AI Skill."}</p></div><div class="card"><h3>${isEnglish() ? "Your next step" : "Il tuo prossimo passo"}</h3><p>${units.length ? (isEnglish() ? "Review the units below, then repeat or continue with a thematic path." : "Rivedi le unità qui sotto, poi ripeti o continua con un percorso tematico.") : (isEnglish() ? "All foundations are consolidated: you can continue with Literacy." : "Tutte le basi sono consolidate: puoi continuare con Literacy.")}</p></div></section><div class="learning-grid">${cards}</div>${historyBlock()}`;
+      $("dashboard").innerHTML = `<div class="actions" style="margin-top:0;margin-bottom:18px"><button class="btn-primary" id="restartBtn">${isEnglish() ? "Back to paths" : "Torna ai percorsi"}</button><button class="btn-secondary" id="repeatLearningBtn">${isEnglish() ? "Repeat another form" : "Ripeti un'altra forma"}</button><button class="btn-ghost" id="exportJsonBtn">Export JSON</button><button class="btn-ghost" id="exportCsvBtn">Export CSV</button><button class="btn-ghost" id="printBtn">${isEnglish() ? "Print / save PDF" : "Stampa / salva PDF"}</button><button class="btn-ghost" id="bibliographyBtn">${isEnglish() ? "Bibliography" : "Bibliografia"}</button><button class="btn-danger" id="clearHistoryBtn">${isEnglish() ? "Clear local data" : "Cancella dati locali"}</button></div><section class="profile-band"><div class="profile-card"><p class="kicker" style="color:#a5b4fc">${isEnglish() ? "Foundational readiness" : "Preparazione sulle basi"}</p><div class="profile-title">${escapeHtml(report.profile)}</div><p>${report.correctCount}/10 ${isEnglish() ? "learning objectives consolidated. This is learning feedback, not an AI Skill score." : "obiettivi consolidati. È un feedback didattico, non un punteggio AI Skill."}</p></div><div class="card"><h3>${isEnglish() ? "Your next step" : "Il tuo prossimo passo"}</h3><p>${units.length ? (isEnglish() ? "Review the units below, then repeat or continue with a thematic path." : "Rivedi le unità qui sotto, poi ripeti o continua con un percorso tematico.") : (isEnglish() ? "All foundations are consolidated: you can continue with Literacy." : "Tutte le basi sono consolidate: puoi continuare con Literacy.")}</p></div></section><div class="learning-grid">${cards}</div>${historyBlock()}`;
       bindDashboardEvents();
       $("repeatLearningBtn").addEventListener("click", () => { state.selectedModeId = "first-steps"; showView("profileView"); });
       $("progressFill").style.width = "100%";
@@ -2176,16 +2210,19 @@ function cloneQuestionData(value) {
       $("printBtn").addEventListener("click", () => window.print());
       $("bibliographyBtn").addEventListener("click", () => showBibliography("dashboardView"));
       $("clearHistoryBtn").addEventListener("click", () => {
-        const ok = window.confirm(isEnglish() ? "Clear the local history saved in this browser?" : "Svuotare lo storico locale salvato in questo browser?");
+        const ok = window.confirm(isEnglish() ? "Clear local data, form rotation, and the incomplete lab draft in this browser?" : "Eliminare storico locale, rotazione delle forme e bozza incompleta del laboratorio da questo browser?");
         if (!ok) return;
         try {
           localStorage.removeItem("aiSkillAssessmentHistory");
           localStorage.removeItem(FORM_CYCLE_STORAGE_KEY);
+          localStorage.removeItem(LOCAL_LAB.DRAFT_KEY);
         } catch (error) {
           console.warn("Impossibile svuotare lo storico locale", error);
+          labStorageWarning();
+          return;
         }
         resetToInitialPage(true);
-        showToast(isEnglish() ? "Local history cleared." : "Storico locale svuotato.");
+        showToast(isEnglish() ? "Local data cleared." : "Dati locali cancellati.");
       });
     }
 
@@ -2205,6 +2242,7 @@ function cloneQuestionData(value) {
       applyLanguageChrome();
       renderModeSelector();
       renderQuestionDistribution();
+      renderLabDraftNotice();
       $("progressFill").style.width = "0%";
       if (clearFields) {
         ["nameInput", "roleInput", "areaInput", "selfOverallInput", "selfLiteracyInput", "selfFluencyInput", "selfMindsetInput"].forEach(id => {
@@ -2227,6 +2265,7 @@ function cloneQuestionData(value) {
       }
       const report = calculateResults();
       renderDashboard(report);
+      if (state.meta?.testMode?.id === "operational-lab") removeLabDraft();
     }
 
     function historySnapshot() {
@@ -2331,6 +2370,7 @@ function cloneQuestionData(value) {
     }
 
     bindLanguageSwitcher();
+    renderLabDraftNotice();
     renderModeSelector();
     renderQuestionDistribution();
     bindModeCarouselGestures();

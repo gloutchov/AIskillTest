@@ -1113,8 +1113,8 @@ const likertOptions = [
       }
     ];
 
-    const QUESTION_BANK_VERSION = "2026.11-m20";
-    const FORM_VERSION = "1.6";
+    const QUESTION_BANK_VERSION = "2026.11-m21";
+    const FORM_VERSION = "1.7";
     const FORM_IDS = ["A", "B", "C"];
     const FORM_CYCLE_STORAGE_KEY = "aiSkillAssessmentFormCycle";
 

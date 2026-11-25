@@ -1,15 +1,17 @@
-# Scoring 3.0.0 e formato dei report 3.x
+# Scoring 3.1.0 e formato dei report 3.x
 
 Implementazione della milestone 17, basata su [ASSESSMENT_BLUEPRINT.md](../ASSESSMENT_BLUEPRINT.md) `1.0.0` e sulla [mappa degli item](ASSESSMENT_ITEM_MAP.md). Scoring approvato il `2026-11-25`, release `v3.0.0`; M18/M19 approvate nelle release `3.1.0`/`3.2.0`. La M20 introduce l'app `3.3.0`, approvata dal maintainer il `2026-11-25`, con dieci slot Harness e gli stessi calcoli, soglie e schema.
+
+M21: app `3.4.0`, scoring `3.1.0`, schema `4`, casi/laboratorio `1.0.0`, approvata dal maintainer il `2026-11-25`; release `v3.4.0`. La nuova versione introduce le regole E, senza cambiare il calcolo Q o riscrivere i report schema 3/scoring 3.0. [Contratto, varianti e validazione](OPERATIONAL_LAB_REVIEW.md).
 
 ## Evidenze e calcolo
 
 - Q: knowledge, scenario, choice e multi attuali. Le alternative 1-5 diventano `(score - 1) / 4`. Le scelte multiple sommano crediti e penalità delle selezioni, dividono per i crediti positivi disponibili e limitano il rapporto a [0, 1], senza arrotondamento intermedio.
 - D: tutti i likert. Conservano il valore dichiarato 1-5 e il testo scelto; `score`, `credit` e `maxCredit` sono `null`, `scored` è `false`.
 - T: i quattro item testuali della banca. Testo e checklist restano formativi, con gli stessi valori nulli di D. Le keyword e le red flag delle rubriche esistenti non producono punti o verifiche automatiche di qualità.
-- E: assente in questa milestone. `simulatedCases` è vuoto e il risultato simulato è `null`, non zero. Il laboratorio operativo arriverà nella milestone 21.
+- E: sei decisioni del solo Laboratorio operativo, due casi nelle forme IT/EN A/B/C. Crediti grezzi 0/1/2 (max 6 per caso, 12 complessivi), mancanti/non validi null. Ogni decisione confermata modifica un modello sintetico; i punti non entrano mai in Q. Negli altri percorsi simulatedCases resta vuoto e il valore E null, non zero.
 
-Il completo conserva 50 domande: 27 Q, 21 D e 2 T. I tematici restano da 10. Le 135 domande e forme della M19 restano invariate come contenuti e composizioni; la M20 aggiunge dieci slot Q Harness con tre varianti IT/EN, portando la banca a 145 ID (86 Q, 55 D, 4 T, 0 E). Primi passi conserva forme, unità didattiche e risultato autonomo. Agents mantiene la matrice AW01–AW10; AG1–AG15 restano nella banca e AG1–AG4 nel completo. Harness usa solo HR01–HR10, senza riusare gli item storici AG12/AG9/AG13 classificati H.
+Il completo conserva 50 domande: 27 Q, 21 D e 2 T. I tematici restano da 10. Le 135 domande e forme della M19 restano invariate come contenuti e composizioni; la M20 aggiunge dieci slot Q Harness con tre varianti IT/EN, portando la banca a 145 ID (86 Q, 55 D, 4 T, 0 E). La M21 mantiene i 145 quesiti Q/D/T e aggiunge sei unità E separate (151 ID classificati in totale), senza inserirle in baseQuestions. Primi passi conserva forme, unità didattiche e risultato autonomo. Agents mantiene la matrice AW01–AW10; AG1–AG15 restano nella banca e AG1–AG4 nel completo. Harness usa solo HR01–HR10, senza riusare gli item storici AG12/AG9/AG13 classificati H.
 
 La media dei Q validi e direttamente allineati si calcola prima per obiettivo; la media degli obiettivi presenti determina la percentuale d'area. Gli obiettivi non proposti non valgono zero. T10 storico è un quesito di supporto a F06: mostra il proprio credito, ma resta fuori da media e copertura dell'area.
 
@@ -34,28 +36,39 @@ Harness propone H01, H02×2, H03×2, H04×2, H05×2, H06: dieci Q diretti di liv
 
 Le risposte hanno stato `valid`, `missing` o `invalid`. Un indice fuori range, un booleano al posto di una scelta o selezioni duplicate non diventano risposte errate a zero. Una risposta corretta esclusa per mancanza di copertura resta consultabile nel dettaglio. D e stime iniziali non alzano Q; un contrasto testuale si mostra solo fra D alto e Q debole sullo stesso obiettivo, senza sottrarre scale diverse.
 
+## Esiti E nella M21
+
+La percentuale complessiva richiede entrambi i casi completi. In un caso incompleto il credito rappresenta soltanto le decisioni valide e value resta null; la somma grezza non viene presentata come risultato finale. Senza criticità: meno di 50 → retry; da 50 a meno di 80 → partial; da 80 e almeno 4/6 in ciascun caso → conform. 6/6 + 3/6 produce 75, parziale. Le soglie sono editoriali.
+
+Un'azione critica simulata conserva i punti e prevale con band critical, anche se una delle sei decisioni è ancora mancante: E totale resta null se incompleto, mentre la criticità già eseguita è leggibile. I codici sono unverified-release (totale errato o causalità non supportata consegnati), unauthorized-disclosure (registro esportato fuori mandato), unauthorized-action (azione esterna senza approvazione), duplicate-action (secondo effetto dell'update già confermato). Un calcolo errato trattenuto per revisione e una falsa conclusione non producono duplicate-action o altre criticità implicite.
+
+K1 verifica tutte le righe (2), solo una (1), oppure si fida della bozza (0); ricostruisce il calcolo (1 somma + 1 numero corretto); consegna totale corretto con fonte e senza causalità (2), trattiene per revisione (1) o produce un artefatto non conforme (0). K2 scarta istruzioni incorporate mantenendo dati legittimi (2), chiede chiarimento (1) o divulga (0); prepara entro il mandato (2), blocca tutto (1) o agisce esternamente (0); usa la ricevuta e riprende (2), attende verifica (1), duplica o dichiara falsamente concluso (0).
+
+La verifica e il calcolo possono scambiarsi di ordine; la consegna segue entrambi. Cambiare il calcolo invalida la vecchia consegna. Ogni stato e criticità sono ricostruiti dalle sole scelte finali: Indietro, render e recupero non accumulano effetti. Una revisione elimina gli effetti e flag della configurazione precedente; nessun log dei tentativi. Crediti e motivazioni si vedono dopo il completamento. Dettagli e varianti canoniche: [OPERATIONAL_LAB_REVIEW.md](OPERATIONAL_LAB_REVIEW.md).
+
 ## Schema e versioni
 
-`assets/assessment.js` contiene regole pure, catalogo bilingue degli obiettivi e metadati dei 145 item; `assets/report-ui.js` mostra i risultati. `assets/modern-ai.js`, `assets/agentic-workflows.js` e `assets/harness.js` registrano scenari, traduzioni e fonti dopo banca e i18n, prima della valutazione. Sono script classici locali, senza dipendenze, build, fetch o valutatori remoti. Modificare le assegnazioni di item esistenti richiede di rivedere `scoringVersion`, anche senza cambiarne il testo. I nuovi slot riusano calcoli e suggerimenti già implementati senza cambiare le assegnazioni preesistenti: app/banca/forme cambiano, scoring `3.0.0` e schema `3` restano invariati.
+`assets/assessment.js` contiene regole pure, catalogo bilingue degli obiettivi e metadati dei 145 quesiti e sei decisioni E; `assets/report-ui.js` mostra i risultati. `assets/modern-ai.js`, `assets/agentic-workflows.js` e `assets/harness.js` registrano scenari, traduzioni e fonti dopo banca e i18n, prima della valutazione. Sono script classici locali, senza dipendenze, build, fetch o valutatori remoti. Modificare le assegnazioni di item esistenti richiede di rivedere `scoringVersion`, anche senza cambiarne il testo. Gli slot M18–M20 riusano calcoli e suggerimenti preesistenti. La M21 aggiunge i moduli classici locali operational-lab.js (regole pure) e lab-ui.js (UI e bozza), introduce lo scoring E 3.1.0 e lo schema 4; il lettore riconosce separatamente schema 3/scoring 3.0 e schema 4/scoring 3.1, senza migrazioni.
 
 | Campo | Contenuto |
 | --- | --- |
-| `meta.assessmentVersion` | `3.3.0`, versione dell'app |
-| `meta.scoringVersion` | `3.0.0`, versione del calcolo |
-| `meta.reportSchemaVersion` | `3`, formato del report assessment |
+| `meta.assessmentVersion` | `3.4.0`, versione dell'app |
+| `meta.scoringVersion` | `3.1.0`, versione del calcolo |
+| `meta.reportSchemaVersion` | `4`, formato del report assessment |
 | `meta.blueprintVersion` | `1.0.0`, contratto approvato |
-| `meta.questionBankVersion`, `meta.formVersion` | `2026.11-m20`, `1.6` (M19: `2026.11-m19`/`1.5`; M18: `2026.11-m18`/`1.4`; M17: `2026.07-m7`/`1.3`) |
+| `meta.questionBankVersion`, `meta.formVersion` | `2026.11-m21`, `1.7` (M20: `2026.11-m20`/`1.6`; M19: `2026.11-m19`/`1.5`; M18: `2026.11-m18`/`1.4`; M17: `2026.07-m7`/`1.3`) |
 | `meta.language`, `languageSource`, `formId`, `testMode` | Lingua/origine, forma A/B/C, modalità e quantità |
 | `meta.comparisonKey` | Firma locale di versioni, modalità, lingua, forma e identità/classificazione degli item ordinati; non contiene risposte o dati personali |
-| `answers[]` | Identità e versione dell'item, tipo Q/D/T, area, obiettivo, tag, livello, allineamento, formato, stato, risposta grezza e leggibile, credito e feedback; nei nuovi scenari anche motivazione e fonti |
+| `answers[]` | Identità e versione dell'item, tipo Q/D/T/E, area, obiettivo, tag, livello, allineamento, formato, stato, risposta grezza e leggibile, credito e feedback; nei nuovi scenari anche motivazione e fonti |
 | `results.knowledgeByArea` | Percentuale eventuale, stato di copertura, fascia eventuale e crediti per obiettivo |
 | `results.declaredPractices`, `declaredContrasts`, `formativeFeedback` | Dichiarazioni, obiettivi del confronto testuale e checklist formative |
 | `answers[].nextStep`, `results.nextSteps` | Campi facoltativi introdotti in M19 e riusati da Harness: suggerimenti salvati, deduplicati per obiettivo con una scelta non piena; nessun effetto sul credito |
-| `results.simulatedCases`, `simulatedSummary` | Nessun caso; valore simulato `null` e stato non esplorato |
+| `results.simulatedCases`, `simulatedSummary` | K1/K2: identità/versione, stato sintetico iniziale, scelte finali, effetti, crediti, motivazioni e criticità; E totale solo con entrambi completi. Vuoti negli altri percorsi |
 | `coverage` | Quantità previste/proposte/valide/mancanti/non valide per tipo e area; obiettivi presenti/assenti e casi |
-| `criticalFindings` | Vuoto fino alla M20: nessun flag di errore critico simulato attribuito a scelte Q |
+| `criticalFindings` | Solo azioni E simulate: kind, caseId, decisionId, code, effect. Vuoto per Q/D/T |
+| `meta.labVersion`, `answers[].caseVersion` | Versione 1.0.0 dei casi/rubriche E, inclusa anche in itemVersion e nella firma di confronto |
 
-`answers[].score` è un alias del credito Q 0-1, nullo per D/T; non è la scala 1-5 dei report 2.x. `slotId` è assente perché gli slot C01-C50 non sono ancora stati applicati agli item. Primi passi non usa lo schema assessment 3 o lo scoring 3.0.0: mantiene il proprio contratto didattico, con la versione dell'app nei metadati.
+`answers[].score` è un alias del credito Q 0-1 o E 0-2, nullo per D/T; non è la scala 1-5 dei report 2.x. `slotId` è assente perché gli slot C01-C50 non sono ancora stati applicati agli item. Primi passi non usa lo schema assessment 3/4 o lo scoring 3.x: mantiene il proprio contratto didattico, con la versione dell'app nei metadati.
 
 Negli scenari AI moderne, Agents e Harness `answers[].question` include contesto e domanda separati da una nuova riga: il dato completo resta leggibile anche nei renderer 3.0.0. I campi facoltativi `selectedRationales` (array di testi della scelta effettuata) e `sourceRefs` (ID delle fonti nei cataloghi M18/M19/M20) aggiungono motivazione e letture. Non sono requisiti per riconoscere lo schema 3 e non modificano il credito. I report precedenti senza questi campi sono letti ed esportati senza modifiche. I riferimenti sono link espliciti al catalogo delle fonti, non nuove valutazioni del contenuto archiviato.
 
@@ -73,14 +86,14 @@ Un formato futuro, sconosciuto o incompleto viene mostrato come dati originali e
 
 JSON esporta il record originale completo. Il CSV della 3.0.0 usa tre colonne stabili `type,field,value`, con percorsi come `meta.scoringVersion`, `answers.0.evidenceType` o `coverage.byEvidence.Q.valid`. Esporta anche dati legacy/sconosciuti senza riclassificarli. Questo formato sostituisce il precedente CSV a sezioni; un valore nullo è vuoto, uno zero resta `0`, e gli stati chiariscono le assenze. Array vuoti e oggetti vuoti sono rappresentati come `[]` e `{}`; virgole, virgolette e nuove righe vengono quotate. L'ordine e il nome dei campi tecnici non cambiano con la lingua; testi e risposte conservano la lingua registrata.
 
-Non si aggiungono chiavi di tracking, draft di sessione, invii di risposte, API AI o risorse esterne automatiche. Gli export restano manuali. I report aggiungono classificazione, scelte grezze e dati necessari a spiegare il risultato; non raccolgono tempi, tasti o dati reali del dispositivo. I dati delle fixture sono tutti sintetici.
+La M21 conserva una sola bozza incompleta in `aiSkillOperationalLabDraft`, separata dallo storico: schema bozza 1, versioni, modalità, lingua, forma, posizione, ordine e scelte confermate. Nessun profilo o log dei tentativi; gli effetti si ricostruiscono. La home offre Riprendi/Elimina; completamento, interruzione confermata o Cancella dati locali la eliminano. Bozze incompatibili/corrotte sono conservate finché non eliminate. Errori di storage vengono segnalati; da file:// la persistenza dipende dal browser. Non si aggiungono chiavi di tracking, invii di risposte, API AI o risorse esterne automatiche. Gli export restano manuali. I report aggiungono classificazione, scelte grezze e dati necessari a spiegare il risultato; non raccolgono tempi, tasti o dati reali del dispositivo. I dati delle fixture sono tutti sintetici.
 
 ## Verifica e revisione del maintainer
 
 Eseguire senza installazioni:
 
 ```powershell
-node tests/assessment.test.mjs
+node --test --test-isolation=none tests/assessment.test.mjs tests/operational-lab.test.mjs
 ```
 
 Il test runner integrato di Node è usato direttamente per non richiedere la creazione di processi figli nel sandbox. I controlli coprono scoring, mappa, assenze, credito parziale, soglie, identità dei risultati, storico, export, auto-advance e composizione. L'adattatore DOM in memoria verifica produzione del markup e collegamento degli eventi, senza attestare layout o comportamento di un browser reale.
@@ -104,7 +117,7 @@ Queste fixture non vengono caricate dall'app né inserite automaticamente nello 
 
 Checklist manuale prima della chiusura della milestone:
 
-1. Aprire `ai_skill_test.html` direttamente, poi la root `index.html`; controllare badge 3.3.0, percorso Harness e tredici indicatori del carosello, assenza di errori e risorse tutte locali.
+1. Aprire `ai_skill_test.html` direttamente, poi la root `index.html`; controllare badge 3.4.0, percorso Laboratorio operativo e quattordici indicatori del carosello, assenza di errori e risorse tutte locali.
 2. Rivedere tutte le varianti in [HARNESS_REVIEW.md](HARNESS_REVIEW.md) e completare forme IT/EN con casi corretti/parziali/errati. Verificare chiarezza tecnica senza dipendenza da piattaforme, leggibilità delle tracce, auto-advance reversibile, copertura H, motivazioni, suggerimenti e fonti; nessuna qualifica di costruzione/amministrazione.
 3. Provare un tematico con pochi Q: nessuna percentuale non sostenuta; area assente senza zero. Confermare multi/testo con Avanti e ritorno tramite Indietro.
 4. Aprire report 2.x, 3.0.0, 3.1.0 e 3.2.0 già presenti nello storico e poi un report nuovo. Verificare punteggi e suggerimenti originali, nessuna copia creata dalla sola apertura e nessuna media. Riprovare completo, Agents, AI moderne e Primi passi per confermare la continuità dei flussi.
@@ -113,3 +126,10 @@ Checklist manuale prima della chiusura della milestone:
 7. Controllare traffico e console in un browser reale: nessun invio di risposte o caricamento esterno automatico. Verificare stampa e cancellazione esplicita dello storico.
 
 Limite della verifica nell'ambiente di sviluppo: il tentativo di aprire il file locale con il runtime Browser restituisce ancora «No browser is available» nella M20; nessun browser è elencato come disponibile. Apertura visiva, eventi reali, layout desktop/mobile, download, console e traffico non sono stati verificati dall'agente in un browser reale. Il maintainer ha approvato M17, M18, M19 e M20 e autorizzato le rispettive release il `2026-11-25`; gli esiti dettagliati della checklist manuale non sono stati riportati nella conversazione.
+
+
+## Verifica M21 — approvata dal maintainer
+
+50 controlli automatici passati: 72 composizioni precedenti Q/D/T, 6 nuove forme laboratorio, 6 forme didattiche indipendenti; 864 configurazioni K1 e 216 K2. Verificati credito 0/1/2, assenze e valori invalidi, soglie, criticità ed effetti espliciti, ordini alternativi, invalidazione della consegna, revisione senza flag obsoleti o registrazioni duplicate, conferme/Avanti e anteprima, bozza compatibile/incompatibile/corrotta, privacy dei campi, errori di storage/rimozione, interruzione e annullamento, completamento e cancellazione, report schema 3/4 e ripiego leggibile per record malformati, JSON/CSV, bibliografia e asset locali. Nessun dato reale del browser consultato.
+
+L'adattatore DOM non attesta rendering, tastiera reale, mobile o download. La skill Browser non trova un browser disponibile dopo bootstrap/troubleshooting; non sono verificati in browser apertura diretta, layout desktop/mobile, focus e tecnologie assistive, console, traffico, download o stampa. Il maintainer ha approvato la chiusura della M21 e la release `v3.4.0` il `2026-11-25`, autorizzando commit, merge, push, tag e rimozione del branch. Gli esiti dettagliati della prova manuale non sono stati riportati nella conversazione; la [checklist IT/EN con caso corretto e critico](OPERATIONAL_LAB_REVIEW.md#validazione-del-maintainer-prima-del-commit) resta riferimento di verifica, senza attribuire all’agente controlli browser non eseguiti.

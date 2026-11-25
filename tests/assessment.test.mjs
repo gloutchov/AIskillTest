@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
-import vm from "node:vm";
+import { runtime } from "./helpers/runtime.mjs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -9,37 +9,6 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = name => fs.readFileSync(path.join(root, name), "utf8");
 const plain = value => JSON.parse(JSON.stringify(value));
 
-function runtime() {
-  const storage = new Map();
-  const nodes = new Map();
-  const timers = new Map();
-  const node = id => {
-    if (!nodes.has(id)) nodes.set(id, { innerHTML: "", textContent: "", value: "", style: {}, dataset: {}, events: {},
-      addEventListener(type, callback) { this.events[type] = callback; }, setAttribute() {}, querySelectorAll() { return []; }, classList: { toggle() {}, add() {}, remove() {}, contains() { return false; } } });
-    return nodes.get(id);
-  };
-  const window = { scrollTo() {}, print() {}, confirm() { return true; }, setTimeout(fn) { timers.set(timers.size + 1, fn); return timers.size; }, clearTimeout(id) { timers.delete(id); }, setInterval() { return 1; }, clearInterval() {} };
-  const context = vm.createContext({ console: { warn() {} }, window, navigator: { language: "it", languages: ["it"] },
-    localStorage: { getItem: key => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, value), removeItem: key => storage.delete(key) },
-    document: { getElementById: node, querySelector() { return null; }, querySelectorAll(selector) {
-      if (selector !== "#dashboard [data-history-index]") return [];
-      return [...node("dashboard").innerHTML.matchAll(/data-history-index="(\d+)"/g)].map(match => {
-        const button = node(`history-${match[1]}`); button.dataset.historyIndex = match[1]; return button;
-      });
-    }, documentElement: {} } });
-  for (const name of ["questions", "i18n", "learning", "modern-ai", "agentic-workflows", "harness", "assessment", "report-ui"]) vm.runInContext(read(`assets/${name}.js`), context, { filename: name });
-  const app = read("assets/app.js");
-  const init = app.lastIndexOf("\n    bindLanguageSwitcher();");
-  assert.ok(init > 0);
-  vm.runInContext(app.slice(0, init), context, { filename: "app.js (without browser startup)" });
-  const run = code => vm.runInContext(code, context);
-  run(`globalThis.core = ASSESSMENT_V3; globalThis.bank = baseQuestions; globalThis.appState = state;
-    globalThis.meta = { assessmentVersion: APP_VERSION, language: 'it', formId: 'A', formVersion: FORM_VERSION, questionBankVersion: QUESTION_BANK_VERSION, testMode: { id: 'complete', type: 'complete', questionCount: 50 }, selfAssessment: {} };
-    globalThis.choose = (q, high = true) => q.type === 'likert' ? (high ? 5 : 1) : q.type === 'text' ? q.rubric.criteria.map(c => c.keywords[0]).join(' ') : q.type === 'multi' ? q.options.map((o,i) => ({o,i})).filter(x => high ? x.o.score > 0 : x.o.score < 0).map(x => x.i) : q.options.reduce((best,o,i) => (high ? o.score > q.options[best].score : o.score < q.options[best].score) ? i : best, 0);
-    globalThis.full = (high = true) => { const qs = questionsForMode(buildQuestionForm('A'), getModeById('complete')); const answers = Object.fromEntries(qs.map(q => [q.id,choose(q, high)])); return core.evaluate(qs, answers, meta, '2026-11-25T12:00:00Z'); };
-  `);
-  return { context, run, storage, node, timers, start: () => vm.runInContext(app.slice(init), context) };
-}
 
 test("mapping covers 145 items and matches the Markdown inventory", () => {
   const r = runtime();
@@ -132,7 +101,7 @@ test("comparison identity excludes answers and distinguishes versions, form, lan
 
 test("all 72 current assessment compositions calculate and render in IT/EN, A/B/C", () => {
   const r=runtime();
-  const count=r.run(`(() => {let count=0;for(const language of ['it','en'])for(const form of FORM_IDS)for(const mode of TEST_MODES.filter(m=>m.type!=='learning')){state.language=language;const qs=questionsForMode(language==='en'?buildEnglishQuestionForm(form):buildQuestionForm(form),mode,true,form);if(qs.length!==(mode.id==='complete'?50:10))throw Error('Wrong count');const m={...meta,language,formId:form,testMode:{...mode,questionCount:qs.length}};const report=core.evaluate(qs,Object.fromEntries(qs.map(q=>[q.id,choose(q)])),m,'2026-11-25');if(core.reportKind(report)!=='evidence')throw Error('Wrong kind');renderDashboardWithoutSaving(report);count++;}return count;})()`);
+  const count=r.run(`(() => {let count=0;for(const language of ['it','en'])for(const form of FORM_IDS)for(const mode of TEST_MODES.filter(m=>!['learning','simulation'].includes(m.type))){state.language=language;const qs=questionsForMode(language==='en'?buildEnglishQuestionForm(form):buildQuestionForm(form),mode,true,form);if(qs.length!==(mode.id==='complete'?50:10))throw Error('Wrong count');const m={...meta,language,formId:form,testMode:{...mode,questionCount:qs.length}};const report=core.evaluate(qs,Object.fromEntries(qs.map(q=>[q.id,choose(q)])),m,'2026-11-25');if(core.reportKind(report)!=='evidence')throw Error('Wrong kind');renderDashboardWithoutSaving(report);count++;}return count;})()`);
   assert.equal(count,72);
 });
 
@@ -177,7 +146,7 @@ test("exports preserve metadata, absent values, decisions and special characters
   const r=runtime();const report=r.run('full()');report.meta.name='Test, "quoted"\nsecond line';
   const rows=plain(r.context.core.csvRows(report));
   const row=field=>rows.find(row=>row[1]===field)?.[2];
-  assert.equal(row('meta.name'),report.meta.name);assert.equal(row('meta.scoringVersion'),'3.0.0');assert.equal(row('meta.formId'),'A');
+  assert.equal(row('meta.name'),report.meta.name);assert.equal(row('meta.scoringVersion'),'3.1.0');assert.equal(row('meta.formId'),'A');
   assert.equal(row('results.knowledgeByArea.H.value'),'');assert.equal(row('coverage.byEvidence.E.proposed'),0);
   r.context.sample=report;r.run('downloadBlob=(content,name,type)=>{globalThis.download={content,name,type}}; exportCsv(sample)');
   assert.ok(r.context.download.content.includes('"Test, ""quoted""\nsecond line"'));
@@ -192,11 +161,11 @@ test("auto-advance remains reversible and requires explicit Next for multi/text"
   assert.equal(r.run("isAutoAdvanceQuestion(bank.find(q=>q.type==='multi'))"),false);assert.equal(r.run("isAutoAdvanceQuestion(bank.find(q=>q.type==='text'))"),false);
 });
 
-test("HTML loads local classic assets with consistent 3.3.0 cache keys", () => {
+test("HTML loads local classic assets with consistent 3.4.0 cache keys", () => {
   const html=read('ai_skill_test.html');const scripts=[...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map(m=>m[1]);
-  assert.deepEqual(scripts.map(s=>s.split('?')[0]),['assets/questions.js','assets/i18n.js','assets/learning.js','assets/modern-ai.js','assets/agentic-workflows.js','assets/harness.js','assets/assessment.js','assets/report-ui.js','assets/app.js']);
-  for(const src of scripts){assert.ok(src.endsWith('?v=3.3.0'));assert.ok(fs.existsSync(path.join(root,src.split('?')[0])));}
-  assert.match(html,/Versione 3\.3\.0/);assert.doesNotMatch(html,/Champion|Expert|Indice 0-100/);
+  assert.deepEqual(scripts.map(s=>s.split('?')[0]),['assets/questions.js','assets/i18n.js','assets/learning.js','assets/modern-ai.js','assets/agentic-workflows.js','assets/harness.js','assets/operational-lab.js','assets/lab-ui.js','assets/assessment.js','assets/report-ui.js','assets/app.js']);
+  for(const src of scripts){assert.ok(src.endsWith('?v=3.4.0'));assert.ok(fs.existsSync(path.join(root,src.split('?')[0])));}
+  assert.match(html,/Versione 3\.4\.0/);assert.doesNotMatch(html,/Champion|Expert|Indice 0-100/);
 });
 
 test("browser startup bindings, optional empty data and completion execute with a minimal DOM adapter", () => {
@@ -274,11 +243,11 @@ test("Modern AI starts, returns to previous answers and saves complete bilingual
     r.run(`state.answers[questions[0].id]=choose(questions[0]);scheduleAutoAdvance(questions[0],0,state.answers[questions[0].id])`);
     assert.equal(r.timers.size,1);r.timers.values().next().value();assert.equal(r.run('state.index'),1);r.run('goPrev()');assert.equal(r.run('state.index'),0);assert.equal(r.run('state.answers[questions[0].id]===choose(questions[0])'),true);
     r.run(`state.answers=Object.fromEntries(questions.map(q=>[q.id,choose(q)]));finishAssessment()`);
-    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.3.0');assert.equal(report.meta.scoringVersion,'3.0.0');assert.equal(report.meta.reportSchemaVersion,3);assert.equal(report.meta.questionBankVersion,'2026.11-m20');assert.equal(report.meta.formVersion,'1.6');assert.equal(report.meta.testMode.id,'modern-ai');
+    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.4.0');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.questionBankVersion,'2026.11-m21');assert.equal(report.meta.formVersion,'1.7');assert.equal(report.meta.testMode.id,'modern-ai');
     assert.deepEqual(JSON.parse(r.storage.get('aiSkillAssessmentHistory'))[0],report);
     for(const item of report.answers){assert.ok(item.question.includes('\n'));assert.equal(item.selectedRationales.length,1);assert.ok(item.sourceRefs.length>0);assert.ok(r.node('dashboard').innerHTML.includes(item.selectedRationales[0].replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;')));}
     r.run('downloadBlob=(content,name,type)=>{globalThis.download={content,name,type}};exportJson(state.latestReport)');assert.deepEqual(JSON.parse(r.context.download.content),report);
-    const rows=plain(r.context.core.csvRows(report));assert.ok(rows.some(row=>row[1]==='answers.0.selectedRationales.0'));assert.ok(rows.some(row=>row[1]==='answers.0.sourceRefs.0'));assert.equal(rows.find(row=>row[1]==='meta.assessmentVersion')[2],'3.3.0');
+    const rows=plain(r.context.core.csvRows(report));assert.ok(rows.some(row=>row[1]==='answers.0.selectedRationales.0'));assert.ok(rows.some(row=>row[1]==='answers.0.sourceRefs.0'));assert.equal(rows.find(row=>row[1]==='meta.assessmentVersion')[2],'3.4.0');
     const original=r.storage.get('aiSkillAssessmentHistory');r.run('loadLastReport()');assert.equal(r.storage.get('aiSkillAssessmentHistory'),original);
   }
 });
@@ -354,7 +323,7 @@ test("Agents completion, navigation, frozen recommendations, history and exports
     r.run(`state.answers[questions[0].id]=choose(questions[0],false);scheduleAutoAdvance(questions[0],0,state.answers[questions[0].id])`);
     assert.equal(r.timers.size,1);r.timers.values().next().value();assert.equal(r.run('state.index'),1);r.run('goPrev()');assert.equal(r.run('state.index'),0);assert.equal(r.run('state.answers[questions[0].id]===choose(questions[0],false)'),true);
     r.run(`state.answers=Object.fromEntries(questions.map(q=>[q.id,q.options.findIndex(o=>o.score===3)]));finishAssessment()`);
-    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.3.0');assert.equal(report.meta.questionBankVersion,'2026.11-m20');assert.equal(report.meta.formVersion,'1.6');assert.equal(report.meta.scoringVersion,'3.0.0');assert.equal(report.meta.reportSchemaVersion,3);assert.equal(report.meta.testMode.id,'agents');assert.equal(report.meta.formId,form);assert.equal(report.meta.language,language);
+    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.4.0');assert.equal(report.meta.questionBankVersion,'2026.11-m21');assert.equal(report.meta.formVersion,'1.7');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.testMode.id,'agents');assert.equal(report.meta.formId,form);assert.equal(report.meta.language,language);
     assert.equal(report.results.nextSteps.length,5);assert.ok(report.answers.every(q=>q.selectedRationales.length===1&&q.question.includes('\n')&&typeof q.nextStep==='string'));
     assert.match(r.node('dashboard').innerHTML,language==='it'?/Per approfondire le scelte/:/Develop your decisions/);
     r.run('downloadBlob=(content,name,type)=>{globalThis.download={content,name,type}};exportJson(state.latestReport)');assert.deepEqual(JSON.parse(r.context.download.content),report);
@@ -412,7 +381,7 @@ test("Harness starts, navigates and persists frozen bilingual report/export cont
     const first=r.run('questions[0].options[choose(questions[0])].rationale');assert.ok(!r.node('options').innerHTML.includes(first));
     r.run(`state.answers[questions[0].id]=choose(questions[0]);scheduleAutoAdvance(questions[0],0,state.answers[questions[0].id])`);assert.equal(r.timers.size,1);r.timers.values().next().value();assert.equal(r.run('state.index'),1);r.run('goPrev()');assert.equal(r.run('state.index'),0);assert.equal(r.run('state.answers[questions[0].id]===choose(questions[0])'),true);
     r.run(`state.answers=Object.fromEntries(questions.map(q=>[q.id,q.options.findIndex(o=>o.score===3)]));finishAssessment()`);
-    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.3.0');assert.equal(report.meta.questionBankVersion,'2026.11-m20');assert.equal(report.meta.formVersion,'1.6');assert.equal(report.meta.scoringVersion,'3.0.0');assert.equal(report.meta.reportSchemaVersion,3);assert.equal(report.meta.testMode.id,'harness');assert.equal(report.meta.formId,form);assert.equal(report.meta.language,language);assert.equal(report.results.nextSteps.length,6);
+    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.4.0');assert.equal(report.meta.questionBankVersion,'2026.11-m21');assert.equal(report.meta.formVersion,'1.7');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.testMode.id,'harness');assert.equal(report.meta.formId,form);assert.equal(report.meta.language,language);assert.equal(report.results.nextSteps.length,6);
     assert.ok(report.answers.every(q=>q.question.includes('\n')&&q.selectedRationales.length===1&&typeof q.nextStep==='string'));
     r.run('downloadBlob=(content,name,type)=>{globalThis.download={content,name,type}};exportJson(state.latestReport)');assert.deepEqual(JSON.parse(r.context.download.content),report);
     const rows=plain(r.context.core.csvRows(report));for(const field of ['answers.0.nextStep','answers.0.selectedRationales.0','answers.0.sourceRefs.0','results.nextSteps.0.text'])assert.ok(rows.some(row=>row[1]===field));
@@ -421,8 +390,8 @@ test("Harness starts, navigates and persists frozen bilingual report/export cont
 });
 
 test("Harness discovery, local rotation and bibliography preserve the prior paths", () => {
-  const r=runtime();r.run('renderModeSelector()');assert.equal(r.run('TEST_MODES.length'),13);assert.match(r.node('testModeSelector').innerHTML,/id="mode_harness"/);
-  assert.equal(r.run(`TEST_MODES.filter(m=>m.id!=='harness'&&m.type!=='learning').every(m=>questionsForMode(buildQuestionForm('A'),m).every(q=>!q.sourceId.startsWith('HR')))`),true);
+  const r=runtime();r.run('renderModeSelector()');assert.equal(r.run('TEST_MODES.length'),14);assert.match(r.node('testModeSelector').innerHTML,/id="mode_harness"/);
+  assert.equal(r.run(`TEST_MODES.filter(m=>m.id!=='harness'&&!['learning','simulation'].includes(m.type)).every(m=>questionsForMode(buildQuestionForm('A'),m).every(q=>!q.sourceId.startsWith('HR')))`),true);
   r.run(`writeFormCycle('it','agents',{remaining:['B'],last:'A'});writeFormCycle('it','harness',{remaining:['C'],last:'B'});selectNextForm('harness','it')`);assert.equal(r.run(`selectNextForm('agents','it')`),'B');
   const sources=plain(r.run('HARNESS_ASSESSMENT.SOURCES'));assert.equal(sources.length,9);assert.equal(new Set(sources.map(s=>s.id)).size,9);
   for(const source of sources){const url=new URL(source.url);assert.equal(url.protocol,'https:');assert.ok(['www.anthropic.com','developers.openai.com','modelcontextprotocol.io','agentskills.io','agents.md'].includes(url.hostname));}

@@ -4,11 +4,11 @@
 
 Questionario interattivo in italiano e inglese per esplorare conoscenze, giudizio su scenari e pratiche dichiarate nell’uso della GenAI.
 
-L'assessment produce un quadro delle evidenze: conoscenze/scenari, pratiche dichiarate e testi con feedback restano separati, con copertura e limiti per area. È pensato come strumento diagnostico interno e migliorabile, non come test psicometrico validato.
+L'assessment produce un quadro delle evidenze: conoscenze/scenari, pratiche dichiarate, testi con feedback ed esiti simulati restano separati, con copertura e limiti per area. È pensato come strumento diagnostico interno e migliorabile, non come test psicometrico validato.
 
-Versione corrente dell'app: `3.3.0`, milestone 20 approvata dal maintainer il `2026-11-25`. Release precedente: `3.2.0` (milestone 19).
+Versione corrente dell'app: `3.4.0`, milestone 21 approvata dal maintainer il `2026-11-25`. Release precedente: `3.3.0` (milestone 20).
 
-Tag di riferimento: `v3.3.0`.
+Tag di riferimento: `v3.4.0`.
 
 ### Nota sullo sviluppo
 
@@ -24,10 +24,13 @@ Questo test è stato realizzato in vibecoding, usando l'AI come supporto operati
 - `assets/modern-ai.js`: scenari originali AI moderne, varianti A/B/C IT/EN, motivazioni e fonti.
 - `assets/agentic-workflows.js`: tracce ipotetiche del percorso Agents, varianti A/B/C IT/EN, motivazioni, suggerimenti e fonti.
 - `assets/harness.js`: scenari del percorso Harness, varianti A/B/C IT/EN, motivazioni, suggerimenti e fonti.
+- `assets/operational-lab.js`: casi sintetici, scelte stabili e regole pure del laboratorio.
+- `assets/lab-ui.js`: simulatore locale, bozza recuperabile e report E.
+- `docs/OPERATIONAL_LAB_REVIEW.md`: varianti IT/EN, rubriche, stato, privacy e checklist M21.
 - `assets/app.js`: navigazione client-side, storico, dashboard legacy/didattica ed export.
 - `assets/assessment.js`: regole pure dello scoring 3.x e metadati degli item.
 - `assets/report-ui.js`: quadro delle evidenze IT/EN.
-- `docs/SCORING.md`: scoring, schema, compatibilità e verifiche delle milestone 17-20.
+- `docs/SCORING.md`: scoring, schema, compatibilità e verifiche delle milestone 17-21.
 - `docs/MODERN_AI_REVIEW.md`: revisione delle 30 varianti bilingui, crediti e fonti della milestone 18.
 - `docs/AGENTIC_WORKFLOWS_REVIEW.md`: revisione delle 30 varianti bilingui con tracce, crediti e fonti della milestone 19.
 - `docs/HARNESS_REVIEW.md`: revisione delle 30 varianti bilingui Harness, con crediti, motivazioni e fonti della milestone 20.
@@ -39,7 +42,7 @@ Questo test è stato realizzato in vibecoding, usando l'AI come supporto operati
 - `scripts/build-harness-review.mjs`: rigenera la revisione Harness; facoltativo, non serve all'app.
 - `LEARNING_PATH.md`: blueprint bilingue del percorso introduttivo pianificato, con domande, unità didattiche e fonti.
 - `ASSESSMENT_BLUEPRINT.md`: blueprint approvato della milestone 16 per competenze, prove, risultati e compatibilità dello storico della futura serie 3.x.
-- `docs/ASSESSMENT_ITEM_MAP.md`: classificazione dei 145 item attuali per tipo di evidenza, area e obiettivo.
+- `docs/ASSESSMENT_ITEM_MAP.md`: classificazione dei 145 quesiti e delle sei decisioni E per tipo di evidenza, area e obiettivo.
 - `PLAN.md`: roadmap, stato delle milestone e criteri di validazione e release.
 - `index.html`: pagina di ingresso che rimanda al test.
 - `LICENSE`: licenza Apache 2.0.
@@ -52,7 +55,7 @@ La lingua iniziale segue le impostazioni del browser: italiano se il browser è 
 
 La home mostra un carosello con test completo e percorsi tematici. Il carosello avanza automaticamente ogni 5 secondi e resta controllabile con frecce, indicatori, swipe touch e pulsante `Pausa`.
 
-Durante il test, le domande a scelta singola avanzano automaticamente dopo la selezione. Domande a scelta multipla e prove testuali richiedono il pulsante `Avanti`. Il pulsante `Interrompi il test` annulla la sessione corrente, previa conferma, e torna alla home senza salvare un report.
+Durante il test, le domande a scelta singola avanzano automaticamente dopo la selezione. Domande a scelta multipla e prove testuali richiedono il pulsante `Avanti`. Nel Laboratorio operativo occorrono sempre conferma esplicita dell’azione e Avanti. Il pulsante `Interrompi il test` annulla la sessione corrente, previa conferma, e torna alla home senza salvare un report.
 
 Nelle domande dichiarative, le alternative restano senza livelli numerici e sono presentate in ordine casuale per favorire la lettura del comportamento descritto. Il comando `Mostra i dettagli` chiarisce le differenze tra applicazione con supporto, autonomia caso per caso, metodo stabile e pratica verificata e condivisibile.
 
@@ -68,6 +71,7 @@ L'assessment combina autovalutazione, scenari, quiz tecnici e prove pratiche su:
 - AI Fluency: Delegation, Description, Discernment e Diligence.
 - Mindset: apertura alla sperimentazione, fiducia calibrata e adozione responsabile.
 - Practical Lab: quiz su scelte ipotetiche e prompt con checklist formative; nessuna esecuzione simulata.
+- Laboratorio operativo: 2 casi sintetici, 6 decisioni E, calcolatore e artefatto modificabili, mandato/checkpoint e ripresa locale; credito parziale, criticità e bozza recuperabile.
 
 Modalità disponibili:
 
@@ -84,6 +88,7 @@ Modalità disponibili:
 - Fluency - Diligence: 10 domande.
 - Mindset: 10 domande.
 - Practical Lab: 10 domande.
+- Laboratorio operativo: 2 casi, 6 decisioni E.
 
 La banca contiene 145 domande base: le 115 originarie, 10 slot AI moderne, 10 Agents e 10 Harness, ciascuno dei nuovi slot con tre varianti bilingui. Il test completo resta a 50 domande e include gli stessi 4 item Agents originari. Le 15 domande AG1–AG15 restano disponibili nella banca, ma il percorso Agents usa i dieci slot AW01–AW10 con copertura vincolata. Le sessioni ruotano tra forme A/B/C separatamente per lingua e modalità.
 
@@ -95,17 +100,25 @@ Harness seleziona sempre H01, H02×2, H03×2, H04×2, H05×2 e H06, tutti Q di l
 
 `Primi passi con l'AI` è un'esperienza di apprendimento, non un assessment comparabile con gli altri risultati. Usa tre forme da 10 domande e propone spiegazioni locali e letture facoltative. I link esterni si aprono soltanto dopo un click esplicito.
 
-Il completo mantiene 50 domande: 27 quiz/scenari, 21 dichiarazioni e 2 testi formativi. Nessun item attuale è un esercizio simulato. Le aree di risultato sono Fondamenti, Uso operativo e multimodale, Agenti e Harness; le coperture moderne ancora mancanti sono indicate.
+Il completo mantiene 50 domande: 27 quiz/scenari, 21 dichiarazioni e 2 testi formativi. Le sei decisioni E sono nel solo Laboratorio operativo, separato dal completo. Le aree di risultato sono Fondamenti, Uso operativo e multimodale, Agenti e Harness; le coperture moderne ancora mancanti sono indicate.
 
 Le percentuali usano soltanto quiz e scenari direttamente pertinenti, con peso uguale per obiettivo. Servono almeno 3 quesiti validi e 2 obiettivi per mostrare una percentuale d'area; le fasce editoriali richiedono almeno 6 quesiti e tutti gli obiettivi dell'area. Dichiarazioni e stime iniziali non modificano i quiz. I testi aperti offrono checklist formative senza scoring lessicale.
 
 I nuovi report non producono indice globale, quadrante, radar o profili Beginner/Curious/Expert/Champion. Nei tematici sono mostrati solo risultati sostenuti dalle evidenze presenti, con le altre aree dichiarate non esplorate. Regole, metadati, limiti e checklist di verifica sono in [docs/SCORING.md](docs/SCORING.md).
+
+### Laboratorio operativo (M21)
+
+Due casi, in IT/EN e A/B/C: verifica di un riepilogo (300/100/50 secondo la forma) e ripresa di un’attività agentica con ricevuta. Ogni decisione richiede conferma e Avanti. Puoi invertire verifica e calcolo, modificare l’artefatto e rivedere le azioni prima del report. La modifica del calcolo richiede una nuova conferma della consegna. Crediti e motivazioni appaiono al termine: 0/1/2 per decisione, massimo 6 per caso e 12 totali, separati da Q. E percentuale solo con entrambi i casi completi; un errore critico prevale sulla fascia, conservando i punti. Sono esiti simulati senza qualifica operativa.
+
+La banca conserva 145 quesiti Q/D/T e aggiunge sei unità E separate: 151 ID classificati, quattordici percorsi inclusi Primi passi. Durata laboratorio 12–16 minuti stimata, non misurata. [Varianti, regole e validazione](docs/OPERATIONAL_LAB_REVIEW.md).
 
 ### Privacy e dati
 
 L'applicazione è client-side. Dati facoltativi, risposte e report restano nel browser dell'utente tramite `localStorage`, salvo esportazione manuale dei report.
 
 Lo step iniziale consente di inserire nome, ruolo, area/team e autovalutazione delle skill. Tutti questi dati sono facoltativi. L'app non invia automaticamente dati a server esterni, non contiene analytics e non richiede account.
+
+Una sola bozza incompleta del laboratorio è conservata in `aiSkillOperationalLabDraft`, distinta dallo storico: versioni, lingua, forma, posizione, ordine e decisioni confermate; nessun dato del profilo o log dei tentativi. La home permette Riprendi/Elimina bozza; Interrompi confermato, completamento o Cancella dati locali la eliminano. Bozze incompatibili non vengono ricalcolate. Gli errori di salvataggio/cancellazione sono segnalati; da `file://` la persistenza varia per browser. I report schema 3/scoring 3.0 rimangono originali; i nuovi report schema 4/scoring 3.1 includono casi, effetti e criticità E senza migrare lo storico.
 
 ### Export e storico
 
@@ -129,11 +142,11 @@ L'icona a forma di casa accanto al selettore della lingua rimanda al sito princi
 
 ### Versioning
 
-- Versione app: `3.3.0`.
-- Tag Git: `v3.3.0`.
-- Banca domande: `2026.11-m20`.
-- Forma assessment: `1.6`.
-- Scoring: `3.0.0`; schema report `3`; blueprint `1.0.0`, invariati.
+- Versione app: `3.4.0`.
+- Tag Git: `v3.4.0`.
+- Banca domande: `2026.11-m21`.
+- Forma assessment: `1.7`.
+- Scoring: `3.1.0`; schema report `4`; blueprint `1.0.0`; casi/laboratorio `1.0.0`.
 - Banca Primi passi: `2026.07-first-steps-1`.
 - Forma Primi passi: `first-steps-1.0`.
 
@@ -141,15 +154,15 @@ I tag seguono il formato `vX.Y.Z`. Le modifiche patch aggiornano documentazione 
 
 ### Progettazione dell'aggiornamento 3.x
 
-La milestone 16 definisce il [blueprint delle competenze e della valutazione](ASSESSMENT_BLUEPRINT.md) `1.0.0`, approvato dal maintainer il `2026-11-25`, con la [mappa degli item](docs/ASSESSMENT_ITEM_MAP.md), inizialmente 115, ora 145. Il blueprint distingue conoscenze/scenari, pratiche dichiarate, esercizi simulati e testi con feedback; definisce copertura, rubriche, percorsi futuri e conservazione dei report 2.x senza ricalcolo. Matrice, soglie, tempi e terminologia sono scelte editoriali da verificare durante l'implementazione.
+La milestone 16 definisce il [blueprint delle competenze e della valutazione](ASSESSMENT_BLUEPRINT.md) `1.0.0`, approvato dal maintainer il `2026-11-25`, con la [mappa degli item](docs/ASSESSMENT_ITEM_MAP.md), inizialmente 115, ora 145 quesiti più sei decisioni E. Il blueprint distingue conoscenze/scenari, pratiche dichiarate, esercizi simulati e testi con feedback; definisce copertura, rubriche, percorsi futuri e conservazione dei report 2.x senza ricalcolo. Matrice, soglie, tempi e terminologia sono scelte editoriali da verificare durante l'implementazione.
 
 La milestone 17 introduce il nuovo modello di valutazione nella release `3.0.0`, approvata il `2026-11-25`, senza revisionare banca e forme. La milestone 18 aggiunge AI moderne nella release `3.1.0`, approvata dal maintainer il `2026-11-25`: il completo e i nove tematici preesistenti mantengono testi e composizioni. Il laboratorio e l'integrazione del completo seguono nelle milestone 19-22 di [PLAN.md](PLAN.md). [Documento di revisione](docs/MODERN_AI_REVIEW.md).
 
-La milestone 19 introduce la revisione Agents nella release `3.2.0`, approvata dal maintainer il `2026-11-25`. La milestone 20 introduce Harness nella release `3.3.0`, approvata dal maintainer il `2026-11-25`; il completo resta invariato e le milestone 21-22 non sono avviate.
+La milestone 19 introduce la revisione Agents nella release `3.2.0`, approvata dal maintainer il `2026-11-25`. La milestone 20 introduce Harness nella release `3.3.0`, approvata dal maintainer il `2026-11-25`; il completo resta invariato. La M21 implementa il Laboratorio operativo nella release `3.4.0`, approvata dal maintainer il `2026-11-25`; la M22 non è avviata.
 
 ### Verifica locale
 
-Eseguire `node tests/assessment.test.mjs`. Non servono installazioni; controlli e limiti del test senza browser sono in [docs/SCORING.md](docs/SCORING.md).
+Eseguire `node --test --test-isolation=none tests/assessment.test.mjs tests/operational-lab.test.mjs`. Non servono installazioni; controlli e limiti del test senza browser sono in [docs/SCORING.md](docs/SCORING.md).
 
 ### Riferimenti
 
@@ -176,11 +189,11 @@ Distribuito con licenza Apache 2.0. Vedi `LICENSE`.
 
 Interactive questionnaire in Italian and English exploring GenAI knowledge, judgment on scenarios, and self-reported practices.
 
-The assessment produces an evidence overview: knowledge/scenarios, self-reported practices, and text with feedback remain separate, with area coverage and limits. It is intended as an internal diagnostic tool that can evolve over time, not as a psychometrically validated test.
+The assessment produces an evidence overview: knowledge/scenarios, self-reported practices, text with feedback, and simulated outcomes remain separate, with area coverage and limits. It is intended as an internal diagnostic tool that can evolve over time, not as a psychometrically validated test.
 
-Current app version: `3.3.0`, milestone 20 approved by the maintainer on `2026-11-25`. Previous release: `3.2.0` (milestone 19).
+Current app version: `3.4.0`, milestone 21 approved by the maintainer on `2026-11-25`. Previous release: `3.3.0` (milestone 20).
 
-Reference tag: `v3.3.0`.
+Reference tag: `v3.4.0`.
 
 ### Development Note
 
@@ -196,6 +209,9 @@ This test was built through vibecoding, using AI as operational support for idea
 - `assets/modern-ai.js`: original Modern AI scenarios, IT/EN A/B/C variants, rationales, and sources.
 - `assets/agentic-workflows.js`: hypothetical Agents traces, IT/EN A/B/C variants, rationales, suggestions, and sources.
 - `assets/harness.js`: Harness scenarios, IT/EN A/B/C variants, rationales, suggestions, and sources.
+- `assets/operational-lab.js`: synthetic cases, stable choices, and pure lab rules.
+- `assets/lab-ui.js`: local simulator, recoverable draft, and E reporting.
+- `docs/OPERATIONAL_LAB_REVIEW.md`: IT/EN variants, rubrics, state, privacy, and M21 checklist.
 - `assets/app.js`: client-side navigation, history, legacy/learning dashboards, and export.
 - `assets/assessment.js`: pure 3.x scoring rules and item metadata.
 - `assets/report-ui.js`: IT/EN evidence overview.
@@ -224,7 +240,7 @@ The initial language follows the browser settings: Italian if the browser is in 
 
 The home page shows a carousel with the full test and thematic paths. The carousel advances automatically every 5 seconds and remains controllable through arrows, indicators, touch swipe, and the `Pause` button.
 
-During the test, single-choice questions advance automatically after selection. Multiple-choice questions and text tasks still require the `Next` button. The `Interrupt test` button cancels the current session after confirmation and returns to the home page without saving a report.
+During the test, single-choice questions advance automatically after selection. Multiple-choice questions and text tasks still require the `Next` button. Operational lab decisions always require explicit action confirmation followed by Next. The `Interrupt test` button cancels the current session after confirmation and returns to the home page without saving a report.
 
 In declarative questions, options remain unnumbered and are presented in random order to encourage reading the described behavior. The `Show details` control clarifies the differences between applying something with support, working independently case by case, using a stable method, and maintaining a verified, shareable practice.
 
@@ -240,6 +256,7 @@ The assessment combines self-evaluation, scenarios, technical quizzes, and pract
 - AI Fluency: Delegation, Description, Discernment, and Diligence.
 - Mindset: openness to experimentation, calibrated trust, and responsible adoption.
 - Practical Lab: hypothetical-choice questions and prompts with formative checklists; no simulated execution.
+- Operational lab: 2 synthetic cases and 6 E decisions, an editable calculation/artifact, checkpoint recovery, partial credit, critical findings, and a local draft.
 
 Available modes:
 
@@ -256,6 +273,7 @@ Available modes:
 - Fluency - Diligence: 10 questions.
 - Mindset: 10 questions.
 - Practical Lab: 10 questions.
+- Operational lab: 2 cases, 6 E decisions.
 
 The bank contains 145 base questions: the original 115 items, 10 Modern AI slots, 10 Agents slots, and 10 Harness slots, each new slot with three bilingual variants. The full test remains at 50 questions and includes the same 4 original Agents items. The 15 AG1–AG15 questions remain in the bank, but the Agents path uses the ten AW01–AW10 slots with fixed coverage. Sessions rotate across A/B/C forms separately by language and test mode.
 
@@ -267,17 +285,25 @@ Harness always selects H01, H02×2, H03×2, H04×2, H05×2, and H06, all level-S
 
 `AI First Steps` is a learning experience, not an assessment comparable with the other results. It uses three 10-question forms and provides local explanations and optional readings. External links open only after an explicit click.
 
-The full test keeps 50 questions: 27 knowledge/scenarios, 21 self-reports, and 2 formative texts. No current item is a simulated exercise. Result areas are Foundations, Operational and multimodal use, Agents, and Harnesses; missing modern coverage is identified.
+The full test keeps 50 questions: 27 knowledge/scenarios, 21 self-reports, and 2 formative texts. The six E decisions are in the separate Operational lab path. Result areas are Foundations, Operational and multimodal use, Agents, and Harnesses; missing modern coverage is identified.
 
 Percentages use only directly relevant questions/scenarios, with equal weight per objective. An area percentage requires at least 3 valid questions and 2 objectives; editorial bands require at least 6 questions and all area objectives. Self-reports and initial estimates do not change question results. Open text receives formative checklists without keyword scoring.
 
 New reports produce no global index, quadrant, radar, or Beginner/Curious/Expert/Champion profile. Thematic paths show only results supported by collected evidence, identifying other areas as not assessed. Rules, metadata, limitations, and the verification checklist are documented in [docs/SCORING.md](docs/SCORING.md).
+
+### Operational Lab (M21)
+
+Two cases, in IT/EN and A/B/C: summary verification (300/100/50 by form) and agentic recovery using a receipt. Every decision requires confirmation and Next. Verification and calculation may be swapped; artifacts and actions can be revised before reporting. Changing the calculation requires delivery to be confirmed again. Credits and feedback appear at completion: 0/1/2 per decision, up to 6 per case and 12 total, separate from Q. An E percentage requires both complete cases; critical errors override the band while retaining points. These are simulated outcomes without an operational qualification.
+
+The bank retains 145 Q/D/T questions plus six separate E units: 151 classified IDs, fourteen paths including First Steps. Estimated lab duration is 12–16 minutes, without empirical timing validation. [Variants, rules, and validation](docs/OPERATIONAL_LAB_REVIEW.md).
 
 ### Privacy And Data
 
 The application is fully client-side. Optional profile data, answers, and reports remain in the user's browser through `localStorage`, unless the user manually exports reports.
 
 The initial step can collect name, role, area/team, and self-assessed skills. All fields are optional. The app does not automatically send data to external servers, contains no analytics, and requires no account.
+
+One incomplete lab draft is retained in `aiSkillOperationalLabDraft`, separate from history: versions, language, form, position, order, and confirmed choices; no profile data or attempt log. The home page offers Resume/Discard; confirmed Interrupt, completion, or Clear local data deletes it. Incompatible drafts are not recalculated. Storage/removal failures are reported; `file://` persistence varies by browser. Schema 3/scoring 3.0 reports remain original; new schema 4/scoring 3.1 records add cases, effects, and E findings without migrating history.
 
 ### Export And History
 
@@ -301,11 +327,11 @@ The home icon next to the language selector links to the main website, [glaucosi
 
 ### Versioning
 
-- App version: `3.3.0`.
-- Git tag: `v3.3.0`.
-- Question bank: `2026.11-m20`.
-- Assessment form: `1.6`.
-- Scoring: `3.0.0`; report schema `3`; blueprint `1.0.0`, unchanged.
+- App version: `3.4.0`.
+- Git tag: `v3.4.0`.
+- Question bank: `2026.11-m21`.
+- Assessment form: `1.7`.
+- Scoring: `3.1.0`; report schema `4`; blueprint `1.0.0`; cases/lab `1.0.0`.
 - First Steps bank: `2026.07-first-steps-1`.
 - First Steps form: `first-steps-1.0`.
 
@@ -313,15 +339,15 @@ Tags follow the `vX.Y.Z` format. Patch releases cover documentation or small fix
 
 ### Planning The 3.x Update
 
-Milestone 16 defines the [competency and assessment blueprint](ASSESSMENT_BLUEPRINT.md) `1.0.0`, approved by the maintainer on `2026-11-25`, with an [item map](docs/ASSESSMENT_ITEM_MAP.md), originally 115 items, now 145. The blueprint separates knowledge/scenarios, self-reported practices, simulated exercises, and text with formative feedback; it defines coverage, rubrics, future paths, and preservation of 2.x reports without recalculation. The matrix, thresholds, timing, and terminology are editorial choices to verify during implementation.
+Milestone 16 defines the [competency and assessment blueprint](ASSESSMENT_BLUEPRINT.md) `1.0.0`, approved by the maintainer on `2026-11-25`, with an [item map](docs/ASSESSMENT_ITEM_MAP.md), originally 115 items, now 145 questions plus six E decisions. The blueprint separates knowledge/scenarios, self-reported practices, simulated exercises, and text with formative feedback; it defines coverage, rubrics, future paths, and preservation of 2.x reports without recalculation. The matrix, thresholds, timing, and terminology are editorial choices to verify during implementation.
 
 Milestone 17 introduces the new assessment model in release `3.0.0`, approved on `2026-11-25`, without revising the bank or forms. Milestone 18 adds Modern AI in release `3.1.0`, approved by the maintainer on `2026-11-25`: the full test and nine existing thematic paths retain their texts and compositions. The lab and full-test integration follow in milestones 19-22 of [PLAN.md](PLAN.md). [Review document](docs/MODERN_AI_REVIEW.md).
 
-Milestone 19 introduces the Agents revision in release `3.2.0`, approved by the maintainer on `2026-11-25`. Milestone 20 introduces Harness in release `3.3.0`, approved by the maintainer on `2026-11-25`; the full test remains unchanged and milestones 21-22 have not started.
+Milestone 19 introduces the Agents revision in release `3.2.0`, approved by the maintainer on `2026-11-25`. Milestone 20 introduces Harness in release `3.3.0`, approved by the maintainer on `2026-11-25`; the full test remains unchanged. M21 implements the Operational lab in release `3.4.0`, approved by the maintainer on `2026-11-25`; M22 has not started.
 
 ### Local Verification
 
-Run `node tests/assessment.test.mjs`. No installation is needed; checks and limitations of testing without a browser are documented in [docs/SCORING.md](docs/SCORING.md).
+Run `node --test --test-isolation=none tests/assessment.test.mjs tests/operational-lab.test.mjs`. No installation is needed; checks and limitations of testing without a browser are documented in [docs/SCORING.md](docs/SCORING.md).
 
 ### References
 

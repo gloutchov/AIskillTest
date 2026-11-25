@@ -4,7 +4,7 @@ Questo piano governa le prossime modifiche del progetto `AIskillTest`. Ogni mile
 
 Versione di partenza: `1.0.0`.
 
-Versione applicativa corrente: `3.3.0`, milestone 0-20 completate. La roadmap, il blueprint `1.0.0` e le milestone 17-20 sono stati approvati dal maintainer il `2026-11-25`. Release di riferimento: `v3.3.0`; la prossima attività è la milestone 21.
+Versione applicativa corrente: `3.4.0`, milestone 0-21 completate. La roadmap, il blueprint `1.0.0` e le milestone 17-21 sono stati approvati dal maintainer il `2026-11-25`. Release di riferimento: `v3.4.0`; la prossima attività è la milestone 22, non ancora avviata.
 
 ## Regole di release
 
@@ -785,7 +785,7 @@ Riferimenti tecnici iniziali consultati per la revisione; ricontrollare pertinen
   - risposta corretta più lunga in 0–4 casi su 10 per forma/lingua; carico medio progettato 91–103 parole per scenario, durata stimata 8–12 minuti, senza equivalenza o durata empiricamente validate
   - verifica visiva/interattiva non eseguita: Browser restituisce «No browser is available» e non elenca browser disponibili; desktop/mobile, tredici indicatori, download, console e traffico reali nella checklist manuale.
 - Validazione del maintainer: approvata il `2026-11-25`, con autorizzazione a commit, merge, push, tag e rimozione del branch. Gli esiti dettagliati della checklist manuale non sono stati riportati nella conversazione; resta documentato il limite della verifica dell'agente senza browser reale.
-- Stato: completata e approvata dal maintainer; release `v3.3.0`. M21 non avviata.
+- Stato: completata e approvata dal maintainer; release `v3.3.0`.
 
 ## Milestone 21 - Laboratorio operativo con simulazioni locali
 
@@ -813,7 +813,11 @@ Riferimenti tecnici iniziali consultati per la revisione; ricontrollare pertinen
   - nessuna risposta o traccia lascia il browser; apertura diretta, storico ed export funzionano senza account o server
 - Criterio di validazione del maintainer:
   - esecuzione di almeno un caso corretto e uno con errore critico, nelle due lingue e su desktop/mobile, con revisione del feedback.
-- Stato: pianificata; non avviata.
+- Stato: completata e approvata dal maintainer il `2026-11-25`; release `v3.4.0`, scoring `3.1.0`, schema `4`, banca `2026.11-m21`, forma `1.7`, casi `1.0.0`.
+- Validazione del maintainer: approvata con autorizzazione a commit, merge, push, tag e rimozione del branch. Gli esiti dettagliati della checklist manuale non sono stati riportati nella conversazione; resta documentato il limite della verifica dell’agente senza browser reale.
+- Risultato: due casi, sei decisioni E per forma IT/EN, calcolatore/artefatto, azioni locali e checkpoint, credito parziale e quattro criticità, bozza locale distinta dallo storico. Completo e percorsi precedenti invariati.
+- Verifica automatica: 50 controlli passati, 72 composizioni precedenti, 6 forme laboratorio e 6 didattiche; 864 configurazioni K1 e 216 K2.
+- Revisione: [varianti, contratto e checklist manuale](docs/OPERATIONAL_LAB_REVIEW.md). Browser non disponibile all’agente; l’approvazione del maintainer non riporta gli esiti dettagliati di desktop/mobile, download, console e traffico.
 
 ## Milestone 22 - Ribilanciamento del completo e validazione integrata
 
