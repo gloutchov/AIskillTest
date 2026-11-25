@@ -1,14 +1,14 @@
 # Mappa degli item attuali per il blueprint
 
 - Baseline: app `2.4.1`, banca `2026.07-m7`, forma `1.3`.
-- Revisione: `2026-11-25`; mappa dei 115 item approvata nella milestone 16, estesa con MA01–MA10 nella milestone 18 approvata dal maintainer; blueprint `1.0.0`.
+- Revisione: `2026-11-25`; mappa dei 115 item approvata nella milestone 16, estesa con MA01–MA10 nella M18 approvata; AW01–AW10 aggiunti nella M19 approvata dal maintainer; blueprint `1.0.0`.
 - Contratto e definizioni: [ASSESSMENT_BLUEPRINT.md](../ASSESSMENT_BLUEPRINT.md).
 
-La tabella classifica tutti i 125 `sourceId` di `baseQuestions`, ciascuno una sola volta. È implementata nei metadati JavaScript e non assegna retroattivamente punteggi ai report storici. Il widget attuale è mantenuto come informazione tecnica; il tipo di evidenza dipende dal compito. Tutti i multi/choice attuali sono Q, nessuno è un esercizio E.
+La tabella classifica tutti i 135 `sourceId` di `baseQuestions`, ciascuno una sola volta. È implementata nei metadati JavaScript e non assegna retroattivamente punteggi ai report storici. Il widget attuale è mantenuto come informazione tecnica; il tipo di evidenza dipende dal compito. Tutti i multi/choice attuali sono Q, nessuno è un esercizio E.
 
 Le righe valgono come mappa degli obiettivi comuni per le forme A/B/C e le traduzioni IT/EN. Gli override attuali richiedono revisione editoriale quando si riusano gli item: la classificazione non dimostra equivalenza di difficoltà. Non si assegna automaticamente un nuovo slot C01-C50 a un vecchio ID.
 
-Q = conoscenze/scenari; D = pratiche dichiarate; T = testo con feedback. Area e obiettivo sono primari; i tag non aggiungono punti. Il livello B/O/S descrive il compito, non la persona. La modalità attuale resta separata dall'area: AG12 e AG9/AG13, per esempio, restano nel pool Agents pur avendo area primaria H.
+Q = conoscenze/scenari; D = pratiche dichiarate; T = testo con feedback. Area e obiettivo sono primari; i tag non aggiungono punti. Il livello B/O/S descrive il compito, non la persona. La modalità attuale resta separata dall'area: AG12 e AG9/AG13, per esempio, sono item storici della sezione Agents con area primaria H; non entrano nel nuovo percorso vincolato della M19.
 
 | ID attuale | Widget | Evidenza | Area | Obiettivo | Allineamento | Livello | Tag secondari |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -137,15 +137,29 @@ Q = conoscenze/scenari; D = pratiche dichiarate; T = testo con feedback. Area e 
 | MA08 | scenario | Q | U | U06 | direct | O | discernment, verification |
 | MA09 | scenario | Q | U | U07 | direct | O | diligence, privacy |
 | MA10 | scenario | Q | U | U08 | direct | O | mindset, verification |
+| AW01 | scenario | Q | A | A01 | direct | O | delegation |
+| AW02 | scenario | Q | A | A01 | direct | S | delegation, verification |
+| AW03 | scenario | Q | A | A02 | direct | S | verification |
+| AW04 | scenario | Q | A | A02 | direct | S | verification |
+| AW05 | scenario | Q | A | A03 | direct | O | delegation, diligence |
+| AW06 | scenario | Q | A | A03 | direct | S | diligence, context |
+| AW07 | scenario | Q | A | A04 | direct | S | diligence, privacy |
+| AW08 | scenario | Q | A | A04 | direct | S | diligence, privacy |
+| AW09 | scenario | Q | A | A05 | direct | S | verification |
+| AW10 | scenario | Q | A | A05 | direct | S | verification, context |
 
 ## Controlli e copertura
 
 La classificazione dei 115 item preesistenti implementata nella milestone 17 resta invariata. La milestone 18 aggiunge dieci ID con varianti A/B/C IT/EN in `assets/modern-ai.js`, banca `2026.11-m18`, forma `1.4`. Il comando `node tests/assessment.test.mjs` verifica la corrispondenza fra mappa Markdown e metadati runtime. La classificazione è parte delle regole di scoring, documentate in [SCORING.md](SCORING.md).
 
-Totale corrente: **125 ID**; **66 Q, 55 D, 4 T, 0 E**. La baseline M16/M17 conteneva 115 ID (56 Q, 55 D, 4 T). Il completo attuale seleziona 50 ID: **27 Q, 21 D, 2 T, 0 E**. Le autovalutazioni facoltative iniziali sono escluse.
+Totale corrente: **135 ID**; **76 Q, 55 D, 4 T, 0 E**. La M18 conteneva 125 ID (66 Q, 55 D, 4 T). La baseline M16/M17 conteneva 115 ID (56 Q, 55 D, 4 T). Il completo attuale seleziona 50 ID: **27 Q, 21 D, 2 T, 0 E**. Le autovalutazioni facoltative iniziali sono escluse.
 
 AI moderne propone sempre MA01–MA10: **U01×2, U02×2, U03–U08×1**, tutti Q diretti di livello O. Questi slot non entrano nel completo o negli altri tematici prima della milestone 22. La scelta in uno scenario non dimostra esecuzione pratica. Testi bilingui, crediti e fonti sono in [MODERN_AI_REVIEW.md](MODERN_AI_REVIEW.md).
 
-Obiettivi senza item primari attuali: **H01, H03, H04, H05**. U02, U03 e U05 hanno ora Q dedicati in AI moderne, ma rimangono assenti dal completo. Alcuni sono richiamati indirettamente in altri quesiti: un richiamo non conta come copertura dedicata. A04 ha solo una dichiarazione (L9), quindi non ha ancora una prova Q dedicata. T10 è collegato a F06 solo come supporto storico (`supporting`): non verifica la scelta della famiglia di soluzione e non soddisfa la copertura dedicata di F06. Questi vuoti restanti motivano le milestone 19-22.
+Obiettivi senza item primari attuali: **H01, H03, H04, H05**. U02, U03 e U05 hanno ora Q dedicati in AI moderne, ma rimangono assenti dal completo. Alcuni sono richiamati indirettamente in altri quesiti: un richiamo non conta come copertura dedicata. A04 ha ora due Q dedicati nel percorso Agents (AW07/AW08); nel completo resta solo la dichiarazione L9. T10 è collegato a F06 solo come supporto storico (`supporting`): non verifica la scelta della famiglia di soluzione e non soddisfa la copertura dedicata di F06. Questi vuoti restanti motivano le milestone 20-22.
 
 Nella milestone 17 la mappa serve a separare le evidenze dei nuovi report. Le revisioni dei contenuti e la composizione finale seguono le milestone del piano; per cambiare testo, alternative, obiettivo o rubrica bisogna aggiornare le versioni pertinenti. Gli slot futuri e i relativi tipi di prova sono nella sezione 5 del blueprint.
+
+## Revisione del percorso Agents nella milestone 19
+
+AI Agents seleziona sempre AW01–AW10: due Q diretti per ciascun obiettivo A01–A05, con due compiti O e otto S. Le 15 domande AG1–AG15 restano nella banca per tracciabilità; AG1–AG4 continuano a entrare nel completo e non sono riscritti o riclassificati. Il percorso tematico non estrae più dieci domande dal vecchio pool di quindici. Ogni nuovo slot ha tre varianti IT/EN: [tracce, motivazioni e fonti](AGENTIC_WORKFLOWS_REVIEW.md). Banca `2026.11-m19`, forma `1.5`, app `3.2.0`; scoring `3.0.0` e blueprint `1.0.0` invariati. Stato: approvata dal maintainer il `2026-11-25`, release `v3.2.0`.

@@ -4,7 +4,7 @@ Questo piano governa le prossime modifiche del progetto `AIskillTest`. Ogni mile
 
 Versione di partenza: `1.0.0`.
 
-Versione applicativa corrente: `3.1.0`, milestone 0-18 completate. La roadmap, il blueprint `1.0.0` e le milestone 17-18 sono stati approvati dal maintainer il `2026-11-25`. Release di riferimento: `v3.1.0`; la prossima attività è la milestone 19.
+Versione applicativa corrente: `3.2.0`, milestone 0-19 completate. La roadmap, il blueprint `1.0.0` e le milestone 17-19 sono stati approvati dal maintainer il `2026-11-25`. Release di riferimento: `v3.2.0`; la prossima attività è la milestone 20.
 
 ## Regole di release
 
@@ -60,7 +60,7 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
 
 - Revisione del piano: `2026-11-24`.
 - Branch di questa proposta documentale: `plan/modern-ai-assessment-roadmap`.
-- Stato della roadmap: approvata dal maintainer il `2026-11-25` e integrata su `main`; milestone 16 completata con blueprint `1.0.0`; milestone 17 completata e approvata, release `v3.0.0`; milestone 18 completata e approvata, release `v3.1.0`; milestone 19-22 non avviate.
+- Stato della roadmap: approvata dal maintainer il `2026-11-25` e integrata su `main`; milestone 16 completata con blueprint `1.0.0`; milestone 17 completata e approvata, release `v3.0.0`; milestone 18 completata e approvata, release `v3.1.0`; milestone 19 completata e approvata, release `v3.2.0`; milestone 20-22 non avviate.
 - Finalità: mantenere il valore introduttivo del test e distinguere conoscenze, pratica dichiarata ed evidenze ottenute in esercizi simulati.
 - Destinatari: persone che iniziano, utilizzatori operativi e persone che configurano o supervisionano agenti; i livelli devono essere riconoscibili senza imporre un percorso lineare.
 
@@ -703,7 +703,7 @@ Riferimenti tecnici iniziali consultati per la revisione; ricontrollare pertinen
   - risposta corretta più lunga in meno della metà dei casi di ciascuna combinazione forma/lingua; equivalenza e durata restano scelte editoriali, non validate empiricamente
   - verifica visiva/interattiva non eseguita: runtime Browser senza browser disponibile; layout desktop/mobile, interazioni/download reali, console e traffico nella checklist manuale.
 - Validazione del maintainer: approvata il `2026-11-25`, con autorizzazione a commit, merge, push e release. Gli esiti dettagliati della checklist manuale non sono stati riportati nella conversazione; resta documentato il limite della verifica dell'agente senza browser reale.
-- Stato: completata e approvata dal maintainer; release `v3.1.0`. M19 non avviata.
+- Stato: completata e approvata dal maintainer; release `v3.1.0`. La M19 è descritta di seguito.
 
 ## Milestone 19 - Attività agentiche, supervisione e diagnosi dei workflow
 
@@ -729,7 +729,22 @@ Riferimenti tecnici iniziali consultati per la revisione; ricontrollare pertinen
   - il test completo conserva i conteggi previsti fino alla milestone 22
 - Criterio di validazione del maintainer:
   - revisione delle tracce e delle motivazioni delle alternative, con completamento IT/EN di casi corretti, parziali ed errati.
-- Stato: pianificata; non avviata.
+- Implementazione approvata (`2026-11-25`):
+  - app `3.2.0`, banca `2026.11-m19`, forme `1.5`; scoring `3.0.0`, schema `3`, blueprint `1.0.0` invariati
+  - nuovo asset statico `assets/agentic-workflows.js`: AW01–AW10 con tre varianti IT/EN per slot, due Q diretti per A01–A05, livelli 2 O e 8 S
+  - AI Agents seleziona sempre la matrice completa e non campiona più dieci domande dal pool AG1–AG15; i quindici item originari e AG1–AG4 nel completo restano invariati
+  - scelte motivate fra workflow, agente singolo e delega multipla; tool/argomenti/esiti, approvazioni proporzionate, eccezioni, prompt injection, dati, credenziali, log/memoria/rollback e diagnosi/stop
+  - contesti e tracce soltanto ipotetici: nessuno strumento eseguito, nessuna connessione AI, installazione o credenziale richiesta; risposte e storico restano locali
+  - motivazioni dopo il test e suggerimenti per gli obiettivi con scelte parziali/errate, salvati nel report e negli export senza ricalcolo all'apertura; otto fonti primarie ricontrollate con link facoltativi
+  - [revisione bilingue completa](docs/AGENTIC_WORKFLOWS_REVIEW.md), README, mappa, scoring, blueprint e note QA aggiornati; completo da 50, AI moderne, altri tematici e Primi passi conservati.
+- Verifiche eseguite:
+  - 30 controlli automatici passati, 66 composizioni assessment e 6 forme didattiche
+  - matrice e livelli, traduzioni/layout/crediti, risultati 100/50/0, assenze, suggerimenti deduplicati e originali nello storico, JSON/CSV, auto-advance/Indietro e bibliografia con adattatore DOM
+  - confronto con `main` `e28a0d2`: contenuti e metadati dei 125 item precedenti nelle sei forme, 60 composizioni non Agents e forme didattiche invariati
+  - risposta corretta più lunga in 1–3 casi su 10 per ciascuna forma/lingua; carico medio progettato 85–91 parole per scenario, durata stimata 8–12 minuti; nessuna equivalenza psicometrica o durata empirica dimostrata
+  - verifica visiva/interattiva non eseguita: il tentativo Browser restituisce «No browser is available»; desktop/mobile, download, console e traffico reali restano nella checklist manuale.
+- Validazione del maintainer: approvata il `2026-11-25`, con autorizzazione a commit, merge, push e release. Gli esiti dettagliati della checklist manuale non sono stati riportati nella conversazione; resta documentato il limite della verifica dell'agente senza browser reale.
+- Stato: completata e approvata dal maintainer; release `v3.2.0`. M20 non avviata.
 
 ## Milestone 20 - Harness, gestione del contesto e integrazioni
 

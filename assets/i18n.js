@@ -66,8 +66,8 @@ const AI_SKILL_I18N = {
       agents: {
         label: "AI Agents",
         shortLabel: "Agents",
-        description: "AI agents, tools, permissions, memory, human control, logs, and operational workflows.",
-        outputNote: "Thematic report on AI Agents, without a global profile."
+        description: "Workflows, one or multiple agents; tools, supervision, untrusted instructions, and trace diagnosis.",
+        outputNote: "Ten scenarios with fixed coverage; decision judgment without real execution."
       },
       description: {
         label: "Fluency - Description",

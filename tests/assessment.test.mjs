@@ -27,7 +27,7 @@ function runtime() {
         const button = node(`history-${match[1]}`); button.dataset.historyIndex = match[1]; return button;
       });
     }, documentElement: {} } });
-  for (const name of ["questions", "i18n", "learning", "modern-ai", "assessment", "report-ui"]) vm.runInContext(read(`assets/${name}.js`), context, { filename: name });
+  for (const name of ["questions", "i18n", "learning", "modern-ai", "agentic-workflows", "assessment", "report-ui"]) vm.runInContext(read(`assets/${name}.js`), context, { filename: name });
   const app = read("assets/app.js");
   const init = app.lastIndexOf("\n    bindLanguageSwitcher();");
   assert.ok(init > 0);
@@ -41,11 +41,11 @@ function runtime() {
   return { context, run, storage, node, timers, start: () => vm.runInContext(app.slice(init), context) };
 }
 
-test("mapping covers 125 items and matches the Markdown inventory", () => {
+test("mapping covers 135 items and matches the Markdown inventory", () => {
   const r = runtime();
   const rows = [...read("docs/ASSESSMENT_ITEM_MAP.md").matchAll(/^\| (\S+) \| (likert|knowledge|scenario|multi|choice|text) \| ([QDT]) \| ([FUAH]) \| ([FUAH]\d{2}) \| (direct|supporting) \| ([BOS]) \| (.+) \|$/gm)];
-  assert.equal(rows.length, 125);
-  assert.equal(r.run("bank.length"), 125);
+  assert.equal(rows.length, 135);
+  assert.equal(r.run("bank.length"), 135);
   for (const row of rows) {
     const mapped = plain(r.context.core.ITEM_MAP[row[1]]);
     assert.equal(mapped.evidenceType, row[3]); assert.equal(mapped.primaryArea, row[4]);
@@ -192,11 +192,11 @@ test("auto-advance remains reversible and requires explicit Next for multi/text"
   assert.equal(r.run("isAutoAdvanceQuestion(bank.find(q=>q.type==='multi'))"),false);assert.equal(r.run("isAutoAdvanceQuestion(bank.find(q=>q.type==='text'))"),false);
 });
 
-test("HTML loads local classic assets with consistent 3.1.0 cache keys", () => {
+test("HTML loads local classic assets with consistent 3.2.0 cache keys", () => {
   const html=read('ai_skill_test.html');const scripts=[...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map(m=>m[1]);
-  assert.deepEqual(scripts.map(s=>s.split('?')[0]),['assets/questions.js','assets/i18n.js','assets/learning.js','assets/modern-ai.js','assets/assessment.js','assets/report-ui.js','assets/app.js']);
-  for(const src of scripts){assert.ok(src.endsWith('?v=3.1.0'));assert.ok(fs.existsSync(path.join(root,src.split('?')[0])));}
-  assert.match(html,/Versione 3\.1\.0/);assert.doesNotMatch(html,/Champion|Expert|Indice 0-100/);
+  assert.deepEqual(scripts.map(s=>s.split('?')[0]),['assets/questions.js','assets/i18n.js','assets/learning.js','assets/modern-ai.js','assets/agentic-workflows.js','assets/assessment.js','assets/report-ui.js','assets/app.js']);
+  for(const src of scripts){assert.ok(src.endsWith('?v=3.2.0'));assert.ok(fs.existsSync(path.join(root,src.split('?')[0])));}
+  assert.match(html,/Versione 3\.2\.0/);assert.doesNotMatch(html,/Champion|Expert|Indice 0-100/);
 });
 
 test("browser startup bindings, optional empty data and completion execute with a minimal DOM adapter", () => {
@@ -274,11 +274,11 @@ test("Modern AI starts, returns to previous answers and saves complete bilingual
     r.run(`state.answers[questions[0].id]=choose(questions[0]);scheduleAutoAdvance(questions[0],0,state.answers[questions[0].id])`);
     assert.equal(r.timers.size,1);r.timers.values().next().value();assert.equal(r.run('state.index'),1);r.run('goPrev()');assert.equal(r.run('state.index'),0);assert.equal(r.run('state.answers[questions[0].id]===choose(questions[0])'),true);
     r.run(`state.answers=Object.fromEntries(questions.map(q=>[q.id,choose(q)]));finishAssessment()`);
-    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.1.0');assert.equal(report.meta.scoringVersion,'3.0.0');assert.equal(report.meta.reportSchemaVersion,3);assert.equal(report.meta.questionBankVersion,'2026.11-m18');assert.equal(report.meta.formVersion,'1.4');assert.equal(report.meta.testMode.id,'modern-ai');
+    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.2.0');assert.equal(report.meta.scoringVersion,'3.0.0');assert.equal(report.meta.reportSchemaVersion,3);assert.equal(report.meta.questionBankVersion,'2026.11-m19');assert.equal(report.meta.formVersion,'1.5');assert.equal(report.meta.testMode.id,'modern-ai');
     assert.deepEqual(JSON.parse(r.storage.get('aiSkillAssessmentHistory'))[0],report);
     for(const item of report.answers){assert.ok(item.question.includes('\n'));assert.equal(item.selectedRationales.length,1);assert.ok(item.sourceRefs.length>0);assert.ok(r.node('dashboard').innerHTML.includes(item.selectedRationales[0].replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;')));}
     r.run('downloadBlob=(content,name,type)=>{globalThis.download={content,name,type}};exportJson(state.latestReport)');assert.deepEqual(JSON.parse(r.context.download.content),report);
-    const rows=plain(r.context.core.csvRows(report));assert.ok(rows.some(row=>row[1]==='answers.0.selectedRationales.0'));assert.ok(rows.some(row=>row[1]==='answers.0.sourceRefs.0'));assert.equal(rows.find(row=>row[1]==='meta.assessmentVersion')[2],'3.1.0');
+    const rows=plain(r.context.core.csvRows(report));assert.ok(rows.some(row=>row[1]==='answers.0.selectedRationales.0'));assert.ok(rows.some(row=>row[1]==='answers.0.sourceRefs.0'));assert.equal(rows.find(row=>row[1]==='meta.assessmentVersion')[2],'3.2.0');
     const original=r.storage.get('aiSkillAssessmentHistory');r.run('loadLastReport()');assert.equal(r.storage.get('aiSkillAssessmentHistory'),original);
   }
 });
@@ -298,4 +298,76 @@ test("modern bibliography is bilingual, primary-source based and contains explic
   for(const source of sources){const url=new URL(source.url);assert.equal(url.protocol,'https:');assert.ok(['developers.openai.com','developers.google.com','aistudio.google.com','aifluencyframework.org'].includes(url.hostname));}
   for(const language of ['it','en']){r.context.language=language;r.run('state.language=language;applyBibliographyText()');assert.equal((r.node('modernAiSourcesList').innerHTML.match(/<a /g)||[]).length,12);assert.match(r.node('modernAiSourcesNote').textContent,/2026-11-25/);}
   assert.doesNotMatch(read('assets/modern-ai.js'),/\bfetch\s*\(|XMLHttpRequest|sendBeacon|<iframe|<img|<audio|<video/);
+});
+
+test("Agents always selects two direct Q per objective without legacy declarations or texts", () => {
+  const r=runtime();
+  const compositions=r.run(`(() => {const output=[];for(const language of ['it','en'])for(const form of FORM_IDS){state.language=language;const pool=language==='en'?buildEnglishQuestionForm(form):buildQuestionForm(form);const qs=questionsForMode([...pool,{...pool.find(q=>q.sourceId==='AW01'),sourceId:'EXTRA',id:'EXTRA'}],getModeById('agents'),true,form);output.push(qs.map(q=>({id:q.sourceId,...core.ITEM_MAP[q.sourceId]})));}return output;})()`);
+  for(const qs of compositions){
+    assert.equal(qs.length,10);assert.equal(new Set(qs.map(q=>q.id)).size,10);
+    for(const id of ['A01','A02','A03','A04','A05'])assert.equal(qs.filter(q=>q.objectiveId===id).length,2);
+    assert.ok(qs.every(q=>q.evidenceType==='Q'&&q.primaryArea==='A'&&q.objectiveAlignment==='direct'&&q.id.startsWith('AW')));
+    assert.equal(qs.filter(q=>q.taskLevel==='O').length,2);assert.equal(qs.filter(q=>q.taskLevel==='S').length,8);
+  }
+  assert.throws(()=>r.run(`questionsForMode(buildQuestionForm('A').filter(q=>q.sourceId!=='AW07'),getModeById('agents'))`),/Incomplete AI Agents coverage/);
+});
+
+test("all Agents translations retain form-specific choice layouts and post-test rationales", () => {
+  const r=runtime();
+  for(const form of ['A','B','C'])for(const language of ['it','en'])for(let slot=0;slot<10;slot++){
+    Object.assign(r.context,{form,language,slot});
+    const pair=r.run(`(() => {state.language=language;const expected=AGENTIC_WORKFLOWS.buildQuestion(slot,form,language);const actual=(language==='en'?buildEnglishQuestionForm(form):buildQuestionForm(form)).find(q=>q.sourceId===expected.id);return {expected,actual};})()`);
+    for(const key of ['context','text','hint','feedback','nextStep','options','sourceRefs'])assert.deepEqual(plain(pair.actual[key]),plain(pair.expected[key]),`${form}/${language}/${slot}/${key}`);
+    assert.deepEqual(plain(pair.actual.options.map(o=>o.score).sort()),[1,1,3,5]);
+    assert.ok(pair.actual.options.every(o=>o.text===''&&o.rationale.length>20));
+  }
+  assert.equal(r.run(`AGENTIC_WORKFLOWS.SLOTS.every((s,i)=>new Set(FORM_IDS.map(f=>AGENTIC_WORKFLOWS.FORMS[f][i].context[0])).size===3)`),true);
+});
+
+test("Agents reports distinguish reached coverage, partial credit, absent execution and missing evidence", () => {
+  const r=runtime();
+  for(const [score,value,band] of [[5,100,'strong'],[3,50,'developing'],[1,0,'review']]){
+    r.context.score=score;
+    const report=r.run(`(()=>{const qs=questionsForMode(buildQuestionForm('C'),getModeById('agents'));return core.evaluate(qs,Object.fromEntries(qs.map(q=>[q.id,q.options.findIndex(o=>o.score===score)])),{...meta,formId:'C',testMode:{id:'agents',questionCount:10}},'now')})()`);
+    assert.equal(report.results.knowledgeByArea.A.value,value);assert.equal(report.results.knowledgeByArea.A.status,'reached');assert.equal(report.results.knowledgeByArea.A.band,band);
+    for(const area of ['F','U','H'])assert.equal(report.results.knowledgeByArea[area].value,null);
+    for(const type of ['D','T','E'])assert.equal(report.coverage.byEvidence[type].proposed,0);
+    assert.equal(report.score,undefined);assert.equal(report.results.simulatedSummary.value,null);assert.equal(report.criticalFindings.length,0);
+    assert.equal(report.results.nextSteps?.length||0,score===5?0:5);
+  }
+  const data=r.run(`(()=>{const qs=questionsForMode(buildQuestionForm('A'),getModeById('agents'));const m={...meta,testMode:{id:'agents',questionCount:10}};const answers=Object.fromEntries(qs.map(q=>[q.id,choose(q)]));const wrong={...answers,[qs[0].id]:choose(qs[0],false)};delete answers[qs[6].id];return {missing:core.evaluate(qs,answers,m,'now'),wrong:core.evaluate(qs,wrong,m,'now')};})()`);
+  assert.equal(data.wrong.results.knowledgeByArea.A.value,90);assert.equal(data.wrong.results.nextSteps.length,1);assert.equal(data.wrong.results.nextSteps[0].objectiveId,'A01');
+  assert.equal(data.missing.results.knowledgeByArea.A.status,'partial');assert.equal(data.missing.results.knowledgeByArea.A.band,null);assert.equal(data.missing.results.nextSteps,undefined);
+  r.context.sample=plain(data.wrong);
+  r.run(`sample.results.nextSteps=[null,{},'unknown',{objectiveId:'A01',text:'<script>unsafe</script>'}]`);
+  const original=JSON.stringify(r.context.sample);
+  r.run('renderDashboardWithoutSaving(sample)');
+  assert.match(r.node('dashboard').innerHTML,/&lt;script&gt;unsafe&lt;\/script&gt;/);assert.doesNotMatch(r.node('dashboard').innerHTML,/<script>unsafe/);
+  assert.equal(JSON.stringify(r.context.sample),original);
+});
+
+test("Agents completion, navigation, frozen recommendations, history and exports work in all six forms", () => {
+  for(const language of ['it','en'])for(const form of ['A','B','C']){
+    const r=runtime();Object.assign(r.context,{language,form});
+    r.run(`state.language=language;state.selectedModeId='agents';writeFormCycle(language,'agents',{remaining:[form],last:null});startAssessment()`);
+    assert.equal(r.run('questions.length'),10);assert.equal(r.node('questionContext').hidden,false);
+    r.run(`state.answers[questions[0].id]=choose(questions[0],false);scheduleAutoAdvance(questions[0],0,state.answers[questions[0].id])`);
+    assert.equal(r.timers.size,1);r.timers.values().next().value();assert.equal(r.run('state.index'),1);r.run('goPrev()');assert.equal(r.run('state.index'),0);assert.equal(r.run('state.answers[questions[0].id]===choose(questions[0],false)'),true);
+    r.run(`state.answers=Object.fromEntries(questions.map(q=>[q.id,q.options.findIndex(o=>o.score===3)]));finishAssessment()`);
+    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.2.0');assert.equal(report.meta.questionBankVersion,'2026.11-m19');assert.equal(report.meta.formVersion,'1.5');assert.equal(report.meta.scoringVersion,'3.0.0');assert.equal(report.meta.reportSchemaVersion,3);assert.equal(report.meta.testMode.id,'agents');assert.equal(report.meta.formId,form);assert.equal(report.meta.language,language);
+    assert.equal(report.results.nextSteps.length,5);assert.ok(report.answers.every(q=>q.selectedRationales.length===1&&q.question.includes('\n')&&typeof q.nextStep==='string'));
+    assert.match(r.node('dashboard').innerHTML,language==='it'?/Per approfondire le scelte/:/Develop your decisions/);
+    r.run('downloadBlob=(content,name,type)=>{globalThis.download={content,name,type}};exportJson(state.latestReport)');assert.deepEqual(JSON.parse(r.context.download.content),report);
+    const rows=plain(r.context.core.csvRows(report));for(const field of ['answers.0.nextStep','answers.0.selectedRationales.0','answers.0.sourceRefs.0','results.nextSteps.0.text'])assert.ok(rows.some(row=>row[1]===field));
+    const raw=r.storage.get('aiSkillAssessmentHistory');r.run(`AGENTIC_WORKFLOWS.NEXT_STEPS.A01[0]='CHANGED LIVE BANK';loadLastReport()`);assert.equal(r.storage.get('aiSkillAssessmentHistory'),raw);assert.deepEqual(plain(r.run('state.latestReport')),report);assert.doesNotMatch(r.node('dashboard').innerHTML,/CHANGED LIVE BANK/);
+  }
+});
+
+test("Agents sources load as explicit bilingual links and old full-test Agents items remain intact", () => {
+  const r=runtime();const sources=plain(r.run('AGENTIC_WORKFLOWS.SOURCES'));assert.equal(sources.length,8);assert.equal(new Set(sources.map(s=>s.id)).size,8);
+  for(const source of sources){const url=new URL(source.url);assert.equal(url.protocol,'https:');assert.ok(['www.anthropic.com','developers.openai.com','modelcontextprotocol.io'].includes(url.hostname));}
+  for(const language of ['it','en']){r.context.language=language;r.run('state.language=language;applyBibliographyText()');assert.equal((r.node('agenticSourcesList').innerHTML.match(/<a /g)||[]).length,8);assert.match(r.node('agenticSourcesNote').textContent,/2026-11-25/);}
+  const report=r.run('full()');assert.deepEqual(plain(report.answers.filter(q=>q.section==='AI Agents').map(q=>q.sourceId)),['AG1','AG2','AG3','AG4']);assert.equal(report.results.nextSteps,undefined);
+  assert.equal(r.run(`bank.filter(q=>/^AG[0-9]+$/.test(q.id)).length`),15);
+  assert.doesNotMatch(read('assets/agentic-workflows.js'),/\bfetch\s*\(|XMLHttpRequest|sendBeacon|<iframe|<img|<audio|<video/);
 });

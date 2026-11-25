@@ -82,7 +82,7 @@ function cloneQuestionData(value) {
       return selected;
     }
 
-    const APP_VERSION = "3.1.0";
+    const APP_VERSION = "3.2.0";
     const DEFAULT_TEST_MODE_ID = "complete";
     const COMPLETE_TEST_COUNT = 50;
     const TOPIC_TEST_COUNT = 10;
@@ -168,8 +168,8 @@ function cloneQuestionData(value) {
         type: "topic",
         section: "AI Agents",
         questionLimit: TOPIC_TEST_COUNT,
-        description: "Agenti AI, strumenti, permessi, memoria, controllo umano, log e workflow operativo.",
-        outputNote: "Report tematico sugli AI Agents, senza profilo globale."
+        description: "Workflow, agente singolo o più agenti; strumenti, supervisione, istruzioni non fidate e diagnosi delle tracce.",
+        outputNote: "Dieci scenari con copertura fissa; giudizio sulle decisioni, senza esecuzioni reali."
       },
       {
         id: "delegation",
@@ -254,8 +254,8 @@ function cloneQuestionData(value) {
       },
       "AI Agents": {
         title: "AI Agents",
-        text: "Misura la comprensione di agenti AI, strumenti, permessi, memoria, controllo umano e criteri di arresto nei workflow operativi.",
-        items: ["Agente vs chatbot", "Tool e permessi", "Human-in-the-loop", "Log, stato e rollback"]
+        text: "Esplora le decisioni su processi agentici, tool, supervisione e diagnosi. Mandati e tracce sono ipotetici: non si osserva esecuzione pratica.",
+        items: ["Workflow e coordinamento", "Argomenti ed esiti dei tool", "Mandato e istruzioni non fidate", "Stop, escalation e rollback"]
       },
       "Fluency · Delegation": {
         title: "Delegation",
@@ -655,8 +655,8 @@ function cloneQuestionData(value) {
         },
         "AI Agents": {
           title: "AI Agents",
-          text: "Measures understanding of AI agents, tools, permissions, memory, human control, and stop criteria in operational workflows.",
-          items: ["Agent vs chatbot", "Tools and permissions", "Human-in-the-loop", "Logs, state, and rollback"]
+          text: "Explores decisions on agentic processes, tools, supervision, and diagnosis. Scopes and traces are hypothetical: practical execution is not observed.",
+          items: ["Workflows and coordination", "Tool arguments and outcomes", "Scope and untrusted instructions", "Stopping, escalation, and rollback"]
         },
         "Fluency · Delegation": {
           title: "Delegation",
@@ -718,6 +718,7 @@ function cloneQuestionData(value) {
       if (typeof translation.context === "string") localized.context = translation.context;
       localized.hint = translation.hint || question.hint;
       localized.feedback = translation.feedback || question.feedback;
+      if (typeof translation.nextStep === "string") localized.nextStep = translation.nextStep;
       if (translation.rubric) localized.rubric = translation.rubric;
       if (Array.isArray(translation.options) && Array.isArray(question.options)) {
         localized.options = question.options.map((option, index) => ({
@@ -737,8 +738,8 @@ function cloneQuestionData(value) {
     function buildEnglishQuestionForm(formId) {
       return localizeQuestions(baseQuestions.map(baseQuestion => ({
         ...cloneQuestionData(baseQuestion),
-        // Modern AI has form-specific option layouts; legacy English layouts stay independent.
-        ...(baseQuestion.section === "AI moderne" ? cloneQuestionData(formOverrides[formId]?.[baseQuestion.id] || {}) : {}),
+        // New scenarios have form-specific layouts; legacy English layouts stay independent.
+        ...(baseQuestion.section === "AI moderne" || baseQuestion.pathId === "agents" ? cloneQuestionData(formOverrides[formId]?.[baseQuestion.id] || {}) : {}),
         sourceId: baseQuestion.id,
         formId,
         id: `${formId}_${baseQuestion.id}`
@@ -828,6 +829,14 @@ function cloneQuestionData(value) {
         ? "Primary sources reviewed on " + MODERN_AI.REVIEW_DATE + ". Scenarios are original editorial choices, not validated tests. Links open only on an explicit click."
         : "Fonti primarie ricontrollate il " + MODERN_AI.REVIEW_DATE + ". Gli scenari sono scelte editoriali originali, non test validati. I link si aprono solo con un click esplicito.";
       if (modernList) modernList.innerHTML = MODERN_AI.SOURCES.map(source => `<article class="bibliography-item"><div class="bibliography-source">${escapeHtml(source.id)}</div><h3>${escapeHtml(source.title)}</h3><p>${escapeHtml(source.note[isEnglish() ? 1 : 0])}</p><a class="bibliography-link" href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${isEnglish() ? "Open source ↗" : "Apri la fonte ↗"}</a></article>`).join("");
+      const agentsTitle = $("agenticSourcesTitle");
+      const agentsNote = $("agenticSourcesNote");
+      const agentsList = $("agenticSourcesList");
+      if (agentsTitle) agentsTitle.textContent = isEnglish() ? "AI Agents: processes, supervision, and diagnosis" : "AI Agents: processi, supervisione e diagnosi";
+      if (agentsNote) agentsNote.textContent = isEnglish()
+        ? `Primary sources reviewed on ${AGENTIC_WORKFLOWS.REVIEW_DATE}. Traces and rubrics are original editorial scenarios, not validated measures of practical execution. Links open on a click.`
+        : `Fonti primarie ricontrollate il ${AGENTIC_WORKFLOWS.REVIEW_DATE}. Tracce e rubriche sono scenari editoriali originali, non misure validate di esecuzione pratica. Link aperti su click.`;
+      if (agentsList) agentsList.innerHTML = AGENTIC_WORKFLOWS.SOURCES.map(source => `<article class="bibliography-item"><div class="bibliography-source">${escapeHtml(source.id)}</div><h3>${escapeHtml(source.title)}</h3><p>${escapeHtml(source.note[isEnglish() ? 1 : 0])}</p><a class="bibliography-link" href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${isEnglish() ? "Open source ↗" : "Apri la fonte ↗"}</a></article>`).join("");
     }
 
     function applyLanguageChrome() {
@@ -1063,9 +1072,10 @@ function cloneQuestionData(value) {
     function questionsForMode(sourceQuestions, mode, randomize = false, formId = null) {
       const selectedMode = mode || getModeById(DEFAULT_TEST_MODE_ID);
       const pool = modePoolQuestions(sourceQuestions, selectedMode);
-      if (selectedMode.id === "modern-ai") {
-        const selected = MODERN_AI.SLOTS.map(slot => pool.find(question => (question.sourceId || question.id) === slot.id));
-        if (selected.some(question => !question)) throw new Error("Incomplete Modern AI coverage");
+      if (selectedMode.id === "modern-ai" || selectedMode.id === "agents") {
+        const slots = selectedMode.id === "agents" ? AGENTIC_WORKFLOWS.SLOTS : MODERN_AI.SLOTS;
+        const selected = slots.map(slot => pool.find(question => (question.sourceId || question.id) === slot.id));
+        if (selected.some(question => !question)) throw new Error(selectedMode.id === "agents" ? "Incomplete AI Agents coverage" : "Incomplete Modern AI coverage");
         return randomize ? shuffledValues(selected) : selected;
       }
       const limit = selectedMode.questionLimit || pool.length;
@@ -1083,7 +1093,7 @@ function cloneQuestionData(value) {
     }
 
     function modeDuration(mode) {
-      if (mode.id === "modern-ai") return isEnglish() ? "8-12 minutes (estimate)" : "8-12 minuti (stima)";
+      if (mode.id === "modern-ai" || mode.id === "agents") return isEnglish() ? "8-12 minutes (estimate)" : "8-12 minuti (stima)";
       if (isEnglish()) return mode.id === DEFAULT_TEST_MODE_ID ? "12-15 minutes" : "3-5 minutes";
       return mode.id === DEFAULT_TEST_MODE_ID ? "12-15 minuti" : "3-5 minuti";
     }

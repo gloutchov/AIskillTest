@@ -28,7 +28,7 @@ function reportItem(item) {
     ${item.feedback ? `<p>${escapeHtml(item.feedback)}</p>` : ""}
     ${Array.isArray(item.selectedRationales) ? item.selectedRationales.filter(reason => typeof reason === "string").map(reason => `<p><strong>${reportText("La tua scelta", "Your choice")}:</strong> ${escapeHtml(reason)}</p>`).join("") : ""}
     ${Array.isArray(item.sourceRefs) ? `<p class="small">${item.sourceRefs.map(id => {
-      const source = MODERN_AI.SOURCES.find(source => source.id === id);
+      const source = [...MODERN_AI.SOURCES, ...AGENTIC_WORKFLOWS.SOURCES].find(source => source.id === id);
       return source ? `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.title)}</a>` : escapeHtml(id);
     }).join(" · ")}</p>` : ""}
     ${selection?.omitted?.length ? `<p><strong>${reportText("Azioni utili non selezionate", "Useful actions not selected")}:</strong> ${escapeHtml(selection.omitted.join("; "))}</p>` : ""}
@@ -63,6 +63,7 @@ function renderEvidenceDashboard(report) {
   const self = meta.selfAssessment || {};
   const selfLabels = { overall: reportText("Stima complessiva", "Overall estimate"), literacy: "Literacy", fluency: "Fluency", mindset: "Mindset" };
   const selfEntries = Object.entries(selfLabels).filter(([key]) => typeof self[key] === "number" && Number.isFinite(self[key]));
+  const nextSteps = Array.isArray(results.nextSteps) ? results.nextSteps.filter(step => step && typeof step.objectiveId === "string" && typeof step.text === "string") : [];
   const counts = ["Q", "D", "T", "E"].map(type => `<article class="metric-card"><span>${evidenceLabel(type)}</span><strong>${coverage.byEvidence[type].proposed}</strong><span>${coverage.byEvidence[type].valid} ${reportText("risposte valide", "valid responses")}</span></article>`).join("");
   $("dashboard").innerHTML = `${reportActions()}<section class="card evidence-intro"><p class="kicker">${reportText("Risultati dell'assessment", "Assessment results")}</p>
     <h2>${reportText("Quadro delle evidenze", "Evidence overview")}</h2>
@@ -74,6 +75,7 @@ function renderEvidenceDashboard(report) {
     <section class="evidence-section"><h2>${evidenceLabel("Q")}</h2><p>${reportText("Percentuali solo con almeno 3 quesiti e 2 obiettivi. Ogni obiettivo pesa uguale nella propria area; gli item di solo supporto sono esclusi. Le scelte editoriali di copertura non sono soglie psicometriche.", "Percentages require at least 3 questions and 2 objectives. Objectives carry equal weight within each area; supporting items are excluded. Editorial coverage choices are not psychometric thresholds.")}</p>
       <div class="grid-2 evidence-areas">${areaCards}</div>
       ${absentAreas.length ? `<p class="evidence-note"><strong>${reportText("Aree non esplorate", "Areas not assessed")}:</strong> ${escapeHtml(absentAreas.map(area => ASSESSMENT_V3.label(ASSESSMENT_V3.AREA_LABELS[area], currentLanguage())).join("; "))}. ${reportText("L'assenza non equivale a un punteggio zero.", "Absence does not mean a zero score.")}</p>` : ""}</section>
+    ${nextSteps.length ? `<section class="card evidence-section"><h2>${reportText("Per approfondire le scelte", "Develop your decisions")}</h2><p>${reportText("Spunti sugli obiettivi con almeno una scelta parziale o da rivedere. Sono attività suggerite, non prove già svolte.", "Suggestions for objectives with at least one partial or incorrect choice. These are suggested activities, not completed exercises.")}</p><ul>${nextSteps.map(step => `<li><strong>${escapeHtml(objectiveLabel(step.objectiveId))}:</strong> ${escapeHtml(step.text)}</li>`).join("")}</ul></section>` : ""}
     <section class="card evidence-section"><h2>${evidenceLabel("D")}</h2><p>${reportText("Descrivono ciò che dichiari di fare; non aumentano il risultato dei quiz e non dimostrano un'esecuzione. Una dichiarazione alta o bassa non è un voto di merito.", "These describe what you report doing; they do not increase question results or demonstrate execution. A high or low self-report is not a performance grade.")}</p>
       ${results.declaredContrasts.length ? `<p class="evidence-note">${reportText("Hai dichiarato un metodo stabile su obiettivi in cui alcune risposte ai quesiti sono da rivedere. Prova un esercizio guidato su:", "You reported a stable method on objectives where some question answers need review. Try a guided exercise on:")} ${escapeHtml(results.declaredContrasts.map(objectiveLabel).join("; "))}.</p>` : ""}
       ${declarations ? `<details><summary>${reportText("Leggi le dichiarazioni", "Read self-reports")} (${results.declaredPractices.length})</summary>${declarations}</details>` : `<p>${reportText("Nessun item dichiarativo in questo percorso.", "No self-report items in this path.")}</p>`}

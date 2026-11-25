@@ -161,7 +161,17 @@ const ASSESSMENT_V3 = (() => {
     "MA07": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U05","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["delegation","privacy"]},
     "MA08": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U06","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["discernment","verification"]},
     "MA09": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U07","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["diligence","privacy"]},
-    "MA10": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U08","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["mindset","verification"]}
+    "MA10": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U08","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["mindset","verification"]},
+    "AW01": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A01","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["delegation"]},
+    "AW02": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A01","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["delegation","verification"]},
+    "AW03": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A02","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["verification"]},
+    "AW04": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A02","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["verification"]},
+    "AW05": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A03","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["delegation","diligence"]},
+    "AW06": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A03","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["diligence","context"]},
+    "AW07": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A04","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["diligence","privacy"]},
+    "AW08": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A04","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["diligence","privacy"]},
+    "AW09": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A05","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["verification"]},
+    "AW10": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A05","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["verification","context"]}
   };
   const isRecord = value => value !== null && typeof value === "object" && !Array.isArray(value);
   const mean = values => values.reduce((sum, value) => sum + value, 0) / values.length;
@@ -220,6 +230,7 @@ const ASSESSMENT_V3 = (() => {
     const rationales = selected.map(option => option.rationale).filter(value => typeof value === "string" && value);
     if (rationales.length) item.selectedRationales = rationales;
     if (Array.isArray(question.sourceRefs)) item.sourceRefs = [...question.sourceRefs];
+    if (typeof question.nextStep === "string") item.nextStep = question.nextStep;
     if (classification.evidenceType === "D" && status === "valid") {
       const declared = options.find(option => option.value === Number(raw));
       item.answer = declared?.title || String(raw);
@@ -292,6 +303,11 @@ const ASSESSMENT_V3 = (() => {
     const items = questions.map(question => itemResult(question, answers[question.id], meta));
     meta.comparisonKey = comparisonKey(meta, items);
     const aggregation = aggregate(items, meta.testMode?.questionCount ?? questions.length);
+    const nextSteps = new Map();
+    for (const item of items) {
+      if (item.nextStep && typeof item.credit === "number" && item.credit < 1) nextSteps.set(item.objectiveId, { objectiveId: item.objectiveId, text: item.nextStep });
+    }
+    if (nextSteps.size) aggregation.results.nextSteps = [...nextSteps.values()];
     return { meta, profile: label(["Quadro delle evidenze", "Evidence overview"], meta.language), answers: items, ...aggregation, criticalFindings: [] };
   }
 
