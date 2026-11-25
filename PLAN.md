@@ -4,7 +4,7 @@ Questo piano governa le prossime modifiche del progetto `AIskillTest`. Ogni mile
 
 Versione di partenza: `1.0.0`.
 
-Versione applicativa corrente: `2.4.1`, milestone 0-15 completate. Le milestone 16-22 costituiscono la proposta di evoluzione descritta sotto; la loro pianificazione non modifica la versione pubblicata.
+Versione applicativa corrente: `2.4.1`, milestone 0-16 completate. La roadmap delle milestone 16-22 e il blueprint `1.0.0` della milestone 16 sono stati approvati dal maintainer il `2026-11-25`. La milestone 17 è la prossima attività; nessuna modifica applicativa della serie 3.x è stata avviata.
 
 ## Regole di release
 
@@ -60,7 +60,7 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
 
 - Revisione del piano: `2026-11-24`.
 - Branch di questa proposta documentale: `plan/modern-ai-assessment-roadmap`.
-- Stato della proposta: pronta per validazione del maintainer; nessuna milestone applicativa avviata.
+- Stato della roadmap: approvata dal maintainer il `2026-11-25` e integrata su `main`; milestone 16 completata e approvata con blueprint `1.0.0`; milestone 17 pianificata, nessuna milestone applicativa avviata.
 - Finalità: mantenere il valore introduttivo del test e distinguere conoscenze, pratica dichiarata ed evidenze ottenute in esercizi simulati.
 - Destinatari: persone che iniziano, utilizzatori operativi e persone che configurano o supervisionano agenti; i livelli devono essere riconoscibili senza imporre un percorso lineare.
 
@@ -610,7 +610,22 @@ Riferimenti tecnici iniziali consultati per la revisione; ricontrollare pertinen
   - il blueprint spiega come evitare i due casi limite dello scoring rilevati nella revisione
 - Criterio di validazione del maintainer:
   - approvazione di destinatari, matrice, rubriche, significato dei risultati e regole sullo storico prima della milestone 17.
-- Stato: pianificata; da avviare dopo validazione della roadmap.
+- Documenti prodotti:
+  - [ASSESSMENT_BLUEPRINT.md](ASSESSMENT_BLUEPRINT.md): blueprint `1.0.0` approvato, con 25 obiettivi in quattro aree, tipologie di evidenza, 50 slot, percorsi, casi simulati, scoring e regole sullo storico.
+  - [docs/ASSESSMENT_ITEM_MAP.md](docs/ASSESSMENT_ITEM_MAP.md): classificazione esaustiva dei 115 item della banca attuale.
+  - README IT/EN: collegamenti ai documenti e distinzione fra comportamento pubblicato e proposta futura.
+- Decisioni approvate dal maintainer il `2026-11-25`:
+  - completo target con 12 unità Fondamenti, 16 Uso operativo e multimodale, 12 Agenti e 10 Harness
+  - 36 quiz/scenari, 6 dichiarazioni, 2 testi formativi e 6 decisioni in due simulazioni; durata editoriale stimata 40-55 minuti
+  - risultati separati per evidenza, senza indice globale né profili Expert/Champion nei nuovi report
+  - storico 2.x conservato senza ricalcolo o confronti diretti con 3.x
+- Verifiche del `2026-11-25`:
+  - controllati 115 ID senza duplicati, 25 obiettivi, 50 slot, quote, tabelle e collegamenti locali; ricontrollate 18 fonti primarie
+  - eseguita la logica locale, senza DOM e con storage sintetico, su 60 composizioni correnti (10 modalità assessment, IT/EN, A/B/C): conteggi 50/10 confermati
+  - riprodotti i due limiti legacy: Agents minimo con 92/100 e Champion; elenco di parole chiave con 5/5 in P_DS_1
+  - verifica visiva/interattiva non eseguita: nessun browser disponibile nel runtime; nessun cambiamento a file applicativi, versioni o Primi passi
+  - dettagli e limiti della verifica nella sezione 12 del blueprint
+- Stato: completata e approvata dal maintainer il `2026-11-25`; blueprint `1.0.0`, nessun bump applicativo e nessun tag. La milestone 17 è pronta per l'avvio su un branch dedicato.
 
 ## Milestone 17 - Scoring trasparente, profili e compatibilità dello storico
 

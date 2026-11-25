@@ -25,6 +25,9 @@ Questo test è stato realizzato in vibecoding, usando l'AI come supporto operati
 - `aiskilltest_icon.png`: icona del sito e dei collegamenti salvati su dispositivo.
 - `scripts/build-learning-data.mjs`: genera l'asset didattico dal blueprint senza dipendenze.
 - `LEARNING_PATH.md`: blueprint bilingue del percorso introduttivo pianificato, con domande, unità didattiche e fonti.
+- `ASSESSMENT_BLUEPRINT.md`: blueprint approvato della milestone 16 per competenze, prove, risultati e compatibilità dello storico della futura serie 3.x.
+- `docs/ASSESSMENT_ITEM_MAP.md`: classificazione dei 115 item attuali per tipo di evidenza, area e obiettivo.
+- `PLAN.md`: roadmap, stato delle milestone e criteri di validazione e release.
 - `index.html`: pagina di ingresso che rimanda al test.
 - `LICENSE`: licenza Apache 2.0.
 
@@ -112,13 +115,19 @@ L'icona a forma di casa accanto al selettore della lingua rimanda al sito princi
 
 I tag seguono il formato `vX.Y.Z`. Le modifiche patch aggiornano documentazione o correzioni piccole; le modifiche minor o major introducono cambiamenti funzionali più ampi.
 
+### Progettazione dell'aggiornamento 3.x
+
+La milestone 16 definisce il [blueprint delle competenze e della valutazione](ASSESSMENT_BLUEPRINT.md) `1.0.0`, approvato dal maintainer il `2026-11-25`, con la [mappa dei 115 item attuali](docs/ASSESSMENT_ITEM_MAP.md). Il blueprint distingue conoscenze/scenari, pratiche dichiarate, esercizi simulati e testi con feedback; definisce copertura, rubriche, percorsi futuri e conservazione dei report 2.x senza ricalcolo. Matrice, soglie, tempi e terminologia sono scelte editoriali da verificare durante l'implementazione.
+
+Questi documenti descrivono lavoro futuro: l'app pubblicata resta alla versione `2.4.1`, con modalità, scoring e trattamento dei dati descritti sopra. L'implementazione è suddivisa nelle milestone 17-22 di [PLAN.md](PLAN.md).
+
 ### Riferimenti
 
 - Datapizza, [AI Adoption Assessment: misurare la GenAI in azienda](https://datapizza.tech/it/blog/ai-adoption-assessment-misurare-la-genai-in-azienda)
 - Davis, [Technology Acceptance Model](https://www.jstor.org/stable/249008)
 - Venkatesh et al., [Unified Theory of Acceptance and Use of Technology](https://www.researchgate.net/publication/220259897_User_Acceptance_of_Information_Technology_Toward_a_Unified_View)
 - Bandura, [Guide for Constructing Self-Efficacy Scales](https://www.emerald.com/books/edited-volume/18068/chapter-abstract/101339715/Guide-for-Constructing-Self-Efficacy-Scales)
-- Southworth et al., [AI Fluency Framework](https://aifluencyframework.org/)
+- Rick Dakan e Joseph Feller, [AI Fluency Framework](https://aifluencyframework.org/)
 - Ethan Mollick, [Management as an AI Superpower](https://www.oneusefulthing.org/p/management-as-ai-superpower)
 - Google for Developers, [Large Language Models](https://developers.google.com/machine-learning/crash-course/llm)
 - Google for Developers, [Neural Networks](https://developers.google.com/machine-learning/crash-course/neural-networks)
@@ -158,6 +167,9 @@ This test was built through vibecoding, using AI as operational support for idea
 - `aiskilltest_icon.png`: site icon and saved-link icon on supported devices.
 - `scripts/build-learning-data.mjs`: generates the learning asset from the blueprint without dependencies.
 - `LEARNING_PATH.md`: bilingual blueprint for the planned introductory path, including questions, learning units, and sources.
+- `ASSESSMENT_BLUEPRINT.md`: approved milestone 16 blueprint for competencies, evidence, results, and history compatibility in the future 3.x series.
+- `docs/ASSESSMENT_ITEM_MAP.md`: classification of all 115 current items by evidence type, primary area, and objective.
+- `PLAN.md`: roadmap, milestone status, and validation and release criteria.
 - `index.html`: entry page that redirects to the test.
 - `LICENSE`: Apache 2.0 license.
 
@@ -245,13 +257,19 @@ The home icon next to the language selector links to the main website, [glaucosi
 
 Tags follow the `vX.Y.Z` format. Patch releases cover documentation or small fixes; minor and major releases introduce broader functional changes.
 
+### Planning The 3.x Update
+
+Milestone 16 defines the [competency and assessment blueprint](ASSESSMENT_BLUEPRINT.md) `1.0.0`, approved by the maintainer on `2026-11-25`, with a [map of all 115 current items](docs/ASSESSMENT_ITEM_MAP.md). The blueprint separates knowledge/scenarios, self-reported practices, simulated exercises, and text with formative feedback; it defines coverage, rubrics, future paths, and preservation of 2.x reports without recalculation. The matrix, thresholds, timing, and terminology are editorial choices to verify during implementation.
+
+These documents describe future work: the published app remains at `2.4.1`, with the modes, scoring, and data handling described above. Implementation is split across milestones 17-22 in [PLAN.md](PLAN.md).
+
 ### References
 
 - Datapizza, [AI Adoption Assessment: misurare la GenAI in azienda](https://datapizza.tech/it/blog/ai-adoption-assessment-misurare-la-genai-in-azienda)
 - Davis, [Technology Acceptance Model](https://www.jstor.org/stable/249008)
 - Venkatesh et al., [Unified Theory of Acceptance and Use of Technology](https://www.researchgate.net/publication/220259897_User_Acceptance_of_Information_Technology_Toward_a_Unified_View)
 - Bandura, [Guide for Constructing Self-Efficacy Scales](https://www.emerald.com/books/edited-volume/18068/chapter-abstract/101339715/Guide-for-Constructing-Self-Efficacy-Scales)
-- Southworth et al., [AI Fluency Framework](https://aifluencyframework.org/)
+- Rick Dakan and Joseph Feller, [AI Fluency Framework](https://aifluencyframework.org/)
 - Ethan Mollick, [Management as an AI Superpower](https://www.oneusefulthing.org/p/management-as-ai-superpower)
 - Google for Developers, [Large Language Models](https://developers.google.com/machine-learning/crash-course/llm)
 - Google for Developers, [Neural Networks](https://developers.google.com/machine-learning/crash-course/neural-networks)
