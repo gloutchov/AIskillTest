@@ -26,6 +26,11 @@ function reportItem(item) {
     <p>${escapeHtml(item.answer || status)}</p>${item.answerText ? `<p class="answer-text">${escapeHtml(item.answerText)}</p>` : ""}
     ${item.objectiveAlignment === "supporting" ? `<p class="evidence-note">${reportText("Quesito di supporto: il credito individuale non entra nella percentuale o nella copertura dell'area.", "Supporting question: its individual credit does not enter the area percentage or coverage.")}</p>` : ""}
     ${item.feedback ? `<p>${escapeHtml(item.feedback)}</p>` : ""}
+    ${Array.isArray(item.selectedRationales) ? item.selectedRationales.filter(reason => typeof reason === "string").map(reason => `<p><strong>${reportText("La tua scelta", "Your choice")}:</strong> ${escapeHtml(reason)}</p>`).join("") : ""}
+    ${Array.isArray(item.sourceRefs) ? `<p class="small">${item.sourceRefs.map(id => {
+      const source = MODERN_AI.SOURCES.find(source => source.id === id);
+      return source ? `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.title)}</a>` : escapeHtml(id);
+    }).join(" · ")}</p>` : ""}
     ${selection?.omitted?.length ? `<p><strong>${reportText("Azioni utili non selezionate", "Useful actions not selected")}:</strong> ${escapeHtml(selection.omitted.join("; "))}</p>` : ""}
     ${selection?.incompatible?.length ? `<p><strong>${reportText("Scelte incompatibili", "Incompatible choices")}:</strong> ${escapeHtml(selection.incompatible.join("; "))}</p>` : ""}</article>`;
 }

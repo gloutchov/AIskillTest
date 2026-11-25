@@ -1,10 +1,10 @@
 # Mappa degli item attuali per il blueprint
 
 - Baseline: app `2.4.1`, banca `2026.07-m7`, forma `1.3`.
-- Revisione: `2026-11-25`; mappa approvata dal maintainer nella milestone 16, collegata al blueprint `1.0.0`.
+- Revisione: `2026-11-25`; mappa dei 115 item approvata nella milestone 16, estesa con MA01–MA10 nella milestone 18 approvata dal maintainer; blueprint `1.0.0`.
 - Contratto e definizioni: [ASSESSMENT_BLUEPRINT.md](../ASSESSMENT_BLUEPRINT.md).
 
-La tabella classifica tutti i 115 `sourceId` di `baseQuestions`, ciascuno una sola volta. Non modifica i file JavaScript e non assegna retroattivamente punteggi ai report storici. Il widget attuale è mantenuto come informazione tecnica; il tipo di evidenza dipende dal compito. Tutti i multi/choice attuali sono Q, nessuno è un esercizio E.
+La tabella classifica tutti i 125 `sourceId` di `baseQuestions`, ciascuno una sola volta. È implementata nei metadati JavaScript e non assegna retroattivamente punteggi ai report storici. Il widget attuale è mantenuto come informazione tecnica; il tipo di evidenza dipende dal compito. Tutti i multi/choice attuali sono Q, nessuno è un esercizio E.
 
 Le righe valgono come mappa degli obiettivi comuni per le forme A/B/C e le traduzioni IT/EN. Gli override attuali richiedono revisione editoriale quando si riusano gli item: la classificazione non dimostra equivalenza di difficoltà. Non si assegna automaticamente un nuovo slot C01-C50 a un vecchio ID.
 
@@ -127,13 +127,25 @@ Q = conoscenze/scenari; D = pratiche dichiarate; T = testo con feedback. Area e 
 | AG13 | choice | Q | H | H06 | direct | S | verification |
 | AG14 | likert | D | A | A03 | direct | S | delegation, diligence |
 | AG15 | multi | Q | A | A03 | direct | S | delegation, diligence |
+| MA01 | scenario | Q | U | U01 | direct | O | delegation, multimodal, context |
+| MA02 | scenario | Q | U | U01 | direct | O | delegation |
+| MA03 | scenario | Q | U | U02 | direct | O | multimodal, verification |
+| MA04 | scenario | Q | U | U02 | direct | O | multimodal, delegation |
+| MA05 | scenario | Q | U | U03 | direct | O | multimodal, verification |
+| MA06 | scenario | Q | U | U04 | direct | O | description |
+| MA07 | scenario | Q | U | U05 | direct | O | delegation, privacy |
+| MA08 | scenario | Q | U | U06 | direct | O | discernment, verification |
+| MA09 | scenario | Q | U | U07 | direct | O | diligence, privacy |
+| MA10 | scenario | Q | U | U08 | direct | O | mindset, verification |
 
 ## Controlli e copertura
 
-Nella milestone 17 questa stessa classificazione è implementata in `assets/assessment.js`. Il comando `node tests/assessment.test.mjs` verifica la corrispondenza fra mappa Markdown e metadati runtime; la banca e le forme restano invariate. La classificazione è parte delle regole di scoring, documentate in [SCORING.md](SCORING.md).
+La classificazione dei 115 item preesistenti implementata nella milestone 17 resta invariata. La milestone 18 aggiunge dieci ID con varianti A/B/C IT/EN in `assets/modern-ai.js`, banca `2026.11-m18`, forma `1.4`. Il comando `node tests/assessment.test.mjs` verifica la corrispondenza fra mappa Markdown e metadati runtime. La classificazione è parte delle regole di scoring, documentate in [SCORING.md](SCORING.md).
 
-Totale: **115 ID**; **56 Q, 55 D, 4 T, 0 E**. Il completo attuale seleziona 50 ID: **27 Q, 21 D, 2 T, 0 E**. Le autovalutazioni facoltative iniziali sono escluse.
+Totale corrente: **125 ID**; **66 Q, 55 D, 4 T, 0 E**. La baseline M16/M17 conteneva 115 ID (56 Q, 55 D, 4 T). Il completo attuale seleziona 50 ID: **27 Q, 21 D, 2 T, 0 E**. Le autovalutazioni facoltative iniziali sono escluse.
 
-Obiettivi senza item primari attuali: **U02, U03, U05, H01, H03, H04, H05**. Alcuni sono richiamati indirettamente in altri quesiti: un richiamo non conta come copertura dedicata. A04 ha solo una dichiarazione (L9), quindi non ha ancora una prova Q dedicata. T10 è collegato a F06 solo come supporto storico (`supporting`): non verifica la scelta della famiglia di soluzione e non soddisfa la copertura dedicata di F06. Questi vuoti motivano le milestone 18-22.
+AI moderne propone sempre MA01–MA10: **U01×2, U02×2, U03–U08×1**, tutti Q diretti di livello O. Questi slot non entrano nel completo o negli altri tematici prima della milestone 22. La scelta in uno scenario non dimostra esecuzione pratica. Testi bilingui, crediti e fonti sono in [MODERN_AI_REVIEW.md](MODERN_AI_REVIEW.md).
+
+Obiettivi senza item primari attuali: **H01, H03, H04, H05**. U02, U03 e U05 hanno ora Q dedicati in AI moderne, ma rimangono assenti dal completo. Alcuni sono richiamati indirettamente in altri quesiti: un richiamo non conta come copertura dedicata. A04 ha solo una dichiarazione (L9), quindi non ha ancora una prova Q dedicata. T10 è collegato a F06 solo come supporto storico (`supporting`): non verifica la scelta della famiglia di soluzione e non soddisfa la copertura dedicata di F06. Questi vuoti restanti motivano le milestone 19-22.
 
 Nella milestone 17 la mappa serve a separare le evidenze dei nuovi report. Le revisioni dei contenuti e la composizione finale seguono le milestone del piano; per cambiare testo, alternative, obiettivo o rubrica bisogna aggiornare le versioni pertinenti. Gli slot futuri e i relativi tipi di prova sono nella sezione 5 del blueprint.

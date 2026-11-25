@@ -376,13 +376,15 @@ Consultazione: `2026-11-25`. Le fonti sostengono le definizioni tecniche e offro
 | S09 | [OpenAI — Images and vision](https://developers.openai.com/api/docs/guides/images-vision) | Comprensione visiva e limiti | Capacità/supporti cambiano; dichiarare input e requisiti nello scenario |
 | S10 | [OpenAI — Computer use](https://developers.openai.com/api/docs/guides/tools-computer-use) | Distinzione fra lettura e interazione | Controlli e ambienti cambiano; nessun uso reale nel test |
 | S11 | [OpenAI — Audio and voice](https://developers.openai.com/api/docs/guides/audio) | Distinzione fra compiti audio | Guide di prodotto mutevoli; non richiedere nomi di API |
-| S12 | [OpenAI — Video generation](https://developers.openai.com/api/docs/guides/video-generation) | Generazione video distinta da analisi di un input | Supporti e limiti da ricontrollare in M18; scenario con capacità dichiarate |
+| S12 | [OpenAI — Video generation](https://developers.openai.com/api/docs/guides/video-generation) | Riferimento storico alla generazione video distinta dall'analisi | Ricontrollato in M18: la pagina segnala chiusura di Sora 2 / Videos API il 24 settembre 2026; per i nuovi scenari usare i riferimenti correnti S19/S20 e capacità dichiarate |
 | S13 | [Anthropic — Building effective agents](https://www.anthropic.com/research/building-effective-agents) | Workflow, agenti e scelta della complessità | Articolo storico con avviso di evoluzione degli strumenti; usare i principi, non lo stack dell'epoca |
 | S14 | [MCP — Security Best Practices](https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices) | Confini di fiducia, autorizzazioni e integrazioni | Consultata la versione a cui rimanda il sito (`2026-07-28`); evitare dettagli di protocollo come nozioni obbligatorie |
 | S15 | [Anthropic — Effective harnesses for long-running agents](https://www.anthropic.com/research/effective-harnesses-for-long-running-agents) | Continuità, progressi e verifica | Esempio di esecuzione su più sessioni; non imporre nomi di file o un SDK specifico |
 | S16 | [Model Context Protocol — Introduzione](https://modelcontextprotocol.io/docs/getting-started/intro) | MCP come collegamento a dati e strumenti | Consultata la pagina corrente (`2026-07-28`); distinguere standard da capacità/autorizzazioni |
 | S17 | [Agent Skills — Overview](https://agentskills.io/home) | Procedure, risorse e caricamento delle skill | Formato e supporto evolvono; nessun automatismo di affidabilità |
 | S18 | [AGENTS.md — Sito del formato](https://agents.md/) | Istruzioni e contesto per agenti di coding | Separare convenzione del file da gerarchia e permessi imposti dal singolo ambiente |
+| S19 | [Google — Video understanding](https://aistudio.google.com/docs/video-understanding) | Comprensione di video esistenti, audio e riferimenti temporali | Aggiunto e consultato in M18; dichiarare supporti e limiti, non assumere osservabilità di eventi fuori campo |
+| S20 | [Google — Video generation](https://aistudio.google.com/docs/video) | Nuovi video e produzione distinta dalle evidenze | Aggiunto e consultato in M18; disponibilità e versioni cambiano, nessun nome di modello richiesto negli item |
 
 Le fonti esterne non vengono caricate automaticamente dall'app. Il registro qui è documentazione di sviluppo; bibliografia e spiegazioni IT/EN in UI saranno aggiornate nelle milestone che introducono i relativi contenuti. L'utente deve poter capire il feedback anche senza aprire le fonti.
 
@@ -391,6 +393,7 @@ Le fonti esterne non vengono caricate automaticamente dall'app. Il registro qui 
 | 2026-11-24 | Roadmap: lacune di copertura, rubriche lessicali e aggregazione che nasconde Agents | Definite milestone 16-22 |
 | 2026-11-25 | Prima proposta di matrice, inventario, scoring separato, casi e compatibilità | Solo documentazione; attende validazione, app ancora 2.4.1 |
 | 2026-11-25 | Approvazione del maintainer della matrice e del contratto di valutazione | Blueprint 1.0.0 approvato; milestone 16 completata, app ancora 2.4.1 |
+| 2026-11-25 | M18: ricontrollo delle fonti per nuovi scenari multimodali; S12 diventa storico, aggiunti S19/S20 | Nessuna variazione al contratto approvato; registro M18 completo in MODERN_AI_REVIEW.md |
 
 ## 12. Validazione della milestone e consegna alle successive
 
@@ -426,3 +429,13 @@ La milestone 17, sviluppata sul branch `feature/evidence-based-scoring`, impleme
 La classificazione è riportata in `assets/assessment.js` e verificata contro la mappa Markdown. La banca e le forme restano invariate: il completo ha ancora 27 Q, 21 D e 2 T; nessun E è stato introdotto e la matrice target da 50 slot della sezione 5 resta prevista per la milestone 22. I report non possono dichiarare copertura piena degli obiettivi mancanti.
 
 Scoring, schema, compatibilità dello storico, nuovo CSV e checklist di validazione sono documentati in [docs/SCORING.md](docs/SCORING.md). I [report sintetici](tests/fixtures/m17-reports.json) illustrano dichiarazioni e quiz divergenti, lacuna Agents e formato legacy; non contengono dati di rispondenti e non vengono caricati automaticamente dall'app. La verifica automatica comprende 19 controlli, 60 composizioni assessment e 6 forme didattiche. La verifica dell'agente in un browser reale non è stata possibile nell'ambiente disponibile; il maintainer ha approvato la chiusura, senza riportare gli esiti dettagliati della checklist manuale nella conversazione.
+
+## 14. Attuazione nella milestone 18
+
+La milestone 18, sviluppata sul branch `feature/modern-ai-capabilities`, aggiunge AI moderne: dieci scenari Q di livello O, con matrice U01×2, U02×2 e U03–U08×1 in tutte le forme A/B/C IT/EN. App `3.1.0`, banca `2026.11-m18`, forme `1.4`; scoring `3.0.0`, schema `3` e blueprint `1.0.0` restano invariati. Il maintainer ha approvato la milestone e la release `v3.1.0` il `2026-11-25`.
+
+Le domande sono originali e usano strumenti e misure sintetici con vincoli dichiarati. Coprono modalità/capacità/app/architettura/ambiente, ricerca documentale e web, generazione/classificazione/previsione/calcolo, immagini/scansioni/grafici, audio/video, azioni tramite browser, brief, compromessi e verifiche. Le scelte valutano giudizio ipotetico; nessuna esecuzione pratica è osservata. Fonti ricontrollate, crediti, motivazioni e tutte le varianti sono nel [documento di revisione bilingue](docs/MODERN_AI_REVIEW.md). Il registro M18 distingue esplicitamente riferimenti video correnti da API cessate.
+
+U02, U03 e U05 acquisiscono prove dedicate solo nel nuovo percorso. Il completo conserva 50 domande (27 Q, 21 D, 2 T) e non incorpora MA01–MA10; nove tematici precedenti e Primi passi mantengono contenuti e composizione. La matrice target del completo e gli esercizi E restano nelle milestone successive. Con dieci risposte valide AI moderne può raggiungere la copertura prevista di U, senza inferire abilità di esecuzione o risultati sulle altre aree.
+
+Verificati 25 controlli, 66 composizioni assessment e 6 forme didattiche; confronto con main `27d6245` per conservazione dei 115 item nelle sei forme e delle 60 composizioni precedenti. I report 3.0.0 e legacy restano originali; contesto completo e campi facoltativi di motivazione/fonti arricchiscono i nuovi export. Verifica dell’agente in un browser reale non disponibile: layout, mobile, download, console e traffico reali restano nella [checklist del maintainer](docs/SCORING.md). Non sono dimostrate equivalenza psicometrica delle forme o durata empirica.

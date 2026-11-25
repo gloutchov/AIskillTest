@@ -799,6 +799,9 @@
       font-size: 15px;
     }
 
+    .question-context { white-space: pre-line; overflow-wrap: anywhere; font-size: 16px; line-height: 1.65; color: #334155; margin: 18px 0 12px; }
+    .analysis-item h4 { white-space: pre-line; }
+
     .options {
       display: grid;
       gap: 8px;

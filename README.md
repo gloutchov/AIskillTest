@@ -6,9 +6,9 @@ Questionario interattivo in italiano e inglese per esplorare conoscenze, giudizi
 
 L'assessment produce un quadro delle evidenze: conoscenze/scenari, pratiche dichiarate e testi con feedback restano separati, con copertura e limiti per area. È pensato come strumento diagnostico interno e migliorabile, non come test psicometrico validato.
 
-Versione corrente dell'app: `3.0.0`, milestone 17 approvata dal maintainer il `2026-11-25`.
+Versione corrente dell'app: `3.1.0`, milestone 18 approvata dal maintainer il `2026-11-25`. Release precedente: `3.0.0` (milestone 17).
 
-Tag di riferimento: `v3.0.0`.
+Tag di riferimento: `v3.1.0`.
 
 ### Nota sullo sviluppo
 
@@ -21,16 +21,19 @@ Questo test è stato realizzato in vibecoding, usando l'AI come supporto operati
 - `assets/questions.js`: banca domande, forme parallele e override.
 - `assets/i18n.js`: testi localizzati, traduzione inglese della banca domande e varianti form-specific.
 - `assets/learning.js`: forme A/B/C e unità didattiche del percorso introduttivo.
+- `assets/modern-ai.js`: scenari originali AI moderne, varianti A/B/C IT/EN, motivazioni e fonti.
 - `assets/app.js`: navigazione client-side, storico, dashboard legacy/didattica ed export.
 - `assets/assessment.js`: regole pure dello scoring 3.x e metadati degli item.
 - `assets/report-ui.js`: quadro delle evidenze IT/EN.
-- `docs/SCORING.md`: schema, compatibilità e verifica della milestone 17.
+- `docs/SCORING.md`: scoring, schema, compatibilità e verifiche delle milestone 17-18.
+- `docs/MODERN_AI_REVIEW.md`: revisione delle 30 varianti bilingui, crediti e fonti della milestone 18.
 - `tests/assessment.test.mjs`: controlli deterministici senza dipendenze.
 - `aiskilltest_icon.png`: icona del sito e dei collegamenti salvati su dispositivo.
 - `scripts/build-learning-data.mjs`: genera l'asset didattico dal blueprint senza dipendenze.
+- `scripts/build-modern-ai-review.mjs`: rigenera la documentazione di revisione dagli scenari; facoltativo, non serve all'app.
 - `LEARNING_PATH.md`: blueprint bilingue del percorso introduttivo pianificato, con domande, unità didattiche e fonti.
 - `ASSESSMENT_BLUEPRINT.md`: blueprint approvato della milestone 16 per competenze, prove, risultati e compatibilità dello storico della futura serie 3.x.
-- `docs/ASSESSMENT_ITEM_MAP.md`: classificazione dei 115 item attuali per tipo di evidenza, area e obiettivo.
+- `docs/ASSESSMENT_ITEM_MAP.md`: classificazione dei 125 item attuali per tipo di evidenza, area e obiettivo.
 - `PLAN.md`: roadmap, stato delle milestone e criteri di validazione e release.
 - `index.html`: pagina di ingresso che rimanda al test.
 - `LICENSE`: licenza Apache 2.0.
@@ -53,6 +56,7 @@ L'assessment combina autovalutazione, scenari, quiz tecnici e prove pratiche su:
 
 - AI Literacy: funzionamento, limiti, dati, fonti, privacy e affidabilità della GenAI.
 - Fondamenti LLM: token, contesto, inferenza, Transformer, allucinazioni, RAG, embedding e citazioni.
+- AI moderne: capacità multimodali, ricerca documentale/web, scelta di strumenti e configurazioni, verifica degli artefatti e perimetro dei dati.
 - AI Agents: agenti, tool, permessi, memoria/stato, controllo umano, log e rollback.
 - AI Fluency: Delegation, Description, Discernment e Diligence.
 - Mindset: apertura alla sperimentazione, fiducia calibrata e adozione responsabile.
@@ -64,6 +68,7 @@ Modalità disponibili:
 - Test completo: 50 domande.
 - Literacy: 10 domande.
 - Fondamenti tecnici LLM: 10 domande.
+- AI moderne: 10 scenari con copertura fissa, durata stimata 8-12 minuti.
 - AI Agents: 10 domande.
 - Fluency - Delegation: 10 domande.
 - Fluency - Description: 10 domande.
@@ -72,7 +77,9 @@ Modalità disponibili:
 - Mindset: 10 domande.
 - Practical Lab: 10 domande.
 
-La banca contiene 115 domande base. Il test completo resta a 50 domande e include 4 domande AI Agents. Il percorso AI Agents usa un pool di 15 domande per alimentare la rotazione A/B/C. Le sessioni ruotano tra forme A/B/C separatamente per lingua e modalità.
+La banca contiene 125 domande base: le 115 preesistenti e 10 nuovi slot AI moderne, ciascuno con tre varianti bilingui. Il test completo resta a 50 domande e include 4 domande AI Agents. Il percorso AI Agents usa un pool di 15 domande per alimentare la rotazione A/B/C. Le sessioni ruotano tra forme A/B/C separatamente per lingua e modalità.
+
+AI moderne seleziona sempre U01×2, U02×2 e U03–U08×1. Comprende immagini/scansioni/grafici, audio/video, comprensione rispetto a generazione o azione, scelta fra capacità e strumenti, brief, controlli e adozione. Le configurazioni sono ipotetiche e contengono tutti i vincoli necessari; non richiedono nomi o listini a memoria. I risultati mostrano la motivazione della scelta effettuata e letture facoltative. Il percorso valuta decisioni su scenari, senza osservare esecuzione pratica. Equivalenza delle forme e durata sono editoriali, non validate empiricamente.
 
 `Primi passi con l'AI` è un'esperienza di apprendimento, non un assessment comparabile con gli altri risultati. Usa tre forme da 10 domande e propone spiegazioni locali e letture facoltative. I link esterni si aprono soltanto dopo un click esplicito.
 
@@ -96,6 +103,8 @@ Lo step iniziale consente di inserire nome, ruolo, area/team e autovalutazione d
 
 Gli export sono sempre azioni manuali dell'utente. Se lo storico è danneggiato o la quota del browser è esaurita, un avviso invita a esportare il report corrente senza sovrascrivere i dati precedenti.
 
+Gli item AI moderne salvano contesto e domanda completi, motivazione della scelta e riferimenti alle fonti anche negli export. I report 3.0.0 restano originali e leggibili. La nuova banca e la nuova forma producono una diversa firma di confronto anche nei percorsi preesistenti; non si ricalcolano lo storico o le sue versioni.
+
 ### Sito pubblico
 
 L'applicazione è disponibile all'indirizzo:
@@ -108,10 +117,11 @@ L'icona a forma di casa accanto al selettore della lingua rimanda al sito princi
 
 ### Versioning
 
-- Versione app: `3.0.0`.
-- Tag Git: `v3.0.0`.
-- Banca domande: `2026.07-m7`.
-- Forma assessment: `1.3`.
+- Versione app: `3.1.0`.
+- Tag Git: `v3.1.0`.
+- Banca domande: `2026.11-m18`.
+- Forma assessment: `1.4`.
+- Scoring: `3.0.0`; schema report `3`; blueprint `1.0.0`, invariati.
 - Banca Primi passi: `2026.07-first-steps-1`.
 - Forma Primi passi: `first-steps-1.0`.
 
@@ -119,9 +129,9 @@ I tag seguono il formato `vX.Y.Z`. Le modifiche patch aggiornano documentazione 
 
 ### Progettazione dell'aggiornamento 3.x
 
-La milestone 16 definisce il [blueprint delle competenze e della valutazione](ASSESSMENT_BLUEPRINT.md) `1.0.0`, approvato dal maintainer il `2026-11-25`, con la [mappa dei 115 item attuali](docs/ASSESSMENT_ITEM_MAP.md). Il blueprint distingue conoscenze/scenari, pratiche dichiarate, esercizi simulati e testi con feedback; definisce copertura, rubriche, percorsi futuri e conservazione dei report 2.x senza ricalcolo. Matrice, soglie, tempi e terminologia sono scelte editoriali da verificare durante l'implementazione.
+La milestone 16 definisce il [blueprint delle competenze e della valutazione](ASSESSMENT_BLUEPRINT.md) `1.0.0`, approvato dal maintainer il `2026-11-25`, con la [mappa degli item](docs/ASSESSMENT_ITEM_MAP.md), inizialmente 115, ora 125. Il blueprint distingue conoscenze/scenari, pratiche dichiarate, esercizi simulati e testi con feedback; definisce copertura, rubriche, percorsi futuri e conservazione dei report 2.x senza ricalcolo. Matrice, soglie, tempi e terminologia sono scelte editoriali da verificare durante l'implementazione.
 
-La milestone 17 introduce il nuovo modello di valutazione nella release `3.0.0`, approvata dal maintainer il `2026-11-25`. Banca e forme restano invariate; i nuovi percorsi e il laboratorio arriveranno nelle milestone 18-22 di [PLAN.md](PLAN.md). La versione pubblicata precedente è `2.4.1`.
+La milestone 17 introduce il nuovo modello di valutazione nella release `3.0.0`, approvata il `2026-11-25`, senza revisionare banca e forme. La milestone 18 aggiunge AI moderne nella release `3.1.0`, approvata dal maintainer il `2026-11-25`: il completo e i nove tematici preesistenti mantengono testi e composizioni. Il laboratorio e l'integrazione del completo seguono nelle milestone 19-22 di [PLAN.md](PLAN.md). [Documento di revisione](docs/MODERN_AI_REVIEW.md).
 
 ### Verifica locale
 
@@ -154,9 +164,9 @@ Interactive questionnaire in Italian and English exploring GenAI knowledge, judg
 
 The assessment produces an evidence overview: knowledge/scenarios, self-reported practices, and text with feedback remain separate, with area coverage and limits. It is intended as an internal diagnostic tool that can evolve over time, not as a psychometrically validated test.
 
-Current app version: `3.0.0`, milestone 17 approved by the maintainer on `2026-11-25`.
+Current app version: `3.1.0`, milestone 18 approved by the maintainer on `2026-11-25`. Previous release: `3.0.0` (milestone 17).
 
-Reference tag: `v3.0.0`.
+Reference tag: `v3.1.0`.
 
 ### Development Note
 
@@ -169,16 +179,19 @@ This test was built through vibecoding, using AI as operational support for idea
 - `assets/questions.js`: question bank, parallel forms, and overrides.
 - `assets/i18n.js`: localized texts, English question-bank translation, and form-specific variants.
 - `assets/learning.js`: A/B/C forms and learning units for the introductory path.
+- `assets/modern-ai.js`: original Modern AI scenarios, IT/EN A/B/C variants, rationales, and sources.
 - `assets/app.js`: client-side navigation, history, legacy/learning dashboards, and export.
 - `assets/assessment.js`: pure 3.x scoring rules and item metadata.
 - `assets/report-ui.js`: IT/EN evidence overview.
-- `docs/SCORING.md`: schema, compatibility, and milestone 17 verification.
+- `docs/SCORING.md`: scoring, schema, compatibility, and milestone 17-18 verification.
+- `docs/MODERN_AI_REVIEW.md`: review of all 30 bilingual variants, credits, and milestone 18 sources.
 - `tests/assessment.test.mjs`: dependency-free deterministic checks.
 - `aiskilltest_icon.png`: site icon and saved-link icon on supported devices.
 - `scripts/build-learning-data.mjs`: generates the learning asset from the blueprint without dependencies.
+- `scripts/build-modern-ai-review.mjs`: regenerates review documentation from the scenarios; optional, not required by the app.
 - `LEARNING_PATH.md`: bilingual blueprint for the planned introductory path, including questions, learning units, and sources.
 - `ASSESSMENT_BLUEPRINT.md`: approved milestone 16 blueprint for competencies, evidence, results, and history compatibility in the future 3.x series.
-- `docs/ASSESSMENT_ITEM_MAP.md`: classification of all 115 current items by evidence type, primary area, and objective.
+- `docs/ASSESSMENT_ITEM_MAP.md`: classification of all 125 current items by evidence type, primary area, and objective.
 - `PLAN.md`: roadmap, milestone status, and validation and release criteria.
 - `index.html`: entry page that redirects to the test.
 - `LICENSE`: Apache 2.0 license.
@@ -201,6 +214,7 @@ The assessment combines self-evaluation, scenarios, technical quizzes, and pract
 
 - AI Literacy: GenAI mechanics, limits, data, sources, privacy, and reliability.
 - LLM foundations: tokens, context, inference, Transformers, hallucinations, RAG, embeddings, and citations.
+- Modern AI: multimodal capabilities, document/web search, tool and configuration selection, artifact checks, and data boundaries.
 - AI Agents: agents, tools, permissions, memory/state, human control, logs, and rollback.
 - AI Fluency: Delegation, Description, Discernment, and Diligence.
 - Mindset: openness to experimentation, calibrated trust, and responsible adoption.
@@ -212,6 +226,7 @@ Available modes:
 - Full test: 50 questions.
 - Literacy: 10 questions.
 - LLM technical foundations: 10 questions.
+- Modern AI: 10 scenarios with fixed coverage, estimated duration 8-12 minutes.
 - AI Agents: 10 questions.
 - Fluency - Delegation: 10 questions.
 - Fluency - Description: 10 questions.
@@ -220,7 +235,9 @@ Available modes:
 - Mindset: 10 questions.
 - Practical Lab: 10 questions.
 
-The bank contains 115 base questions. The full test remains at 50 questions and includes 4 AI Agents questions. The AI Agents path uses a 15-question pool to support A/B/C rotation. Sessions rotate across A/B/C forms separately by language and test mode.
+The bank contains 125 base questions: the 115 existing items and 10 new Modern AI slots, each with three bilingual variants. The full test remains at 50 questions and includes 4 AI Agents questions. The AI Agents path uses a 15-question pool to support A/B/C rotation. Sessions rotate across A/B/C forms separately by language and test mode.
+
+Modern AI always selects U01×2, U02×2, and U03–U08×1. It covers images/scans/charts, audio/video, understanding versus generation or action, capability and tool selection, briefs, checks, and adoption. Configurations are hypothetical and supply all required constraints; no product names or price lists need memorizing. Results show a rationale for the selected choice and optional readings. This path assesses decisions on scenarios without observing practical execution. Form equivalence and timing are editorial, not empirically validated.
 
 `AI First Steps` is a learning experience, not an assessment comparable with the other results. It uses three 10-question forms and provides local explanations and optional readings. External links open only after an explicit click.
 
@@ -244,6 +261,8 @@ The initial step can collect name, role, area/team, and self-assessed skills. Al
 
 Exports are always explicit user actions. If history is damaged or browser storage is full, a notice asks the user to export the current report without overwriting previous data.
 
+Modern AI items store the full context and question, the selected-choice rationale, and source references in exports too. Reports from 3.0.0 remain original and readable. The new bank and form create a different comparison signature even for existing paths; history and its version metadata are never recalculated.
+
 ### Public Website
 
 The application is available at:
@@ -256,10 +275,11 @@ The home icon next to the language selector links to the main website, [glaucosi
 
 ### Versioning
 
-- App version: `3.0.0`.
-- Git tag: `v3.0.0`.
-- Question bank: `2026.07-m7`.
-- Assessment form: `1.3`.
+- App version: `3.1.0`.
+- Git tag: `v3.1.0`.
+- Question bank: `2026.11-m18`.
+- Assessment form: `1.4`.
+- Scoring: `3.0.0`; report schema `3`; blueprint `1.0.0`, unchanged.
 - First Steps bank: `2026.07-first-steps-1`.
 - First Steps form: `first-steps-1.0`.
 
@@ -267,9 +287,9 @@ Tags follow the `vX.Y.Z` format. Patch releases cover documentation or small fix
 
 ### Planning The 3.x Update
 
-Milestone 16 defines the [competency and assessment blueprint](ASSESSMENT_BLUEPRINT.md) `1.0.0`, approved by the maintainer on `2026-11-25`, with a [map of all 115 current items](docs/ASSESSMENT_ITEM_MAP.md). The blueprint separates knowledge/scenarios, self-reported practices, simulated exercises, and text with formative feedback; it defines coverage, rubrics, future paths, and preservation of 2.x reports without recalculation. The matrix, thresholds, timing, and terminology are editorial choices to verify during implementation.
+Milestone 16 defines the [competency and assessment blueprint](ASSESSMENT_BLUEPRINT.md) `1.0.0`, approved by the maintainer on `2026-11-25`, with an [item map](docs/ASSESSMENT_ITEM_MAP.md), originally 115 items, now 125. The blueprint separates knowledge/scenarios, self-reported practices, simulated exercises, and text with formative feedback; it defines coverage, rubrics, future paths, and preservation of 2.x reports without recalculation. The matrix, thresholds, timing, and terminology are editorial choices to verify during implementation.
 
-Milestone 17 introduces the new assessment model in release `3.0.0`, approved by the maintainer on `2026-11-25`. The bank and forms are unchanged; new paths and the lab follow in milestones 18-22 of [PLAN.md](PLAN.md). The previous published version is `2.4.1`.
+Milestone 17 introduces the new assessment model in release `3.0.0`, approved on `2026-11-25`, without revising the bank or forms. Milestone 18 adds Modern AI in release `3.1.0`, approved by the maintainer on `2026-11-25`: the full test and nine existing thematic paths retain their texts and compositions. The lab and full-test integration follow in milestones 19-22 of [PLAN.md](PLAN.md). [Review document](docs/MODERN_AI_REVIEW.md).
 
 ### Local Verification
 

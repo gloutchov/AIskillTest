@@ -10,6 +10,7 @@ const AI_SKILL_I18N = {
     sectionLabels: {
       "Literacy": "Literacy",
       "Fondamenti tecnici LLM": "LLM technical foundations",
+      "AI moderne": "Modern AI",
       "AI Agents": "AI Agents",
       "Fluency · Delegation": "Fluency · Delegation",
       "Fluency · Description": "Fluency · Description",
@@ -26,6 +27,12 @@ const AI_SKILL_I18N = {
       ["I turn it into a verified, shareable practice", "I check its outcomes, can document the method, and can help other people apply and adapt it."]
     ],
     modes: {
+      "modern-ai": {
+        label: "Modern AI",
+        shortLabel: "Modern AI",
+        description: "Multimodality, tool choice, models, and checks for documents, images, audio, and video.",
+        outputNote: "Ten scenarios with fixed coverage; assesses choices without executing real tools."
+      },
       "first-steps": {
         label: "AI First Steps",
         shortLabel: "First Steps",

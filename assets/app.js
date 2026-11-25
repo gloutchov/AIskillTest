@@ -82,7 +82,7 @@ function cloneQuestionData(value) {
       return selected;
     }
 
-    const APP_VERSION = "3.0.0";
+    const APP_VERSION = "3.1.0";
     const DEFAULT_TEST_MODE_ID = "complete";
     const COMPLETE_TEST_COUNT = 50;
     const TOPIC_TEST_COUNT = 10;
@@ -100,6 +100,7 @@ function cloneQuestionData(value) {
     const SECTION_ORDER = [
       "Literacy",
       "Fondamenti tecnici LLM",
+      "AI moderne",
       "AI Agents",
       "Fluency · Delegation",
       "Fluency · Description",
@@ -149,6 +150,16 @@ function cloneQuestionData(value) {
         questionLimit: TOPIC_TEST_COUNT,
         description: "Token, contesto, inferenza, reti neurali, Transformer, allucinazioni, RAG, embedding e citazioni.",
         outputNote: "Report tematico sui fondamenti tecnici, senza profilo globale."
+      },
+      {
+        id: "modern-ai",
+        label: "AI moderne",
+        shortLabel: "AI moderne",
+        type: "topic",
+        section: "AI moderne",
+        questionLimit: TOPIC_TEST_COUNT,
+        description: "Multimodalità, scelta degli strumenti, modelli e controlli su documenti, immagini, audio e video.",
+        outputNote: "Dieci scenari con copertura fissa; valuta la scelta, senza eseguire strumenti reali."
       },
       {
         id: "agents",
@@ -617,6 +628,11 @@ function cloneQuestionData(value) {
 
     function localizedSectionGuide(section) {
       const guide = sectionGuides[section] || sectionGuides.Literacy;
+      if (section === "AI moderne") return {
+        title: isEnglish() ? "Modern AI" : "AI moderne",
+        text: isEnglish() ? "Choose capabilities and tools for the stated task. These are hypothetical scenarios, not practical executions." : "Scegli capacità e strumenti adatti al compito dichiarato. Sono scenari ipotetici, non esecuzioni pratiche.",
+        items: isEnglish() ? ["Capabilities and tools", "Images, audio, and video", "Quality, time, and cost", "Data and verification"] : ["Capacità e strumenti", "Immagini, audio e video", "Qualità, tempo e costo", "Dati e verifica"]
+      };
       if (section === "Practical Lab") return { ...guide,
         text: isEnglish() ? "Hypothetical choices and written prompts with formative feedback; no execution is observed." : "Scelte ipotetiche e prompt scritti con feedback formativo; nessuna esecuzione osservata.",
         items: isEnglish() ? ["Hypothetical choices", "Written prompts", "Formative checklists", "Verification and responsibility"] : ["Scelte ipotetiche", "Prompt scritti", "Checklist formative", "Verifica e responsabilità"] };
@@ -699,6 +715,7 @@ function cloneQuestionData(value) {
         return localized;
       }
       localized.text = translation.text || question.text;
+      if (typeof translation.context === "string") localized.context = translation.context;
       localized.hint = translation.hint || question.hint;
       localized.feedback = translation.feedback || question.feedback;
       if (translation.rubric) localized.rubric = translation.rubric;
@@ -706,7 +723,8 @@ function cloneQuestionData(value) {
         localized.options = question.options.map((option, index) => ({
           ...option,
           title: translation.options[index] ? translation.options[index][0] : option.title,
-          text: translation.options[index] ? translation.options[index][1] : option.text
+          text: translation.options[index] ? translation.options[index][1] : option.text,
+          ...(Array.isArray(translation.optionRationales) ? { rationale: translation.optionRationales[index] } : {})
         }));
       }
       return localized;
@@ -719,6 +737,8 @@ function cloneQuestionData(value) {
     function buildEnglishQuestionForm(formId) {
       return localizeQuestions(baseQuestions.map(baseQuestion => ({
         ...cloneQuestionData(baseQuestion),
+        // Modern AI has form-specific option layouts; legacy English layouts stay independent.
+        ...(baseQuestion.section === "AI moderne" ? cloneQuestionData(formOverrides[formId]?.[baseQuestion.id] || {}) : {}),
         sourceId: baseQuestion.id,
         formId,
         id: `${formId}_${baseQuestion.id}`
@@ -800,6 +820,14 @@ function cloneQuestionData(value) {
         if (text) text.textContent = item.text;
         if (link) link.textContent = item.link;
       });
+      const modernTitle = $("modernAiSourcesTitle");
+      const modernNote = $("modernAiSourcesNote");
+      const modernList = $("modernAiSourcesList");
+      if (modernTitle) modernTitle.textContent = isEnglish() ? "Modern AI: capabilities and checks" : "AI moderne: capacità e controlli";
+      if (modernNote) modernNote.textContent = isEnglish()
+        ? "Primary sources reviewed on " + MODERN_AI.REVIEW_DATE + ". Scenarios are original editorial choices, not validated tests. Links open only on an explicit click."
+        : "Fonti primarie ricontrollate il " + MODERN_AI.REVIEW_DATE + ". Gli scenari sono scelte editoriali originali, non test validati. I link si aprono solo con un click esplicito.";
+      if (modernList) modernList.innerHTML = MODERN_AI.SOURCES.map(source => `<article class="bibliography-item"><div class="bibliography-source">${escapeHtml(source.id)}</div><h3>${escapeHtml(source.title)}</h3><p>${escapeHtml(source.note[isEnglish() ? 1 : 0])}</p><a class="bibliography-link" href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${isEnglish() ? "Open source ↗" : "Apri la fonte ↗"}</a></article>`).join("");
     }
 
     function applyLanguageChrome() {
@@ -1035,6 +1063,11 @@ function cloneQuestionData(value) {
     function questionsForMode(sourceQuestions, mode, randomize = false, formId = null) {
       const selectedMode = mode || getModeById(DEFAULT_TEST_MODE_ID);
       const pool = modePoolQuestions(sourceQuestions, selectedMode);
+      if (selectedMode.id === "modern-ai") {
+        const selected = MODERN_AI.SLOTS.map(slot => pool.find(question => (question.sourceId || question.id) === slot.id));
+        if (selected.some(question => !question)) throw new Error("Incomplete Modern AI coverage");
+        return randomize ? shuffledValues(selected) : selected;
+      }
       const limit = selectedMode.questionLimit || pool.length;
       const requiredIds = selectedMode.id === "practical" ? ["P_DS_1", "P_DI_1"] : [];
       if (randomize) return sampleQuestions(pool, limit, formId, requiredIds);
@@ -1050,6 +1083,7 @@ function cloneQuestionData(value) {
     }
 
     function modeDuration(mode) {
+      if (mode.id === "modern-ai") return isEnglish() ? "8-12 minutes (estimate)" : "8-12 minuti (stima)";
       if (isEnglish()) return mode.id === DEFAULT_TEST_MODE_ID ? "12-15 minutes" : "3-5 minutes";
       return mode.id === DEFAULT_TEST_MODE_ID ? "12-15 minuti" : "3-5 minuti";
     }
@@ -1388,6 +1422,9 @@ function cloneQuestionData(value) {
       $("progressFill").style.width = `${pct}%`;
       $("sectionBadge").textContent = sectionLabel(q.section);
       $("questionTitle").textContent = q.text;
+      const questionContext = $("questionContext");
+      questionContext.hidden = !q.context;
+      questionContext.textContent = q.context || "";
       $("questionHint").textContent = (q.hint || "") + (q.type === "text" ? (isEnglish() ? " Formative text: no automatic quality score." : " Testo formativo: nessun punteggio automatico di qualità.") : "");
       const responseGuide = $("responseGuide");
       responseGuide.hidden = q.type !== "likert";

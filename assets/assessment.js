@@ -35,7 +35,7 @@ const ASSESSMENT_V3 = (() => {
     H05: ["Checkpoint e ripresa", "Checkpoints and recovery"],
     H06: ["Tracce e valutazioni ripetibili", "Traces and repeatable evaluations"]
   };
-  // Filled from docs/ASSESSMENT_ITEM_MAP.md; changing a mapping changes scoring.
+  // Filled from docs/ASSESSMENT_ITEM_MAP.md; changing an existing mapping changes scoring.
   const ITEM_MAP = {
     "L1": {"evidenceType":"D","primaryArea":"F","objectiveId":"F01","objectiveAlignment":"direct","taskLevel":"B","secondaryTags":[]},
     "L2": {"evidenceType":"D","primaryArea":"F","objectiveId":"F02","objectiveAlignment":"direct","taskLevel":"B","secondaryTags":[]},
@@ -151,7 +151,17 @@ const ASSESSMENT_V3 = (() => {
     "AG12": {"evidenceType":"Q","primaryArea":"H","objectiveId":"H02","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["context"]},
     "AG13": {"evidenceType":"Q","primaryArea":"H","objectiveId":"H06","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["verification"]},
     "AG14": {"evidenceType":"D","primaryArea":"A","objectiveId":"A03","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["delegation","diligence"]},
-    "AG15": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A03","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["delegation","diligence"]}
+    "AG15": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A03","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["delegation","diligence"]},
+    "MA01": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U01","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["delegation","multimodal","context"]},
+    "MA02": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U01","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["delegation"]},
+    "MA03": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U02","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["multimodal","verification"]},
+    "MA04": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U02","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["multimodal","delegation"]},
+    "MA05": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U03","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["multimodal","verification"]},
+    "MA06": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U04","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["description"]},
+    "MA07": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U05","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["delegation","privacy"]},
+    "MA08": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U06","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["discernment","verification"]},
+    "MA09": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U07","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["diligence","privacy"]},
+    "MA10": {"evidenceType":"Q","primaryArea":"U","objectiveId":"U08","objectiveAlignment":"direct","taskLevel":"O","secondaryTags":["mindset","verification"]}
   };
   const isRecord = value => value !== null && typeof value === "object" && !Array.isArray(value);
   const mean = values => values.reduce((sum, value) => sum + value, 0) / values.length;
@@ -199,13 +209,17 @@ const ASSESSMENT_V3 = (() => {
       type: question.type, ...classification, questionKind: classification.evidenceType === "D" ? "self-report"
         : classification.evidenceType === "T" ? "formative-text" : question.type === "knowledge" ? "knowledge" : "scenario",
       responseFormat: question.type === "text" ? "text" : question.type === "multi" ? "multi" : "choice",
-      question: question.text, responseStatus: status, rawAnswer: raw === undefined ? null : raw,
+      question: question.context ? `${question.context}\n${question.text}` : question.text,
+      responseStatus: status, rawAnswer: raw === undefined ? null : raw,
       answer: selected.map(option => option.title).join(" | "),
       answerText: question.type === "text" && typeof raw === "string" ? raw.trim() : selected.map(option => option.text || "").join(" | "),
       credit, maxCredit: classification.evidenceType === "Q" ? 1 : null,
       score: credit, scored: credit !== null, feedback: question.feedback || "",
       declaredValue: classification.evidenceType === "D" && status === "valid" ? Number(raw) : null
     };
+    const rationales = selected.map(option => option.rationale).filter(value => typeof value === "string" && value);
+    if (rationales.length) item.selectedRationales = rationales;
+    if (Array.isArray(question.sourceRefs)) item.sourceRefs = [...question.sourceRefs];
     if (classification.evidenceType === "D" && status === "valid") {
       const declared = options.find(option => option.value === Number(raw));
       item.answer = declared?.title || String(raw);

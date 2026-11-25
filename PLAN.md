@@ -4,7 +4,7 @@ Questo piano governa le prossime modifiche del progetto `AIskillTest`. Ogni mile
 
 Versione di partenza: `1.0.0`.
 
-Versione applicativa corrente: `3.0.0`, milestone 0-17 completate. La roadmap, il blueprint `1.0.0` e la milestone 17 sono stati approvati dal maintainer il `2026-11-25`. Release di riferimento: `v3.0.0`; la prossima attività è la milestone 18.
+Versione applicativa corrente: `3.1.0`, milestone 0-18 completate. La roadmap, il blueprint `1.0.0` e le milestone 17-18 sono stati approvati dal maintainer il `2026-11-25`. Release di riferimento: `v3.1.0`; la prossima attività è la milestone 19.
 
 ## Regole di release
 
@@ -60,7 +60,7 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
 
 - Revisione del piano: `2026-11-24`.
 - Branch di questa proposta documentale: `plan/modern-ai-assessment-roadmap`.
-- Stato della roadmap: approvata dal maintainer il `2026-11-25` e integrata su `main`; milestone 16 completata con blueprint `1.0.0`; milestone 17 completata e approvata, release `v3.0.0`; milestone 18-22 non avviate.
+- Stato della roadmap: approvata dal maintainer il `2026-11-25` e integrata su `main`; milestone 16 completata con blueprint `1.0.0`; milestone 17 completata e approvata, release `v3.0.0`; milestone 18 completata e approvata, release `v3.1.0`; milestone 19-22 non avviate.
 - Finalità: mantenere il valore introduttivo del test e distinguere conoscenze, pratica dichiarata ed evidenze ottenute in esercizi simulati.
 - Destinatari: persone che iniziano, utilizzatori operativi e persone che configurano o supervisionano agenti; i livelli devono essere riconoscibili senza imporre un percorso lineare.
 
@@ -663,7 +663,7 @@ Riferimenti tecnici iniziali consultati per la revisione; ricontrollare pertinen
   - startup, markup e collegamento eventi verificati con adattatore DOM in memoria; nessun dato del browser reale letto
   - verifica visiva/interattiva non eseguita: runtime Browser senza browser disponibile; desktop/mobile, download, console e traffico reali restano nella checklist manuale
 - Validazione del maintainer: approvata il `2026-11-25`, con autorizzazione a commit, merge, push e release. Gli esiti dettagliati della checklist manuale non sono stati riportati nella conversazione; resta documentato il limite della verifica dell'agente senza browser reale.
-- Stato: completata e approvata dal maintainer; release `v3.0.0`. La milestone 18 resta non avviata.
+- Stato: completata e approvata dal maintainer; release `v3.0.0`. La milestone 18 è descritta di seguito.
 
 ## Milestone 18 - AI moderne, multimodalità e scelta degli strumenti
 
@@ -688,7 +688,22 @@ Riferimenti tecnici iniziali consultati per la revisione; ricontrollare pertinen
   - avvio, navigazione, risultati, storico, export e bibliografia funzionano nelle due lingue
 - Criterio di validazione del maintainer:
   - revisione di tutte le nuove domande e completamento di una forma IT e una EN, con verifica dell'utilità per un utilizzatore operativo.
-- Stato: pianificata; non avviata.
+- Implementazione approvata (`2026-11-25`):
+  - app `3.1.0`, banca `2026.11-m18`, forme `1.4`; scoring `3.0.0`, schema `3`, blueprint `1.0.0` invariati
+  - dieci slot MA01–MA10, ciascuno con varianti A/B/C IT/EN: U01×2, U02×2, U03–U08×1, tutti Q diretti di livello O; selezione vincolata anche con ordine casuale
+  - nuovo asset statico separato `assets/modern-ai.js`; nessuna dipendenza, API, esecuzione reale di strumenti o invio di risposte
+  - contesti sintetici, compromessi espliciti e crediti 1/0,5/0 con motivazioni dopo il test; dodici fonti primarie ricontrollate, letture solo su click
+  - completo da 50 e nove tematici precedenti conservati; integrazione del completo prevista nella M22; Primi passi invariato
+  - report ed export conservano contesto, scelta, motivazione e fonti; storico 2.x/3.0.0 leggibile senza ricalcolo
+  - [revisione bilingue completa](docs/MODERN_AI_REVIEW.md), [scoring e checklist](docs/SCORING.md), README, mappa e note QA aggiornati.
+- Verifiche eseguite:
+  - 25 controlli automatici passati; 66 composizioni assessment e 6 forme didattiche
+  - matrice, traduzioni, allineamento opzioni/crediti, copertura, risultati 100/50/0, credito parziale, assenze, auto-advance/Indietro, storico, JSON/CSV e bibliografia con adattatore DOM
+  - confronto con `main` `27d6245`: 115 item nelle sei forme e loro mappa, 60 composizioni precedenti e forme didattiche invariati
+  - risposta corretta più lunga in meno della metà dei casi di ciascuna combinazione forma/lingua; equivalenza e durata restano scelte editoriali, non validate empiricamente
+  - verifica visiva/interattiva non eseguita: runtime Browser senza browser disponibile; layout desktop/mobile, interazioni/download reali, console e traffico nella checklist manuale.
+- Validazione del maintainer: approvata il `2026-11-25`, con autorizzazione a commit, merge, push e release. Gli esiti dettagliati della checklist manuale non sono stati riportati nella conversazione; resta documentato il limite della verifica dell'agente senza browser reale.
+- Stato: completata e approvata dal maintainer; release `v3.1.0`. M19 non avviata.
 
 ## Milestone 19 - Attività agentiche, supervisione e diagnosi dei workflow
 

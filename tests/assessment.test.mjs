@@ -27,7 +27,7 @@ function runtime() {
         const button = node(`history-${match[1]}`); button.dataset.historyIndex = match[1]; return button;
       });
     }, documentElement: {} } });
-  for (const name of ["questions", "i18n", "learning", "assessment", "report-ui"]) vm.runInContext(read(`assets/${name}.js`), context, { filename: name });
+  for (const name of ["questions", "i18n", "learning", "modern-ai", "assessment", "report-ui"]) vm.runInContext(read(`assets/${name}.js`), context, { filename: name });
   const app = read("assets/app.js");
   const init = app.lastIndexOf("\n    bindLanguageSwitcher();");
   assert.ok(init > 0);
@@ -41,11 +41,11 @@ function runtime() {
   return { context, run, storage, node, timers, start: () => vm.runInContext(app.slice(init), context) };
 }
 
-test("approved mapping covers 115 items and matches the Markdown inventory", () => {
+test("mapping covers 125 items and matches the Markdown inventory", () => {
   const r = runtime();
   const rows = [...read("docs/ASSESSMENT_ITEM_MAP.md").matchAll(/^\| (\S+) \| (likert|knowledge|scenario|multi|choice|text) \| ([QDT]) \| ([FUAH]) \| ([FUAH]\d{2}) \| (direct|supporting) \| ([BOS]) \| (.+) \|$/gm)];
-  assert.equal(rows.length, 115);
-  assert.equal(r.run("bank.length"), 115);
+  assert.equal(rows.length, 125);
+  assert.equal(r.run("bank.length"), 125);
   for (const row of rows) {
     const mapped = plain(r.context.core.ITEM_MAP[row[1]]);
     assert.equal(mapped.evidenceType, row[3]); assert.equal(mapped.primaryArea, row[4]);
@@ -130,10 +130,10 @@ test("comparison identity excludes answers and distinguishes versions, form, lan
   assert.notEqual(key,r.context.core.comparisonKey(report.meta,report.answers.slice(1)));
 });
 
-test("all 60 current assessment compositions calculate and render in IT/EN, A/B/C", () => {
+test("all 66 current assessment compositions calculate and render in IT/EN, A/B/C", () => {
   const r=runtime();
   const count=r.run(`(() => {let count=0;for(const language of ['it','en'])for(const form of FORM_IDS)for(const mode of TEST_MODES.filter(m=>m.type!=='learning')){state.language=language;const qs=questionsForMode(language==='en'?buildEnglishQuestionForm(form):buildQuestionForm(form),mode,true,form);if(qs.length!==(mode.id==='complete'?50:10))throw Error('Wrong count');const m={...meta,language,formId:form,testMode:{...mode,questionCount:qs.length}};const report=core.evaluate(qs,Object.fromEntries(qs.map(q=>[q.id,choose(q)])),m,'2026-11-25');if(core.reportKind(report)!=='evidence')throw Error('Wrong kind');renderDashboardWithoutSaving(report);count++;}return count;})()`);
-  assert.equal(count,60);
+  assert.equal(count,66);
 });
 
 test("learning keeps its independent report contract in both languages", () => {
@@ -192,11 +192,11 @@ test("auto-advance remains reversible and requires explicit Next for multi/text"
   assert.equal(r.run("isAutoAdvanceQuestion(bank.find(q=>q.type==='multi'))"),false);assert.equal(r.run("isAutoAdvanceQuestion(bank.find(q=>q.type==='text'))"),false);
 });
 
-test("HTML loads local classic assets with consistent 3.0.0 cache keys", () => {
+test("HTML loads local classic assets with consistent 3.1.0 cache keys", () => {
   const html=read('ai_skill_test.html');const scripts=[...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map(m=>m[1]);
-  assert.deepEqual(scripts.map(s=>s.split('?')[0]),['assets/questions.js','assets/i18n.js','assets/learning.js','assets/assessment.js','assets/report-ui.js','assets/app.js']);
-  for(const src of scripts){assert.ok(src.endsWith('?v=3.0.0'));assert.ok(fs.existsSync(path.join(root,src.split('?')[0])));}
-  assert.match(html,/Versione 3\.0\.0/);assert.doesNotMatch(html,/Champion|Expert|Indice 0-100/);
+  assert.deepEqual(scripts.map(s=>s.split('?')[0]),['assets/questions.js','assets/i18n.js','assets/learning.js','assets/modern-ai.js','assets/assessment.js','assets/report-ui.js','assets/app.js']);
+  for(const src of scripts){assert.ok(src.endsWith('?v=3.1.0'));assert.ok(fs.existsSync(path.join(root,src.split('?')[0])));}
+  assert.match(html,/Versione 3\.1\.0/);assert.doesNotMatch(html,/Champion|Expert|Indice 0-100/);
 });
 
 test("browser startup bindings, optional empty data and completion execute with a minimal DOM adapter", () => {
@@ -219,4 +219,83 @@ test("maintainer fixtures remain immutable and expose the intended contrasting e
   assert.equal(fixtures['declared-high-questions-low'].results.knowledgeByArea.A.value,0);
   assert.equal(fixtures['agents-gap'].results.knowledgeByArea.A.value,0);
   const r=runtime();for(const sample of Object.values(fixtures)){const original=JSON.stringify(sample);r.context.sample=sample;r.run('renderDashboardWithoutSaving(sample)');assert.equal(JSON.stringify(sample),original);}
+});
+
+test("Modern AI keeps the fixed ten-slot objective matrix in all six forms", () => {
+  const r=runtime();
+  const compositions=r.run(`(() => {const output=[];for(const language of ['it','en'])for(const form of FORM_IDS){state.language=language;const pool=language==='en'?buildEnglishQuestionForm(form):buildQuestionForm(form);const mode=getModeById('modern-ai');const qs=questionsForMode([...pool,{...pool.find(q=>q.sourceId==='MA01'),id:'EXTRA',sourceId:'EXTRA'}],mode,true,form);output.push(qs.map(q=>({id:q.sourceId,...core.ITEM_MAP[q.sourceId]})));}return output;})()`);
+  const expected={U01:2,U02:2,U03:1,U04:1,U05:1,U06:1,U07:1,U08:1};
+  for(const qs of compositions){
+    assert.equal(new Set(qs.map(q=>q.id)).size,10);
+    const counts={};for(const q of qs){counts[q.objectiveId]=(counts[q.objectiveId]||0)+1;assert.equal(q.evidenceType,'Q');assert.equal(q.taskLevel,'O');assert.equal(q.objectiveAlignment,'direct');}
+    assert.deepEqual(Object.fromEntries(Object.entries(counts).sort()),expected);
+  }
+  assert.throws(()=>r.run(`questionsForMode(buildQuestionForm('A').filter(q=>q.sourceId!=='MA05'),getModeById('modern-ai'))`),/Incomplete Modern AI coverage/);
+});
+
+test("Modern AI bilingual form overrides preserve every choice, score and rationale", () => {
+  const r=runtime();
+  for(const form of ['A','B','C'])for(let slot=0;slot<10;slot++){
+    r.context.form=form;r.context.slot=slot;
+    for(const language of ['it','en']){
+      r.context.language=language;
+      const pair=r.run(`(() => {state.language=language;const expected=MODERN_AI.buildQuestion(slot,form,language);const actual=(language==='en'?buildEnglishQuestionForm(form):buildQuestionForm(form)).find(q=>q.sourceId===expected.id);return {expected,actual};})()`);
+      for(const key of ['context','text','feedback','hint','options','sourceRefs'])assert.deepEqual(plain(pair.actual[key]),plain(pair.expected[key]),`${language}/${form}/${slot}/${key}`);
+      assert.deepEqual(plain(pair.actual.options.map(o=>o.score).sort()),[1,1,3,5]);
+      assert.ok(pair.actual.context.length>40);
+      assert.ok(pair.actual.options.every(o=>o.rationale.length>20&&o.text===''));
+    }
+  }
+  assert.equal(r.run(`MODERN_AI.SLOTS.every((s,i)=>new Set(FORM_IDS.map(f=>MODERN_AI.FORMS[f][i].context[0])).size===3)`),true);
+});
+
+test("Modern AI outcome bands reflect Q only, equal objective weights and missing answers", () => {
+  const r=runtime();
+  const outcomes=r.run(`(() => {const qs=questionsForMode(buildQuestionForm('A'),getModeById('modern-ai'));const m={...meta,testMode:{id:'modern-ai',questionCount:10}};const evaluate=score=>core.evaluate(qs,Object.fromEntries(qs.map(q=>[q.id,q.options.findIndex(o=>o.score===score)])),m,'now');const correct=Object.fromEntries(qs.map(q=>[q.id,choose(q)]));const wrongOne={...correct,[qs[0].id]:choose(qs[0],false)};const missing={...correct};delete missing[qs[9].id];return {high:evaluate(5),partial:evaluate(3),low:evaluate(1),wrongOne:core.evaluate(qs,wrongOne,m,'now'),missing:core.evaluate(qs,missing,m,'now')};})()`);
+  for(const [key,value,band] of [['high',100,'strong'],['partial',50,'developing'],['low',0,'review']]){
+    const report=outcomes[key];assert.equal(report.results.knowledgeByArea.U.value,value);assert.equal(report.results.knowledgeByArea.U.band,band);assert.equal(report.results.knowledgeByArea.U.status,'reached');
+    assert.equal(report.coverage.byEvidence.Q.valid,10);
+    for(const type of ['D','T','E'])assert.equal(report.coverage.byEvidence[type].proposed,0);
+    for(const area of ['F','A','H'])assert.equal(report.results.knowledgeByArea[area].value,null);
+    assert.equal(report.score,undefined);
+  }
+  assert.equal(outcomes.wrongOne.results.knowledgeByArea.U.value,93.75);
+  assert.equal(outcomes.missing.results.knowledgeByArea.U.status,'partial');assert.equal(outcomes.missing.results.knowledgeByArea.U.band,null);
+  assert.equal(outcomes.missing.coverage.byEvidence.Q.missing,1);
+});
+
+test("Modern AI starts, returns to previous answers and saves complete bilingual export records", () => {
+  for(const language of ['it','en'])for(const form of ['A','B','C']){
+    const r=runtime();r.context.language=language;r.context.form=form;
+    r.run(`state.language=language;state.selectedModeId='modern-ai';writeFormCycle(language,'modern-ai',{remaining:[form],last:null});startAssessment()`);
+    assert.equal(r.run('state.formId'),form);assert.equal(r.run('questions.length'),10);
+    assert.equal(r.node('questionContext').hidden,false);assert.ok(r.node('questionContext').textContent.length>40);
+    const rationale=r.run('questions[0].options[choose(questions[0])].rationale');assert.ok(!r.node('options').innerHTML.includes(rationale));
+    r.run(`state.answers[questions[0].id]=choose(questions[0]);scheduleAutoAdvance(questions[0],0,state.answers[questions[0].id])`);
+    assert.equal(r.timers.size,1);r.timers.values().next().value();assert.equal(r.run('state.index'),1);r.run('goPrev()');assert.equal(r.run('state.index'),0);assert.equal(r.run('state.answers[questions[0].id]===choose(questions[0])'),true);
+    r.run(`state.answers=Object.fromEntries(questions.map(q=>[q.id,choose(q)]));finishAssessment()`);
+    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.1.0');assert.equal(report.meta.scoringVersion,'3.0.0');assert.equal(report.meta.reportSchemaVersion,3);assert.equal(report.meta.questionBankVersion,'2026.11-m18');assert.equal(report.meta.formVersion,'1.4');assert.equal(report.meta.testMode.id,'modern-ai');
+    assert.deepEqual(JSON.parse(r.storage.get('aiSkillAssessmentHistory'))[0],report);
+    for(const item of report.answers){assert.ok(item.question.includes('\n'));assert.equal(item.selectedRationales.length,1);assert.ok(item.sourceRefs.length>0);assert.ok(r.node('dashboard').innerHTML.includes(item.selectedRationales[0].replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;')));}
+    r.run('downloadBlob=(content,name,type)=>{globalThis.download={content,name,type}};exportJson(state.latestReport)');assert.deepEqual(JSON.parse(r.context.download.content),report);
+    const rows=plain(r.context.core.csvRows(report));assert.ok(rows.some(row=>row[1]==='answers.0.selectedRationales.0'));assert.ok(rows.some(row=>row[1]==='answers.0.sourceRefs.0'));assert.equal(rows.find(row=>row[1]==='meta.assessmentVersion')[2],'3.1.0');
+    const original=r.storage.get('aiSkillAssessmentHistory');r.run('loadLastReport()');assert.equal(r.storage.get('aiSkillAssessmentHistory'),original);
+  }
+});
+
+test("pre-existing paths keep their counts, evidence mix and independent form rotation", () => {
+  const r=runtime();
+  assert.equal(r.run(`TEST_MODES.filter(m=>m.type==='topic'&&m.id!=='modern-ai').every(mode=>FORM_IDS.every(form=>questionsForMode(buildQuestionForm(form),mode,true,form).every(q=>!q.sourceId.startsWith('MA'))))`),true);
+  const report=r.run('full()');assert.equal(report.answers.length,50);assert.equal(report.coverage.byEvidence.Q.proposed,27);assert.equal(report.coverage.byEvidence.D.proposed,21);assert.equal(report.coverage.byEvidence.T.proposed,2);
+  r.run(`writeFormCycle('it','complete',{remaining:['B'],last:'A'});writeFormCycle('it','modern-ai',{remaining:['C'],last:'B'});selectNextForm('modern-ai','it')`);
+  assert.equal(r.run(`selectNextForm('complete','it')`),'B');
+  r.run(`state.selectedModeId='complete';startAssessment()`);assert.equal(r.node('questionContext').hidden,true);assert.equal(r.node('questionContext').textContent,'');
+});
+
+test("modern bibliography is bilingual, primary-source based and contains explicit links only", () => {
+  const r=runtime();
+  const sources=plain(r.run('MODERN_AI.SOURCES'));assert.equal(sources.length,12);assert.equal(new Set(sources.map(s=>s.id)).size,12);
+  for(const source of sources){const url=new URL(source.url);assert.equal(url.protocol,'https:');assert.ok(['developers.openai.com','developers.google.com','aistudio.google.com','aifluencyframework.org'].includes(url.hostname));}
+  for(const language of ['it','en']){r.context.language=language;r.run('state.language=language;applyBibliographyText()');assert.equal((r.node('modernAiSourcesList').innerHTML.match(/<a /g)||[]).length,12);assert.match(r.node('modernAiSourcesNote').textContent,/2026-11-25/);}
+  assert.doesNotMatch(read('assets/modern-ai.js'),/\bfetch\s*\(|XMLHttpRequest|sendBeacon|<iframe|<img|<audio|<video/);
 });
