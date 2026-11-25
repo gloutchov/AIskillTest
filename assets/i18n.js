@@ -12,6 +12,7 @@ const AI_SKILL_I18N = {
       "Fondamenti tecnici LLM": "LLM technical foundations",
       "AI moderne": "Modern AI",
       "AI Agents": "AI Agents",
+      "Harness": "Harness",
       "Fluency · Delegation": "Fluency · Delegation",
       "Fluency · Description": "Fluency · Description",
       "Fluency · Discernment": "Fluency · Discernment",
@@ -27,6 +28,12 @@ const AI_SKILL_I18N = {
       ["I turn it into a verified, shareable practice", "I check its outcomes, can document the method, and can help other people apply and adapt it."]
     ],
     modes: {
+      harness: {
+        label: "Harness",
+        shortLabel: "Harness",
+        description: "The agent execution system: context, integrations, permissions, checkpoints, recovery, and outcome checks.",
+        outputNote: "Ten scenarios with fixed coverage; system knowledge without operating real environments."
+      },
       "modern-ai": {
         label: "Modern AI",
         shortLabel: "Modern AI",

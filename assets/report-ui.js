@@ -28,7 +28,7 @@ function reportItem(item) {
     ${item.feedback ? `<p>${escapeHtml(item.feedback)}</p>` : ""}
     ${Array.isArray(item.selectedRationales) ? item.selectedRationales.filter(reason => typeof reason === "string").map(reason => `<p><strong>${reportText("La tua scelta", "Your choice")}:</strong> ${escapeHtml(reason)}</p>`).join("") : ""}
     ${Array.isArray(item.sourceRefs) ? `<p class="small">${item.sourceRefs.map(id => {
-      const source = [...MODERN_AI.SOURCES, ...AGENTIC_WORKFLOWS.SOURCES].find(source => source.id === id);
+      const source = [...MODERN_AI.SOURCES, ...AGENTIC_WORKFLOWS.SOURCES, ...HARNESS_ASSESSMENT.SOURCES].find(source => source.id === id);
       return source ? `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.title)}</a>` : escapeHtml(id);
     }).join(" · ")}</p>` : ""}
     ${selection?.omitted?.length ? `<p><strong>${reportText("Azioni utili non selezionate", "Useful actions not selected")}:</strong> ${escapeHtml(selection.omitted.join("; "))}</p>` : ""}

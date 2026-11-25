@@ -4,7 +4,7 @@ Questo piano governa le prossime modifiche del progetto `AIskillTest`. Ogni mile
 
 Versione di partenza: `1.0.0`.
 
-Versione applicativa corrente: `3.2.0`, milestone 0-19 completate. La roadmap, il blueprint `1.0.0` e le milestone 17-19 sono stati approvati dal maintainer il `2026-11-25`. Release di riferimento: `v3.2.0`; la prossima attività è la milestone 20.
+Versione applicativa corrente: `3.3.0`, milestone 0-20 completate. La roadmap, il blueprint `1.0.0` e le milestone 17-20 sono stati approvati dal maintainer il `2026-11-25`. Release di riferimento: `v3.3.0`; la prossima attività è la milestone 21.
 
 ## Regole di release
 
@@ -60,7 +60,7 @@ Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mind
 
 - Revisione del piano: `2026-11-24`.
 - Branch di questa proposta documentale: `plan/modern-ai-assessment-roadmap`.
-- Stato della roadmap: approvata dal maintainer il `2026-11-25` e integrata su `main`; milestone 16 completata con blueprint `1.0.0`; milestone 17 completata e approvata, release `v3.0.0`; milestone 18 completata e approvata, release `v3.1.0`; milestone 19 completata e approvata, release `v3.2.0`; milestone 20-22 non avviate.
+- Stato della roadmap: approvata dal maintainer il `2026-11-25` e integrata su `main`; milestone 16 completata con blueprint `1.0.0`; milestone 17 completata e approvata, release `v3.0.0`; milestone 18 completata e approvata, release `v3.1.0`; milestone 19 completata e approvata, release `v3.2.0`; milestone 20 completata e approvata, release `v3.3.0`; milestone 21-22 non avviate.
 - Finalità: mantenere il valore introduttivo del test e distinguere conoscenze, pratica dichiarata ed evidenze ottenute in esercizi simulati.
 - Destinatari: persone che iniziano, utilizzatori operativi e persone che configurano o supervisionano agenti; i livelli devono essere riconoscibili senza imporre un percorso lineare.
 
@@ -744,7 +744,7 @@ Riferimenti tecnici iniziali consultati per la revisione; ricontrollare pertinen
   - risposta corretta più lunga in 1–3 casi su 10 per ciascuna forma/lingua; carico medio progettato 85–91 parole per scenario, durata stimata 8–12 minuti; nessuna equivalenza psicometrica o durata empirica dimostrata
   - verifica visiva/interattiva non eseguita: il tentativo Browser restituisce «No browser is available»; desktop/mobile, download, console e traffico reali restano nella checklist manuale.
 - Validazione del maintainer: approvata il `2026-11-25`, con autorizzazione a commit, merge, push e release. Gli esiti dettagliati della checklist manuale non sono stati riportati nella conversazione; resta documentato il limite della verifica dell'agente senza browser reale.
-- Stato: completata e approvata dal maintainer; release `v3.2.0`. M20 non avviata.
+- Stato: completata e approvata dal maintainer; release `v3.2.0`. La M20 è descritta di seguito.
 
 ## Milestone 20 - Harness, gestione del contesto e integrazioni
 
@@ -770,7 +770,22 @@ Riferimenti tecnici iniziali consultati per la revisione; ricontrollare pertinen
   - tutti gli strumenti descritti restano simulati; il percorso non richiede installazioni, credenziali o connessioni reali
 - Criterio di validazione del maintainer:
   - revisione di copertura, correttezza tecnica e comprensibilità delle forme IT/EN, evitando dipendenze da una singola piattaforma.
-- Stato: pianificata; non avviata.
+- Implementazione approvata (`2026-11-25`):
+  - app `3.3.0`, banca `2026.11-m20`, forme `1.6`; scoring `3.0.0`, schema `3`, blueprint `1.0.0` invariati
+  - nuovo asset statico `assets/harness.js`: HR01–HR10 con varianti A/B/C IT/EN, matrice H01, H02×2, H03×2, H04×2, H05×2, H06; tutti Q diretti di livello S
+  - componenti e valutatore, selezione di fonti/contesto, compattazione/memoria/consegne, API/MCP/skill/AGENTS.md, permessi locali e remoti, schemi e limiti, checkpoint/ricevute/ripresa, metriche e regressioni
+  - termini e contratti espliciti nei casi, nessuna installazione, credenziale reale, chiamata AI o valutatore remoto; tracce soltanto ipotetiche, senza E o qualifiche di amministrazione
+  - report, storico e JSON/CSV riusano contesti, motivazioni, fonti e suggerimenti salvati nella lingua della sessione; nessun ricalcolo dei record precedenti
+  - tredicesimo percorso nel carosello e bibliografia bilingue con nove fonti primarie ricontrollate; [revisione di tutte le varianti](docs/HARNESS_REVIEW.md), README, mappa, scoring e QA aggiornati
+  - completo da 50 e tutte le composizioni precedenti conservati; laboratorio E e completo target restano nelle M21/M22.
+- Verifiche eseguite:
+  - 35 controlli automatici passati, 72 composizioni assessment e 6 forme didattiche
+  - matrice, livelli, traduzioni/layout/crediti, risultati 100/50/0, peso per obiettivo, assenze, avvio/navigazione/Indietro, storico, suggerimenti salvati, JSON/CSV e bibliografia con adattatore DOM
+  - confronto con `main` `dcf6428`: contenuti e metadati dei 135 item precedenti nelle sei forme, 66 composizioni precedenti e forme didattiche invariati
+  - risposta corretta più lunga in 0–4 casi su 10 per forma/lingua; carico medio progettato 91–103 parole per scenario, durata stimata 8–12 minuti, senza equivalenza o durata empiricamente validate
+  - verifica visiva/interattiva non eseguita: Browser restituisce «No browser is available» e non elenca browser disponibili; desktop/mobile, tredici indicatori, download, console e traffico reali nella checklist manuale.
+- Validazione del maintainer: approvata il `2026-11-25`, con autorizzazione a commit, merge, push, tag e rimozione del branch. Gli esiti dettagliati della checklist manuale non sono stati riportati nella conversazione; resta documentato il limite della verifica dell'agente senza browser reale.
+- Stato: completata e approvata dal maintainer; release `v3.3.0`. M21 non avviata.
 
 ## Milestone 21 - Laboratorio operativo con simulazioni locali
 

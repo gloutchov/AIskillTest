@@ -82,7 +82,7 @@ function cloneQuestionData(value) {
       return selected;
     }
 
-    const APP_VERSION = "3.2.0";
+    const APP_VERSION = "3.3.0";
     const DEFAULT_TEST_MODE_ID = "complete";
     const COMPLETE_TEST_COUNT = 50;
     const TOPIC_TEST_COUNT = 10;
@@ -102,6 +102,7 @@ function cloneQuestionData(value) {
       "Fondamenti tecnici LLM",
       "AI moderne",
       "AI Agents",
+      "Harness",
       "Fluency · Delegation",
       "Fluency · Description",
       "Fluency · Discernment",
@@ -170,6 +171,16 @@ function cloneQuestionData(value) {
         questionLimit: TOPIC_TEST_COUNT,
         description: "Workflow, agente singolo o più agenti; strumenti, supervisione, istruzioni non fidate e diagnosi delle tracce.",
         outputNote: "Dieci scenari con copertura fissa; giudizio sulle decisioni, senza esecuzioni reali."
+      },
+      {
+        id: "harness",
+        label: "Harness",
+        shortLabel: "Harness",
+        type: "topic",
+        section: "Harness",
+        questionLimit: TOPIC_TEST_COUNT,
+        description: "Il sistema di esecuzione dell'agente: contesto, integrazioni, permessi, checkpoint, ripresa e verifica degli esiti.",
+        outputNote: "Dieci scenari con copertura fissa; conoscenza del sistema, senza gestione di ambienti reali."
       },
       {
         id: "delegation",
@@ -628,6 +639,11 @@ function cloneQuestionData(value) {
 
     function localizedSectionGuide(section) {
       const guide = sectionGuides[section] || sectionGuides.Literacy;
+      if (section === "Harness") return {
+        title: "Harness",
+        text: isEnglish() ? "The harness manages execution, tools, context, and state. Interpret hypothetical cases; no environment is built or administered." : "L'harness gestisce esecuzione, strumenti, contesto e stato. Interpreti casi ipotetici; nessun ambiente viene costruito o amministrato.",
+        items: isEnglish() ? ["Context and handoffs", "APIs, MCP, skills, and instructions", "Enforced permissions and contracts", "Checkpoints, recovery, and evaluation"] : ["Contesto e consegne", "API, MCP, skill e istruzioni", "Permessi effettivi e contratti", "Checkpoint, ripresa e valutazione"]
+      };
       if (section === "AI moderne") return {
         title: isEnglish() ? "Modern AI" : "AI moderne",
         text: isEnglish() ? "Choose capabilities and tools for the stated task. These are hypothetical scenarios, not practical executions." : "Scegli capacità e strumenti adatti al compito dichiarato. Sono scenari ipotetici, non esecuzioni pratiche.",
@@ -739,7 +755,7 @@ function cloneQuestionData(value) {
       return localizeQuestions(baseQuestions.map(baseQuestion => ({
         ...cloneQuestionData(baseQuestion),
         // New scenarios have form-specific layouts; legacy English layouts stay independent.
-        ...(baseQuestion.section === "AI moderne" || baseQuestion.pathId === "agents" ? cloneQuestionData(formOverrides[formId]?.[baseQuestion.id] || {}) : {}),
+        ...(baseQuestion.section === "AI moderne" || ["agents", "harness"].includes(baseQuestion.pathId) ? cloneQuestionData(formOverrides[formId]?.[baseQuestion.id] || {}) : {}),
         sourceId: baseQuestion.id,
         formId,
         id: `${formId}_${baseQuestion.id}`
@@ -837,6 +853,14 @@ function cloneQuestionData(value) {
         ? `Primary sources reviewed on ${AGENTIC_WORKFLOWS.REVIEW_DATE}. Traces and rubrics are original editorial scenarios, not validated measures of practical execution. Links open on a click.`
         : `Fonti primarie ricontrollate il ${AGENTIC_WORKFLOWS.REVIEW_DATE}. Tracce e rubriche sono scenari editoriali originali, non misure validate di esecuzione pratica. Link aperti su click.`;
       if (agentsList) agentsList.innerHTML = AGENTIC_WORKFLOWS.SOURCES.map(source => `<article class="bibliography-item"><div class="bibliography-source">${escapeHtml(source.id)}</div><h3>${escapeHtml(source.title)}</h3><p>${escapeHtml(source.note[isEnglish() ? 1 : 0])}</p><a class="bibliography-link" href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${isEnglish() ? "Open source ↗" : "Apri la fonte ↗"}</a></article>`).join("");
+      const harnessTitle = $("harnessSourcesTitle");
+      const harnessNote = $("harnessSourcesNote");
+      const harnessList = $("harnessSourcesList");
+      if (harnessTitle) harnessTitle.textContent = isEnglish() ? "Harness: context, integration, and recovery" : "Harness: contesto, integrazioni e ripresa";
+      if (harnessNote) harnessNote.textContent = isEnglish()
+        ? `Primary sources reviewed on ${HARNESS_ASSESSMENT.REVIEW_DATE}. Scenarios assess understanding, not observed ability to build or administer a harness. Links open on a click.`
+        : `Fonti primarie ricontrollate il ${HARNESS_ASSESSMENT.REVIEW_DATE}. Gli scenari esplorano la comprensione, non l'abilità osservata di costruire o amministrare un harness. Link aperti su click.`;
+      if (harnessList) harnessList.innerHTML = HARNESS_ASSESSMENT.SOURCES.map(source => `<article class="bibliography-item"><div class="bibliography-source">${escapeHtml(source.id)}</div><h3>${escapeHtml(source.title)}</h3><p>${escapeHtml(source.note[isEnglish() ? 1 : 0])}</p><a class="bibliography-link" href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${isEnglish() ? "Open source ↗" : "Apri la fonte ↗"}</a></article>`).join("");
     }
 
     function applyLanguageChrome() {
@@ -1072,10 +1096,10 @@ function cloneQuestionData(value) {
     function questionsForMode(sourceQuestions, mode, randomize = false, formId = null) {
       const selectedMode = mode || getModeById(DEFAULT_TEST_MODE_ID);
       const pool = modePoolQuestions(sourceQuestions, selectedMode);
-      if (selectedMode.id === "modern-ai" || selectedMode.id === "agents") {
-        const slots = selectedMode.id === "agents" ? AGENTIC_WORKFLOWS.SLOTS : MODERN_AI.SLOTS;
+      const slots = { "modern-ai": MODERN_AI.SLOTS, agents: AGENTIC_WORKFLOWS.SLOTS, harness: HARNESS_ASSESSMENT.SLOTS }[selectedMode.id];
+      if (slots) {
         const selected = slots.map(slot => pool.find(question => (question.sourceId || question.id) === slot.id));
-        if (selected.some(question => !question)) throw new Error(selectedMode.id === "agents" ? "Incomplete AI Agents coverage" : "Incomplete Modern AI coverage");
+        if (selected.some(question => !question)) throw new Error(`Incomplete ${{ agents: "AI Agents", harness: "Harness", "modern-ai": "Modern AI" }[selectedMode.id]} coverage`);
         return randomize ? shuffledValues(selected) : selected;
       }
       const limit = selectedMode.questionLimit || pool.length;
@@ -1093,7 +1117,7 @@ function cloneQuestionData(value) {
     }
 
     function modeDuration(mode) {
-      if (mode.id === "modern-ai" || mode.id === "agents") return isEnglish() ? "8-12 minutes (estimate)" : "8-12 minuti (stima)";
+      if (["modern-ai", "agents", "harness"].includes(mode.id)) return isEnglish() ? "8-12 minutes (estimate)" : "8-12 minuti (stima)";
       if (isEnglish()) return mode.id === DEFAULT_TEST_MODE_ID ? "12-15 minutes" : "3-5 minutes";
       return mode.id === DEFAULT_TEST_MODE_ID ? "12-15 minuti" : "3-5 minuti";
     }

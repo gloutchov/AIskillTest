@@ -171,7 +171,17 @@ const ASSESSMENT_V3 = (() => {
     "AW07": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A04","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["diligence","privacy"]},
     "AW08": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A04","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["diligence","privacy"]},
     "AW09": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A05","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["verification"]},
-    "AW10": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A05","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["verification","context"]}
+    "AW10": {"evidenceType":"Q","primaryArea":"A","objectiveId":"A05","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["verification","context"]},
+    "HR01": {"evidenceType":"Q","primaryArea":"H","objectiveId":"H01","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["delegation","verification"]},
+    "HR02": {"evidenceType":"Q","primaryArea":"H","objectiveId":"H02","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["context","verification"]},
+    "HR03": {"evidenceType":"Q","primaryArea":"H","objectiveId":"H02","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["context"]},
+    "HR04": {"evidenceType":"Q","primaryArea":"H","objectiveId":"H03","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["delegation"]},
+    "HR05": {"evidenceType":"Q","primaryArea":"H","objectiveId":"H03","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["context","diligence"]},
+    "HR06": {"evidenceType":"Q","primaryArea":"H","objectiveId":"H04","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["diligence","privacy"]},
+    "HR07": {"evidenceType":"Q","primaryArea":"H","objectiveId":"H04","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["verification"]},
+    "HR08": {"evidenceType":"Q","primaryArea":"H","objectiveId":"H05","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["context","verification"]},
+    "HR09": {"evidenceType":"Q","primaryArea":"H","objectiveId":"H05","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["context","verification"]},
+    "HR10": {"evidenceType":"Q","primaryArea":"H","objectiveId":"H06","objectiveAlignment":"direct","taskLevel":"S","secondaryTags":["verification"]}
   };
   const isRecord = value => value !== null && typeof value === "object" && !Array.isArray(value);
   const mean = values => values.reduce((sum, value) => sum + value, 0) / values.length;
