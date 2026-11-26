@@ -2,6 +2,8 @@
 
 La patch M24 `3.5.2` coordina bozze e storico tra schede. Lo scoring e la banca dati della `3.5.0` restano il riferimento. Vedi [bozze tra schede](#m24--bozze-tra-schede).
 
+La patch M25 `3.5.3` protegge le celle testuali durante la generazione del CSV. Vedi [contratto dell'export CSV](#m25--export-csv).
+
 Implementazione della milestone 17, basata su [ASSESSMENT_BLUEPRINT.md](../ASSESSMENT_BLUEPRINT.md) `1.0.0` e sulla [mappa degli item](ASSESSMENT_ITEM_MAP.md). Scoring approvato il `2026-11-25`, release `v3.0.0`; M18/M19 approvate nelle release `3.1.0`/`3.2.0`. La M20 introduce l'app `3.3.0`, approvata dal maintainer il `2026-11-25`, con dieci slot Harness e gli stessi calcoli, soglie e schema.
 
 M21: app `3.4.0`, scoring `3.1.0`, schema `4`, casi/laboratorio `1.0.0`, approvata dal maintainer il `2026-11-25`; release `v3.4.0`. La nuova versione introduce le regole E, senza cambiare il calcolo Q o riscrivere i report schema 3/scoring 3.0. [Contratto, varianti e validazione](OPERATIONAL_LAB_REVIEW.md).
@@ -165,3 +167,9 @@ Interrompi riporta ai percorsi anche se la rimozione della bozza fallisce. L’a
 Un blocco esclusivo Web Locks coordina le operazioni sullo storage della stessa origine. Ogni ripresa avanza la revisione e ogni scrittura verifica il record da cui parte. Le notifiche `storage` aggiornano la disponibilità della bozza e avvisano la scheda che ha perso il salvataggio. Quando il browser non consente il blocco, si può completare il test in memoria ed esportarlo. [Specifiche Web Locks](https://w3c.github.io/web-locks/), [evento storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/storage_event).
 
 I nuovi report schema 4 aggiungono `meta.sessionId` per impedire più salvataggi della stessa sessione. I report già registrati mantengono i campi originali. Cancella dati locali aggiorna la chiave `aiSkillAssessmentClearGeneration` con un valore casuale. Un tentativo di salvataggio iniziato prima della cancellazione resta esportabile in memoria. La rimozione della bozza lascia un marcatore vuoto nella chiave corrente per ignorare eventuali bozze riscritte da vecchie schede. Le versioni precedenti accedono ancora allo storico senza coordinamento e vanno ricaricate dopo l'aggiornamento. [Checklist M24](QA.md#m24--bozze-tra-schede-e-bibliografia).
+
+## M25 — Export CSV
+
+Le righe mantengono le tre colonne `type,field,value`. Il serializzatore verifica ogni cella testuale, compresi nomi di campi provenienti da report storici. Se l'inizio del testo può essere interpretato come formula, antepone un apostrofo e racchiude il risultato tra virgolette. Il controllo copre anche spazi iniziali, caratteri di controllo e varianti a larghezza intera dei segni di formula. Le righe del CSV sono separate da CRLF. All'interno di una cella, virgole, punti e virgola, virgolette e nuove righe seguono il quoting del CSV. I valori numerici, compresi zero e numeri negativi, sono emessi senza prefisso. Il valore nullo resta una cella vuota. La protezione si applica durante l'export. JSON e record in memoria o nello storico conservano i valori originali.
+
+Per importare usare UTF-8, separatore virgola e doppi apici come delimitatore di testo. In Excel usare Power Query da **Dati → Da testo/CSV**, mantenendo le interruzioni racchiuse tra virgolette nello stesso campo. L'importazione guidata legacy di Excel può spezzare i campi multilinea. A seconda del lettore, l'apostrofo può essere visibile. [Connettore CSV di Power Query](https://learn.microsoft.com/power-query/connectors/text-csv), [opzioni di importazione di Calc](https://help.libreoffice.org/latest/en-GB/text/shared/00/00000208.html?DbPAR=CALC).

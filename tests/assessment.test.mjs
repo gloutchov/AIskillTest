@@ -166,17 +166,75 @@ test("exports preserve metadata, absent values, decisions and special characters
   for(const record of [legacy(),null,{meta:{reportSchemaVersion:99},payload:'original'}]){assert.ok(r.context.core.csvRows(record).length>1);r.context.sample=record;r.run('exportJson(sample)');assert.deepEqual(JSON.parse(r.context.download.content),record);}
 });
 
+test("CSV exports protect profile text, free answers and historical field names", () => {
+  const r = runtime();
+  r.run("downloadBlob=(content,name,type)=>{globalThis.download={content,name,type}}");
+  const report = plain(r.run("full()"));
+  const textIndex = report.answers.findIndex(answer => answer.evidenceType === "T");
+  report.meta.name = "=1+1";
+  report.meta.role = " \uFEFF+1+1";
+  report.meta.area = "@team";
+  report.answers[textIndex].rawAnswer = '-"uno", due;\nterza riga';
+  r.context.record = report;
+  r.run("renderDashboard(record)");
+  r.node("exportCsvBtn").events.click();
+  const csv = r.context.download.content;
+  assert.ok(csv.startsWith("type,field,value\r\n"));
+  assert.ok(csv.includes('meta,meta.name,"\'=1+1"\r\n'));
+  assert.ok(csv.includes('meta,meta.role,"\' \uFEFF+1+1"\r\n'));
+  assert.ok(csv.includes('meta,meta.area,"\'@team"\r\n'));
+  assert.ok(csv.includes(`answers,answers.${textIndex}.rawAnswer,"'-""uno"", due;\nterza riga"\r\n`));
+  r.node("exportJsonBtn").events.click();
+  assert.deepEqual(JSON.parse(r.context.download.content), report);
+
+  const previous = {
+    ...legacy(),
+    score: { ...legacy().score, adjustment: -12.5, zero: 0, missing: null },
+    "＝chiave": ["\tprova", "\rprova", "\nprova", "-12.5", "testo =1+1"]
+  };
+  const stored = JSON.stringify([previous]);
+  r.storage.set("aiSkillAssessmentHistory", stored);
+  r.run("loadLastReport()");
+  r.node("exportCsvBtn").events.click();
+  const historicalCsv = r.context.download.content;
+  assert.ok(historicalCsv.includes('"\'＝chiave","\'＝chiave.0","\'\tprova"'));
+  assert.ok(historicalCsv.includes('"\'＝chiave","\'＝chiave.1","\'\rprova"'));
+  assert.ok(historicalCsv.includes('"\'＝chiave","\'＝chiave.2","\'\nprova"'));
+  assert.ok(historicalCsv.includes('"\'＝chiave","\'＝chiave.3","\'-12.5"'));
+  assert.ok(historicalCsv.includes('"\'＝chiave","\'＝chiave.4",testo =1+1'));
+  assert.ok(historicalCsv.includes('score,score.adjustment,-12.5\r\nscore,score.zero,0\r\nscore,score.missing,\r\n'));
+  r.node("exportJsonBtn").events.click();
+  assert.deepEqual(JSON.parse(r.context.download.content), previous);
+  assert.equal(r.storage.get("aiSkillAssessmentHistory"), stored);
+});
+
+test("CSV and JSON downloads keep matching names with or without an optional profile", () => {
+  const r = runtime();
+  r.run("downloadBlob=(content,name,type)=>{globalThis.download={content,name,type}}");
+  const report = plain(r.run("full()"));
+  for (const [name, prefix] of [["", "assessment"], ["Mario Rossi", "mario-rossi"]]) {
+    report.meta.name = name;
+    r.context.record = report;
+    r.run("exportCsv(record)");
+    assert.equal(r.context.download.name, `ai-skill-${prefix}-2026-11-25-complete-form-a.csv`);
+    r.run("exportJson(record)");
+    assert.equal(r.context.download.name, `ai-skill-${prefix}-2026-11-25-complete-form-a.json`);
+  }
+  r.run("exportCsv({})");
+  assert.equal(r.context.download.name, "ai-skill-assessment-undated.csv");
+});
+
 test("auto-advance remains reversible and requires explicit Next for multi/text", () => {
   const r=runtime();r.run(`state.meta=meta; questions=questionsForMode(buildQuestionForm('A'),getModeById('complete'));state.index=0;state.answers[questions[0].id]=5; scheduleAutoAdvance(questions[0],0,5);`);
   assert.equal(r.timers.size,1);r.timers.values().next().value();assert.equal(r.run('state.index'),1);r.run('goPrev()');assert.equal(r.run('state.index'),0);assert.equal(r.run('state.answers[questions[0].id]'),5);
   assert.equal(r.run("isAutoAdvanceQuestion(bank.find(q=>q.type==='multi'))"),false);assert.equal(r.run("isAutoAdvanceQuestion(bank.find(q=>q.type==='text'))"),false);
 });
 
-test("HTML loads local classic assets with consistent 3.5.2 cache keys", () => {
+test("HTML loads local classic assets with consistent 3.5.3 cache keys", () => {
   const html=read('ai_skill_test.html');const scripts=[...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map(m=>m[1]);
   assert.deepEqual(scripts.map(s=>s.split('?')[0]),['assets/questions.js','assets/i18n.js','assets/learning.js','assets/modern-ai.js','assets/agentic-workflows.js','assets/harness.js','assets/operational-lab.js','assets/complete-assessment.js','assets/lab-ui.js','assets/assessment.js','assets/report-ui.js','assets/app.js']);
-  for(const src of scripts){assert.ok(src.endsWith('?v=3.5.2'));assert.ok(fs.existsSync(path.join(root,src.split('?')[0])));}
-  assert.match(html,/Versione 3\.5\.2/);assert.doesNotMatch(html,/Champion|Expert|Indice 0-100/);
+  for(const src of scripts){assert.ok(src.endsWith('?v=3.5.3'));assert.ok(fs.existsSync(path.join(root,src.split('?')[0])));}
+  assert.match(html,/Versione 3\.5\.3/);assert.doesNotMatch(html,/Champion|Expert|Indice 0-100/);
 });
 
 test("browser startup bindings, optional empty data and completion execute with a minimal DOM adapter", () => {
@@ -254,11 +312,11 @@ test("Modern AI starts, returns to previous answers and saves complete bilingual
     r.run(`state.answers[questions[0].id]=choose(questions[0]);scheduleAutoAdvance(questions[0],0,state.answers[questions[0].id])`);
     assert.equal(r.timers.size,1);r.timers.values().next().value();assert.equal(r.run('state.index'),1);r.run('goPrev()');assert.equal(r.run('state.index'),0);assert.equal(r.run('state.answers[questions[0].id]===choose(questions[0])'),true);
     r.run(`state.answers=Object.fromEntries(questions.map(q=>[q.id,choose(q)]));finishAssessment()`);
-    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.2');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.testMode.id,'modern-ai');
+    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.3');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.testMode.id,'modern-ai');
     assert.deepEqual(JSON.parse(r.storage.get('aiSkillAssessmentHistory'))[0],report);
     for(const item of report.answers){assert.ok(item.question.includes('\n'));assert.equal(item.selectedRationales.length,1);assert.ok(item.sourceRefs.length>0);assert.ok(r.node('dashboard').innerHTML.includes(item.selectedRationales[0].replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;')));}
     r.run('downloadBlob=(content,name,type)=>{globalThis.download={content,name,type}};exportJson(state.latestReport)');assert.deepEqual(JSON.parse(r.context.download.content),report);
-    const rows=plain(r.context.core.csvRows(report));assert.ok(rows.some(row=>row[1]==='answers.0.selectedRationales.0'));assert.ok(rows.some(row=>row[1]==='answers.0.sourceRefs.0'));assert.equal(rows.find(row=>row[1]==='meta.assessmentVersion')[2],'3.5.2');
+    const rows=plain(r.context.core.csvRows(report));assert.ok(rows.some(row=>row[1]==='answers.0.selectedRationales.0'));assert.ok(rows.some(row=>row[1]==='answers.0.sourceRefs.0'));assert.equal(rows.find(row=>row[1]==='meta.assessmentVersion')[2],'3.5.3');
     const original=r.storage.get('aiSkillAssessmentHistory');r.run('loadLastReport()');assert.equal(r.storage.get('aiSkillAssessmentHistory'),original);
   }
 });
@@ -348,7 +406,7 @@ test("Agents completion, navigation, frozen recommendations, history and exports
     r.run(`state.answers[questions[0].id]=choose(questions[0],false);scheduleAutoAdvance(questions[0],0,state.answers[questions[0].id])`);
     assert.equal(r.timers.size,1);r.timers.values().next().value();assert.equal(r.run('state.index'),1);r.run('goPrev()');assert.equal(r.run('state.index'),0);assert.equal(r.run('state.answers[questions[0].id]===choose(questions[0],false)'),true);
     r.run(`state.answers=Object.fromEntries(questions.map(q=>[q.id,q.options.findIndex(o=>o.score===3)]));finishAssessment()`);
-    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.2');assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.testMode.id,'agents');assert.equal(report.meta.formId,form);assert.equal(report.meta.language,language);
+    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.3');assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.testMode.id,'agents');assert.equal(report.meta.formId,form);assert.equal(report.meta.language,language);
     assert.equal(report.results.nextSteps.length,5);assert.ok(report.answers.every(q=>q.selectedRationales.length===1&&q.question.includes('\n')&&typeof q.nextStep==='string'));
     assert.match(r.node('dashboard').innerHTML,language==='it'?/Per approfondire le scelte/:/Develop your decisions/);
     r.run('downloadBlob=(content,name,type)=>{globalThis.download={content,name,type}};exportJson(state.latestReport)');assert.deepEqual(JSON.parse(r.context.download.content),report);
@@ -406,7 +464,7 @@ test("Harness starts, navigates and persists frozen bilingual report/export cont
     const first=r.run('questions[0].options[choose(questions[0])].rationale');assert.ok(!r.node('options').innerHTML.includes(first));
     r.run(`state.answers[questions[0].id]=choose(questions[0]);scheduleAutoAdvance(questions[0],0,state.answers[questions[0].id])`);assert.equal(r.timers.size,1);r.timers.values().next().value();assert.equal(r.run('state.index'),1);r.run('goPrev()');assert.equal(r.run('state.index'),0);assert.equal(r.run('state.answers[questions[0].id]===choose(questions[0])'),true);
     r.run(`state.answers=Object.fromEntries(questions.map(q=>[q.id,q.options.findIndex(o=>o.score===3)]));finishAssessment()`);
-    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.2');assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.testMode.id,'harness');assert.equal(report.meta.formId,form);assert.equal(report.meta.language,language);assert.equal(report.results.nextSteps.length,6);
+    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.3');assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.testMode.id,'harness');assert.equal(report.meta.formId,form);assert.equal(report.meta.language,language);assert.equal(report.results.nextSteps.length,6);
     assert.ok(report.answers.every(q=>q.question.includes('\n')&&q.selectedRationales.length===1&&typeof q.nextStep==='string'));
     r.run('downloadBlob=(content,name,type)=>{globalThis.download={content,name,type}};exportJson(state.latestReport)');assert.deepEqual(JSON.parse(r.context.download.content),report);
     const rows=plain(r.context.core.csvRows(report));for(const field of ['answers.0.nextStep','answers.0.selectedRationales.0','answers.0.sourceRefs.0','results.nextSteps.0.text'])assert.ok(rows.some(row=>row[1]===field));

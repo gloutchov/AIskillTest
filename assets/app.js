@@ -82,7 +82,7 @@ function cloneQuestionData(value) {
       return selected;
     }
 
-    const APP_VERSION = "3.5.2";
+    const APP_VERSION = "3.5.3";
     const HISTORY_KEY = "aiSkillAssessmentHistory";
     const ASSESSMENT_EPOCH_KEY = "aiSkillAssessmentClearGeneration";
     const DEFAULT_TEST_MODE_ID = "complete";
@@ -2464,7 +2464,7 @@ function cloneQuestionData(value) {
 
     function exportCsv(report) {
       if (report === undefined) return;
-      const csv = ASSESSMENT_V3.csvRows(report).map(row => row.map(csvCell).join(",")).join("\n");
+      const csv = ASSESSMENT_V3.csvRows(report).map(row => row.map(csvCell).join(",")).join("\r\n");
       downloadBlob(csv, reportFileName(report, "csv"), "text/csv;charset=utf-8");
     }
 
@@ -2479,9 +2479,11 @@ function cloneQuestionData(value) {
     }
 
     function csvCell(value) {
-      const str = String(value ?? "");
-      if (/[",\r\n;]/.test(str)) return `"${str.replace(/"/g, '""')}"`;
-      return str;
+      // Quoting alone does not keep spreadsheet readers from interpreting a cell as a formula.
+      const protect = typeof value === "string" && /^[\s\p{Cf}\p{Cc}]*[=+@＝＋－＠\t\r\n-]/u.test(value);
+      const text = protect ? "'" + value : String(value ?? "");
+      if (protect || /[",\r\n;]/.test(text)) return `"${text.replace(/"/g, '""')}"`;
+      return text;
     }
 
     function downloadBlob(content, fileName, type) {

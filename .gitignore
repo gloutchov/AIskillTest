@@ -9,8 +9,8 @@ Thumbs.db
 
 # Logs and local exports
 *.log
-ai-skill-assessment-*.json
-ai-skill-assessment-*.csv
+ai-skill-*.json
+ai-skill-*.csv
 
 # Local browser profiles used during validation
 .tmp-edge-profile/

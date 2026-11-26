@@ -4,7 +4,7 @@ Questo piano governa le prossime modifiche del progetto `AIskillTest`. Ogni mile
 
 Versione di partenza: `1.0.0`.
 
-Release di riferimento `v3.5.2`, con le milestone 0–24 completate. La M24 è stata approvata dal maintainer il `2026-11-26`. La prossima attività della roadmap di review è la M25.
+Release di riferimento `v3.5.3`, con le milestone 0–25 completate. La M25 è stata approvata dal maintainer il `2026-11-26`. La prossima attività della roadmap di review è la M26.
 
 ## Regole di release
 
@@ -853,7 +853,7 @@ Base della review `8a98a8f`. I target sono indicativi e seguono l'ordine delle m
 | --- | --- | --- | --- |
 | 23 | Recupero dei risultati e interruzione con storage indisponibile | `3.5.1` | Completata |
 | 24 | Bozze tra schede, compatibilità tra versioni e stile dei link bibliografici | `3.5.2` | Completata |
-| 25 | Export CSV sicuro e protezione degli export dal versionamento | `3.5.3` | Pianificata |
+| 25 | Export CSV sicuro e protezione degli export dal versionamento | `3.5.3` | Completata |
 | 26 | Report storici danneggiati e gestione sicura dei campi | `3.5.4` | Pianificata |
 | 27 | Navigazione da tastiera e distribuzione sulla landing | `3.5.5` | Pianificata |
 | 28 | Pulizia del codice orfano e archivio dei quesiti Agents originali | `3.5.6` | Pianificata |
@@ -884,6 +884,8 @@ Base della review `8a98a8f`. I target sono indicativi e seguono l'ordine delle m
 - Branch `fix/safe-csv-exports`, target patch `3.5.3`.
 - Proteggere le celle testuali da interpretazione come formule nei lettori supportati. Coprire metadati, risposte, chiavi e contenuti legacy, preservando numeri, separatori e nuove righe. Conservare l'export JSON fedele al record.
 - Allineare `.gitignore` ai nomi realmente scaricati e verificare i nomi con e senza dati del profilo. Provare l'importazione in un foglio di calcolo con dati sintetici.
+- L'export applica la protezione testuale a tutte e tre le colonne, compresi i report storici. Git ignora i CSV e JSON con prefisso `ai-skill-`. [Verifiche M25](docs/QA.md#m25--export-csv-e-file-locali).
+- Verifica locale con 71 test passati, importazione in Excel e quattro download in Edge. Il maintainer ha approvato la chiusura della M25 per la release `v3.5.3` il `2026-11-26`.
 
 ### M26 — Report storici danneggiati e gestione sicura dei campi
 

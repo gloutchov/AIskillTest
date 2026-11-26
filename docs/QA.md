@@ -4,7 +4,7 @@ Riferimento corrente: M22, release `3.5.0`, banca `2026.11-m22`, forma `1.8`; sc
 
 Questa è la checklist riutilizzabile per nuove modifiche. Le verifiche storiche in SCORING e nei documenti M18–M21 descrivono le rispettive release, senza attestare il browser della M22.
 
-Per le patch successive vedi [recupero e storage M23](#m23--recupero-e-storage) e [bozze e bibliografia M24](#m24--bozze-tra-schede-e-bibliografia).
+Per le patch successive vedi [recupero e storage M23](#m23--recupero-e-storage), [bozze e bibliografia M24](#m24--bozze-tra-schede-e-bibliografia) ed [export CSV M25](#m25--export-csv-e-file-locali).
 
 ## Verifiche automatiche
 
@@ -73,3 +73,15 @@ Patch `3.5.2`, approvata dal maintainer il `2026-11-26` dopo una prova con esito
 5. Aprire la bibliografia dalla landing e dai risultati. In entrambi i gruppi indicati nella milestone, confrontare tipografia, colore, sottolineatura e freccia dei link con quelli delle altre fonti, anche dopo il passaggio da IT a EN.
 
 Edge headless su server statico locale e profilo temporaneo ha verificato tipografia, colore, sottolineatura ed etichetta dei sei link in IT/EN. Con due schede ha verificato ripresa del completo, avanzamento dopo una risposta, avvisi di cambio scheda, interruzione senza perdere la bozza altrui, completamento di Primi passi con storico e pulsanti di export e cancellazione dei dati con la bozza aperta altrove. La suite automatica copre anche completamento del completo e del laboratorio, conflitti sul report ed esportazione dei dati con l'adattatore DOM. I download effettivi, la prova mobile e la pubblicazione su GitHub Pages restano da verificare.
+
+## M25 — Export CSV e file locali
+
+Patch `3.5.3`, approvata dal maintainer il `2026-11-26`. Usare dati sintetici. La suite esercita i pulsanti di esportazione del report corrente e di uno storico 2.x. Copre metadati, risposte libere, chiavi legacy, varianti a larghezza intera, spazi e caratteri di controllo iniziali, numeri negativi, zero e valori nulli. Confronta il JSON con il report originale e verifica il nome dei file con e senza profilo.
+
+1. Completare un test con un nome facoltativo e un altro senza nome. Esportare entrambi i formati e controllare prefisso `ai-skill-`, data, modalità e forma. Controllare anche il nome senza data per un report che ne è privo.
+2. In Excel usare **Dati → Da testo/CSV** con separatore virgola e UTF-8. Mantenere le interruzioni racchiuse tra virgolette nello stesso campo. Verificare che le celle protette restino testo. Controllare anche accenti, virgole, doppi apici, nuove righe, zero e numeri negativi.
+3. Verificare con `git check-ignore -v` i nomi effettivi dei CSV e JSON, compresa una copia con suffisso aggiunto dal browser. Le fixture in `tests/fixtures/` restano tracciabili.
+
+71 test automatici superati. Power Query in Excel 16 ha importato due CSV sintetici, uno del test completo e uno storico 2.x, con tre colonne, campi multilinea integri e nessuna formula. Su un campione a righe singole Excel ha anche confermato zero e valori negativi numerici e celle protette testuali. Il parser CSV di Python ha confermato struttura e valori. L'importazione guidata legacy di Excel ha spezzato un campo multilinea del report completo.
+
+Edge headless ha completato quattro download da localhost, JSON e CSV con e senza nome facoltativo. I nomi corrispondono a data, modalità e forma registrate. Il JSON registra la versione `3.5.3`. `git check-ignore` ha verificato i nomi con e senza profilo e una copia con suffisso.

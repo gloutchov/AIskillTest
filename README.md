@@ -6,7 +6,7 @@ Questionario interattivo in italiano e inglese per esplorare conoscenze, giudizi
 
 L'assessment produce un quadro delle evidenze: conoscenze/scenari, pratiche dichiarate, testi con feedback ed esiti simulati restano separati, con copertura e limiti per area. È pensato come strumento diagnostico interno e migliorabile, non come test psicometrico validato.
 
-Versione corrente dell'app **`3.5.2`**, milestone 24 approvata dal maintainer il `2026-11-26`. Il tag di riferimento è `v3.5.2`.
+Versione corrente dell'app **`3.5.3`**, milestone 25 approvata dal maintainer il `2026-11-26`. Il tag di riferimento è `v3.5.3`.
 
 ### Nota sullo sviluppo
 
@@ -126,10 +126,12 @@ Riprendere in un'altra scheda assegna a quella scheda il salvataggio della bozza
 ### Export e storico
 
 - JSON: contiene il record completo originale, con versioni di app/scoring/schema/blueprint, lingua, modalità, forma, evidenze, copertura e risposte.
-- CSV: formato `type,field,value` con percorsi di campo stabili, compresi metadati, risposte, evidenze e copertura; sostituisce il precedente CSV a sezioni.
+- CSV: formato UTF-8 `type,field,value` con metadati, risposte, evidenze e copertura. I testi che un foglio di calcolo potrebbe leggere come formule ricevono un apostrofo iniziale. I valori numerici rimangono numeri nel CSV. In Excel usare **Dati → Da testo/CSV** con separatore virgola. [Impostazioni di importazione](docs/SCORING.md#m25--export-csv).
 - Storico locale: conserva fino a 100 report apribili singolarmente. I report 2.x restano originali con avviso, senza ricalcolo, medie o confronti diretti con 3.x. Formati sconosciuti sono consultabili ed esportabili senza alterare i dati.
 
 Gli export sono azioni manuali. Se il salvataggio fallisce, il report resta disponibile nella pagina per l'export. La pagina permette di riprovare quando l'errore è recuperabile. Puoi consultare lo storico e poi tornare al report pendente. Una bozza esistente resta disponibile per riprendere il completo o il laboratorio. Tornare ai percorsi richiede conferma. Alla chiusura o al ricaricamento la pagina richiede un avviso, che il browser può omettere. Se il browser non ha salvato alcuna bozza, l’export è il modo per conservare il report prima di chiudere.
+
+I file scaricati iniziano con `ai-skill-`. Il nome può includere quello facoltativo del profilo. Git ignora gli export CSV e JSON con questo prefisso.
 
 Gli item AI moderne, Agents e Harness salvano contesto e domanda completi, motivazione della scelta e riferimenti alle fonti anche negli export. Nei nuovi scenari Agents e Harness il report conserva inoltre suggerimenti per gli obiettivi con almeno una scelta parziale o errata, deduplicati per obiettivo. I report 3.0.0/3.1.0/3.2.0 restano originali e leggibili, senza aggiungere suggerimenti ricavati dalla banca corrente. La nuova banca e la nuova forma producono una diversa firma di confronto anche nei percorsi preesistenti; non si ricalcolano lo storico o le sue versioni.
 
@@ -145,8 +147,8 @@ L'icona a forma di casa accanto al selettore della lingua rimanda al sito princi
 
 ### Versioning
 
-- Versione app `3.5.2`.
-- Tag Git `v3.5.2`.
+- Versione app `3.5.3`.
+- Tag Git `v3.5.3`.
 - Banca domande: `2026.11-m22`.
 - Forma assessment: `1.8`.
 - Scoring: `3.1.0`; schema report `4`; blueprint `1.0.0`; casi/laboratorio `1.0.0`.
@@ -194,7 +196,7 @@ Interactive questionnaire in Italian and English exploring GenAI knowledge, judg
 
 The assessment produces an evidence overview: knowledge/scenarios, self-reported practices, text with feedback, and simulated outcomes remain separate, with area coverage and limits. It is intended as an internal diagnostic tool that can evolve over time, not as a psychometrically validated test.
 
-The current app version is **`3.5.2`**. The maintainer approved milestone 24 on `2026-11-26`. The reference tag is `v3.5.2`.
+The current app version is **`3.5.3`**. The maintainer approved milestone 25 on `2026-11-26`. The reference tag is `v3.5.3`.
 
 ### Development Note
 
@@ -314,10 +316,12 @@ Resuming in another tab gives that tab control over subsequent draft saves. Repl
 ### Export And History
 
 - JSON: includes the complete original record, with app/scoring/schema/blueprint versions, language, mode, form, evidence, coverage, and answers.
-- CSV: uses `type,field,value` with stable field paths for metadata, answers, evidence, and coverage; replaces the previous section-based CSV.
+- CSV: UTF-8 `type,field,value` with metadata, answers, evidence, and coverage. Text that a spreadsheet could read as a formula gets a leading apostrophe. Numeric values stay numeric in the CSV. In Excel use **Data → From Text/CSV** with a comma delimiter. [Import settings](docs/SCORING.md#m25--export-csv).
 - Local history: keeps up to 100 individually openable reports. Reports from 2.x remain original with a notice, without recalculation, averaging, or direct comparison with 3.x. Unknown formats can be inspected and exported without altering data.
 
 Exports are explicit user actions. If saving fails, the report stays available on the page for export. The page offers a retry for recoverable errors. You can open the history and return to the pending report. An existing draft remains available to resume the full test or lab. Returning to the paths requires confirmation. The page requests a warning before closing or reloading, which the browser can omit. If no draft was saved, export the report to keep it before closing.
+
+Downloaded filenames start with `ai-skill-` and may include the optional profile name. Git ignores CSV and JSON exports with that prefix.
 
 Modern AI, Agents, and Harness items store the full context and question, selected-choice rationale, and source references in exports too. For new Agents and Harness scenarios, reports also retain suggestions for objectives with at least one partial or incorrect choice, deduplicated by objective. Reports from 3.0.0/3.1.0/3.2.0 remain original and readable without adding suggestions from the current bank. The new bank and form create a different comparison signature even for existing paths; history and its version metadata are never recalculated.
 
@@ -333,8 +337,8 @@ The home icon next to the language selector links to the main website, [glaucosi
 
 ### Versioning
 
-- App version `3.5.2`.
-- Git tag `v3.5.2`.
+- App version `3.5.3`.
+- Git tag `v3.5.3`.
 - Question bank: `2026.11-m22`.
 - Assessment form: `1.8`.
 - Scoring: `3.1.0`; report schema `4`; blueprint `1.0.0`; cases/lab `1.0.0`.
