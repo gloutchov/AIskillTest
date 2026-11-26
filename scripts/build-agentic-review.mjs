@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const context = vm.createContext({});
-for (const name of ["questions", "i18n", "agentic-workflows", "assessment"]) {
+for (const name of ["questions", "i18n", "agentic-workflows", "operational-lab", "complete-assessment", "assessment"]) {
   vm.runInContext(fs.readFileSync(path.join(root, `assets/${name}.js`), "utf8"), context);
 }
 const { agents, objectives } = vm.runInContext("({agents: AGENTIC_WORKFLOWS, objectives: ASSESSMENT_V3.OBJECTIVES})", context);

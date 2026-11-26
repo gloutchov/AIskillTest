@@ -4,7 +4,7 @@ Questo piano governa le prossime modifiche del progetto `AIskillTest`. Ogni mile
 
 Versione di partenza: `1.0.0`.
 
-Versione applicativa corrente: `3.4.0`, milestone 0-21 completate. La roadmap, il blueprint `1.0.0` e le milestone 17-21 sono stati approvati dal maintainer il `2026-11-25`. Release di riferimento: `v3.4.0`; la prossima attività è la milestone 22, non ancora avviata.
+Versione applicativa corrente: `3.5.0`, milestone 0-22 completate. La M22 è stata approvata dal maintainer il `2026-11-26`, con autorizzazione a commit, merge, push, tag e rimozione del branch. Release di riferimento: `v3.5.0`; roadmap di aggiornamento conclusa. La checklist conserva i limiti di verifica e gli esiti manuali non riportati.
 
 ## Regole di release
 
@@ -30,37 +30,25 @@ Versione applicativa corrente: `3.4.0`, milestone 0-21 completate. La roadmap, i
 
 ## Inventario attuale del test
 
-Ogni forma del test contiene 50 domande.
+Il completo M22 contiene 50 unità di risposta in ogni forma A/B/C e IT/EN. Le sei decisioni E appartengono a due casi, già inclusi nelle 50 unità.
 
-| Area | Domande |
-| --- | ---: |
-| Literacy | 7 |
-| Fondamenti tecnici LLM | 11 |
-| AI Agents | 4 |
-| Fluency - Delegation | 3 |
-| Fluency - Description | 4 |
-| Fluency - Discernment | 4 |
-| Fluency - Diligence | 3 |
-| Mindset | 7 |
-| Practical Lab | 7 |
-| Totale | 50 |
+| Area primaria | Q | D | T | E | Totale |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| F — Fondamenti | 11 | 1 | 0 | 0 | 12 |
+| U — Uso operativo e multimodale | 8 | 3 | 2 | 3 | 16 |
+| A — Agenti | 9 | 1 | 0 | 2 | 12 |
+| H — Harness | 8 | 1 | 0 | 1 | 10 |
+| Totale | 36 | 6 | 2 | 6 | 50 |
 
-Vista aggregata:
+I 36 Q includono sei prove di comprensione e trenta scenari, con tutti i 25 obiettivi direttamente coperti. D e T non producono punti; E resta separato. Nessun conteggio aggiuntivo dai tag trasversali. Durata completa 40–55 minuti, stima editoriale da verificare; nessuna misura umana è stata comunicata nel messaggio di approvazione.
 
-| Macro-area | Domande |
-| --- | ---: |
-| Literacy inclusi fondamenti tecnici e item Agents collegati | 21 |
-| Fluency incluse le 4D e prove pratiche collegate | 21 |
-| Mindset incluse prove pratiche collegate | 8 |
-| Practical Lab trasversale | 7 |
-
-Nota: alcune domande del Practical Lab contribuiscono a Literacy, Fluency o Mindset. La sezione AI Agents ha 4 domande nel test completo e un pool tematico dedicato da 15 domande per alimentare la rotazione A/B/C.
+La banca tematica conserva 145 ID Q/D/T; il completo usa 44 ID dedicati con riusi espliciti e sei ID LAB: 195 ID classificati complessivi. Modern AI, Agents e Harness mantengono dieci Q con matrice vincolata; gli altri tematici e Primi passi conservano le proprie forme; il laboratorio autonomo resta da due casi/sei decisioni. Quattordici percorsi in totale. [Revisione bilingue e report campione](docs/M22_REVIEW.md).
 
 ### Evoluzione pianificata: AI moderne, agenti, harness e valutazione
 
 - Revisione del piano: `2026-11-24`.
 - Branch di questa proposta documentale: `plan/modern-ai-assessment-roadmap`.
-- Stato della roadmap: approvata dal maintainer il `2026-11-25` e integrata su `main`; milestone 16 completata con blueprint `1.0.0`; milestone 17 completata e approvata, release `v3.0.0`; milestone 18 completata e approvata, release `v3.1.0`; milestone 19 completata e approvata, release `v3.2.0`; milestone 20 completata e approvata, release `v3.3.0`; milestone 21-22 non avviate.
+- Stato della roadmap: approvata dal maintainer il `2026-11-25` e integrata su `main`; milestone 16 completata con blueprint `1.0.0`; milestone 17 completata e approvata, release `v3.0.0`; milestone 18 completata e approvata, release `v3.1.0`; milestone 19 completata e approvata, release `v3.2.0`; milestone 20 completata e approvata, release `v3.3.0`; milestone 21 completata e approvata, release `v3.4.0`; milestone 22 completata e approvata il `2026-11-26`, release `v3.5.0`.
 - Finalità: mantenere il valore introduttivo del test e distinguere conoscenze, pratica dichiarata ed evidenze ottenute in esercizi simulati.
 - Destinatari: persone che iniziano, utilizzatori operativi e persone che configurano o supervisionano agenti; i livelli devono essere riconoscibili senza imporre un percorso lineare.
 
@@ -845,7 +833,17 @@ Riferimenti tecnici iniziali consultati per la revisione; ricontrollare pertinen
   - fonti ricontrollate e limiti delle prove documentati; annotare ciò che non è stato possibile verificare
 - Criterio di validazione del maintainer:
   - approvazione della distribuzione finale e di report campione; completamento manuale di almeno una forma IT e una EN prima di commit, merge, push e tag.
-- Stato: pianificata; non avviata.
+- Implementazione M22 (`2026-11-26`, approvata dal maintainer):
+  - corretto il riepilogo obsoleto che indicava M21 non avviata; nuova app `3.5.0`, banca `2026.11-m22`, forma `1.8`, scoring/schema/blueprint/casi invariati
+  - modulo statico `assets/complete-assessment.js`, matrice C01–C50, 36 Q + 6 D + 2 T + 6 E; 12 F, 16 U, 12 A, 10 H, tutti i 25 obiettivi con Q diretto
+  - 44 ID Q/D/T dedicati, 31 riusi tracciati con originSourceId e 13 nuovi contenuti (11 F, due D); sei ID LAB con slotId, K1/K2 raggruppati senza doppio conteggio
+  - quiz rimescolati entro area, due casi finali, inversione verifica/calcolo senza perdita degli altri item; contatore unità/caso e riconferma della consegna dopo modifiche
+  - bozza locale unica condivisa con laboratorio, completo draft schema 2: risposte/testi/azioni confermate e ordine, senza dati iniziali del profilo; ripresa senza consumo della forma, incompatibilità esplicita
+  - landing, distribuzione e nota privacy bilingui; criticità E già nel riepilogo del report; storico ed export conservano gli originali, slot e origini dei riusi
+  - [revisione di 300 unità bilingui e sei report campione](docs/M22_REVIEW.md), [checklist unica](docs/QA.md), README, scoring, blueprint, inventario e QA aggiornati; fonti primarie ricontrollate
+- Verifiche locali: 58 controlli automatici passati, 72 composizioni assessment, 6 forme laboratorio e 6 didattiche; matrice completa nelle sei forme, scenari limite, recupero, JSON/CSV e confronto con contenuti originali `v3.4.0` (`afb0887`). Il browser non è disponibile all'agente; desktop/mobile, tastiera reale, download/stampa, console/rete e durata umana restano da verificare.
+- Validazione del maintainer: approvata il `2026-11-26` con autorizzazione esplicita a commit, merge, tag, push e rimozione del branch. Gli esiti dettagliati delle prove manuali IT/EN e desktop/mobile non sono stati riportati nella conversazione; restano documentati i limiti della verifica dell’agente senza browser reale e della stima di durata.
+- Stato: completata e approvata dal maintainer; release `v3.5.0`. Roadmap M16–M22 conclusa; restano soltanto attività opzionali di backlog.
 
 ## Backlog opzionale
 

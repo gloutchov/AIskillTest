@@ -4,7 +4,7 @@
 - Revisione: `2026-11-25`; mappa dei 115 item approvata nella milestone 16, estesa con MA01–MA10 nella M18 approvata; AW01–AW10 nella M19 approvata; HR01–HR10 aggiunti nella M20 approvata dal maintainer; blueprint `1.0.0`.
 - Contratto e definizioni: [ASSESSMENT_BLUEPRINT.md](../ASSESSMENT_BLUEPRINT.md).
 
-La tabella classifica tutti i 145 `sourceId` di `baseQuestions`, ciascuno una sola volta. È implementata nei metadati JavaScript e non assegna retroattivamente punteggi ai report storici. Il widget attuale è mantenuto come informazione tecnica; il tipo di evidenza dipende dal compito. Tutti i multi/choice della banca restano Q. La M21 aggiunge sei decisioni E di tipo simulation in un inventario separato qui sotto (151 ID totali), senza inserirle in baseQuestions.
+La tabella classifica tutti i 145 `sourceId` di `baseQuestions`, ciascuno una sola volta. È implementata nei metadati JavaScript e non assegna retroattivamente punteggi ai report storici. Il widget attuale è mantenuto come informazione tecnica; il tipo di evidenza dipende dal compito. Tutti i multi/choice della banca restano Q. La M21 ha aggiunto sei decisioni E di tipo simulation in un inventario separato, senza inserirle in baseQuestions. La M22 approvata aggiunge 44 ID del completo: 195 ID classificati complessivi; mappa separata in fondo, con origine esplicita dei riusi.
 
 Le righe valgono come mappa degli obiettivi comuni per le forme A/B/C e le traduzioni IT/EN. Gli override attuali richiedono revisione editoriale quando si riusano gli item: la classificazione non dimostra equivalenza di difficoltà. Non si assegna automaticamente un nuovo slot C01-C50 a un vecchio ID.
 
@@ -192,3 +192,54 @@ Sei ID separati dai 145 quesiti base: 151 ID complessivi. In ogni forma A/B/C IT
 | LAB_K2_RESUME | simulation | E | H | H05 | direct | S | simulation, verification |
 
 [Varianti e rubriche bilingui, effetti e stato recuperabile](OPERATIONAL_LAB_REVIEW.md). I sei passi sono due casi, non sei contesti operativi indipendenti. Nessun obiettivo Q riceve punti o copertura grazie a questi E.
+
+## Slot del completo nella milestone 22
+
+Release v3.5.0, approvata dal maintainer il 2026-11-26. I 44 ID seguenti sono separati da baseQuestions: 36 Q, 6 D e 2 T. Le sei E usano gli ID LAB con slotId C26/C27/C28/C39/C40/C50, senza duplicare il conteggio. In totale 195 ID classificati: 145 tematici + 44 completo + 6 E. Allineamento direct per tutti i nuovi slot; nessun credito dai tag. C41 e C43 sono Q di comprensione che riusano i compiti di identificazione di HR01/HR04. [Varianti e motivazioni bilingui](M22_REVIEW.md).
+
+| ID | Tipo di prova | Evidenza | Area | Obiettivo | Livello | Origine esplicita |
+| --- | --- | --- | --- | --- | --- | --- |
+| C01 | knowledge | Q | F | F01 | B | nuovo M22 |
+| C02 | scenario | Q | F | F01 | B | nuovo M22 |
+| C03 | scenario | Q | F | F02 | B | nuovo M22 |
+| C04 | knowledge | Q | F | F02 | B | nuovo M22 |
+| C05 | scenario | Q | F | F03 | O | nuovo M22 |
+| C06 | scenario | Q | F | F03 | O | nuovo M22 |
+| C07 | knowledge | Q | F | F04 | O | nuovo M22 |
+| C08 | scenario | Q | F | F04 | O | nuovo M22 |
+| C09 | knowledge | Q | F | F05 | B | nuovo M22 |
+| C10 | scenario | Q | F | F06 | O | nuovo M22 |
+| C11 | scenario | Q | F | F06 | O | nuovo M22 |
+| C12 | self-report | D | F | F03 | O | L3 |
+| C13 | scenario | Q | U | U01 | O | MA01 |
+| C14 | scenario | Q | U | U02 | O | MA03 |
+| C15 | scenario | Q | U | U03 | O | MA05 |
+| C16 | scenario | Q | U | U04 | O | MA06 |
+| C17 | scenario | Q | U | U05 | O | MA07 |
+| C18 | scenario | Q | U | U06 | O | MA08 |
+| C19 | scenario | Q | U | U07 | O | MA09 |
+| C20 | scenario | Q | U | U08 | O | MA10 |
+| C21 | self-report | D | U | U04 | O | F_DS_1 |
+| C22 | self-report | D | U | U07 | O | F_DG_1 |
+| C23 | self-report | D | U | U08 | O | M1 |
+| C24 | formative-text | T | U | U04 | O | P_DS_1 |
+| C25 | formative-text | T | U | U06 | O | P_DI_1 |
+| C29 | scenario | Q | A | A01 | O | AW01 |
+| C30 | scenario | Q | A | A01 | S | AW02 |
+| C31 | scenario | Q | A | A02 | S | AW03 |
+| C32 | scenario | Q | A | A02 | S | AW04 |
+| C33 | scenario | Q | A | A03 | O | AW05 |
+| C34 | scenario | Q | A | A03 | S | AW06 |
+| C35 | scenario | Q | A | A04 | S | AW07 |
+| C36 | scenario | Q | A | A04 | S | AW08 |
+| C37 | scenario | Q | A | A05 | S | AW09 |
+| C38 | self-report | D | A | A03 | S | nuovo M22 |
+| C41 | knowledge | Q | H | H01 | S | HR01 |
+| C42 | scenario | Q | H | H02 | S | HR02 |
+| C43 | knowledge | Q | H | H03 | S | HR04 |
+| C44 | scenario | Q | H | H03 | S | HR05 |
+| C45 | scenario | Q | H | H04 | S | HR06 |
+| C46 | scenario | Q | H | H04 | S | HR07 |
+| C47 | scenario | Q | H | H05 | S | HR08 |
+| C48 | scenario | Q | H | H06 | S | HR10 |
+| C49 | self-report | D | H | H02 | S | nuovo M22 |

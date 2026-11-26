@@ -186,6 +186,10 @@ const ASSESSMENT_V3 = (() => {
   ["U06", "U06", "U06", "A04", "A03", "H05"].forEach((objectiveId, i) => {
     ITEM_MAP[LOCAL_LAB.IDS[i]] = { evidenceType: "E", primaryArea: objectiveId[0], objectiveId, objectiveAlignment: "direct", taskLevel: i < 3 ? "O" : "S", secondaryTags: ["simulation", "verification"] };
   });
+  COMPLETE_ASSESSMENT.SLOTS.filter(slot => slot.evidenceType !== "E").forEach(slot => {
+    const { evidenceType, primaryArea, objectiveId, objectiveAlignment, taskLevel, secondaryTags } = slot;
+    ITEM_MAP[slot.id] = { evidenceType, primaryArea, objectiveId, objectiveAlignment, taskLevel, secondaryTags };
+  });
   const isRecord = value => value !== null && typeof value === "object" && !Array.isArray(value);
   const mean = values => values.reduce((sum, value) => sum + value, 0) / values.length;
   const clampCredit = value => Math.max(0, Math.min(1, value));
@@ -245,6 +249,8 @@ const ASSESSMENT_V3 = (() => {
     if (rationales.length) item.selectedRationales = rationales;
     if (Array.isArray(question.sourceRefs)) item.sourceRefs = [...question.sourceRefs];
     if (typeof question.nextStep === "string") item.nextStep = question.nextStep;
+    if (typeof question.slotId === "string") item.slotId = question.slotId;
+    if (typeof question.originSourceId === "string") item.originSourceId = question.originSourceId;
     if (classification.evidenceType === "D" && status === "valid") {
       const declared = options.find(option => option.value === Number(raw));
       item.answer = declared?.title || String(raw);

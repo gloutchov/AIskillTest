@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const read=name=>fs.readFileSync(path.join(root,name),'utf8');
 
-export function runtime() {
+export function runtime({ assetReader = read } = {}) {
   const storage = new Map();
   const nodes = new Map();
   const timers = new Map();
@@ -24,15 +24,16 @@ export function runtime() {
         const button = node(`history-${match[1]}`); button.dataset.historyIndex = match[1]; return button;
       });
     }, documentElement: {} } });
-  for (const name of ["questions", "i18n", "learning", "modern-ai", "agentic-workflows", "harness", "operational-lab", "lab-ui", "assessment", "report-ui"]) vm.runInContext(read(`assets/${name}.js`), context, { filename: name });
-  const app = read("assets/app.js");
+  const scripts = [...assetReader("ai_skill_test.html").matchAll(/<script src="(assets\/[^?]+)\?[^\"]+"><\/script>/g)].map(match => match[1]);
+  for (const name of scripts.filter(name => name !== "assets/app.js")) vm.runInContext(assetReader(name), context, { filename: name });
+  const app = assetReader("assets/app.js");
   const init = app.lastIndexOf("\n    bindLanguageSwitcher();");
   assert.ok(init > 0);
   vm.runInContext(app.slice(0, init), context, { filename: "app.js (without browser startup)" });
   const run = code => vm.runInContext(code, context);
   run(`globalThis.core = ASSESSMENT_V3; globalThis.bank = baseQuestions; globalThis.appState = state;
     globalThis.meta = { assessmentVersion: APP_VERSION, language: 'it', formId: 'A', formVersion: FORM_VERSION, questionBankVersion: QUESTION_BANK_VERSION, testMode: { id: 'complete', type: 'complete', questionCount: 50 }, selfAssessment: {} };
-    globalThis.choose = (q, high = true) => q.type === 'likert' ? (high ? 5 : 1) : q.type === 'text' ? q.rubric.criteria.map(c => c.keywords[0]).join(' ') : q.type === 'multi' ? q.options.map((o,i) => ({o,i})).filter(x => high ? x.o.score > 0 : x.o.score < 0).map(x => x.i) : q.options.reduce((best,o,i) => (high ? o.score > q.options[best].score : o.score < q.options[best].score) ? i : best, 0);
+    globalThis.choose = (q, high = true) => q.type === 'simulation' ? ({LAB_K1_VERIFY: high?'all-rows':'trust-draft', LAB_K1_CORRECT: {operation:high?'sum':'draft',total:high?LOCAL_LAB.variant(q.formId,'it').total:0}, LAB_K1_RELEASE:{action:'release',reference:high,keepClaim:!high}, LAB_K2_SOURCE:high?'use-data':'export', LAB_K2_SCOPE:high?'draft-only':'external', LAB_K2_RESUME:high?'continue':'repeat-update'})[q.sourceId] : q.type === 'likert' ? (high ? 5 : 1) : q.type === 'text' ? q.rubric.criteria.map(c => c.keywords[0]).join(' ') : q.type === 'multi' ? q.options.map((o,i) => ({o,i})).filter(x => high ? x.o.score > 0 : x.o.score < 0).map(x => x.i) : q.options.reduce((best,o,i) => (high ? o.score > q.options[best].score : o.score < q.options[best].score) ? i : best, 0);
     globalThis.full = (high = true) => { const qs = questionsForMode(buildQuestionForm('A'), getModeById('complete')); const answers = Object.fromEntries(qs.map(q => [q.id,choose(q, high)])); return core.evaluate(qs, answers, meta, '2026-11-25T12:00:00Z'); };
   `);
   return { context, run, storage, node, timers, start: () => vm.runInContext(app.slice(init), context) };

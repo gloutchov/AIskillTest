@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const context = vm.createContext({});
-for (const name of ["questions", "i18n", "modern-ai", "assessment"]) {
+for (const name of ["questions", "i18n", "modern-ai", "operational-lab", "complete-assessment", "assessment"]) {
   vm.runInContext(fs.readFileSync(path.join(root, `assets/${name}.js`), "utf8"), context);
 }
 const { modern, objectives } = vm.runInContext("({modern: MODERN_AI, objectives: ASSESSMENT_V3.OBJECTIVES})", context);

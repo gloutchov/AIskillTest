@@ -4,12 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AI Skill & Adoption Assessment</title>
-  <link rel="icon" type="image/png" href="aiskilltest_icon.png?v=3.4.0" />
-  <link rel="apple-touch-icon" href="aiskilltest_icon.png?v=3.4.0" />
+  <link rel="icon" type="image/png" href="aiskilltest_icon.png?v=3.5.0" />
+  <link rel="apple-touch-icon" href="aiskilltest_icon.png?v=3.5.0" />
   <meta name="theme-color" content="#0f172a" />
   <meta name="application-name" content="AI Skill Assessment" />
   <meta name="theme-color" content="#0f172a" />
-  <link rel="stylesheet" href="assets/styles.css?v=3.4.0" />
+  <link rel="stylesheet" href="assets/styles.css?v=3.5.0" />
 </head>
 <body>
   <main class="shell">
@@ -18,7 +18,7 @@
         <div>
           <div class="hero-meta">
             <p class="kicker">AI Skill & Adoption Assessment</p>
-            <span class="version-badge" id="versionBadge">Versione 3.4.0</span>
+            <span class="version-badge" id="versionBadge">Versione 3.5.0</span>
             <div class="language-switcher" aria-label="Lingua">
               <button type="button" class="language-btn" data-language="it" aria-pressed="false">IT</button>
               <button type="button" class="language-btn" data-language="en" aria-pressed="false">EN</button>
@@ -30,13 +30,13 @@
             </a>
           </div>
           <h1>Conoscenze e pratiche nell'uso dell'AI</h1>
-          <p class="subtitle">Esplora conoscenze e giudizio su scenari, pratiche dichiarate e prompt scritti. Il risultato distingue ciascun tipo di evidenza e la sua copertura.</p>
+          <p class="subtitle">Esplora conoscenze e giudizio su scenari, pratiche dichiarate, prompt scritti ed esiti simulati. Il risultato distingue ciascun tipo di evidenza e la sua copertura.</p>
           <p class="source-note">Modello operativo ispirato alle dimensioni Literacy, Fluency e Mindset e alle 4D della Fluency: Delegation, Description, Discernment, Diligence. Non è un test psicometrico validato: è uno strumento diagnostico interno e migliorabile.</p>
         </div>
         <aside class="hero-card" aria-label="Sintesi assessment">
           <div>
             <div class="big-number" id="heroCount">50</div>
-            <p id="heroCountDescription">domande: 27 quiz/scenari, 21 dichiarazioni e 2 testi formativi; nessun esercizio simulato</p>
+            <p id="heroCountDescription">unità di risposta: 36 quiz/scenari, 6 dichiarazioni, 2 testi formativi e 6 decisioni in 2 casi simulati</p>
           </div>
           <div class="pill-row">
             <span class="pill">Literacy</span>
@@ -64,7 +64,7 @@
               <div>
                 <p class="kicker">Assessment AI</p>
                 <h2 id="modeCarouselTitle">Scegli il tuo percorso</h2>
-                <p>Il completo copre le sezioni attuali. I percorsi tematici più brevi mostrano soltanto le evidenze raccolte, con copertura e limiti.</p>
+                <p>Il completo copre Fondamenti, AI moderne, Agenti e Harness, con due casi simulati locali. I percorsi brevi mostrano soltanto le evidenze raccolte.</p>
               </div>
               <div class="carousel-controls" aria-label="Scorri percorsi">
                 <button class="carousel-toggle" id="modeAutoplayBtn" type="button" aria-pressed="false">Pausa</button>
@@ -163,7 +163,7 @@
                 </div>
               </div>
 
-              <p class="field-note" id="labPrivacyNote">Il laboratorio conserva una sola bozza locale delle decisioni confermate, senza dati del profilo. Nessun invio a server.</p>
+              <p class="field-note" id="labPrivacyNote">Completo e Laboratorio operativo condividono una sola bozza locale: risposte, testi e azioni confermate, senza dati iniziali del profilo. Nessun invio a server.</p>
               <div class="actions">
                 <button class="btn-primary" id="startBtn">Inizia il test</button>
                 <button class="btn-secondary" id="profileBackBtn">Indietro</button>
@@ -176,7 +176,7 @@
         <section id="assessmentView" class="view">
           <div class="progress-wrap">
             <div class="progress-top">
-              <span id="progressText">Domanda 1 di 50</span>
+              <span id="progressText">Unità 1 di 50</span>
               <span id="answeredText">0 risposte</span>
             </div>
             <div class="progress-bar" aria-hidden="true"><div id="progressFill" class="progress-fill"></div></div>
@@ -369,6 +369,7 @@
             <div class="bibliography-grid" id="agenticSourcesList"></div>
           </section>
 
+          <section class="card" aria-labelledby="completeSourcesTitle"><h2 id="completeSourcesTitle">Completo: fondamenti e matrice</h2><div class="bibliography-grid" id="completeSourcesList"></div></section>
           <section class="card" aria-labelledby="labSourcesTitle"><h2 id="labSourcesTitle">Laboratorio: stato, ripresa e limiti</h2><div class="bibliography-grid" id="labSourcesList"></div></section>
           <section class="card harness-sources" id="harnessSources" aria-labelledby="harnessSourcesTitle">
             <h2 id="harnessSourcesTitle">Harness: contesto, integrazioni e ripresa</h2>
@@ -390,16 +391,17 @@
 
   <div class="toast" id="toast">Operazione completata</div>
 
-  <script src="assets/questions.js?v=3.4.0"></script>
-  <script src="assets/i18n.js?v=3.4.0"></script>
-  <script src="assets/learning.js?v=3.4.0"></script>
-  <script src="assets/modern-ai.js?v=3.4.0"></script>
-  <script src="assets/agentic-workflows.js?v=3.4.0"></script>
-  <script src="assets/harness.js?v=3.4.0"></script>
-  <script src="assets/operational-lab.js?v=3.4.0"></script>
-  <script src="assets/lab-ui.js?v=3.4.0"></script>
-  <script src="assets/assessment.js?v=3.4.0"></script>
-  <script src="assets/report-ui.js?v=3.4.0"></script>
-  <script src="assets/app.js?v=3.4.0"></script>
+  <script src="assets/questions.js?v=3.5.0"></script>
+  <script src="assets/i18n.js?v=3.5.0"></script>
+  <script src="assets/learning.js?v=3.5.0"></script>
+  <script src="assets/modern-ai.js?v=3.5.0"></script>
+  <script src="assets/agentic-workflows.js?v=3.5.0"></script>
+  <script src="assets/harness.js?v=3.5.0"></script>
+  <script src="assets/operational-lab.js?v=3.5.0"></script>
+  <script src="assets/complete-assessment.js?v=3.5.0"></script>
+  <script src="assets/lab-ui.js?v=3.5.0"></script>
+  <script src="assets/assessment.js?v=3.5.0"></script>
+  <script src="assets/report-ui.js?v=3.5.0"></script>
+  <script src="assets/app.js?v=3.5.0"></script>
 </body>
 </html>

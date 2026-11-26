@@ -82,21 +82,10 @@ function cloneQuestionData(value) {
       return selected;
     }
 
-    const APP_VERSION = "3.4.0";
+    const APP_VERSION = "3.5.0";
     const DEFAULT_TEST_MODE_ID = "complete";
     const COMPLETE_TEST_COUNT = 50;
     const TOPIC_TEST_COUNT = 10;
-    const COMPLETE_QUESTION_IDS = [
-      "L1", "L2", "L3", "L4", "L5", "L6", "L7",
-      "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "TR_CITE",
-      "AG1", "AG2", "AG3", "AG4",
-      "F_DE_1", "F_DE_2", "F_DE_3",
-      "F_DS_1", "F_DS_2", "F_DS_3", "TR_PROMPT",
-      "F_DI_1", "F_DI_2", "F_DI_3", "TR_SURE",
-      "F_DG_1", "F_DG_2", "F_DG_3",
-      "M1", "M2", "M3", "M4", "M5", "M6", "M7",
-      "P_L_1", "P_DE_1", "P_DS_1", "P_DS_2", "P_DI_1", "P_DG_1", "P_M_1"
-    ];
     const SECTION_ORDER = [
       "Literacy",
       "Fondamenti tecnici LLM",
@@ -120,8 +109,8 @@ function cloneQuestionData(value) {
         type: "complete",
         section: null,
         questionLimit: COMPLETE_TEST_COUNT,
-        description: "50 domande: quiz e scenari, pratiche dichiarate e testi formativi su Literacy, LLM, Agents, Fluency 4D e Mindset.",
-        outputNote: "Quadro delle evidenze con risultati per area, dichiarazioni e testi formativi separati."
+        description: "50 unità: 36 quiz/scenari, 6 dichiarazioni, 2 testi formativi e 6 decisioni in due casi simulati. Fondamenti, AI moderne, agenti e harness.",
+        outputNote: "Risultati per area e simulazioni separati. Una bozza solo locale permette la ripresa, senza conservare i dati iniziali del profilo."
       },
       {
         id: "first-steps",
@@ -864,6 +853,8 @@ function cloneQuestionData(value) {
       if (agentsList) agentsList.innerHTML = AGENTIC_WORKFLOWS.SOURCES.map(source => `<article class="bibliography-item"><div class="bibliography-source">${escapeHtml(source.id)}</div><h3>${escapeHtml(source.title)}</h3><p>${escapeHtml(source.note[isEnglish() ? 1 : 0])}</p><a class="bibliography-link" href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${isEnglish() ? "Open source ↗" : "Apri la fonte ↗"}</a></article>`).join("");
       $("labSourcesTitle").textContent = labText("Laboratorio: stato, ripresa e limiti", "Lab: state, recovery, and limitations");
       $("labSourcesList").innerHTML = LOCAL_LAB.SOURCES.map(source => `<article class="bibliography-item"><h3>${escapeHtml(source.title)}</h3><p>${escapeHtml(source.note[isEnglish() ? 1 : 0])}</p><a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${labText("Apri la fonte", "Open source")}</a></article>`).join("");
+      $("completeSourcesTitle").textContent = labText("Completo: fondamenti e matrice", "Full test: foundations and matrix");
+      $("completeSourcesList").innerHTML = COMPLETE_ASSESSMENT.SOURCES.map(source => `<article class="bibliography-item"><h3>${escapeHtml(source.title)}</h3><p>${escapeHtml(source.note[isEnglish() ? 1 : 0])}</p><a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${labText("Apri la fonte", "Open source")}</a></article>`).join("");
       const harnessTitle = $("harnessSourcesTitle");
       const harnessNote = $("harnessSourcesNote");
       const harnessList = $("harnessSourcesList");
@@ -885,10 +876,10 @@ function cloneQuestionData(value) {
       if (versionBadge) versionBadge.textContent = lang === "en" ? `Version ${APP_VERSION}` : `Versione ${APP_VERSION}`;
       const staticText = lang === "en" ? {
         heroTitle: "Knowledge and practices in AI use",
-        subtitle: "Explore knowledge and judgment on scenarios, self-reported practices, and written prompts. Results distinguish each type of evidence and its coverage.",
+        subtitle: "Explore knowledge and judgment on scenarios, self-reported practices, written prompts, and simulated outcomes. Results distinguish each evidence type and its coverage.",
         sourceNote: "Operational model inspired by Literacy, Fluency, Mindset and the 4D of Fluency: Delegation, Description, Discernment, Diligence. It is not a psychometrically validated test: it is an internal diagnostic tool under improvement.",
         carouselTitle: "Choose your path",
-        carouselIntro: "The full test covers the current sections. The shorter thematic paths report only the evidence collected, with coverage and limits.",
+        carouselIntro: "The full test covers Foundations, Modern AI, Agents, and Harness, with two local simulated cases. Shorter paths report only collected evidence.",
         autoplayPause: state.carouselPaused ? "Resume" : "Pause",
         start: "Start this test",
         bibliography: "Bibliography",
@@ -899,7 +890,7 @@ function cloneQuestionData(value) {
         report: "Report",
         jsonCsv: "JSON and CSV",
         resultReadingTitle: "How the result is read",
-        resultReading: "Knowledge/scenario results, self-reports, and formative text stay separate. Area percentages require enough relevant questions; unassessed areas are identified. There is no global score or operational qualification.",
+        resultReading: "Knowledge/scenario results, self-reports, formative text, and simulated outcomes stay separate. Area percentages require enough relevant questions; unassessed areas are identified. There is no global score or operational qualification.",
         profileDataKicker: "Optional data",
         beforeTest: "Before the test",
         profileIntro: "You can enter name, role, team and an initial estimate of your skills. All fields are optional: you can start even if everything is blank.",
@@ -930,10 +921,10 @@ function cloneQuestionData(value) {
         footerAria: "Copyright and license"
       } : {
         heroTitle: "Conoscenze e pratiche nell'uso dell'AI",
-        subtitle: "Esplora conoscenze e giudizio su scenari, pratiche dichiarate e prompt scritti. Il risultato distingue ciascun tipo di evidenza e la sua copertura.",
+        subtitle: "Esplora conoscenze e giudizio su scenari, pratiche dichiarate, prompt scritti ed esiti simulati. Il risultato distingue ciascun tipo di evidenza e la sua copertura.",
         sourceNote: "Modello operativo ispirato alle dimensioni Literacy, Fluency e Mindset e alle 4D della Fluency: Delegation, Description, Discernment, Diligence. Non è un test psicometrico validato: è uno strumento diagnostico interno e migliorabile.",
         carouselTitle: "Scegli il tuo percorso",
-        carouselIntro: "Il completo copre le sezioni attuali. I percorsi tematici più brevi mostrano soltanto le evidenze raccolte, con copertura e limiti.",
+        carouselIntro: "Il completo copre Fondamenti, AI moderne, Agenti e Harness, con due casi simulati locali. I percorsi brevi mostrano soltanto le evidenze raccolte.",
         autoplayPause: state.carouselPaused ? "Riprendi" : "Pausa",
         start: "Inizia questo test",
         bibliography: "Bibliografia",
@@ -944,7 +935,7 @@ function cloneQuestionData(value) {
         report: "Report",
         jsonCsv: "JSON e CSV",
         resultReadingTitle: "Come viene letto il risultato",
-        resultReading: "Risultati dei quiz/scenari, dichiarazioni e testi formativi restano separati. Le percentuali per area richiedono abbastanza quesiti pertinenti; le aree non esplorate sono segnalate. Non ci sono indice globale o qualifiche operative.",
+        resultReading: "Risultati dei quiz/scenari, dichiarazioni, testi formativi ed esiti simulati restano separati. Le percentuali per area richiedono abbastanza quesiti pertinenti; le aree non esplorate sono segnalate. Non ci sono indice globale o qualifiche operative.",
         profileDataKicker: "Dati facoltativi",
         beforeTest: "Prima del test",
         profileIntro: "Puoi indicare nome, ruolo, team e una stima iniziale delle tue skill. Tutti i campi sono facoltativi: puoi iniziare anche lasciando tutto vuoto.",
@@ -1035,7 +1026,7 @@ function cloneQuestionData(value) {
       if (noviceTitle) noviceTitle.textContent = isEnglish() ? "Is this your first step into AI?" : "È la prima volta che ti avvicini all'AI?";
       if (noviceText) noviceText.textContent = isEnglish() ? "Start with 10 simple questions and a tutorial built around your mistakes." : "Inizia con 10 domande semplici e un tutorial costruito sui tuoi errori.";
       if (noviceButton) noviceButton.textContent = isEnglish() ? "Explore AI First Steps" : "Scopri Primi passi";
-      $("labPrivacyNote").textContent = labText("Nel laboratorio conserviamo una sola bozza locale delle decisioni confermate, senza dati del profilo. Riprendi dalla pagina iniziale; Interrompi, Elimina bozza o Cancella dati locali la cancellano. Nessun invio a server. Il recupero richiede che il browser consenta il salvataggio locale.", "The lab retains one local draft of confirmed decisions, without profile data. Resume from the home page; Interrupt, Discard draft, or Clear local data deletes it. No server transfer. Recovery requires the browser to allow local storage.");
+      $("labPrivacyNote").textContent = labText("Il percorso Laboratorio operativo conserva una sola bozza locale delle decisioni confermate, senza dati del profilo. Riprendi dalla pagina iniziale; Interrompi, Elimina bozza o Cancella dati locali la cancellano. Il completo condivide la bozza locale: conserva risposte, testi e azioni confermate; i dati iniziali del profilo non vengono salvati nella bozza. Nessun invio a server. Il recupero richiede il salvataggio locale.", "The Operational lab path retains one local draft of confirmed decisions, without profile data. Resume from the home page; Interrupt, Discard draft, or Clear local data deletes it. The full test shares the local draft: answers, text, and confirmed actions are retained; initial profile data is excluded. No server transfer. Recovery requires local storage.");
       applyBibliographyText();
     }
 
@@ -1074,8 +1065,8 @@ function cloneQuestionData(value) {
     function modePoolQuestions(sourceQuestions, mode) {
       if (mode && mode.type === "learning") return FIRST_STEPS_QUESTIONS.it.filter(question => question.formId === "A");
       if (!mode || mode.id === DEFAULT_TEST_MODE_ID) {
-        const byId = new Map(sourceQuestions.map(question => [question.sourceId || question.id, question]));
-        return COMPLETE_QUESTION_IDS.map(id => byId.get(id)).filter(Boolean).slice(0, COMPLETE_TEST_COUNT);
+        const form = sourceQuestions[0]?.formId || "A";
+        return COMPLETE_ASSESSMENT.build(form, currentLanguage(), sourceQuestions);
       }
       return sourceQuestions.filter(question => question.section === mode.section);
     }
@@ -1109,6 +1100,12 @@ function cloneQuestionData(value) {
     function questionsForMode(sourceQuestions, mode, randomize = false, formId = null) {
       const selectedMode = mode || getModeById(DEFAULT_TEST_MODE_ID);
       if (selectedMode.id === "operational-lab") return LOCAL_LAB.questions(formId || sourceQuestions[0]?.formId || "A", currentLanguage());
+      if (selectedMode.id === "complete") {
+        const form = formId || sourceQuestions[0]?.formId || "A";
+        // Landing counts also need the correctly localized source form.
+        const sources = sourceQuestions === baseQuestions ? (isEnglish() ? buildEnglishQuestionForm(form) : buildQuestionForm(form)) : sourceQuestions;
+        return COMPLETE_ASSESSMENT.order(COMPLETE_ASSESSMENT.build(form, currentLanguage(), sources), randomize ? shuffledValues : values => values);
+      }
       const pool = modePoolQuestions(sourceQuestions, selectedMode);
       const slots = { "modern-ai": MODERN_AI.SLOTS, agents: AGENTIC_WORKFLOWS.SLOTS, harness: HARNESS_ASSESSMENT.SLOTS }[selectedMode.id];
       if (slots) {
@@ -1124,6 +1121,7 @@ function cloneQuestionData(value) {
 
     function questionCountForMode(mode) {
       const selectedMode = mode || getModeById(DEFAULT_TEST_MODE_ID);
+      if (selectedMode.id === "complete") return COMPLETE_TEST_COUNT;
       if (selectedMode.id === "operational-lab") return 6;
       if (selectedMode.type === "learning") return selectedMode.questionLimit;
       const pool = modePoolQuestions(baseQuestions, selectedMode);
@@ -1132,10 +1130,10 @@ function cloneQuestionData(value) {
     }
 
     function modeDuration(mode) {
+      if (mode.id === "complete") return isEnglish() ? "40-55 minutes (estimate to verify)" : "40-55 minuti (stima da verificare)";
       if (mode.id === "operational-lab") return isEnglish() ? "12-16 minutes (estimate)" : "12-16 minuti (stima)";
       if (["modern-ai", "agents", "harness"].includes(mode.id)) return isEnglish() ? "8-12 minutes (estimate)" : "8-12 minuti (stima)";
-      if (isEnglish()) return mode.id === DEFAULT_TEST_MODE_ID ? "12-15 minutes" : "3-5 minutes";
-      return mode.id === DEFAULT_TEST_MODE_ID ? "12-15 minuti" : "3-5 minuti";
+      return isEnglish() ? "3-5 minutes" : "3-5 minuti";
     }
 
     function modeBadge(mode) {
@@ -1152,8 +1150,8 @@ function cloneQuestionData(value) {
         : ["Cosa può fare", "Limiti", "Richieste", "Verifica", "Privacy"];
       if (mode.id === DEFAULT_TEST_MODE_ID) {
         return isEnglish()
-          ? ["Literacy", "LLM foundations", "AI Agents", "Fluency 4D", "Mindset", "Practical Lab"]
-          : ["Literacy", "Fondamenti LLM", "AI Agents", "Fluency 4D", "Mindset", "Practical Lab"];
+          ? ["Foundations", "Modern AI", "Agents", "Harness", "2 simulated cases"]
+          : ["Fondamenti", "AI moderne", "Agenti", "Harness", "2 casi simulati"];
       }
       const guide = localizedSectionGuide(mode.section);
       return guide ? guide.items : [sectionLabel(mode.section) || localizedMode(mode).label];
@@ -1183,7 +1181,7 @@ function cloneQuestionData(value) {
                 <span class="mode-eyebrow">${escapeHtml(modeBadge(mode))}</span>
                 <h3>${escapeHtml(mode.label)}</h3>
               </div>
-              <strong>${mode.id === "operational-lab" ? modeBadge(mode) : `${count} ${isEnglish() ? "questions" : "domande"}`}</strong>
+              <strong>${mode.id === "operational-lab" ? modeBadge(mode) : `${count} ${mode.id === "complete" ? labText("unità di risposta", "response units") : labText("domande", "questions")}`}</strong>
             </div>
             <p class="mode-card-desc">${escapeHtml(mode.description)}</p>
             <div class="mode-facts" aria-label="${isEnglish() ? "Path characteristics" : "Caratteristiche del percorso"}">
@@ -1307,7 +1305,7 @@ function cloneQuestionData(value) {
       const total = modeQuestions.length;
       const container = $("questionDistribution");
       if (container) {
-        const rows = SECTION_ORDER
+        const rows = mode.id === "complete" ? ["F","U","A","H"].map(area => `<div class="topic-row"><span>${escapeHtml(ASSESSMENT_V3.label(ASSESSMENT_V3.AREA_LABELS[area],currentLanguage()))}</span><strong>${COMPLETE_ASSESSMENT.SLOTS.filter(slot => slot.primaryArea === area).length}</strong></div>`).join("") : SECTION_ORDER
           .filter(section => counts[section])
           .map(section => `<div class="topic-row"><span>${escapeHtml(sectionLabel(section))}</span><strong>${counts[section]}</strong></div>`)
           .join("");
@@ -1325,7 +1323,7 @@ function cloneQuestionData(value) {
         heroDescription.textContent = mode.id === "operational-lab" ? labText("6 decisioni con azioni locali e feedback dopo il completamento", "6 decisions with local actions and feedback after completion") : mode.type === "learning"
           ? (isEnglish() ? "guided questions followed by a personalized local tutorial" : "domande guidate seguite da un tutorial personalizzato locale")
           : mode.id === DEFAULT_TEST_MODE_ID
-          ? (isEnglish() ? "questions: 27 knowledge/scenarios, 21 self-reports, and 2 formative texts; no simulated exercises" : "domande: 27 quiz/scenari, 21 dichiarazioni e 2 testi formativi; nessun esercizio simulato")
+          ? (isEnglish() ? "response units: 36 questions/scenarios, 6 self-reports, 2 formative texts, and 6 decisions in 2 simulated cases" : "unità di risposta: 36 quiz/scenari, 6 dichiarazioni, 2 testi formativi e 6 decisioni in 2 casi simulati")
           : (isEnglish() ? "questions from one of three forms in the selected thematic path, with a local report dedicated to that section" : "domande da una delle tre forme del percorso tematico selezionato, con report locale dedicato alla sezione scelta");
       }
       const modeFootnote = $("modeFootnote");
@@ -1352,7 +1350,7 @@ function cloneQuestionData(value) {
         metricValues[1].textContent = isEnglish() ? "Area coverage" : "Copertura per area";
         metricValues[2].textContent = isEnglish() ? "JSON and CSV" : "JSON e CSV";
         readingTitle.textContent = isEnglish() ? "How the result is read" : "Come viene letto il risultato";
-        readingText.textContent = isEnglish() ? "Knowledge/scenarios, self-reports, and formative text stay separate, with coverage for each area. No global score or operational qualification." : "Quiz/scenari, dichiarazioni e testi formativi restano separati, con copertura per area. Nessun indice globale o qualifica operativa.";
+        readingText.textContent = isEnglish() ? "Knowledge/scenarios, self-reports, formative text, and simulated outcomes stay separate, with coverage for each area. No global score or operational qualification." : "Quiz/scenari, dichiarazioni, testi formativi ed esiti simulati restano separati, con copertura per area. Nessun indice globale o qualifica operativa.";
       }
     }
 
@@ -1373,10 +1371,10 @@ function cloneQuestionData(value) {
 
     function startAssessment() {
       const selectedMode = getModeById(selectedTestModeId());
-      if (selectedMode.id === "operational-lab") {
+      if (["complete", "operational-lab"].includes(selectedMode.id)) {
         const saved = readLabDraft();
         if (!["absent", "unavailable"].includes(saved.status)) {
-          if (!window.confirm(labText("Una bozza esiste già. Eliminarla e avviare un nuovo laboratorio? Puoi annullare e riprenderla dalla pagina iniziale.", "A draft already exists. Discard it and start a new lab? Cancel to resume it from the home page.")) || !removeLabDraft()) return;
+          if (!window.confirm(labText("Una bozza esiste già. Eliminarla e avviare una nuova sessione? Puoi annullare e riprenderla dalla pagina iniziale.", "A draft already exists. Discard it and start a new session? Cancel to resume it from the home page.")) || !removeLabDraft()) return;
         }
       }
       const selectedForm = selectNextForm(selectedMode.id, currentLanguage());
@@ -1478,7 +1476,7 @@ function cloneQuestionData(value) {
       const count = answeredCount();
       const pct = Math.round((state.index / total) * 100);
 
-      $("progressText").textContent = isEnglish() ? `Question ${state.index + 1} of ${total}` : `Domanda ${state.index + 1} di ${total}`;
+      $("progressText").textContent = state.selectedModeId === "complete" ? labText(`Unità ${state.index + 1} di ${total}`, `Unit ${state.index + 1} of ${total}`) : isEnglish() ? `Question ${state.index + 1} of ${total}` : `Domanda ${state.index + 1} di ${total}`;
       $("answeredText").textContent = isEnglish() ? `${count} answers` : `${count} risposte`;
       $("progressFill").style.width = `${pct}%`;
       $("sectionBadge").textContent = sectionLabel(q.section);
@@ -1510,6 +1508,7 @@ function cloneQuestionData(value) {
         const textarea = $(`${q.id}_text`);
         textarea.addEventListener("input", (event) => {
           state.answers[q.id] = event.target.value;
+          saveLabDraft();
           updateNavigationState(q);
         });
       } else if (q.type === "multi") {
@@ -1530,6 +1529,7 @@ function cloneQuestionData(value) {
         Array.from(document.querySelectorAll(`input[name="${q.id}"]`)).forEach(input => {
           input.addEventListener("change", () => {
             state.answers[q.id] = Array.from(document.querySelectorAll(`input[name="${q.id}"]:checked`)).map(item => Number(item.value));
+            saveLabDraft();
             renderQuestion();
           });
         });
@@ -1552,6 +1552,7 @@ function cloneQuestionData(value) {
           input.addEventListener("change", (event) => {
             const selectedValue = Number(event.target.value);
             state.answers[q.id] = selectedValue;
+            saveLabDraft();
             renderQuestion();
             scheduleAutoAdvance(q, state.index, selectedValue);
           });
@@ -1607,11 +1608,11 @@ function cloneQuestionData(value) {
 
     function updateNavigationState(q) {
       const total = questions.length;
-      $("answeredText").textContent = q.type === "simulation" ? labText(`${answeredCount()} decisioni confermate`, `${answeredCount()} confirmed decisions`) : isEnglish() ? `${answeredCount()} answers` : `${answeredCount()} risposte`;
+      $("answeredText").textContent = q.type === "simulation" && state.selectedModeId !== "complete" ? labText(`${answeredCount()} decisioni confermate`, `${answeredCount()} confirmed decisions`) : isEnglish() ? `${answeredCount()} answers` : `${answeredCount()} risposte`;
       $("prevBtn").textContent = isEnglish() ? "Back" : "Indietro";
       $("nextBtn").textContent = isEnglish() ? "Next" : "Avanti";
       $("interruptBtn").textContent = isEnglish() ? "Interrupt test" : "Interrompi il test";
-      $("finishBtn").textContent = q.type === "simulation" ? labText("Mostra esiti simulati", "Show simulated outcomes") : isEnglish() ? "Calculate dashboard" : "Calcola dashboard";
+      $("finishBtn").textContent = state.selectedModeId === "complete" ? labText("Mostra quadro delle evidenze", "Show evidence overview") : q.type === "simulation" ? labText("Mostra esiti simulati", "Show simulated outcomes") : isEnglish() ? "Calculate dashboard" : "Calcola dashboard";
       $("prevBtn").disabled = state.index === 0;
       $("nextBtn").style.display = state.index === total - 1 ? "none" : "inline-flex";
       $("finishBtn").style.display = state.index === total - 1 ? "inline-flex" : "none";
@@ -1644,7 +1645,7 @@ function cloneQuestionData(value) {
         state.index += 1;
         saveLabDraft();
         renderQuestion();
-        if (q.type === "simulation") $("questionTitle").focus();
+        if (q.type === "simulation" || questions[state.index].type === "simulation") $("questionTitle").focus();
       }
     }
 
@@ -1664,7 +1665,7 @@ function cloneQuestionData(value) {
         ? "Interrupt the current test and return to the home page? Your answers for this session will be discarded."
         : "Interrompere il test corrente e tornare alla pagina principale? Le risposte di questa sessione verranno eliminate.");
       if (!ok) return;
-      if (state.meta?.testMode?.id === "operational-lab" && !removeLabDraft()) return;
+      if (["complete", "operational-lab"].includes(state.meta?.testMode?.id) && !removeLabDraft()) return;
       resetToInitialPage(false);
       showToast(isEnglish() ? "Test interrupted." : "Test interrotto.");
     }
@@ -2210,7 +2211,7 @@ function cloneQuestionData(value) {
       $("printBtn").addEventListener("click", () => window.print());
       $("bibliographyBtn").addEventListener("click", () => showBibliography("dashboardView"));
       $("clearHistoryBtn").addEventListener("click", () => {
-        const ok = window.confirm(isEnglish() ? "Clear local data, form rotation, and the incomplete lab draft in this browser?" : "Eliminare storico locale, rotazione delle forme e bozza incompleta del laboratorio da questo browser?");
+        const ok = window.confirm(isEnglish() ? "Clear local data, form rotation, and the incomplete session draft in this browser?" : "Eliminare storico locale, rotazione delle forme e bozza incompleta della sessione da questo browser?");
         if (!ok) return;
         try {
           localStorage.removeItem("aiSkillAssessmentHistory");
@@ -2265,7 +2266,7 @@ function cloneQuestionData(value) {
       }
       const report = calculateResults();
       renderDashboard(report);
-      if (state.meta?.testMode?.id === "operational-lab") removeLabDraft();
+      if (["complete", "operational-lab"].includes(state.meta?.testMode?.id)) removeLabDraft();
     }
 
     function historySnapshot() {

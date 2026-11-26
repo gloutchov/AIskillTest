@@ -19,7 +19,7 @@ test("lab covers six E units, both cases and all six bilingual forms without alt
     assert.equal(report.results.simulatedSummary.value, 100); assert.equal(report.results.simulatedSummary.band, "conform");
     assert.equal(report.coverage.byEvidence.E.valid, 6); assert.equal(report.coverage.byEvidence.Q.proposed, 0);
     assert.equal(report.criticalFindings.length, 0); assert.equal(r.run("core.reportKind(report())"), "evidence");
-    assert.equal(r.run("bank.length"), 145); assert.equal(r.run("Object.keys(core.ITEM_MAP).length"), 151);
+    assert.equal(r.run("bank.length"), 145); assert.equal(r.run("Object.keys(core.ITEM_MAP).length"), 195);
     const data = r.run("lab.variant(state.formId,currentLanguage())");
     assert.deepEqual(plain(data.rows), { A: [120, 80, 100], B: [40, 25, 35], C: [18, 12, 20] }[form]);
     assert.equal(data.draft, { A: 330, B: 120, C: 60 }[form]); assert.equal(data.update, { A: "update-17", B: "update-28", C: "update-39" }[form]);
@@ -174,7 +174,7 @@ test("completion freezes JSON/CSV/history, clears draft, and historical schema 3
   r.run("state.language='en';lab.TITLES[0][0]='changed title';renderDashboardWithoutSaving(saved)"); assert.equal(JSON.stringify(report), snapshot);
   assert.match(r.node("dashboard").innerHTML, /Verifica le evidenze/); assert.doesNotMatch(r.node("dashboard").innerHTML, /changed title/);
   const rows = plain(r.context.core.csvRows(report)); assert.ok(rows.some(row => row[1] === "criticalFindings.1.code" && row[2] === "duplicate-action"));
-  const old = plain(r.run("full()")); old.meta.reportSchemaVersion = 3; old.meta.scoringVersion = "3.0.0"; old.meta.assessmentVersion = "3.3.0";
+  const old = plain(r.run("(() => {const qs=questionsForMode(buildQuestionForm('A'),getModeById('harness'));return core.evaluate(qs,Object.fromEntries(qs.map(q=>[q.id,choose(q)])),{...meta,testMode:{id:'harness',questionCount:10}},'2026-11-25');})()")); old.meta.reportSchemaVersion = 3; old.meta.scoringVersion = "3.0.0"; old.meta.assessmentVersion = "3.3.0";
   r.context.old = old; const original = JSON.stringify(old); r.run("renderDashboardWithoutSaving(old)"); assert.equal(r.run("core.reportKind(old)"), "evidence"); assert.equal(JSON.stringify(old), original);
 });
 

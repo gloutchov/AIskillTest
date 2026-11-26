@@ -49,8 +49,8 @@ const AI_SKILL_I18N = {
       complete: {
         label: "Full test",
         shortLabel: "Full",
-        description: "50 questions across knowledge/scenarios, self-reports, and formative text on Literacy, LLMs, Agents, Fluency 4D, and Mindset.",
-        outputNote: "Evidence overview with area coverage, self-reports, and formative text shown separately."
+        description: "50 units: 36 questions/scenarios, 6 self-reports, 2 formative texts, and 6 decisions in two simulated cases. Foundations, Modern AI, Agents, and Harness.",
+        outputNote: "Area results and simulations shown separately. A local-only draft allows recovery without retaining initial profile data."
       },
       literacy: {
         label: "Literacy",

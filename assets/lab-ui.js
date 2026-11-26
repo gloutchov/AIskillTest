@@ -5,7 +5,16 @@ function readLabDraft() {
   try {
     const raw = localStorage.getItem(LOCAL_LAB.DRAFT_KEY);
     if (raw === null) return { status: "absent" };
-    try { const draft = JSON.parse(raw); return { status: LOCAL_LAB.draftStatus(draft, labVersions()), draft }; }
+    try {
+      const draft = JSON.parse(raw);
+      if (draft?.modeId === "complete") {
+        if (!["A","B","C"].includes(draft.formId) || !["it","en"].includes(draft.language)) return { status: "invalid", draft };
+        const sources = draft.language === "en" ? buildEnglishQuestionForm(draft.formId) : buildQuestionForm(draft.formId);
+        const units = COMPLETE_ASSESSMENT.build(draft.formId,draft.language,sources);
+        return { status: COMPLETE_ASSESSMENT.draftStatus(draft,labVersions(),units), draft };
+      }
+      return { status: LOCAL_LAB.draftStatus(draft, labVersions()), draft };
+    }
     catch (error) { return { status: "invalid" }; }
   } catch (error) { return { status: "unavailable" }; }
 }
@@ -16,10 +25,16 @@ function labStorageWarning() {
   showToast(text);
 }
 function saveLabDraft() {
-  if (state.meta?.testMode?.id !== "operational-lab") return;
+  const complete = state.meta?.testMode?.id === "complete";
+  if (!complete && state.meta?.testMode?.id !== "operational-lab") return;
   const choices = {};
-  for (const q of questions) if (LOCAL_LAB.valid(q.sourceId, state.answers[q.id])) choices[q.id] = LOCAL_LAB.sanitize(q.sourceId, state.answers[q.id]);
-  const draft = { draftSchemaVersion: 1, ...labVersions(), labVersion: LOCAL_LAB.VERSION, modeId: "operational-lab", language: currentLanguage(), formId: state.formId, index: state.index, order: state.labOrder || "verify-first", choices };
+  for (const q of questions) {
+    const raw = state.answers[q.id];
+    if (q.type === "simulation" && LOCAL_LAB.valid(q.sourceId,raw)) choices[q.id] = LOCAL_LAB.sanitize(q.sourceId,raw);
+    else if (complete && q.type !== "simulation" && COMPLETE_ASSESSMENT.draftAnswerValid(q,raw)) choices[q.id] = raw;
+  }
+  const draft = { draftSchemaVersion: complete ? 2 : 1, ...labVersions(), labVersion: LOCAL_LAB.VERSION, modeId: complete ? "complete" : "operational-lab", language: currentLanguage(), formId: state.formId, index: state.index, order: state.labOrder || "verify-first", choices,
+    ...(complete ? { questionIds: questions.map(q => q.id) } : {}) };
   try { localStorage.setItem(LOCAL_LAB.DRAFT_KEY, JSON.stringify(draft)); $("labStorageStatus").hidden = true; }
   catch (error) { labStorageWarning(); }
 }
@@ -34,14 +49,15 @@ function renderLabDraftNotice() {
   host.hidden = saved.status === "absent";
   if (host.hidden) { host.innerHTML = ""; return; }
   const compatible = saved.status === "compatible";
-  host.innerHTML = `<h3>${labText("Bozza del laboratorio", "Lab draft")}</h3><p>${compatible
-    ? labText(`Una simulazione incompleta è salvata solo in questo browser (forma ${saved.draft.formId}, ${saved.draft.language.toUpperCase()}). Il recupero riparte dalle decisioni confermate, senza dati del profilo.`, `An incomplete simulation is saved only in this browser (form ${saved.draft.formId}, ${saved.draft.language.toUpperCase()}). Recovery uses confirmed decisions, without profile data.`)
+  const complete = saved.draft?.modeId === "complete";
+  host.innerHTML = `<h3>${complete ? labText("Bozza del test completo", "Full-test draft") : labText("Bozza del laboratorio", "Lab draft")}</h3><p>${compatible
+    ? labText(`Una sessione incompleta è salvata solo in questo browser (forma ${saved.draft.formId}, ${saved.draft.language.toUpperCase()}). Il recupero conserva risposte e azioni confermate, senza dati iniziali del profilo.`, `An incomplete session is saved only in this browser (form ${saved.draft.formId}, ${saved.draft.language.toUpperCase()}). Recovery retains answers and confirmed actions, without initial profile data.`)
     : saved.status === "unavailable" ? labText("Il browser non consente l'accesso al salvataggio locale. Puoi svolgere il laboratorio in questa pagina, ma il recupero non è garantito.", "The browser blocks local storage. You can run the lab on this page, but recovery is not guaranteed.")
-    : labText("La bozza non è compatibile con le regole attuali oppure non è leggibile. Non verrà ricalcolata: eliminala per iniziare un nuovo laboratorio.", "The draft is incompatible with current rules or cannot be read. It will not be recalculated: discard it to start a new lab.")}</p>
-    <div class="actions">${compatible ? `<button class="btn-primary" id="resumeLabBtn">${labText("Riprendi laboratorio", "Resume lab")}</button>` : ""}${saved.status !== "unavailable" ? `<button class="btn-ghost" id="discardLabBtn">${labText("Elimina bozza", "Discard draft")}</button>` : ""}</div>`;
+    : labText("La bozza non è compatibile con le regole attuali oppure non è leggibile. Non verrà ricalcolata: eliminala per iniziare una nuova sessione.", "The draft is incompatible with current rules or cannot be read. It will not be recalculated: discard it to start a new session.")}</p>
+    <div class="actions">${compatible ? `<button class="btn-primary" id="resumeLabBtn">${complete ? labText("Riprendi completo", "Resume full test") : labText("Riprendi laboratorio", "Resume lab")}</button>` : ""}${saved.status !== "unavailable" ? `<button class="btn-ghost" id="discardLabBtn">${labText("Elimina bozza", "Discard draft")}</button>` : ""}</div>`;
   if (compatible) $("resumeLabBtn").addEventListener("click", resumeLabDraft);
   if (saved.status !== "unavailable") $("discardLabBtn").addEventListener("click", () => {
-    if (window.confirm(labText("Eliminare la bozza locale del laboratorio?", "Discard the local lab draft?")) && removeLabDraft()) renderLabDraftNotice();
+    if (window.confirm(labText("Eliminare la bozza locale della sessione?", "Discard the local session draft?")) && removeLabDraft()) renderLabDraftNotice();
   });
 }
 function resumeLabDraft() {
@@ -49,15 +65,22 @@ function resumeLabDraft() {
   if (saved.status !== "compatible") { renderLabDraftNotice(); return; }
   const d = saved.draft;
   state.language = d.language;
-  state.selectedModeId = "operational-lab";
+  state.selectedModeId = d.modeId;
   applyLanguageChrome();
   state.formId = d.formId;
   state.labOrder = d.order;
-  questions = LOCAL_LAB.questions(d.formId, d.language, d.order);
-  state.answers = Object.fromEntries(questions.filter(q => LOCAL_LAB.valid(q.sourceId, d.choices[q.id])).map(q => [q.id, LOCAL_LAB.sanitize(q.sourceId, d.choices[q.id])]));
+  const complete = d.modeId === "complete";
+  if (complete) {
+    const sources = d.language === "en" ? buildEnglishQuestionForm(d.formId) : buildQuestionForm(d.formId);
+    const byId = new Map(COMPLETE_ASSESSMENT.build(d.formId,d.language,sources).map(q => [q.id,q]));
+    questions = d.questionIds.map(id => byId.get(id));
+  } else questions = LOCAL_LAB.questions(d.formId, d.language, d.order);
+  state.answers = Object.fromEntries(questions.filter(q => complete ? COMPLETE_ASSESSMENT.draftAnswerValid(q,d.choices[q.id]) : LOCAL_LAB.valid(q.sourceId,d.choices[q.id]))
+    .map(q => [q.id, q.type === "simulation" ? LOCAL_LAB.sanitize(q.sourceId,d.choices[q.id]) : d.choices[q.id]]));
   state.index = d.index;
   state.optionOrders = {}; state.hintsVisible = {};
-  state.meta = { ...labVersions(), language: d.language, languageSource: "local-draft", formId: d.formId, labVersion: LOCAL_LAB.VERSION, testMode: { id: "operational-lab", label: localizedMode(getModeById("operational-lab")).label, type: "simulation", section: "Laboratorio operativo", questionCount: 6 }, name: "", role: "", area: "", selfAssessment: {} };
+  const mode = getModeById(d.modeId);
+  state.meta = { ...labVersions(), language: d.language, languageSource: "local-draft", formId: d.formId, labVersion: LOCAL_LAB.VERSION, testMode: { id: mode.id, label: localizedMode(mode).label, type: mode.type, section: mode.section, questionCount: questions.length }, name: "", role: "", area: "", selfAssessment: {} };
   clearAutoAdvance(); showView("assessmentView"); renderQuestion(); $("questionTitle").focus();
 }
 function labCommit(question, raw) {
@@ -86,7 +109,9 @@ function renderLabQuestion(q) {
   const raw = state.answers[q.id];
   const v = LOCAL_LAB.variant(q.formId, currentLanguage());
   const simulation = LOCAL_LAB.evaluate(q.formId, currentLanguage(), state.answers);
-  $("progressText").textContent = labText(`Decisione ${state.index + 1} di 6 · Caso ${q.caseId}`, `Decision ${state.index + 1} of 6 · Case ${q.caseId}`);
+  $("progressText").textContent = state.selectedModeId === "complete"
+    ? labText(`Unità ${state.index + 1} di ${questions.length} · Caso ${q.caseId}`, `Unit ${state.index + 1} of ${questions.length} · Case ${q.caseId}`)
+    : labText(`Decisione ${state.index + 1} di 6 · Caso ${q.caseId}`, `Decision ${state.index + 1} of 6 · Case ${q.caseId}`);
   $("questionContext").hidden = false;
   $("questionContext").textContent = labContext(q);
   $("questionHint").textContent = labText("Tutto avviene in locale con dati sintetici. Le azioni esterne sono simulate. Crediti e motivazioni appariranno dopo il completamento.", "Everything runs locally with synthetic data. External actions are simulated. Credits and feedback appear after completion.");
@@ -106,7 +131,9 @@ function renderLabQuestion(q) {
     markup += `<fieldset><legend>${escapeHtml(q.text)}</legend>${LOCAL_LAB.choices(q.sourceId, currentLanguage()).map((c, i) => `<label class="option" for="labChoice${i}"><input type="radio" name="labChoice" id="labChoice${i}" value="${c.value}" ${raw === c.value ? "checked" : ""}/><span>${escapeHtml(c.label)}</span></label>`).join("")}</fieldset>`;
   }
   markup += `<button type="button" class="btn-secondary" id="labApply">${q.sourceId === "LAB_K1_RELEASE" ? labText("Conferma consegna o revisione simulata", "Confirm simulated delivery or review") : labText("Applica azione simulata", "Apply simulated action")}</button><p id="labActionStatus" role="status" tabindex="-1">${LOCAL_LAB.valid(q.sourceId, raw) ? labText("Azione simulata confermata.", "Simulated action confirmed.") : labText("Azione ancora da confermare.", "Action awaiting confirmation.")}</p>`;
-  if (q.caseId === "K1" && state.index < 2) markup += `<button type="button" class="btn-ghost" id="labOrder">${labText("Inverti ordine: verifica / calcolo", "Swap order: verification / calculation")}</button>`;
+  const k1Start = questions.findIndex(unit => unit.caseId === "K1");
+  const canSwap = q.caseId === "K1" && ["LAB_K1_VERIFY", "LAB_K1_CORRECT"].includes(q.sourceId);
+  if (canSwap) markup += `<button type="button" class="btn-ghost" id="labOrder">${labText("Inverti ordine: verifica / calcolo", "Swap order: verification / calculation")}</button>`;
   $("options").innerHTML = markup;
   function invalidate() {
     delete state.answers[q.id];
@@ -146,10 +173,10 @@ function renderLabQuestion(q) {
       else showToast(labText("Scegli un'azione prima di confermare.", "Choose an action before confirming."));
     });
   }
-  if (q.caseId === "K1" && state.index < 2) $("labOrder").addEventListener("click", () => {
+  if (canSwap) $("labOrder").addEventListener("click", () => {
     state.labOrder = state.labOrder === "correct-first" ? "verify-first" : "correct-first";
-    questions = LOCAL_LAB.questions(state.formId, currentLanguage(), state.labOrder);
-    state.index = 0; saveLabDraft(); renderQuestion();
+    [questions[k1Start], questions[k1Start + 1]] = [questions[k1Start + 1], questions[k1Start]];
+    state.index = k1Start; saveLabDraft(); renderQuestion();
     $("questionTitle").focus();
   });
   updateNavigationState(q);

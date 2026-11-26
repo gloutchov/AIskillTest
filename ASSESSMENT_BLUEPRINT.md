@@ -101,7 +101,7 @@ La mappa distingue anche allineamento diretto e di supporto: T10 riguarda la sto
 
 ## 5. Composizione target del completo: 50 unità di risposta
 
-La matrice seguente si applica con la milestone 22. Fino ad allora il completo conserva i 50 item attuali; le milestone intermedie dichiarano copertura effettiva e aree ancora assenti. Non si presentano i nuovi target come già implementati.
+La matrice seguente è implementata nella release M22 `3.5.0`, approvata dal maintainer il `2026-11-26`. Fino alla release approvata `3.4.0` il completo conservava 50 item precedenti, senza gli esercizi E; le note di attuazione storiche descrivono quelle versioni. La M22 è il riferimento corrente; i limiti delle verifiche sono documentati nella sezione 18.
 
 | Area primaria | Q | D | T | E | Totale | Minimo Q e copertura target |
 | --- | ---: | ---: | ---: | ---: | ---: | --- |
@@ -186,7 +186,7 @@ Per ogni slot A/B/C conservano obiettivo, evidenza, livello, numero di decisioni
 
 | Modalità | Quantità | Matrice prevista | Evidenze e limiti | Attuazione |
 | --- | --- | --- | --- | --- |
-| Completo / Full test, `complete` | 50 unità | Sezione 5 | Q/D/T/E separati; due casi | M22; prima conserva i 50 attuali |
+| Completo / Full test, `complete` | 50 unità | Sezione 5 | Q/D/T/E separati; due casi | M22 approvata, v3.5.0; 50 unità incluse sei E |
 | AI moderne / Modern AI, `modern-ai` | 10 domande | U01 x2, U02 x2, U03, U04, U05, U06, U07, U08 | 10 Q; scelta su scenario, nessuna esecuzione | M18 |
 | AI Agents, `agents` | 10 domande | A01 x2, A02 x2, A03 x2, A04 x2, A05 x2 | 10 Q; processo, tool, supervisione, injection e diagnosi obbligatori | M19 |
 | Harness, `harness` | 10 domande | H01, H02 x2, H03 x2, H04 x2, H05 x2, H06 | 10 Q; include ripresa e permessi reali vs prompt | M20 |
@@ -465,7 +465,7 @@ I 135 item precedenti e le loro classificazioni restano invariati: completo da 5
 Verificati 35 controlli, 72 composizioni assessment e 6 forme didattiche. Confronto con `main` `dcf6428`: 135 item nelle sei forme, relativa mappa e 66 composizioni precedenti invariati. Risposta corretta più lunga in 0–4 casi su 10 per forma/lingua; carico medio progettato 91–103 parole e durata stimata 8–12 minuti, senza validazione empirica. Browser non disponibile nell’ambiente: layout, mobile, tredici indicatori del carosello, interazioni/download reali, console e traffico restano nella [checklist del maintainer](docs/SCORING.md).
 
 
-## 15. Implementazione M21 — approvata
+## 17. Implementazione M21 — approvata
 
 La M21 implementa il Laboratorio operativo nel branch feature/local-operational-lab. App 3.4.0, banca 2026.11-m21, forma 1.7, casi/rubriche 1.0.0; scoring 3.1.0 e schema report 4 introducono E. Blueprint 1.0.0 invariato; M21 approvata dal maintainer il 2026-11-25, release v3.4.0, con autorizzazione a commit, merge, push, tag e rimozione del branch. I report precedenti schema 3/scoring 3.0 restano leggibili e originali.
 
@@ -478,3 +478,15 @@ Credito 0/1/2 per decisione, massimo 6 per caso e 12 totali. E percentuale solo 
 Una sola bozza locale incompleta in aiSkillOperationalLabDraft, separata dallo storico: versioni, lingua, forma, ordine, posizione e scelte confermate, senza dati del profilo o tempi. Versione lab 1.0.0 identifica i due casi e le rubriche; modifiche richiedono versioni coerenti e rendono la bozza incompatibile. Recupero senza consumare una forma, eliminazione esplicita o a completamento/interruzione confermata. Errori di storage visibili; da file:// persistenza dipendente dal browser. Le bozze incompatibili/corrotte non vengono ricalcolate. Il report salva stato iniziale sintetico, scelte finali, artefatti/effetti, punti e motivazioni, senza log dei tentativi.
 
 [Varianti IT/EN e contratto completo](docs/OPERATIONAL_LAB_REVIEW.md), [regole e checklist](docs/SCORING.md), [inventario E](docs/ASSESSMENT_ITEM_MAP.md). Nessun dato reale del browser consultato. Verifica Browser non disponibile: gli esiti dettagliati della prova IT/EN desktop/mobile e di download, console e traffico non sono stati riportati dal maintainer nell’approvazione. Tempi 12–16 minuti stimati e forme parallele sono scelte editoriali, senza validazione empirica o psicometrica.
+
+## 18. Attuazione M22 — approvata dal maintainer
+
+Il branch `feature/balanced-complete-assessment` implementa app `3.5.0`, banca `2026.11-m22`, forma `1.8`. Blueprint `1.0.0`, scoring `3.1.0`, schema report `4` e casi `1.0.0` restano invariati: si applica la matrice approvata, senza ricalcolare i risultati precedenti.
+
+`assets/complete-assessment.js` rende espliciti C01–C50 e la loro origine. Gli 11 Q F sono nuovi e coprono tutti i sei obiettivi, incluso F06 che prima mancava di prove dirette. Altri 25 Q riusano otto MA, nove AW e otto HR con forma/lingua e motivazioni originali; HR01/HR04 sono i due compiti di comprensione Harness. Quattro D e due T sono riusi dichiarati; due D su A03/H02 sono nuovi. I 44 ID Q/D/T dedicati conservano slotId/originSourceId; le sei E conservano ID LAB e aggiungono slotId senza duplicare casi o crediti.
+
+La distribuzione è esattamente 12 F, 16 U, 12 A, 10 H; 36 Q (6 knowledge, 30 scenario), 6 D, 2 T, 6 E. I quiz sono rimescolati entro area; K1 e K2 seguono come due blocchi, mantenendo C39/C40/C50 insieme. L'inversione verifica/calcolo di K1 non sostituisce l'intero questionario. Le azioni richiedono conferma e Avanti; correggere il calcolo invalida la consegna. Le criticità E compaiono già all'inizio del report e non sono compensate dai quiz.
+
+Il requisito di recupero locale della sezione 7 si applica anche al completo: una sola bozza condivisa con laboratorio autonomo. Il completo salva draft schema 2 con ID/ordine e risposte/testi, incluse bozze testuali parziali e sole azioni E confermate. Esclude dati iniziali del profilo, tempi e cronologia. Riprende stessa lingua/forma senza consumare rotazione; i campi iniziali sono vuoti. Le bozze M21 o di versioni diverse non sono migrate. Il laboratorio mantiene il proprio schema draft 1. Le modalità tematiche e le sei forme di Primi passi conservano contenuti e regole originali.
+
+La M22 e la release `v3.5.0` sono state approvate dal maintainer il `2026-11-26`, con autorizzazione a commit, merge, tag, push e rimozione del branch. La [matrice e le 300 unità IT/EN](docs/M22_REVIEW.md), i sei report campione e la [checklist unica](docs/QA.md) conservano il dettaglio della verifica. Gli esiti manuali IT/EN desktop/mobile e i tempi umani non sono stati riportati nella conversazione: la stima 40–55 minuti rimane qualificata come da verificare. La skill Browser non trova browser disponibili; il test con adattatore DOM non attesta layout, download, stampa, console o traffico reali.
