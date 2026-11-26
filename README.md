@@ -6,9 +6,7 @@ Questionario interattivo in italiano e inglese per esplorare conoscenze, giudizi
 
 L'assessment produce un quadro delle evidenze: conoscenze/scenari, pratiche dichiarate, testi con feedback ed esiti simulati restano separati, con copertura e limiti per area. È pensato come strumento diagnostico interno e migliorabile, non come test psicometrico validato.
 
-Versione corrente dell'app **`3.5.1`**, milestone 23 approvata dal maintainer il `2026-11-26`. La release precedente è la `3.5.0`.
-
-Il tag di riferimento è `v3.5.1`.
+Versione corrente dell'app **`3.5.2`**, milestone 24 approvata dal maintainer il `2026-11-26`. Il tag di riferimento è `v3.5.2`.
 
 ### Nota sullo sviluppo
 
@@ -121,7 +119,9 @@ L'applicazione è client-side. Dati facoltativi, risposte e report restano nel b
 
 Lo step iniziale consente di inserire nome, ruolo, area/team e autovalutazione delle skill. Tutti questi dati sono facoltativi. L'app non invia automaticamente dati a server esterni, non contiene analytics e non richiede account.
 
-Completo e Laboratorio operativo condividono una sola bozza incompleta in `aiSkillOperationalLabDraft`, distinta dallo storico. Conserva versioni, modalità, lingua, forma, posizione, ordine, risposte/testi e sole azioni E confermate; nessun dato iniziale del profilo, tempo o log dei tentativi. Il completo usa draft schema 2 e conserva gli ID/ordine delle domande; il laboratorio autonomo conserva draft schema 1. Riprendi mantiene lingua/forma senza consumare una rotazione, ma lascia vuoti i dati iniziali. Una nuova sessione chiede conferma prima di sostituire la bozza. Il completamento rimuove la bozza dopo il salvataggio del report. Interrompi confermato, Elimina bozza e Cancella dati locali tentano di rimuoverla. Se il browser blocca la rimozione, Interrompi riporta comunque ai percorsi e avvisa che può restare una copia. Le bozze `3.5.0` compatibili si possono riprendere con la patch `3.5.1`. Bozze incompatibili/corrotte non vengono ricalcolate; errori di storage sono segnalati e da `file://` la persistenza dipende dal browser. I report precedenti schema 3 e 4 restano originali.
+Completo e Laboratorio operativo condividono una bozza locale in `aiSkillAssessmentDraft`, separata dallo storico. Conserva versione dei contenuti, modalità, lingua, forma, posizione, ordine, risposte, testi e azioni E confermate. Esclude i dati iniziali del profilo, i tempi e il log dei tentativi. Riprendi mantiene lingua e forma e lascia vuoti i dati iniziali. Le bozze compatibili di `3.5.0` e `3.5.1` vengono trasferite dalla chiave precedente `aiSkillOperationalLabDraft` al primo salvataggio dopo la ripresa.
+
+Riprendere in un'altra scheda assegna a quella scheda il salvataggio della bozza. Sostituire la bozza richiede conferma. La scheda precedente può completare ed esportare il proprio risultato. Il completamento rimuove la bozza dopo il salvataggio del report. Si può rimuoverla anche con Interrompi confermato, Elimina bozza o Cancella dati locali. Se il browser blocca il salvataggio tra schede, risposte e risultato restano nella pagina aperta per l'export. La persistenza da `file://` dipende dal browser. Dopo un aggiornamento, ricaricare le schede ancora aperte sulla versione precedente.
 
 ### Export e storico
 
@@ -129,7 +129,7 @@ Completo e Laboratorio operativo condividono una sola bozza incompleta in `aiSki
 - CSV: formato `type,field,value` con percorsi di campo stabili, compresi metadati, risposte, evidenze e copertura; sostituisce il precedente CSV a sezioni.
 - Storico locale: conserva fino a 100 report apribili singolarmente. I report 2.x restano originali con avviso, senza ricalcolo, medie o confronti diretti con 3.x. Formati sconosciuti sono consultabili ed esportabili senza alterare i dati.
 
-Gli export sono azioni manuali. Se lo storico non è scrivibile, il report rimane disponibile nella pagina per l’export o un nuovo tentativo di salvataggio. Puoi consultare lo storico e poi tornare al report pendente. Una bozza esistente resta disponibile per riprendere il completo o il laboratorio. Tornare ai percorsi richiede conferma. Alla chiusura o al ricaricamento la pagina richiede un avviso, che il browser può omettere. Se il browser non ha salvato alcuna bozza, l’export è il modo per conservare il report prima di chiudere.
+Gli export sono azioni manuali. Se il salvataggio fallisce, il report resta disponibile nella pagina per l'export. La pagina permette di riprovare quando l'errore è recuperabile. Puoi consultare lo storico e poi tornare al report pendente. Una bozza esistente resta disponibile per riprendere il completo o il laboratorio. Tornare ai percorsi richiede conferma. Alla chiusura o al ricaricamento la pagina richiede un avviso, che il browser può omettere. Se il browser non ha salvato alcuna bozza, l’export è il modo per conservare il report prima di chiudere.
 
 Gli item AI moderne, Agents e Harness salvano contesto e domanda completi, motivazione della scelta e riferimenti alle fonti anche negli export. Nei nuovi scenari Agents e Harness il report conserva inoltre suggerimenti per gli obiettivi con almeno una scelta parziale o errata, deduplicati per obiettivo. I report 3.0.0/3.1.0/3.2.0 restano originali e leggibili, senza aggiungere suggerimenti ricavati dalla banca corrente. La nuova banca e la nuova forma producono una diversa firma di confronto anche nei percorsi preesistenti; non si ricalcolano lo storico o le sue versioni.
 
@@ -145,8 +145,8 @@ L'icona a forma di casa accanto al selettore della lingua rimanda al sito princi
 
 ### Versioning
 
-- Versione app `3.5.1`.
-- Tag Git `v3.5.1`.
+- Versione app `3.5.2`.
+- Tag Git `v3.5.2`.
 - Banca domande: `2026.11-m22`.
 - Forma assessment: `1.8`.
 - Scoring: `3.1.0`; schema report `4`; blueprint `1.0.0`; casi/laboratorio `1.0.0`.
@@ -165,7 +165,7 @@ La milestone 19 introduce la revisione Agents nella release `3.2.0`, approvata d
 
 ### Verifica locale
 
-Eseguire `node --test --test-isolation=none tests/assessment.test.mjs tests/operational-lab.test.mjs tests/complete-assessment.test.mjs`. Non servono installazioni; controlli e limiti del test senza browser sono in [docs/SCORING.md](docs/SCORING.md).
+Eseguire `node --test --test-isolation=none tests/*.test.mjs` dalla radice del repository. La suite usa Node.js senza dipendenze aggiuntive. [Checklist di verifica](docs/QA.md).
 
 ### Riferimenti
 
@@ -194,9 +194,7 @@ Interactive questionnaire in Italian and English exploring GenAI knowledge, judg
 
 The assessment produces an evidence overview: knowledge/scenarios, self-reported practices, text with feedback, and simulated outcomes remain separate, with area coverage and limits. It is intended as an internal diagnostic tool that can evolve over time, not as a psychometrically validated test.
 
-The current app version is **`3.5.1`**. The maintainer approved milestone 23 on `2026-11-26`. The previous release is `3.5.0`.
-
-The reference tag is `v3.5.1`.
+The current app version is **`3.5.2`**. The maintainer approved milestone 24 on `2026-11-26`. The reference tag is `v3.5.2`.
 
 ### Development Note
 
@@ -309,7 +307,9 @@ The application is fully client-side. Optional profile data, answers, and report
 
 The initial step can collect name, role, area/team, and self-assessed skills. All fields are optional. The app does not automatically send data to external servers, contains no analytics, and requires no account.
 
-The full test and Operational lab share one incomplete draft in `aiSkillOperationalLabDraft`, separate from history. It retains versions, mode, language, form, position, order, answers/text, and confirmed E actions; no initial profile data, times, or attempt log. The full test uses draft schema 2 and retains question IDs/order; the standalone lab keeps draft schema 1. Resume preserves language/form without consuming rotation but leaves initial data blank. A new session requires confirmation before replacing the draft. Completing a session removes its draft once the report is saved. Confirmed Interrupt, Discard draft, and Clear local data also try to remove it. If the browser blocks removal, Interrupt still returns to the paths and warns that a copy may remain. Compatible `3.5.0` drafts can resume in patch `3.5.1`. Incompatible/corrupt drafts are not recalculated; storage failures are reported and `file://` persistence depends on the browser. Previous schema 3 and 4 reports remain original.
+The full test and Operational lab share a local draft in `aiSkillAssessmentDraft`, separate from history. It retains content versions, mode, language, form, position, order, answers, text, and confirmed E actions. It excludes initial profile data, timing, and attempt logs. Resuming preserves the language and form and leaves initial profile data blank. Compatible drafts from `3.5.0` and `3.5.1` move from the earlier `aiSkillOperationalLabDraft` key on the first save after resuming.
+
+Resuming in another tab gives that tab control over subsequent draft saves. Replacing the draft requires confirmation. The previous tab can complete the test and export its result. Completing a session removes the draft after saving the report. Confirming Interrupt, Discard draft, or Clear local data can also remove it. If the browser cannot coordinate saving across tabs, answers and results stay in the open page for export. Persistence from `file://` depends on the browser. After upgrading, reload any tabs still running the previous version.
 
 ### Export And History
 
@@ -317,7 +317,7 @@ The full test and Operational lab share one incomplete draft in `aiSkillOperatio
 - CSV: uses `type,field,value` with stable field paths for metadata, answers, evidence, and coverage; replaces the previous section-based CSV.
 - Local history: keeps up to 100 individually openable reports. Reports from 2.x remain original with a notice, without recalculation, averaging, or direct comparison with 3.x. Unknown formats can be inspected and exported without altering data.
 
-Exports are explicit user actions. If history cannot be written, the report stays available on the page for export or another save attempt. You can open the history and return to the pending report. An existing draft remains available to resume the full test or lab. Returning to the paths requires confirmation. The page requests a warning before closing or reloading, which the browser can omit. If no draft was saved, export the report to keep it before closing.
+Exports are explicit user actions. If saving fails, the report stays available on the page for export. The page offers a retry for recoverable errors. You can open the history and return to the pending report. An existing draft remains available to resume the full test or lab. Returning to the paths requires confirmation. The page requests a warning before closing or reloading, which the browser can omit. If no draft was saved, export the report to keep it before closing.
 
 Modern AI, Agents, and Harness items store the full context and question, selected-choice rationale, and source references in exports too. For new Agents and Harness scenarios, reports also retain suggestions for objectives with at least one partial or incorrect choice, deduplicated by objective. Reports from 3.0.0/3.1.0/3.2.0 remain original and readable without adding suggestions from the current bank. The new bank and form create a different comparison signature even for existing paths; history and its version metadata are never recalculated.
 
@@ -333,8 +333,8 @@ The home icon next to the language selector links to the main website, [glaucosi
 
 ### Versioning
 
-- App version `3.5.1`.
-- Git tag `v3.5.1`.
+- App version `3.5.2`.
+- Git tag `v3.5.2`.
 - Question bank: `2026.11-m22`.
 - Assessment form: `1.8`.
 - Scoring: `3.1.0`; report schema `4`; blueprint `1.0.0`; cases/lab `1.0.0`.
@@ -353,7 +353,7 @@ Milestone 19 introduces the Agents revision in release `3.2.0`, approved by the 
 
 ### Local Verification
 
-Run `node --test --test-isolation=none tests/assessment.test.mjs tests/operational-lab.test.mjs tests/complete-assessment.test.mjs`. No installation is needed; checks and limitations of testing without a browser are documented in [docs/SCORING.md](docs/SCORING.md).
+Run `node --test --test-isolation=none tests/*.test.mjs` from the repository root. The suite uses Node.js without additional dependencies. [Validation checklist](docs/QA.md).
 
 ### References
 

@@ -125,14 +125,14 @@ test("UI requires confirmation and Next, shows artifact before release and withh
     for (let i = 0; i < 3; i++) { s.node("labChoice0").events.change(); s.node("labApply").events.click(); if (i < 2) s.run("goNext()"); }
     assert.equal(s.run("state.index"), 5); assert.equal(s.node("finishBtn").disabled, false);
     s.node("finishBtn").events.click(); assert.equal(s.run("state.latestReport.results.simulatedSummary.value"), 100);
-    assert.equal(s.run("state.latestReport.criticalFindings.length"), 0); assert.equal(s.storage.has("aiSkillOperationalLabDraft"), false);
+    assert.equal(s.run("state.latestReport.criticalFindings.length"), 0); assert.equal(s.run("readLabDraft().status"), "absent");
   }
 });
 
 test("draft stores only confirmed choices and resumes original language/form/order without consuming rotation", () => {
   const r = lab("C", "en"); r.start();
   r.run("state.selectedModeId='operational-lab';startAssessment();state.labOrder='correct-first';questions=lab.questions(state.formId,currentLanguage(),state.labOrder);state.answers=Object.fromEntries(questions.map(q=>[q.id,good['C_'+q.sourceId]]));state.index=4;saveLabDraft()");
-  const original = JSON.parse(r.storage.get("aiSkillOperationalLabDraft"));
+  const original = JSON.parse(r.storage.get("aiSkillAssessmentDraft")).draft;
   assert.equal(original.language, "en"); assert.equal(original.order, "correct-first");
   assert.doesNotMatch(JSON.stringify(original), /name|role|area|startedAt|completedAt|history|time|receipt|credit/);
   const cycles = r.run("JSON.stringify(readFormCycles())");
@@ -145,12 +145,12 @@ test("draft stores only confirmed choices and resumes original language/form/ord
 
 test("incompatible, corrupt and inaccessible drafts are preserved and never silently applied", () => {
   const r = lab(); r.start();
-  r.storage.set("aiSkillOperationalLabDraft", "{broken"); r.run("renderLabDraftNotice();resumeLabDraft()");
-  assert.equal(r.storage.get("aiSkillOperationalLabDraft"), "{broken"); assert.match(r.node("labDraftNotice").innerHTML, /non è compatibile/);
-  r.storage.delete("aiSkillOperationalLabDraft"); r.run("state.selectedModeId='operational-lab';startAssessment()");
-  const draft = JSON.parse(r.storage.get("aiSkillOperationalLabDraft"));
-  for (const field of ["assessmentVersion", "scoringVersion", "labVersion", "formVersion", "questionBankVersion"]) {
-    r.context.draft = { ...draft, [field]: "future" }; assert.equal(r.run("lab.draftStatus(draft,labVersions())"), "incompatible");
+  r.storage.set("aiSkillAssessmentDraft", "{broken"); r.run("renderLabDraftNotice();resumeLabDraft()");
+  assert.equal(r.storage.get("aiSkillAssessmentDraft"), "{broken"); assert.match(r.node("labDraftNotice").innerHTML, /non è compatibile/);
+  r.storage.delete("aiSkillAssessmentDraft"); r.run("state.selectedModeId='operational-lab';startAssessment()");
+  const draft = JSON.parse(r.storage.get("aiSkillAssessmentDraft")).draft;
+  for (const field of ["scoringVersion", "labVersion", "formVersion", "questionBankVersion"]) {
+    r.context.draft = { ...draft, [field]: "future" }; assert.equal(r.run("lab.draftStatus(draft,labContentVersions())"), "incompatible");
   }
   r.run("localStorage.setItem=()=>{throw Error('quota')};saveLabDraft()"); assert.equal(r.node("labStorageStatus").hidden, false);
   r.run("localStorage.getItem=()=>{throw Error('blocked')}"); assert.equal(r.run("readLabDraft().status"), "unavailable");
@@ -158,16 +158,16 @@ test("incompatible, corrupt and inaccessible drafts are preserved and never sile
 
 test("interrupt confirmation, draft replacement cancellation and clear local data handle the draft", () => {
   const r = lab(); r.start(); r.run("state.selectedModeId='operational-lab';startAssessment();window.confirm=()=>false;interruptAssessment()");
-  const draft = r.storage.get("aiSkillOperationalLabDraft"); assert.ok(draft);
-  r.run("startAssessment()"); assert.equal(r.storage.get("aiSkillOperationalLabDraft"), draft);
-  r.run("window.confirm=()=>true;interruptAssessment()"); assert.equal(r.storage.has("aiSkillOperationalLabDraft"), false);
+  const draft = r.storage.get("aiSkillAssessmentDraft"); assert.ok(draft);
+  r.run("startAssessment()"); assert.equal(r.storage.get("aiSkillAssessmentDraft"), draft);
+  r.run("window.confirm=()=>true;interruptAssessment()"); assert.equal(r.run("readLabDraft().status"), "absent");
   r.run("state.selectedModeId='operational-lab';startAssessment();renderDashboard(full())");
-  r.node("clearHistoryBtn").events.click(); assert.equal(r.storage.has("aiSkillOperationalLabDraft"), false);
+  r.node("clearHistoryBtn").events.click(); assert.equal(r.run("readLabDraft().status"), "absent");
 });
 
 test("completion freezes JSON/CSV/history, clears draft, and historical schema 3 remains original", () => {
   const r = lab(); r.start(); r.run("state.selectedModeId='operational-lab';startAssessment();state.answers=Object.fromEntries(questions.map((q,i)=>[q.id,['all-rows',{operation:'sum',total:lab.variant(state.formId,currentLanguage()).total},{action:'release',reference:true,keepClaim:false},'export','draft-only','repeat-update'][i]]));finishAssessment()");
-  assert.equal(r.storage.has("aiSkillOperationalLabDraft"), false);
+  assert.equal(r.run("readLabDraft().status"), "absent");
   const report = r.run("state.latestReport"); assert.equal(report.criticalFindings.length, 2);
   assert.equal(JSON.parse(r.storage.get("aiSkillAssessmentHistory")).length, 1);
   const snapshot = JSON.stringify(report); r.context.saved = report;
@@ -197,13 +197,13 @@ test("malformed simulation records fall back to raw inspection without breaking 
 });
 
 test("failed draft removal permits interruption and warns after interruption or successful completion", () => {
-  const r = lab(); r.start(); r.run("state.selectedModeId='operational-lab';startAssessment();localStorage.removeItem=()=>{throw Error('blocked')};interruptAssessment()");
+  const r = lab(); r.start(); r.run("state.selectedModeId='operational-lab';startAssessment();globalThis.setDraft=localStorage.setItem;localStorage.setItem=(key,value)=>{if(value==='null')throw Error('blocked');setDraft(key,value)};interruptAssessment()");
   assert.equal(r.run("state.meta.testMode"), undefined); assert.equal(r.node("labStorageStatus").hidden, false);
   assert.match(r.node("labStorageStatus").textContent, /copia precedente potrebbe essere ancora presente/);
   r.run("resumeLabDraft()");
   r.run("state.answers=Object.fromEntries(questions.map((q,i)=>[q.id,['all-rows',{operation:'sum',total:lab.variant(state.formId,currentLanguage()).total},{action:'release',reference:true,keepClaim:false},'use-data','draft-only','continue'][i]]));finishAssessment()");
   assert.equal(r.run("state.latestReport.results.simulatedSummary.value"), 100); assert.equal(r.node("labStorageStatus").hidden, false);
-  assert.ok(r.storage.has("aiSkillOperationalLabDraft"));
+  assert.ok(r.storage.has("aiSkillAssessmentDraft"));
 });
 
 test("a session still exits when browser storage was blocked from the start", () => {
@@ -212,6 +212,6 @@ test("a session still exits when browser storage was blocked from the start", ()
   assert.equal(r.run("state.meta.testMode.id"), "complete");
   r.run("interruptAssessment()");
   assert.equal(r.run("state.meta.testMode"), undefined);
-  assert.equal(r.storage.has("aiSkillOperationalLabDraft"),false);
+  assert.equal(r.storage.has("aiSkillAssessmentDraft"),false);
   assert.match(r.node("labStorageStatus").textContent, /Test interrotto/);
 });

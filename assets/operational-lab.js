@@ -2,7 +2,8 @@
 const LOCAL_LAB = (() => {
   "use strict";
   const VERSION = "1.0.0";
-  const DRAFT_KEY = "aiSkillOperationalLabDraft";
+  const LEGACY_DRAFT_KEY = "aiSkillOperationalLabDraft";
+  const DRAFT_KEY = "aiSkillAssessmentDraft";
   const SOURCES = [
     { id: "M21-S01", title: "Anthropic — Effective harnesses for long-running agents", url: "https://www.anthropic.com/research/effective-harnesses-for-long-running-agents", note: ["Stato verificabile e ripresa del lavoro. I dati e le rubriche del laboratorio sono costruiti dall'autore, senza validazione psicometrica.", "Verifiable state and work recovery. Lab data and rubrics are author-created, without psychometric validation."] },
     { id: "M21-S02", title: "MDN — Window.localStorage", url: "https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage", note: ["Persistenza nel browser, errori di accesso e limiti delle pagine file://. Non garantisce il recupero in tutti i browser.", "Browser persistence, access errors, and file:// limitations. Recovery is not guaranteed in every browser."] }
@@ -120,5 +121,5 @@ const LOCAL_LAB = (() => {
     if (Object.entries(draft.choices).some(([id, value]) => !IDS.some(sourceId => id === `${draft.formId}_${sourceId}` && valid(sourceId, value)))) return "invalid";
     return "compatible";
   }
-  return { VERSION, DRAFT_KEY, SOURCES, IDS, VARIANTS, TITLES, variant, choices, questions, valid, status, sanitize, change, evaluate, draftStatus };
+  return { VERSION, DRAFT_KEY, LEGACY_DRAFT_KEY, SOURCES, IDS, VARIANTS, TITLES, variant, choices, questions, valid, status, sanitize, change, evaluate, draftStatus };
 })();

@@ -1,23 +1,64 @@
 /* Local lab presentation and the single incomplete draft. Classic script, no server. */
 function labText(it, en) { return isEnglish() ? en : it; }
-function labVersions(assessmentVersion = APP_VERSION) { return { assessmentVersion, scoringVersion: ASSESSMENT_V3.SCORING_VERSION, questionBankVersion: QUESTION_BANK_VERSION, formVersion: FORM_VERSION }; }
+function labContentVersions() {
+  return { scoringVersion: ASSESSMENT_V3.SCORING_VERSION, questionBankVersion: QUESTION_BANK_VERSION, formVersion: FORM_VERSION };
+}
+
+function withAssessmentStorageLock(operation, unavailable = labStorageWarning) {
+  let entered = false;
+  let request;
+  try {
+    if (navigator.locks) request = navigator.locks.request("aiSkillAssessmentStorage", () => {
+      entered = true;
+      return operation();
+    });
+  } catch (error) {
+    if (entered) throw error;
+    return unavailable();
+  }
+  if (!request) return unavailable();
+  return request.catch(error => {
+    if (entered) throw error;
+    return unavailable();
+  });
+}
+
+function newAssessmentId() {
+  return Array.from(crypto.getRandomValues(new Uint8Array(16)), byte => byte.toString(16).padStart(2, "0")).join("");
+}
+
+function readDraftSlot() {
+  // A null record in the current key prevents pre-3.5.2 tabs from reviving an old draft.
+  const raw = localStorage.getItem(LOCAL_LAB.DRAFT_KEY);
+  return raw !== null ? { key: LOCAL_LAB.DRAFT_KEY, raw } :
+    { key: LOCAL_LAB.LEGACY_DRAFT_KEY, raw: localStorage.getItem(LOCAL_LAB.LEGACY_DRAFT_KEY) };
+}
+
+function sameDraftSlot(first, second) {
+  return first.key === second.key && first.raw === second.raw;
+}
+
 function readLabDraft() {
   try {
-    const raw = localStorage.getItem(LOCAL_LAB.DRAFT_KEY);
-    if (raw === null) return { status: "absent" };
+    const slot = readDraftSlot();
+    if (slot.raw === null || (slot.key === LOCAL_LAB.DRAFT_KEY && slot.raw === "null")) return { status: "absent", slot };
     try {
-      const draft = JSON.parse(raw);
-      // 3.5.1 changes persistence behavior while retaining the 3.5.0 draft contracts.
-      const versions = labVersions(draft?.assessmentVersion === "3.5.0" ? "3.5.0" : APP_VERSION);
+      const record = JSON.parse(slot.raw);
+      const legacy = slot.key === LOCAL_LAB.LEGACY_DRAFT_KEY;
+      if (!legacy && (typeof record?.sessionId !== "string" || !/^[a-f0-9]{32}$/.test(record.sessionId)
+          || !Number.isSafeInteger(record.revision) || record.revision < 1)) return { status: "invalid", slot };
+      const draft = legacy ? record : record.draft;
+      const identity = legacy ? {} : { sessionId: record.sessionId, revision: record.revision };
+      const versions = labContentVersions();
       if (draft?.modeId === "complete") {
-        if (!["A","B","C"].includes(draft.formId) || !["it","en"].includes(draft.language)) return { status: "invalid", draft };
+        if (!["A","B","C"].includes(draft.formId) || !["it","en"].includes(draft.language)) return { status: "invalid", draft, slot };
         const sources = draft.language === "en" ? buildEnglishQuestionForm(draft.formId) : buildQuestionForm(draft.formId);
         const units = COMPLETE_ASSESSMENT.build(draft.formId,draft.language,sources);
-        return { status: COMPLETE_ASSESSMENT.draftStatus(draft,versions,units), draft };
+        return { status: COMPLETE_ASSESSMENT.draftStatus(draft, versions, units), draft, slot, ...identity };
       }
-      return { status: LOCAL_LAB.draftStatus(draft, versions), draft };
+      return { status: LOCAL_LAB.draftStatus(draft, versions), draft, slot, ...identity };
     }
-    catch (error) { return { status: "invalid" }; }
+    catch (error) { return { status: "invalid", slot }; }
   } catch (error) { return { status: "unavailable" }; }
 }
 function labStorageWarning(text = labText("La bozza locale non è stata salvata o eliminata. Continua in questa pagina. Il recupero dopo la chiusura potrebbe contenere uno stato precedente.", "The local draft could not be saved or removed. Continue on this page. Recovery after closing may contain an earlier state.")) {
@@ -25,23 +66,71 @@ function labStorageWarning(text = labText("La bozza locale non è stata salvata 
   $("labStorageStatus").hidden = false;
   showToast(text);
 }
-function saveLabDraft() {
+function markDraftConflict(owner) {
+  if (owner?.conflict) return;
+  if (owner) owner.conflict = true;
+  labStorageWarning(labText("Un’altra scheda ha modificato o eliminato la bozza. Puoi finire il test qui. Le modifiche di questa scheda non saranno salvate nella bozza.", "Another tab changed or removed the draft. You can finish here. Changes from this tab will not be saved to the draft."));
+}
+
+function snapshotLabDraft() {
   const complete = state.meta?.testMode?.id === "complete";
-  if (!complete && state.meta?.testMode?.id !== "operational-lab") return;
   const choices = {};
   for (const q of questions) {
     const raw = state.answers[q.id];
     if (q.type === "simulation" && LOCAL_LAB.valid(q.sourceId,raw)) choices[q.id] = LOCAL_LAB.sanitize(q.sourceId,raw);
     else if (complete && q.type !== "simulation" && COMPLETE_ASSESSMENT.draftAnswerValid(q,raw)) choices[q.id] = raw;
   }
-  const draft = { draftSchemaVersion: complete ? 2 : 1, ...labVersions(), labVersion: LOCAL_LAB.VERSION, modeId: complete ? "complete" : "operational-lab", language: currentLanguage(), formId: state.formId, index: state.index, order: state.labOrder || "verify-first", choices,
+  return { draftSchemaVersion: complete ? 2 : 1, assessmentVersion: APP_VERSION, ...labContentVersions(), labVersion: LOCAL_LAB.VERSION, modeId: complete ? "complete" : "operational-lab", language: currentLanguage(), formId: state.formId, index: state.index, order: state.labOrder || "verify-first", choices,
     ...(complete ? { questionIds: questions.map(q => q.id) } : {}) };
-  try { localStorage.setItem(LOCAL_LAB.DRAFT_KEY, JSON.stringify(draft)); $("labStorageStatus").hidden = true; }
-  catch (error) { labStorageWarning(); }
 }
-function removeLabDraft(warning) {
-  try { localStorage.removeItem(LOCAL_LAB.DRAFT_KEY); $("labStorageStatus").hidden = true; return true; }
+
+// Called only while holding the assessment storage lock.
+function writeLabDraft(owner, draft) {
+  if (state.draftOwner !== owner || owner.conflict) return false;
+  try {
+    if (!sameDraftSlot(owner.slot, readDraftSlot())) { markDraftConflict(owner); return false; }
+    const revision = owner.revision + 1;
+    const raw = JSON.stringify({ sessionId: owner.sessionId, revision, draft });
+    const migrating = owner.slot.key === LOCAL_LAB.LEGACY_DRAFT_KEY && owner.slot.raw !== null;
+    localStorage.setItem(LOCAL_LAB.DRAFT_KEY, raw);
+    owner.revision = revision;
+    owner.slot = { key: LOCAL_LAB.DRAFT_KEY, raw };
+    if (migrating) localStorage.removeItem(LOCAL_LAB.LEGACY_DRAFT_KEY);
+    $("labStorageStatus").hidden = true;
+    return true;
+  } catch (error) { labStorageWarning(); return false; }
+}
+
+function saveLabDraft() {
+  const owner = state.draftOwner;
+  if (!owner || owner.readOnly || owner.conflict || state.finishing) return;
+  const draft = snapshotLabDraft();
+  return withAssessmentStorageLock(() => writeLabDraft(owner, draft));
+}
+
+// The marker takes precedence over drafts recreated by pre-3.5.2 tabs.
+function clearDraftRecords() {
+  localStorage.setItem(LOCAL_LAB.DRAFT_KEY, "null");
+  localStorage.removeItem(LOCAL_LAB.LEGACY_DRAFT_KEY);
+}
+
+function removeLabDraft(slot, warning) {
+  try {
+    if (!slot || !sameDraftSlot(slot, readDraftSlot())) { markDraftConflict(state.draftOwner); return false; }
+    clearDraftRecords();
+    $("labStorageStatus").hidden = true;
+    return true;
+  }
   catch (error) { labStorageWarning(warning); return false; }
+}
+
+function onSharedDraftChange(event) {
+  if (event.key !== LOCAL_LAB.DRAFT_KEY && event.key !== LOCAL_LAB.LEGACY_DRAFT_KEY && event.key !== null) return;
+  const owner = state.draftOwner;
+  try {
+    if (owner && !sameDraftSlot(owner.slot, readDraftSlot())) markDraftConflict(owner);
+    if ($("introView").classList.contains("active")) renderLabDraftNotice();
+  } catch (error) { labStorageWarning(); }
 }
 function renderLabDraftNotice() {
   const host = $("labDraftNotice");
@@ -56,15 +145,28 @@ function renderLabDraftNotice() {
     : saved.status === "unavailable" ? labText("Il browser non consente l'accesso al salvataggio locale. Puoi svolgere il laboratorio in questa pagina, ma il recupero non è garantito.", "The browser blocks local storage. You can run the lab on this page, but recovery is not guaranteed.")
     : labText("La bozza non è compatibile con le regole attuali oppure non è leggibile. Non verrà ricalcolata: eliminala per iniziare una nuova sessione.", "The draft is incompatible with current rules or cannot be read. It will not be recalculated: discard it to start a new session.")}</p>
     <div class="actions">${compatible ? `<button class="btn-primary" id="resumeLabBtn">${complete ? labText("Riprendi completo", "Resume full test") : labText("Riprendi laboratorio", "Resume lab")}</button>` : ""}${saved.status !== "unavailable" ? `<button class="btn-ghost" id="discardLabBtn">${labText("Elimina bozza", "Discard draft")}</button>` : ""}</div>`;
-  if (compatible) $("resumeLabBtn").addEventListener("click", resumeLabDraft);
+  if (compatible) $("resumeLabBtn").addEventListener("click", () => resumeLabDraft(saved));
   if (saved.status !== "unavailable") $("discardLabBtn").addEventListener("click", () => {
-    if (window.confirm(labText("Eliminare la bozza locale della sessione?", "Discard the local session draft?")) && removeLabDraft()) renderLabDraftNotice();
+    if (!window.confirm(labText("Eliminare la bozza locale della sessione?", "Discard the local session draft?"))) return;
+    withAssessmentStorageLock(() => { removeLabDraft(saved.slot); renderLabDraftNotice(); });
   });
 }
-function resumeLabDraft() {
-  const saved = readLabDraft();
+function resumeLabDraft(saved = readLabDraft()) {
   if (saved.status !== "compatible") { renderLabDraftNotice(); return; }
+  const resume = writable => {
+    const current = readLabDraft();
+    const sameSession = saved.sessionId && current.sessionId === saved.sessionId;
+    if (current.status !== "compatible" || (!sameSession && !sameDraftSlot(current.slot, saved.slot))) {
+      markDraftConflict(); renderLabDraftNotice(); return;
+    }
+    openLabDraft(current, writable);
+  };
+  return withAssessmentStorageLock(() => resume(true), () => resume(false));
+}
+
+function openLabDraft(saved, writable) {
   const d = saved.draft;
+  const sessionId = saved.sessionId || newAssessmentId();
   state.language = d.language;
   state.selectedModeId = d.modeId;
   applyLanguageChrome();
@@ -79,9 +181,14 @@ function resumeLabDraft() {
   state.answers = Object.fromEntries(questions.filter(q => complete ? COMPLETE_ASSESSMENT.draftAnswerValid(q,d.choices[q.id]) : LOCAL_LAB.valid(q.sourceId,d.choices[q.id]))
     .map(q => [q.id, q.type === "simulation" ? LOCAL_LAB.sanitize(q.sourceId,d.choices[q.id]) : d.choices[q.id]]));
   state.index = d.index;
+  state.finishing = false;
   state.optionOrders = {}; state.hintsVisible = {};
   const mode = getModeById(d.modeId);
-  state.meta = { ...labVersions(), language: d.language, languageSource: "local-draft", formId: d.formId, labVersion: LOCAL_LAB.VERSION, testMode: { id: mode.id, label: localizedMode(mode).label, type: mode.type, section: mode.section, questionCount: questions.length }, name: "", role: "", area: "", selfAssessment: {} };
+  state.meta = { assessmentVersion: APP_VERSION, ...labContentVersions(), sessionId, language: d.language, languageSource: "local-draft", formId: d.formId, labVersion: LOCAL_LAB.VERSION, testMode: { id: mode.id, label: localizedMode(mode).label, type: mode.type, section: mode.section, questionCount: questions.length }, name: "", role: "", area: "", selfAssessment: {} };
+  state.assessmentEpoch = readAssessmentEpoch();
+  state.draftOwner = { slot: saved.slot, sessionId, revision: saved.revision || 0, readOnly: !writable };
+  if (writable) writeLabDraft(state.draftOwner, snapshotLabDraft());
+  else warnUncoordinatedStorage();
   clearAutoAdvance(); showView("assessmentView"); renderQuestion(); $("questionTitle").focus();
 }
 function labCommit(question, raw) {

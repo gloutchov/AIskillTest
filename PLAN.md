@@ -4,7 +4,7 @@ Questo piano governa le prossime modifiche del progetto `AIskillTest`. Ogni mile
 
 Versione di partenza: `1.0.0`.
 
-Release di riferimento `v3.5.1`, con le milestone 0–23 completate. La M23 è stata approvata dal maintainer il `2026-11-26`. La prossima attività della roadmap di review è la M24.
+Release di riferimento `v3.5.2`, con le milestone 0–24 completate. La M24 è stata approvata dal maintainer il `2026-11-26`. La prossima attività della roadmap di review è la M25.
 
 ## Regole di release
 
@@ -852,7 +852,7 @@ Base della review `8a98a8f`. I target sono indicativi e seguono l'ordine delle m
 | Milestone | Intervento | Target | Stato |
 | --- | --- | --- | --- |
 | 23 | Recupero dei risultati e interruzione con storage indisponibile | `3.5.1` | Completata |
-| 24 | Bozze tra schede e compatibilità tra versioni | `3.5.2` | Pianificata |
+| 24 | Bozze tra schede, compatibilità tra versioni e stile dei link bibliografici | `3.5.2` | Completata |
 | 25 | Export CSV sicuro e protezione degli export dal versionamento | `3.5.3` | Pianificata |
 | 26 | Report storici danneggiati e gestione sicura dei campi | `3.5.4` | Pianificata |
 | 27 | Navigazione da tastiera e distribuzione sulla landing | `3.5.5` | Pianificata |
@@ -874,7 +874,10 @@ Base della review `8a98a8f`. I target sono indicativi e seguono l'ordine delle m
 - Branch `fix/draft-concurrency-and-compatibility`, target patch `3.5.2`.
 - Assegnare un'identità alla sessione e rilevare revisioni, sostituzioni e cancellazioni da altre schede. Impedire che una scheda obsoleta sovrascriva o ricrei la bozza. Verificare anche le interazioni con il salvataggio dello storico e la cancellazione dati.
 - Legare la compatibilità allo schema della bozza e alle versioni che cambiano domande, forme, scoring o casi. Valutare migrazioni solo per formati compatibili e verificabili.
+- Uniformare i link Apri la fonte in «Completo: fondamenti e matrice» e «Laboratorio: stato, ripresa e limiti» allo stile e all'etichetta delle altre fonti in IT/EN.
 - Verificare con due schede la ripresa, le scritture concorrenti, il completamento e la cancellazione. Una patch di sola interfaccia deve permettere la ripresa.
+- La ripresa acquisisce la revisione della bozza, le scritture locali sono coordinate tramite Web Locks e i conflitti mantengono disponibile l'export del report. Le bozze compatibili delle release precedenti passano al formato corrente alla prima ripresa con salvataggio.
+- Verifica locale con 69 test passati e prova in Edge con due schede e bibliografia IT/EN. Il maintainer ha verificato la modifica e approvato la chiusura della M24 per la release `v3.5.2` il `2026-11-26`. [Esiti e checklist M24](docs/QA.md#m24--bozze-tra-schede-e-bibliografia).
 
 ### M25 — Export CSV sicuro e protezione dal versionamento
 

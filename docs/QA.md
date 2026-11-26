@@ -4,14 +4,14 @@ Riferimento corrente: M22, release `3.5.0`, banca `2026.11-m22`, forma `1.8`; sc
 
 Questa è la checklist riutilizzabile per nuove modifiche. Le verifiche storiche in SCORING e nei documenti M18–M21 descrivono le rispettive release, senza attestare il browser della M22.
 
-Per la patch M23 `3.5.1` vedi [recupero e storage](#m23--recupero-e-storage).
+Per le patch successive vedi [recupero e storage M23](#m23--recupero-e-storage) e [bozze e bibliografia M24](#m24--bozze-tra-schede-e-bibliografia).
 
 ## Verifiche automatiche
 
 Eseguire dalla radice, senza installare dipendenze:
 
 ```powershell
-node --test --test-isolation=none tests/assessment.test.mjs tests/operational-lab.test.mjs tests/complete-assessment.test.mjs
+node --test --test-isolation=none tests/*.test.mjs
 ```
 
 Le verifiche M22 confrontano tutti i 50 slot con la matrice del blueprint in IT/EN e A/B/C; conteggi per area/evidenza, 6 knowledge e 30 scenario, copertura di tutti i 25 obiettivi, Q corretti/parziali/errati, dichiarazioni e testo senza punteggio, E separato, criticità senza compensazione, assenze e null. Verificano anche navigazione, raggruppamento e inversione K1, invalidazione della consegna, ripresa della bozza, rifiuto di dati corrotti/incompatibili, errori di storage, storico originale e JSON/CSV.
@@ -61,3 +61,15 @@ Patch `3.5.1`, approvata dal maintainer il `2026-11-26` per la pubblicazione. Gl
 3. Bloccare lo storage e confermare Interrompi. La home si riapre con un avviso sulla possibile presenza di una copia. Sbloccare lo storage e riprendere una bozza `3.5.0` con dati compatibili. Verificare le etichette in IT ed EN.
 
 La suite passa 61 controlli. Le prove di errore usano storage simulato e un adattatore DOM. La skill Browser non ha trovato un browser disponibile per verificare avviso nativo, resa visiva e download.
+
+## M24 — Bozze tra schede e bibliografia
+
+Patch `3.5.2`, approvata dal maintainer il `2026-11-26` dopo una prova con esito positivo. La suite di 69 test usa uno storage condiviso e una coda asincrona per riprodurre scritture concorrenti, sostituzione della bozza, interruzione obsoleta, cancellazione dei dati con una sessione aperta e salvataggi simultanei nello storico. Verifica anche la ripresa dopo una patch compatibile, i blocchi indisponibili e il markup dei link in IT/EN.
+
+1. Aprire due schede sulla stessa origine in un profilo di prova. Iniziare il completo nella prima, rispondere e riprendere dalla seconda. Verificare lingua, forma, risposta e posizione. Modificare le risposte nelle due schede. Ricaricare e verificare che la bozza contenga le modifiche della scheda che l'ha ripresa per ultima.
+2. Ripetere con il laboratorio e una bozza compatibile di `3.5.0` o `3.5.1`. Verificare che la ripresa conservi decisioni e posizione. Interrompere dalla scheda precedente. La bozza corrente deve restare disponibile.
+3. Completare nella scheda precedente o riprovare un salvataggio pendente dopo aver sostituito la bozza altrove. Il report resta esportabile. Completare nella scheda che salva la bozza e verificare una sola voce per la sessione.
+4. Usare Cancella dati locali con un test ancora aperto in un'altra scheda. Verificare che un completamento tardivo lasci disponibili gli export senza ripristinare la bozza o lo storico. Se il browser impedisce il coordinamento dello storage, verificare che il test resti completabile in memoria.
+5. Aprire la bibliografia dalla landing e dai risultati. In entrambi i gruppi indicati nella milestone, confrontare tipografia, colore, sottolineatura e freccia dei link con quelli delle altre fonti, anche dopo il passaggio da IT a EN.
+
+Edge headless su server statico locale e profilo temporaneo ha verificato tipografia, colore, sottolineatura ed etichetta dei sei link in IT/EN. Con due schede ha verificato ripresa del completo, avanzamento dopo una risposta, avvisi di cambio scheda, interruzione senza perdere la bozza altrui, completamento di Primi passi con storico e pulsanti di export e cancellazione dei dati con la bozza aperta altrove. La suite automatica copre anche completamento del completo e del laboratorio, conflitti sul report ed esportazione dei dati con l'adattatore DOM. I download effettivi, la prova mobile e la pubblicazione su GitHub Pages restano da verificare.

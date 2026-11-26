@@ -82,7 +82,9 @@ function cloneQuestionData(value) {
       return selected;
     }
 
-    const APP_VERSION = "3.5.1";
+    const APP_VERSION = "3.5.2";
+    const HISTORY_KEY = "aiSkillAssessmentHistory";
+    const ASSESSMENT_EPOCH_KEY = "aiSkillAssessmentClearGeneration";
     const DEFAULT_TEST_MODE_ID = "complete";
     const COMPLETE_TEST_COUNT = 50;
     const TOPIC_TEST_COUNT = 10;
@@ -577,6 +579,10 @@ function cloneQuestionData(value) {
       selectedModeId: DEFAULT_TEST_MODE_ID,
       latestReport: null,
       unsavedReport: null,
+      reportSaveConflict: null,
+      draftOwner: null,
+      assessmentEpoch: undefined,
+      finishing: false,
       bibliographyBackView: "introView",
       autoAdvanceTimer: null,
       carouselTimer: null,
@@ -715,11 +721,10 @@ function cloneQuestionData(value) {
       }));
     }
 
-    function applyQuestionTranslation(question) {
-      if (!isEnglish()) return question;
+    function applyEnglishQuestionTranslation(question) {
       const sourceId = question.sourceId || question.id;
-      const formTranslations = i18n().formOverrides && i18n().formOverrides[question.formId];
-      const translation = (formTranslations && formTranslations[sourceId]) || (i18n().questions && i18n().questions[sourceId]);
+      const english = AI_SKILL_I18N.en;
+      const translation = english.formOverrides?.[question.formId]?.[sourceId] || english.questions?.[sourceId];
       if (!translation) return question;
       const localized = { ...question };
       if (Array.isArray(translation)) {
@@ -744,19 +749,15 @@ function cloneQuestionData(value) {
       return localized;
     }
 
-    function localizeQuestions(sourceQuestions) {
-      return sourceQuestions.map(question => applyQuestionTranslation(question));
-    }
-
     function buildEnglishQuestionForm(formId) {
-      return localizeQuestions(baseQuestions.map(baseQuestion => ({
+      return baseQuestions.map(baseQuestion => applyEnglishQuestionTranslation({
         ...cloneQuestionData(baseQuestion),
         // New scenarios have form-specific layouts; legacy English layouts stay independent.
         ...(baseQuestion.section === "AI moderne" || ["agents", "harness"].includes(baseQuestion.pathId) ? cloneQuestionData(formOverrides[formId]?.[baseQuestion.id] || {}) : {}),
         sourceId: baseQuestion.id,
         formId,
         id: `${formId}_${baseQuestion.id}`
-      })));
+      }));
     }
 
     function showView(id) {
@@ -851,9 +852,9 @@ function cloneQuestionData(value) {
         : `Fonti primarie ricontrollate il ${AGENTIC_WORKFLOWS.REVIEW_DATE}. Tracce e rubriche sono scenari editoriali originali, non misure validate di esecuzione pratica. Link aperti su click.`;
       if (agentsList) agentsList.innerHTML = AGENTIC_WORKFLOWS.SOURCES.map(source => `<article class="bibliography-item"><div class="bibliography-source">${escapeHtml(source.id)}</div><h3>${escapeHtml(source.title)}</h3><p>${escapeHtml(source.note[isEnglish() ? 1 : 0])}</p><a class="bibliography-link" href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${isEnglish() ? "Open source ↗" : "Apri la fonte ↗"}</a></article>`).join("");
       $("labSourcesTitle").textContent = labText("Laboratorio: stato, ripresa e limiti", "Lab: state, recovery, and limitations");
-      $("labSourcesList").innerHTML = LOCAL_LAB.SOURCES.map(source => `<article class="bibliography-item"><h3>${escapeHtml(source.title)}</h3><p>${escapeHtml(source.note[isEnglish() ? 1 : 0])}</p><a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${labText("Apri la fonte", "Open source")}</a></article>`).join("");
+      $("labSourcesList").innerHTML = LOCAL_LAB.SOURCES.map(source => `<article class="bibliography-item"><h3>${escapeHtml(source.title)}</h3><p>${escapeHtml(source.note[isEnglish() ? 1 : 0])}</p><a class="bibliography-link" href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${labText("Apri la fonte ↗", "Open source ↗")}</a></article>`).join("");
       $("completeSourcesTitle").textContent = labText("Completo: fondamenti e matrice", "Full test: foundations and matrix");
-      $("completeSourcesList").innerHTML = COMPLETE_ASSESSMENT.SOURCES.map(source => `<article class="bibliography-item"><h3>${escapeHtml(source.title)}</h3><p>${escapeHtml(source.note[isEnglish() ? 1 : 0])}</p><a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${labText("Apri la fonte", "Open source")}</a></article>`).join("");
+      $("completeSourcesList").innerHTML = COMPLETE_ASSESSMENT.SOURCES.map(source => `<article class="bibliography-item"><h3>${escapeHtml(source.title)}</h3><p>${escapeHtml(source.note[isEnglish() ? 1 : 0])}</p><a class="bibliography-link" href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${labText("Apri la fonte ↗", "Open source ↗")}</a></article>`).join("");
       const harnessTitle = $("harnessSourcesTitle");
       const harnessNote = $("harnessSourcesNote");
       const harnessList = $("harnessSourcesList");
@@ -1025,7 +1026,7 @@ function cloneQuestionData(value) {
       if (noviceTitle) noviceTitle.textContent = isEnglish() ? "Is this your first step into AI?" : "È la prima volta che ti avvicini all'AI?";
       if (noviceText) noviceText.textContent = isEnglish() ? "Start with 10 simple questions and a tutorial built around your mistakes." : "Inizia con 10 domande semplici e un tutorial costruito sui tuoi errori.";
       if (noviceButton) noviceButton.textContent = isEnglish() ? "Explore AI First Steps" : "Scopri Primi passi";
-      $("labPrivacyNote").textContent = labText("Il percorso Laboratorio operativo conserva una sola bozza locale delle decisioni confermate, senza dati del profilo. Riprendi dalla pagina iniziale; Interrompi, Elimina bozza o Cancella dati locali la cancellano. Il completo condivide la bozza locale: conserva risposte, testi e azioni confermate; i dati iniziali del profilo non vengono salvati nella bozza. Nessun invio a server. Il recupero richiede il salvataggio locale.", "The Operational lab path retains one local draft of confirmed decisions, without profile data. Resume from the home page; Interrupt, Discard draft, or Clear local data deletes it. The full test shares the local draft: answers, text, and confirmed actions are retained; initial profile data is excluded. No server transfer. Recovery requires local storage.");
+      $("labPrivacyNote").textContent = labText("Completo e Laboratorio operativo condividono una bozza locale. Conserva risposte, testi e azioni confermate, senza i dati iniziali del profilo. Riprendila dalla pagina iniziale. Se la riprendi in un’altra scheda, sarà quella a salvarne le modifiche. Nessun invio a server.", "The full test and Operational lab share a local draft. It keeps answers, text, and confirmed actions, without initial profile data. Resume it from the home page. If you resume in another tab, that tab saves further changes. No server transfer.");
       applyBibliographyText();
     }
 
@@ -1370,13 +1371,27 @@ function cloneQuestionData(value) {
 
     function startAssessment() {
       const selectedMode = getModeById(selectedTestModeId());
-      if (["complete", "operational-lab"].includes(selectedMode.id)) {
-        const saved = readLabDraft();
-        if (!["absent", "unavailable"].includes(saved.status)) {
-          if (!window.confirm(labText("Una bozza esiste già. Eliminarla e avviare una nuova sessione? Puoi annullare e riprenderla dalla pagina iniziale.", "A draft already exists. Discard it and start a new session? Cancel to resume it from the home page.")) || !removeLabDraft()) return;
+      const usesDraft = ["complete", "operational-lab"].includes(selectedMode.id);
+      const saved = usesDraft ? readLabDraft() : null;
+      if (saved?.slot && saved.status !== "absent" && !window.confirm(labText(
+        "Una bozza esiste già. Sostituirla con una nuova sessione? Puoi annullare e riprenderla dalla pagina iniziale.",
+        "A draft already exists. Replace it with a new session? Cancel to resume it from the home page."
+      ))) return;
+      return withAssessmentStorageLock(() => {
+        if (saved?.slot) {
+          const current = readLabDraft();
+          if (!current.slot || !sameDraftSlot(saved.slot, current.slot)) { markDraftConflict(); return; }
         }
-      }
-      const selectedForm = selectNextForm(selectedMode.id, currentLanguage());
+        beginAssessment(selectedMode, saved?.slot, true);
+      }, () => beginAssessment(selectedMode, null, false));
+    }
+
+    function warnUncoordinatedStorage() {
+      labStorageWarning(labText("Il browser non consente di coordinare il salvataggio tra schede. Puoi completare il test ed esportare il report da questa pagina.", "The browser cannot coordinate saving across tabs. You can complete the test and export your report from this page."));
+    }
+
+    function beginAssessment(selectedMode, draftSlot, writable) {
+      const selectedForm = writable ? selectNextForm(selectedMode.id, currentLanguage()) : shuffledValues(FORM_IDS)[0];
       const sourceQuestions = isEnglish() ? buildEnglishQuestionForm(selectedForm) : buildQuestionForm(selectedForm);
       questions = selectedMode.type === "learning"
         ? shuffledValues(FIRST_STEPS_QUESTIONS[currentLanguage()].filter(question => question.formId === selectedForm)).map(question => ({
@@ -1393,6 +1408,7 @@ function cloneQuestionData(value) {
       state.selectedModeId = selectedMode.id;
       const visibleMode = localizedMode(selectedMode);
       state.meta = {
+        sessionId: newAssessmentId(),
         name: $("nameInput").value.trim(),
         role: $("roleInput").value.trim(),
         area: $("areaInput").value.trim(),
@@ -1418,12 +1434,17 @@ function cloneQuestionData(value) {
         startedAt: new Date().toISOString()
       };
       state.index = 0;
+      state.assessmentEpoch = readAssessmentEpoch();
+      state.finishing = false;
+      state.draftOwner = draftSlot ? { slot: draftSlot, sessionId: state.meta.sessionId, revision: 0 } : null;
       state.labOrder = "verify-first";
       state.answers = {};
       state.optionOrders = {};
       state.hintsVisible = {};
       clearAutoAdvance();
-      saveLabDraft();
+      if (state.draftOwner) writeLabDraft(state.draftOwner, snapshotLabDraft());
+      else if (!writable) warnUncoordinatedStorage();
+      else if (["complete", "operational-lab"].includes(selectedMode.id)) labStorageWarning();
       showView("assessmentView");
       renderQuestion();
       if (selectedMode.id === "operational-lab") $("questionTitle").focus();
@@ -1659,17 +1680,27 @@ function cloneQuestionData(value) {
     }
 
     function interruptAssessment() {
+      if (state.finishing) return;
       clearAutoAdvance();
       const ok = window.confirm(isEnglish()
         ? "Interrupt the current test and return to the home page? Your answers for this session will be discarded."
         : "Interrompere il test corrente e tornare alla pagina principale? Le risposte di questa sessione verranno eliminate.");
       if (!ok) return;
-      const draftRemoved = !["complete", "operational-lab"].includes(state.meta?.testMode?.id) || removeLabDraft(labText(
+      const warning = labText(
         "Test interrotto. Il browser non ha consentito di eliminare la bozza: una copia precedente potrebbe essere ancora presente.",
         "Test interrupted. The browser did not allow the draft to be removed. An earlier copy may still be present."
-      ));
-      resetToInitialPage(false);
-      if (draftRemoved) showToast(isEnglish() ? "Test interrupted." : "Test interrotto.");
+      );
+      const owner = state.draftOwner;
+      const leave = draftRemoved => {
+        resetToInitialPage(false);
+        if (draftRemoved) showToast(reportText("Test interrotto.", "Test interrupted."));
+      };
+      if (!owner || owner.readOnly || owner.conflict) {
+        if (["complete", "operational-lab"].includes(state.meta?.testMode?.id)) { labStorageWarning(warning); leave(false); }
+        else leave(true);
+        return;
+      }
+      return withAssessmentStorageLock(() => leave(removeLabDraft(owner.slot, warning)), () => { labStorageWarning(warning); leave(false); });
     }
 
     function clamp(value, min, max) {
@@ -2201,13 +2232,19 @@ function cloneQuestionData(value) {
         $("openUnsavedReportBtn").addEventListener("click", () => {
           if (!state.unsavedReport) return;
           renderDashboard(state.unsavedReport);
-          $("retrySaveReportBtn").focus();
+          ($("retrySaveReportBtn") || $("exportJsonBtn")).focus();
         });
         return;
       }
-      notice.innerHTML = `<p class="evidence-note" role="status">${reportText("Il report corrente non è stato salvato nello storico. Esportalo per conservarlo oppure riprova a salvarlo. Una bozza già salvata resta disponibile.", "The current report was not saved to history. Export it to keep a copy or retry saving. Any previously saved draft remains available.")}</p>
-        <div class="actions"><button class="btn-secondary" type="button" id="retrySaveReportBtn">${reportText("Riprova a salvare", "Retry saving")}</button></div>`;
-      $("retrySaveReportBtn").addEventListener("click", retryUnsavedReport);
+      const conflict = state.reportSaveConflict;
+      const message = conflict === "cleared" ? reportText("I dati locali sono stati cancellati in un’altra scheda. Esporta il report per conservarlo.", "Local data was cleared in another tab. Export the report to keep it.")
+        : conflict === "already-saved" ? reportText("Un’altra scheda ha già salvato questa sessione. Puoi esportare il report di questa scheda.", "Another tab already saved this session. You can export this tab’s report.")
+        : conflict === "draft-changed" ? reportText("La bozza è cambiata in un’altra scheda. Esporta questo report per conservare le risposte di questa scheda.", "The draft changed in another tab. Export this report to keep this tab’s answers.")
+        : conflict === "draft-read-only" ? reportText("La bozza è stata ripresa senza salvataggio condiviso tra schede. Esporta il report per conservarlo.", "The draft was resumed without shared saving across tabs. Export the report to keep it.")
+        : reportText("Il report corrente non è stato salvato nello storico. Esportalo per conservarlo oppure riprova a salvarlo. Una bozza già salvata resta disponibile.", "The current report was not saved to history. Export it to keep a copy or retry saving. Any previously saved draft remains available.");
+      notice.innerHTML = `<p class="evidence-note" role="status">${message}</p>` + (conflict ? "" :
+        `<div class="actions"><button class="btn-secondary" type="button" id="retrySaveReportBtn">${reportText("Riprova a salvare", "Retry saving")}</button></div>`);
+      if (!conflict) $("retrySaveReportBtn").addEventListener("click", retryUnsavedReport);
     }
 
     function historyBlock() {
@@ -2245,17 +2282,20 @@ function cloneQuestionData(value) {
         const unsaved = state.unsavedReport ? reportText(" Anche il report non salvato verrà perso.", " The unsaved report will also be lost.") : "";
         const ok = window.confirm(prompt + unsaved);
         if (!ok) return;
-        try {
-          localStorage.removeItem("aiSkillAssessmentHistory");
-          localStorage.removeItem(FORM_CYCLE_STORAGE_KEY);
-          localStorage.removeItem(LOCAL_LAB.DRAFT_KEY);
-        } catch (error) {
-          console.warn("Impossibile svuotare lo storico locale", error);
-          labStorageWarning();
-          return;
-        }
-        resetToInitialPage(true);
-        showToast(isEnglish() ? "Local data cleared." : "Dati locali cancellati.");
+        withAssessmentStorageLock(() => {
+          try {
+            localStorage.removeItem(HISTORY_KEY);
+            localStorage.setItem(ASSESSMENT_EPOCH_KEY, newAssessmentId());
+            localStorage.removeItem(FORM_CYCLE_STORAGE_KEY);
+            clearDraftRecords();
+          } catch (error) {
+            labStorageWarning(reportText("Il browser non ha consentito di cancellare tutti i dati locali.", "The browser did not allow all local data to be cleared."));
+            return;
+          }
+          $("labStorageStatus").hidden = true;
+          resetToInitialPage(true);
+          showToast(reportText("Dati locali cancellati.", "Local data cleared."));
+        });
       });
     }
 
@@ -2267,6 +2307,9 @@ function cloneQuestionData(value) {
       state.hintsVisible = {};
       state.meta = {};
       state.formId = null;
+      state.draftOwner = null;
+      state.assessmentEpoch = undefined;
+      state.finishing = false;
       state.latestReport = null;
       trackUnsavedReport(null);
       state.bibliographyBackView = "introView";
@@ -2293,6 +2336,7 @@ function cloneQuestionData(value) {
       if (report && !state.unsavedReport) window.addEventListener("beforeunload", warnBeforeLeavingUnsavedReport);
       if (!report && state.unsavedReport) window.removeEventListener("beforeunload", warnBeforeLeavingUnsavedReport);
       state.unsavedReport = report;
+      if (!report) state.reportSaveConflict = null;
     }
 
     function confirmLeavingUnsavedReport() {
@@ -2305,34 +2349,55 @@ function cloneQuestionData(value) {
     function retryUnsavedReport() {
       const report = state.unsavedReport;
       if (!report) return;
-      const saved = saveReport(report);
-      const draftRemoved = !saved || !["complete", "operational-lab"].includes(report.meta.testMode.id) || removeLabDraft();
-      renderDashboard(report);
-      if (saved) {
-        $("exportJsonBtn").focus();
+      return withAssessmentStorageLock(() => {
+        if (state.unsavedReport !== report) return;
+        const saved = saveReport(report);
+        const draftRemoved = saved && removeCompletedDraft();
+        renderDashboard(report);
+        if (saved || state.reportSaveConflict) $("exportJsonBtn").focus();
+        else $("retrySaveReportBtn").focus();
         if (draftRemoved) showToast(reportText("Report salvato nello storico.", "Report saved to history."));
-      } else {
-        $("retrySaveReportBtn").focus();
-      }
+      }, warnUncoordinatedStorage);
+    }
+
+    function removeCompletedDraft() {
+      const owner = state.draftOwner;
+      state.draftOwner = null;
+      return !owner || (!owner.conflict && removeLabDraft(owner.slot));
     }
 
     function finishAssessment() {
+      if (state.finishing) return;
       if (answeredCount() < questions.length) {
         showToast(isEnglish() ? "Answer every question before calculating the dashboard." : "Completa tutte le domande prima di calcolare la dashboard.");
         return;
       }
+      state.finishing = true;
       const report = calculateResults();
-      if (saveReport(report)) {
-        if (["complete", "operational-lab"].includes(report.meta.testMode.id)) removeLabDraft();
-      } else {
-        saveLabDraft();
-      }
-      renderDashboard(report);
+      const owner = state.draftOwner;
+      const draft = owner ? snapshotLabDraft() : null;
+      return withAssessmentStorageLock(() => {
+        if (state.meta.sessionId !== report.meta.sessionId) return;
+        if (saveReport(report)) removeCompletedDraft();
+        else if (owner && !owner.readOnly && !state.reportSaveConflict) writeLabDraft(owner, draft);
+        renderDashboard(report);
+      }, () => {
+        if (state.meta.sessionId !== report.meta.sessionId) return;
+        if (owner?.readOnly) state.reportSaveConflict = "draft-read-only";
+        trackUnsavedReport(report);
+        warnUncoordinatedStorage();
+        renderDashboard(report);
+      });
+    }
+
+    function readAssessmentEpoch() {
+      try { return localStorage.getItem(ASSESSMENT_EPOCH_KEY); }
+      catch (error) { return undefined; }
     }
 
     function historySnapshot() {
       try {
-        const raw = localStorage.getItem("aiSkillAssessmentHistory");
+        const raw = localStorage.getItem(HISTORY_KEY);
         if (raw === null) return { records: [], writable: true };
         try {
           const parsed = JSON.parse(raw);
@@ -2342,10 +2407,34 @@ function cloneQuestionData(value) {
     }
 
     function saveReport(report) {
+      state.reportSaveConflict = null;
       const snapshot = historySnapshot();
-      if (snapshot.writable) {
+      const epoch = readAssessmentEpoch();
+      if (epoch !== undefined && epoch !== (state.assessmentEpoch ?? null)) {
+        state.reportSaveConflict = "cleared";
+        trackUnsavedReport(report);
+        return false;
+      }
+      if (report.meta.sessionId && snapshot.records.some(record => record?.meta?.sessionId === report.meta.sessionId)) {
+        state.reportSaveConflict = "already-saved";
+        trackUnsavedReport(report);
+        return false;
+      }
+      if (state.draftOwner?.readOnly) {
+        state.reportSaveConflict = "draft-read-only";
+        trackUnsavedReport(report);
+        return false;
+      }
+      if (snapshot.writable && epoch !== undefined) {
         try {
-          localStorage.setItem("aiSkillAssessmentHistory", JSON.stringify(snapshot.records.concat([report]).slice(-100)));
+          const owner = state.draftOwner;
+          if (owner && (owner.conflict || !sameDraftSlot(owner.slot, readDraftSlot()))) {
+            markDraftConflict(owner);
+            state.reportSaveConflict = "draft-changed";
+            trackUnsavedReport(report);
+            return false;
+          }
+          localStorage.setItem(HISTORY_KEY, JSON.stringify(snapshot.records.concat([report]).slice(-100)));
           trackUnsavedReport(null);
           return true;
         } catch (error) {
@@ -2429,6 +2518,7 @@ function cloneQuestionData(value) {
     }
 
     bindLanguageSwitcher();
+    window.addEventListener("storage", onSharedDraftChange);
     renderLabDraftNotice();
     renderModeSelector();
     renderQuestionDistribution();

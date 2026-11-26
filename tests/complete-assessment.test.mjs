@@ -33,7 +33,7 @@ test("full assessment implements every approved slot and area/evidence quota in 
     assert.equal(results.answers.filter(q=>q.questionKind==="scenario").length,30);
     assert.equal(results.results.simulatedSummary.value,100); assert.equal(results.results.simulatedCases.length,2);
     assert.deepEqual(units.slice(44).map(q=>q.sourceId),plain(r.run("LOCAL_LAB.IDS")));
-    assert.equal(results.meta.assessmentVersion,"3.5.1"); assert.equal(results.meta.formVersion,"1.8");
+    assert.equal(results.meta.assessmentVersion,"3.5.2"); assert.equal(results.meta.formVersion,"1.8");
     assert.equal(results.meta.questionBankVersion,"2026.11-m22"); assert.equal(results.meta.scoringVersion,"3.1.0");
     assert.equal(results.meta.reportSchemaVersion,4); assert.equal(r.run("core.reportKind(report())"),"evidence");
   }
@@ -99,7 +99,7 @@ test("complete navigation retains all 50 units when swapping K1 and reconfirms d
     assert.equal(r.node("finishBtn").textContent,lang==="it"?"Mostra quadro delle evidenze":"Show evidence overview");
     r.run("goPrev();goNext();finishAssessment()");
     assert.equal(r.run("state.latestReport.answers.length"),50);
-    assert.equal(r.storage.has("aiSkillOperationalLabDraft"),false);
+    assert.equal(r.run("readLabDraft().status"),"absent");
   }
 });
 
@@ -108,7 +108,7 @@ test("complete draft resumes exact form, language, question order, partial text 
     const r=complete(form,lang);r.node("nameInput").value="Private name";
     r.run("state.meta.name='Private name';state.answers={...good};state.index=questions.findIndex(q=>q.type==='text');renderQuestion()");
     const textId=r.run("questions[state.index].id");r.node(textId+"_text").events.input({target:{value:"Partial text"}});
-    const raw=r.storage.get("aiSkillOperationalLabDraft"), d=JSON.parse(raw);
+    const raw=r.storage.get("aiSkillAssessmentDraft"), d=JSON.parse(raw).draft;
     assert.equal(d.draftSchemaVersion,2);assert.equal(d.modeId,"complete");assert.equal(d.choices[textId],"Partial text");
     assert.ok(!raw.includes("Private name"));assert.ok(!raw.includes("selfAssessment"));
     const cycle=JSON.stringify(r.run("readFormCycles()"));
@@ -123,16 +123,16 @@ test("complete draft resumes exact form, language, question order, partial text 
 });
 
 test("complete drafts reject corruption and version changes and respect replacement, cancellation and storage failures", () => {
-  const r=complete();const original=JSON.parse(r.storage.get("aiSkillOperationalLabDraft"));
-  for(const change of [{index:50},{questionIds:[]},{choices:{A_C01:999}},{choices:{A_C01:false}},{name:"unexpected"},{questionIds:[...original.questionIds.slice(0,49),original.questionIds[0]]}]) {
-    const raw=JSON.stringify({...original,...change});r.storage.set("aiSkillOperationalLabDraft",raw);
-    assert.equal(r.run("readLabDraft().status"),"invalid");r.run("resumeLabDraft()");assert.equal(r.storage.get("aiSkillOperationalLabDraft"),raw);
+  const r=complete();const original=JSON.parse(r.storage.get("aiSkillAssessmentDraft"));
+  for(const change of [{index:50},{questionIds:[]},{choices:{A_C01:999}},{choices:{A_C01:false}},{name:"unexpected"},{questionIds:[...original.draft.questionIds.slice(0,49),original.draft.questionIds[0]]}]) {
+    const raw=JSON.stringify({...original,draft:{...original.draft,...change}});r.storage.set("aiSkillAssessmentDraft",raw);
+    assert.equal(r.run("readLabDraft().status"),"invalid");r.run("resumeLabDraft()");assert.equal(r.storage.get("aiSkillAssessmentDraft"),raw);
   }
-  r.storage.set("aiSkillOperationalLabDraft",JSON.stringify({...original,assessmentVersion:"3.4.0"}));assert.equal(r.run("readLabDraft().status"),"incompatible");
-  r.storage.set("aiSkillOperationalLabDraft",JSON.stringify(original));
+  r.storage.set("aiSkillAssessmentDraft",JSON.stringify({...original,draft:{...original.draft,questionBankVersion:"old"}}));assert.equal(r.run("readLabDraft().status"),"incompatible");
+  r.storage.set("aiSkillAssessmentDraft",JSON.stringify(original));
   r.run("window.confirm=()=>false;state.selectedModeId='operational-lab';startAssessment()");assert.equal(r.run("state.meta.testMode.id"),"complete");
-  r.run("interruptAssessment()");assert.equal(r.storage.has("aiSkillOperationalLabDraft"),true);
-  r.run("window.confirm=()=>true;localStorage.removeItem=()=>{throw Error('denied')};interruptAssessment()");assert.equal(r.storage.has("aiSkillOperationalLabDraft"),true);
+  r.run("interruptAssessment()");assert.equal(r.run("readLabDraft().status"),"compatible");
+  r.run("window.confirm=()=>true;globalThis.setDraft=localStorage.setItem;localStorage.setItem=(key,value)=>{if(value==='null')throw Error('denied');setDraft(key,value)};interruptAssessment()");assert.equal(r.run("readLabDraft().status"),"compatible");
   assert.equal(r.run("state.meta.testMode"),undefined);
   assert.equal(r.node("labStorageStatus").hidden,false);
   assert.match(r.node("labStorageStatus").textContent,/Test interrotto/);
@@ -149,12 +149,12 @@ test("failed history writes retain answers and allow retrying the original repor
     r.storage.set("aiSkillAssessmentHistory", original);
     r.run(`globalThis.setItem=localStorage.setItem; localStorage.setItem=(key,value)=>{if(key==='aiSkillAssessmentHistory')throw Error('quota');setItem(key,value)}; finishAssessment();`);
     assert.equal(r.storage.get("aiSkillAssessmentHistory"), original);
-    assert.ok(r.storage.has("aiSkillOperationalLabDraft"));
+    assert.ok(r.storage.has("aiSkillAssessmentDraft"));
     assert.equal(r.run("state.unsavedReport===state.latestReport"), true);
     assert.match(r.node("pendingReportNotice").innerHTML, /Riprova a salvare/);
 
     const refreshed = runtime();
-    refreshed.storage.set("aiSkillOperationalLabDraft", r.storage.get("aiSkillOperationalLabDraft"));
+    refreshed.storage.set("aiSkillAssessmentDraft", r.storage.get("aiSkillAssessmentDraft"));
     refreshed.run("resumeLabDraft()");
     assert.equal(refreshed.run("answeredCount()"), mode === "complete" ? 50 : 6);
 
@@ -171,24 +171,30 @@ test("failed history writes retain answers and allow retrying the original repor
     const retry = r.node("retrySaveReportBtn").events.click;
     retry();retry();
     assert.deepEqual(JSON.parse(r.storage.get("aiSkillAssessmentHistory")), [...JSON.parse(original), unsaved]);
-    assert.equal(r.storage.has("aiSkillOperationalLabDraft"), false);
+    assert.equal(r.run("readLabDraft().status"), "absent");
     assert.equal(r.run("window.events.has('beforeunload')"), false);
     assert.equal(r.node("pendingReportNotice").hidden, true);
   }
 });
 
-test("drafts from 3.5.0 still resume with matching scoring, form and bank", () => {
+test("drafts from 3.5.0 migrate with matching contents and future UI-only versions remain readable", () => {
   for (const mode of ["complete", "operational-lab"]) {
     const r = runtime();
     r.context.mode = mode;
     r.run("state.selectedModeId=mode;startAssessment();state.answers[questions[0].id]=choose(questions[0]);saveLabDraft()");
-    const draft = JSON.parse(r.storage.get("aiSkillOperationalLabDraft"));
+    const draft = JSON.parse(r.storage.get("aiSkillAssessmentDraft")).draft;
+    r.storage.delete("aiSkillAssessmentDraft");
     r.storage.set("aiSkillOperationalLabDraft",JSON.stringify({...draft,assessmentVersion:"3.5.0",formVersion:"old"}));
     assert.equal(r.run("readLabDraft().status"),"incompatible");
     r.storage.set("aiSkillOperationalLabDraft",JSON.stringify({...draft,assessmentVersion:"3.5.0"}));
     r.run("resumeLabDraft()");
     assert.equal(r.run("answeredCount()"),1);
-    assert.equal(r.run("state.meta.assessmentVersion"),"3.5.1");
+    assert.equal(r.run("state.meta.assessmentVersion"),"3.5.2");
+    assert.equal(r.storage.has("aiSkillOperationalLabDraft"),false);
+    const record = JSON.parse(r.storage.get("aiSkillAssessmentDraft"));
+    record.draft.assessmentVersion = "3.5.3";
+    r.storage.set("aiSkillAssessmentDraft", JSON.stringify(record));
+    assert.equal(r.run("readLabDraft().status"), "compatible");
   }
 });
 
@@ -211,7 +217,7 @@ test("complete reports freeze bilingual decisions, slots, recommendations and ex
   assert.equal(report.results.nextSteps.filter(s=>s.objectiveId==="F06").length,1);
   r.run("state.language='it';COMPLETE_ASSESSMENT.FOUNDATION[0].prompt[1]='CHANGED';renderDashboard(saved)");
   assert.equal(JSON.stringify(report),snapshot);assert.doesNotMatch(r.node("dashboard").innerHTML,/CHANGED/);
-  assert.equal(r.storage.has("aiSkillOperationalLabDraft"),false);
+  assert.equal(r.run("readLabDraft().status"),"absent");
   r.run("downloadBlob=(content,name,type)=>{globalThis.download={content,name,type}};exportJson(saved)");assert.deepEqual(JSON.parse(r.context.download.content),report);
   const rows=plain(r.context.core.csvRows(report));
   for(const field of ["answers.0.slotId","results.simulatedCases.1.decisions.2.rawAnswer","meta.labVersion"])assert.ok(rows.some(row=>row[1]===field),field);

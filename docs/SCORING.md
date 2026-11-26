@@ -1,6 +1,6 @@
 # Scoring 3.1.0 e formato dei report 3.x
 
-La patch M23 `3.5.1`, approvata dal maintainer il `2026-11-26`, aggiorna il ciclo di salvataggio. Il formato dei report, lo scoring e la banca dati della `3.5.0` restano il riferimento. Vedi [recupero dei risultati](#m23--recupero-dei-risultati).
+La patch M24 `3.5.2` coordina bozze e storico tra schede. Lo scoring e la banca dati della `3.5.0` restano il riferimento. Vedi [bozze tra schede](#m24--bozze-tra-schede).
 
 Implementazione della milestone 17, basata su [ASSESSMENT_BLUEPRINT.md](../ASSESSMENT_BLUEPRINT.md) `1.0.0` e sulla [mappa degli item](ASSESSMENT_ITEM_MAP.md). Scoring approvato il `2026-11-25`, release `v3.0.0`; M18/M19 approvate nelle release `3.1.0`/`3.2.0`. La M20 introduce l'app `3.3.0`, approvata dal maintainer il `2026-11-25`, con dieci slot Harness e gli stessi calcoli, soglie e schema.
 
@@ -157,3 +157,11 @@ Il completamento calcola il report e prova a scriverlo nello storico locale. Se 
 Per completo e laboratorio la bozza viene rimossa dopo che lo storico accetta il report. In caso di errore si tenta di aggiornare la bozza, che conserva le risposte ma esclude i dati del profilo. Se fallisce anche quell’aggiornamento, una bozza già salvata può contenere uno stato precedente. Se manca una bozza recuperabile, il report rimane disponibile finché la pagina resta aperta. Tornare ai percorsi richiede conferma. Alla chiusura o al ricaricamento la pagina richiede un avviso al browser, che può ometterlo.
 
 Interrompi riporta ai percorsi anche se la rimozione della bozza fallisce. L’avviso segnala che può rimanere una copia. Le bozze `3.5.0` si possono riprendere con `3.5.1` quando formato e versioni dei contenuti coincidono. I test della patch coprono questi flussi con un adattatore DOM. Vedi la [checklist M23](QA.md#m23--recupero-e-storage).
+
+## M24 — Bozze tra schede
+
+`aiSkillAssessmentDraft` conserva un identificatore casuale della sessione, una revisione e la bozza con il formato del percorso. Il completo usa schema 2 e il laboratorio schema 1. La ripresa verifica schema, banca, forma, scoring, versione dei casi e contenuto delle risposte. `assessmentVersion` indica la provenienza e può differire tra patch compatibili. Quando la chiave corrente è assente, la pagina legge `aiSkillOperationalLabDraft` e trasferisce una bozza compatibile alla prima ripresa con salvataggio.
+
+Un blocco esclusivo Web Locks coordina le operazioni sullo storage della stessa origine. Ogni ripresa avanza la revisione e ogni scrittura verifica il record da cui parte. Le notifiche `storage` aggiornano la disponibilità della bozza e avvisano la scheda che ha perso il salvataggio. Quando il browser non consente il blocco, si può completare il test in memoria ed esportarlo. [Specifiche Web Locks](https://w3c.github.io/web-locks/), [evento storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/storage_event).
+
+I nuovi report schema 4 aggiungono `meta.sessionId` per impedire più salvataggi della stessa sessione. I report già registrati mantengono i campi originali. Cancella dati locali aggiorna la chiave `aiSkillAssessmentClearGeneration` con un valore casuale. Un tentativo di salvataggio iniziato prima della cancellazione resta esportabile in memoria. La rimozione della bozza lascia un marcatore vuoto nella chiave corrente per ignorare eventuali bozze riscritte da vecchie schede. Le versioni precedenti accedono ancora allo storico senza coordinamento e vanno ricaricate dopo l'aggiornamento. [Checklist M24](QA.md#m24--bozze-tra-schede-e-bibliografia).

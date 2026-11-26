@@ -2,12 +2,12 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import path from 'node:path';
+import { webcrypto } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const read=name=>fs.readFileSync(path.join(root,name),'utf8');
 
-export function runtime({ assetReader = read } = {}) {
-  const storage = new Map();
+export function runtime({ assetReader = read, storage = new Map(), locks = { request: (_name, action) => Promise.resolve(action()) } } = {}) {
   const nodes = new Map();
   const timers = new Map();
   const node = id => {
@@ -17,7 +17,7 @@ export function runtime({ assetReader = read } = {}) {
   };
   const window = { scrollTo() {}, print() {}, confirm() { return true; }, setTimeout(fn) { timers.set(timers.size + 1, fn); return timers.size; }, clearTimeout(id) { timers.delete(id); }, setInterval() { return 1; }, clearInterval() {},
     events: new Map(), addEventListener(type, fn) { this.events.set(type, fn); }, removeEventListener(type) { this.events.delete(type); } };
-  const context = vm.createContext({ console: { warn() {} }, window, navigator: { language: "it", languages: ["it"] },
+  const context = vm.createContext({ console: { warn() {} }, window, crypto: webcrypto, navigator: { language: "it", languages: ["it"], locks },
     localStorage: { getItem: key => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, value), removeItem: key => storage.delete(key) },
     document: { getElementById: node, querySelector() { return null; }, querySelectorAll(selector) {
       if (selector !== "#dashboard [data-history-index]") return [];
