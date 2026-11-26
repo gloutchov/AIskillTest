@@ -4,6 +4,8 @@ Riferimento corrente: M22, release `3.5.0`, banca `2026.11-m22`, forma `1.8`; sc
 
 Questa è la checklist riutilizzabile per nuove modifiche. Le verifiche storiche in SCORING e nei documenti M18–M21 descrivono le rispettive release, senza attestare il browser della M22.
 
+Per la patch M23 `3.5.1` vedi [recupero e storage](#m23--recupero-e-storage).
+
 ## Verifiche automatiche
 
 Eseguire dalla radice, senza installare dipendenze:
@@ -49,3 +51,13 @@ Registrare gli esiti nella tabella finale. Completare **almeno una forma IT e un
 | Approvazione della milestone e della release | — | M22 / v3.5.0 | Approvata; esiti manuali non dettagliati | Maintainer, 2026-11-26 |
 
 Limite della verifica dell'agente: il 2026-11-26 il bootstrap della skill Browser ha restituito «No browser is available»; dopo troubleshooting l'elenco dei browser è vuoto. I test con adattatore DOM non attestano rendering, mobile, tecnologie assistive, console/traffico effettivi, download o stampa. Nessuna durata umana è stata comunicata. Il maintainer ha approvato esplicitamente la chiusura e la release il `2026-11-26`, senza riportare gli esiti dettagliati delle prove manuali IT/EN e desktop/mobile. Il registro distingue quindi approvazione ricevuta da controlli effettivamente attestati.
+
+## M23 — Recupero e storage
+
+Patch `3.5.1`, approvata dal maintainer il `2026-11-26` per la pubblicazione. Gli esiti manuali non sono stati comunicati. Eseguire le prove con dati sintetici in un profilo di prova.
+
+1. Completare il laboratorio e simulare una scrittura negata nello storico. Il report rimane esportabile, l’avviso è in cima e la bozza è ancora recuperabile. Aprire un altro report e poi tornare al report pendente. Rimuovere il blocco e riprovare. Lo storico deve contenere una sola copia del report e la bozza viene rimossa.
+2. Ripetere con il completo e un percorso privo di bozza. Verificare l’annullamento del ritorno ai percorsi e il comportamento in caso di chiusura o ricaricamento. La conferma del browser dipende dalle sue impostazioni e dal dispositivo. Controllare che i pulsanti di export restino disponibili.
+3. Bloccare lo storage e confermare Interrompi. La home si riapre con un avviso sulla possibile presenza di una copia. Sbloccare lo storage e riprendere una bozza `3.5.0` con dati compatibili. Verificare le etichette in IT ed EN.
+
+La suite passa 61 controlli. Le prove di errore usano storage simulato e un adattatore DOM. La skill Browser non ha trovato un browser disponibile per verificare avviso nativo, resa visiva e download.

@@ -1,5 +1,7 @@
 # Scoring 3.1.0 e formato dei report 3.x
 
+La patch M23 `3.5.1`, approvata dal maintainer il `2026-11-26`, aggiorna il ciclo di salvataggio. Il formato dei report, lo scoring e la banca dati della `3.5.0` restano il riferimento. Vedi [recupero dei risultati](#m23--recupero-dei-risultati).
+
 Implementazione della milestone 17, basata su [ASSESSMENT_BLUEPRINT.md](../ASSESSMENT_BLUEPRINT.md) `1.0.0` e sulla [mappa degli item](ASSESSMENT_ITEM_MAP.md). Scoring approvato il `2026-11-25`, release `v3.0.0`; M18/M19 approvate nelle release `3.1.0`/`3.2.0`. La M20 introduce l'app `3.3.0`, approvata dal maintainer il `2026-11-25`, con dieci slot Harness e gli stessi calcoli, soglie e schema.
 
 M21: app `3.4.0`, scoring `3.1.0`, schema `4`, casi/laboratorio `1.0.0`, approvata dal maintainer il `2026-11-25`; release `v3.4.0`. La nuova versione introduce le regole E, senza cambiare il calcolo Q o riscrivere i report schema 3/scoring 3.0. [Contratto, varianti e validazione](OPERATIONAL_LAB_REVIEW.md).
@@ -147,3 +149,11 @@ La singola bozza `aiSkillOperationalLabDraft` è condivisa fra completo e labora
 Verificati 58 controlli automatici: 72 composizioni assessment, 6 forme laboratorio e 6 didattiche; confronto della matrice C01–C50 nelle sei forme IT/EN A/B/C; risultati Q 100/50/0; copertura e pesi; Q forti/E deboli; dichiarazioni alte con Q bassi; lacuna agentica; casi incompleti; critiche non compensate; navigazione e conferme; inversione K1 senza perdita delle altre domande; invalidazione della consegna; bozza senza profilo, ripresa senza consumo forma, incompatibilità, corruzione e errori di storage; storico/JSON/CSV e metadati opzionali. I 145 item tematici, le composizioni non complete, le sei forme didattiche e le regole lab corrispondono ai sei hash del tag approvato v3.4.0 (`afb0887`). Il suo report schema 4 nella fixture resta originale e leggibile.
 
 I generatori di revisione sono facoltativi e non servono all'app. Le varianti correnti e sei report campione sono in [M22_REVIEW.md](M22_REVIEW.md). La checklist manuale corrente è soltanto [QA.md](QA.md); gli elenchi precedenti sopra sono evidenze storiche delle M17–M21. L'agente non dispone di browser dopo bootstrap e troubleshooting: non sono attestati apertura visiva, tastiera reale, desktop/mobile, download/stampa, console/rete o tempi umani. Il maintainer ha approvato la chiusura il `2026-11-26`; gli esiti dettagliati delle prove manuali IT/EN e desktop/mobile non sono stati riportati nella conversazione e non vengono attribuiti alla verifica dell’agente.
+
+## M23 — Recupero dei risultati
+
+Il completamento calcola il report e prova a scriverlo nello storico locale. Se la scrittura fallisce, il report originale resta in memoria con i comandi di export e salvataggio. Aprire un report storico lascia disponibile un pulsante per tornare al report pendente. Riprovare salva lo stesso record, con lo stesso orario di completamento. Uno storico illeggibile o non scrivibile conserva i dati preesistenti.
+
+Per completo e laboratorio la bozza viene rimossa dopo che lo storico accetta il report. In caso di errore si tenta di aggiornare la bozza, che conserva le risposte ma esclude i dati del profilo. Se fallisce anche quell’aggiornamento, una bozza già salvata può contenere uno stato precedente. Se manca una bozza recuperabile, il report rimane disponibile finché la pagina resta aperta. Tornare ai percorsi richiede conferma. Alla chiusura o al ricaricamento la pagina richiede un avviso al browser, che può ometterlo.
+
+Interrompi riporta ai percorsi anche se la rimozione della bozza fallisce. L’avviso segnala che può rimanere una copia. Le bozze `3.5.0` si possono riprendere con `3.5.1` quando formato e versioni dei contenuti coincidono. I test della patch coprono questi flussi con un adattatore DOM. Vedi la [checklist M23](QA.md#m23--recupero-e-storage).

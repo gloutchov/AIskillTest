@@ -6,9 +6,9 @@ Questionario interattivo in italiano e inglese per esplorare conoscenze, giudizi
 
 L'assessment produce un quadro delle evidenze: conoscenze/scenari, pratiche dichiarate, testi con feedback ed esiti simulati restano separati, con copertura e limiti per area. È pensato come strumento diagnostico interno e migliorabile, non come test psicometrico validato.
 
-Versione corrente dell'app: **`3.5.0`**, milestone 22 approvata dal maintainer il `2026-11-26`. Release precedente: `3.4.0` (milestone 21).
+Versione corrente dell'app **`3.5.1`**, milestone 23 approvata dal maintainer il `2026-11-26`. La release precedente è la `3.5.0`.
 
-Tag di riferimento: `v3.5.0`.
+Il tag di riferimento è `v3.5.1`.
 
 ### Nota sullo sviluppo
 
@@ -121,7 +121,7 @@ L'applicazione è client-side. Dati facoltativi, risposte e report restano nel b
 
 Lo step iniziale consente di inserire nome, ruolo, area/team e autovalutazione delle skill. Tutti questi dati sono facoltativi. L'app non invia automaticamente dati a server esterni, non contiene analytics e non richiede account.
 
-Completo e Laboratorio operativo condividono una sola bozza incompleta in `aiSkillOperationalLabDraft`, distinta dallo storico. Conserva versioni, modalità, lingua, forma, posizione, ordine, risposte/testi e sole azioni E confermate; nessun dato iniziale del profilo, tempo o log dei tentativi. Il completo usa draft schema 2 e conserva gli ID/ordine delle domande; il laboratorio autonomo conserva draft schema 1. Riprendi mantiene lingua/forma senza consumare una rotazione, ma lascia vuoti i dati iniziali. Una nuova sessione chiede conferma prima di sostituire la bozza. Interrompi confermato, completamento, Elimina bozza o Cancella dati locali la rimuovono. Bozze incompatibili/corrotte non vengono ricalcolate; errori di storage sono segnalati e da `file://` la persistenza dipende dal browser. I report precedenti schema 3 e 4 restano originali.
+Completo e Laboratorio operativo condividono una sola bozza incompleta in `aiSkillOperationalLabDraft`, distinta dallo storico. Conserva versioni, modalità, lingua, forma, posizione, ordine, risposte/testi e sole azioni E confermate; nessun dato iniziale del profilo, tempo o log dei tentativi. Il completo usa draft schema 2 e conserva gli ID/ordine delle domande; il laboratorio autonomo conserva draft schema 1. Riprendi mantiene lingua/forma senza consumare una rotazione, ma lascia vuoti i dati iniziali. Una nuova sessione chiede conferma prima di sostituire la bozza. Il completamento rimuove la bozza dopo il salvataggio del report. Interrompi confermato, Elimina bozza e Cancella dati locali tentano di rimuoverla. Se il browser blocca la rimozione, Interrompi riporta comunque ai percorsi e avvisa che può restare una copia. Le bozze `3.5.0` compatibili si possono riprendere con la patch `3.5.1`. Bozze incompatibili/corrotte non vengono ricalcolate; errori di storage sono segnalati e da `file://` la persistenza dipende dal browser. I report precedenti schema 3 e 4 restano originali.
 
 ### Export e storico
 
@@ -129,7 +129,7 @@ Completo e Laboratorio operativo condividono una sola bozza incompleta in `aiSki
 - CSV: formato `type,field,value` con percorsi di campo stabili, compresi metadati, risposte, evidenze e copertura; sostituisce il precedente CSV a sezioni.
 - Storico locale: conserva fino a 100 report apribili singolarmente. I report 2.x restano originali con avviso, senza ricalcolo, medie o confronti diretti con 3.x. Formati sconosciuti sono consultabili ed esportabili senza alterare i dati.
 
-Gli export sono sempre azioni manuali dell'utente. Se lo storico è danneggiato o la quota del browser è esaurita, un avviso invita a esportare il report corrente senza sovrascrivere i dati precedenti.
+Gli export sono azioni manuali. Se lo storico non è scrivibile, il report rimane disponibile nella pagina per l’export o un nuovo tentativo di salvataggio. Puoi consultare lo storico e poi tornare al report pendente. Una bozza esistente resta disponibile per riprendere il completo o il laboratorio. Tornare ai percorsi richiede conferma. Alla chiusura o al ricaricamento la pagina richiede un avviso, che il browser può omettere. Se il browser non ha salvato alcuna bozza, l’export è il modo per conservare il report prima di chiudere.
 
 Gli item AI moderne, Agents e Harness salvano contesto e domanda completi, motivazione della scelta e riferimenti alle fonti anche negli export. Nei nuovi scenari Agents e Harness il report conserva inoltre suggerimenti per gli obiettivi con almeno una scelta parziale o errata, deduplicati per obiettivo. I report 3.0.0/3.1.0/3.2.0 restano originali e leggibili, senza aggiungere suggerimenti ricavati dalla banca corrente. La nuova banca e la nuova forma producono una diversa firma di confronto anche nei percorsi preesistenti; non si ricalcolano lo storico o le sue versioni.
 
@@ -145,8 +145,8 @@ L'icona a forma di casa accanto al selettore della lingua rimanda al sito princi
 
 ### Versioning
 
-- Versione app: `3.5.0`.
-- Tag Git: `v3.5.0`.
+- Versione app `3.5.1`.
+- Tag Git `v3.5.1`.
 - Banca domande: `2026.11-m22`.
 - Forma assessment: `1.8`.
 - Scoring: `3.1.0`; schema report `4`; blueprint `1.0.0`; casi/laboratorio `1.0.0`.
@@ -194,9 +194,9 @@ Interactive questionnaire in Italian and English exploring GenAI knowledge, judg
 
 The assessment produces an evidence overview: knowledge/scenarios, self-reported practices, text with feedback, and simulated outcomes remain separate, with area coverage and limits. It is intended as an internal diagnostic tool that can evolve over time, not as a psychometrically validated test.
 
-Current app version: **`3.5.0`**, milestone 22 approved by the maintainer on `2026-11-26`. Previous release: `3.4.0` (milestone 21).
+The current app version is **`3.5.1`**. The maintainer approved milestone 23 on `2026-11-26`. The previous release is `3.5.0`.
 
-Reference tag: `v3.5.0`.
+The reference tag is `v3.5.1`.
 
 ### Development Note
 
@@ -309,7 +309,7 @@ The application is fully client-side. Optional profile data, answers, and report
 
 The initial step can collect name, role, area/team, and self-assessed skills. All fields are optional. The app does not automatically send data to external servers, contains no analytics, and requires no account.
 
-The full test and Operational lab share one incomplete draft in `aiSkillOperationalLabDraft`, separate from history. It retains versions, mode, language, form, position, order, answers/text, and confirmed E actions; no initial profile data, times, or attempt log. The full test uses draft schema 2 and retains question IDs/order; the standalone lab keeps draft schema 1. Resume preserves language/form without consuming rotation but leaves initial data blank. A new session requires confirmation before replacing the draft. Confirmed Interrupt, completion, Discard draft, or Clear local data removes it. Incompatible/corrupt drafts are not recalculated; storage failures are reported and `file://` persistence depends on the browser. Previous schema 3 and 4 reports remain original.
+The full test and Operational lab share one incomplete draft in `aiSkillOperationalLabDraft`, separate from history. It retains versions, mode, language, form, position, order, answers/text, and confirmed E actions; no initial profile data, times, or attempt log. The full test uses draft schema 2 and retains question IDs/order; the standalone lab keeps draft schema 1. Resume preserves language/form without consuming rotation but leaves initial data blank. A new session requires confirmation before replacing the draft. Completing a session removes its draft once the report is saved. Confirmed Interrupt, Discard draft, and Clear local data also try to remove it. If the browser blocks removal, Interrupt still returns to the paths and warns that a copy may remain. Compatible `3.5.0` drafts can resume in patch `3.5.1`. Incompatible/corrupt drafts are not recalculated; storage failures are reported and `file://` persistence depends on the browser. Previous schema 3 and 4 reports remain original.
 
 ### Export And History
 
@@ -317,7 +317,7 @@ The full test and Operational lab share one incomplete draft in `aiSkillOperatio
 - CSV: uses `type,field,value` with stable field paths for metadata, answers, evidence, and coverage; replaces the previous section-based CSV.
 - Local history: keeps up to 100 individually openable reports. Reports from 2.x remain original with a notice, without recalculation, averaging, or direct comparison with 3.x. Unknown formats can be inspected and exported without altering data.
 
-Exports are always explicit user actions. If history is damaged or browser storage is full, a notice asks the user to export the current report without overwriting previous data.
+Exports are explicit user actions. If history cannot be written, the report stays available on the page for export or another save attempt. You can open the history and return to the pending report. An existing draft remains available to resume the full test or lab. Returning to the paths requires confirmation. The page requests a warning before closing or reloading, which the browser can omit. If no draft was saved, export the report to keep it before closing.
 
 Modern AI, Agents, and Harness items store the full context and question, selected-choice rationale, and source references in exports too. For new Agents and Harness scenarios, reports also retain suggestions for objectives with at least one partial or incorrect choice, deduplicated by objective. Reports from 3.0.0/3.1.0/3.2.0 remain original and readable without adding suggestions from the current bank. The new bank and form create a different comparison signature even for existing paths; history and its version metadata are never recalculated.
 
@@ -333,8 +333,8 @@ The home icon next to the language selector links to the main website, [glaucosi
 
 ### Versioning
 
-- App version: `3.5.0`.
-- Git tag: `v3.5.0`.
+- App version `3.5.1`.
+- Git tag `v3.5.1`.
 - Question bank: `2026.11-m22`.
 - Assessment form: `1.8`.
 - Scoring: `3.1.0`; report schema `4`; blueprint `1.0.0`; cases/lab `1.0.0`.

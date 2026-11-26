@@ -4,7 +4,7 @@ Questo piano governa le prossime modifiche del progetto `AIskillTest`. Ogni mile
 
 Versione di partenza: `1.0.0`.
 
-Versione applicativa corrente: `3.5.0`, milestone 0-22 completate. La M22 è stata approvata dal maintainer il `2026-11-26`, con autorizzazione a commit, merge, push, tag e rimozione del branch. Release di riferimento: `v3.5.0`; roadmap di aggiornamento conclusa. La checklist conserva i limiti di verifica e gli esiti manuali non riportati.
+Release di riferimento `v3.5.1`, con le milestone 0–23 completate. La M23 è stata approvata dal maintainer il `2026-11-26`. La prossima attività della roadmap di review è la M24.
 
 ## Regole di release
 
@@ -843,7 +843,71 @@ Riferimenti tecnici iniziali consultati per la revisione; ricontrollare pertinen
   - [revisione di 300 unità bilingui e sei report campione](docs/M22_REVIEW.md), [checklist unica](docs/QA.md), README, scoring, blueprint, inventario e QA aggiornati; fonti primarie ricontrollate
 - Verifiche locali: 58 controlli automatici passati, 72 composizioni assessment, 6 forme laboratorio e 6 didattiche; matrice completa nelle sei forme, scenari limite, recupero, JSON/CSV e confronto con contenuti originali `v3.4.0` (`afb0887`). Il browser non è disponibile all'agente; desktop/mobile, tastiera reale, download/stampa, console/rete e durata umana restano da verificare.
 - Validazione del maintainer: approvata il `2026-11-26` con autorizzazione esplicita a commit, merge, tag, push e rimozione del branch. Gli esiti dettagliati delle prove manuali IT/EN e desktop/mobile non sono stati riportati nella conversazione; restano documentati i limiti della verifica dell’agente senza browser reale e della stima di durata.
-- Stato: completata e approvata dal maintainer; release `v3.5.0`. Roadmap M16–M22 conclusa; restano soltanto attività opzionali di backlog.
+- Stato: completata e approvata dal maintainer, release `v3.5.0`. Roadmap M16–M22 conclusa.
+
+## Interventi emersi dalla review di v3.5.0
+
+Base della review `8a98a8f`. I target sono indicativi e seguono l'ordine delle milestone. Ogni intervento mantiene l'app statica, i percorsi IT/EN e il trattamento locale di risposte e storico.
+
+| Milestone | Intervento | Target | Stato |
+| --- | --- | --- | --- |
+| 23 | Recupero dei risultati e interruzione con storage indisponibile | `3.5.1` | Completata |
+| 24 | Bozze tra schede e compatibilità tra versioni | `3.5.2` | Pianificata |
+| 25 | Export CSV sicuro e protezione degli export dal versionamento | `3.5.3` | Pianificata |
+| 26 | Report storici danneggiati e gestione sicura dei campi | `3.5.4` | Pianificata |
+| 27 | Navigazione da tastiera e distribuzione sulla landing | `3.5.5` | Pianificata |
+| 28 | Pulizia del codice orfano e archivio dei quesiti Agents originali | `3.5.6` | Pianificata |
+| 29 | Pubblicazione selettiva e protezioni GitHub Pages | `3.5.7` | Pianificata |
+
+### M23 — Recupero dei risultati e interruzione con storage indisponibile
+
+- Branch `fix/recover-unsaved-assessment`, target patch `3.5.1`.
+- Separare il salvataggio dei nuovi report dalla consultazione. Se lo storico è pieno, bloccato o non scrivibile, conservare l'eventuale bozza e mostrare come esportare il report o riprovare. Permettere di riaprire il report pendente dopo aver consultato lo storico. Chiedere conferma prima di abbandonarlo e avvisare alla chiusura della pagina quando il browser lo consente.
+- Consentire l'interruzione anche se il browser blocca la rimozione della bozza. Segnalare che una copia precedente può essere rimasta. Mantenere la compatibilità con le bozze `3.5.0` che usano le stesse versioni di dati e scoring.
+- Verificare completo e laboratorio, percorsi senza bozza, fallimenti di lettura/scrittura/rimozione, ripetizione del salvataggio senza duplicati, uscita annullata e storico originale preservato. Documentare i limiti della verifica in browser.
+- Implementazione approvata. Avviso e comandi di recupero in cima ai risultati, lettura dello storico separata dal salvataggio e recupero delle bozze compatibili `3.5.0`.
+- Verifica locale con 61 test passati. Il browser integrato non era disponibile per la prova dell’avviso nativo, del download e della resa visiva. Vedi la [checklist M23](docs/QA.md#m23--recupero-e-storage).
+- Stato completata. Il maintainer ha approvato la release `v3.5.1` il `2026-11-26` e autorizzato commit, merge, tag, push e rimozione del branch. Gli esiti delle prove manuali non sono stati comunicati.
+
+### M24 — Bozze tra schede e compatibilità tra versioni
+
+- Branch `fix/draft-concurrency-and-compatibility`, target patch `3.5.2`.
+- Assegnare un'identità alla sessione e rilevare revisioni, sostituzioni e cancellazioni da altre schede. Impedire che una scheda obsoleta sovrascriva o ricrei la bozza. Verificare anche le interazioni con il salvataggio dello storico e la cancellazione dati.
+- Legare la compatibilità allo schema della bozza e alle versioni che cambiano domande, forme, scoring o casi. Valutare migrazioni solo per formati compatibili e verificabili.
+- Verificare con due schede la ripresa, le scritture concorrenti, il completamento e la cancellazione. Una patch di sola interfaccia deve permettere la ripresa.
+
+### M25 — Export CSV sicuro e protezione dal versionamento
+
+- Branch `fix/safe-csv-exports`, target patch `3.5.3`.
+- Proteggere le celle testuali da interpretazione come formule nei lettori supportati. Coprire metadati, risposte, chiavi e contenuti legacy, preservando numeri, separatori e nuove righe. Conservare l'export JSON fedele al record.
+- Allineare `.gitignore` ai nomi realmente scaricati e verificare i nomi con e senza dati del profilo. Provare l'importazione in un foglio di calcolo con dati sintetici.
+
+### M26 — Report storici danneggiati e gestione sicura dei campi
+
+- Branch `fix/safe-history-rendering`, target patch `3.5.4`.
+- Validare i dati usati dai renderer attuali e legacy, comprese checklist, date, punteggi, raccomandazioni e risultati del laboratorio. Inserire i dati archiviati come testo e offrire la vista del record originale se il formato è incompleto.
+- Verificare che un record danneggiato non blocchi consultazione, export o salvataggi successivi. Preservare i dati originali dei report `2.x` e degli schemi `3` e `4`.
+
+### M27 — Navigazione da tastiera e distribuzione sulla landing
+
+- Branch `fix/assessment-keyboard-and-distribution`, target patch `3.5.5`.
+- Ripristinare il riepilogo F/U/A/H 12/16/12/10 nel markup della landing. Usare test che distinguono un elemento mancante da un elemento esistente.
+- Gestire il focus durante avanzamento, ritorno, modifica, conferma dei casi e cambi di vista. Preservare il focus quando si cambia slide o si aggiornano gli indicatori. Sospendere l'autoplay durante l'interazione da tastiera.
+- Verificare desktop e mobile, IT/EN, tastiera e preferenza per movimento ridotto. Conservare l'auto-advance reversibile e Avanti nei flussi che lo richiedono.
+
+### M28 — Pulizia del codice orfano e archivio Agents
+
+- Branch `fix/remove-unused-assessment-code`, target patch `3.5.6`.
+- Rimuovere le funzioni prive di chiamanti `localizedProfileName`, `sourceQuestionId`, `scoreText` e i rami o stili rimasti senza un uso verificabile dopo la M27.
+- Spostare i 15 quesiti Agents non selezionati fuori dagli asset runtime, mantenendo ID e contenuti in un archivio per tracciabilità. Conservare il renderer 2.x e i contratti dei report archiviati.
+- Confrontare tutte le forme e le modalità attive con la release precedente. Verificare anche test, generatori e documentazione che leggono la banca.
+
+### M29 — Pubblicazione selettiva e protezioni GitHub Pages
+
+- Branch `fix/github-pages-artifact-and-csp`, target patch `3.5.7`.
+- Preparare un artefatto Pages che includa solo entry point, asset e file necessari. Escludere fixture, script, documentazione di sviluppo ed export dal deploy. Eseguire i test e controllare l'elenco dei file prima di pubblicare.
+- Configurare una Content Security Policy compatibile con Pages e con le risorse locali. Documentare quali direttive richiedono header HTTP. Verificare HTTPS, dominio personalizzato, root e asset, accesso diretto e assenza di richieste automatiche con dati utente.
+- Verificare che fixture e script non siano serviti dal sito dopo il cambio di sorgente. La visibilità dei file nel repository GitHub segue le impostazioni del repository.
 
 ## Backlog opzionale
 

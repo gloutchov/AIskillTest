@@ -1,25 +1,26 @@
 /* Local lab presentation and the single incomplete draft. Classic script, no server. */
 function labText(it, en) { return isEnglish() ? en : it; }
-function labVersions() { return { assessmentVersion: APP_VERSION, scoringVersion: ASSESSMENT_V3.SCORING_VERSION, questionBankVersion: QUESTION_BANK_VERSION, formVersion: FORM_VERSION }; }
+function labVersions(assessmentVersion = APP_VERSION) { return { assessmentVersion, scoringVersion: ASSESSMENT_V3.SCORING_VERSION, questionBankVersion: QUESTION_BANK_VERSION, formVersion: FORM_VERSION }; }
 function readLabDraft() {
   try {
     const raw = localStorage.getItem(LOCAL_LAB.DRAFT_KEY);
     if (raw === null) return { status: "absent" };
     try {
       const draft = JSON.parse(raw);
+      // 3.5.1 changes persistence behavior while retaining the 3.5.0 draft contracts.
+      const versions = labVersions(draft?.assessmentVersion === "3.5.0" ? "3.5.0" : APP_VERSION);
       if (draft?.modeId === "complete") {
         if (!["A","B","C"].includes(draft.formId) || !["it","en"].includes(draft.language)) return { status: "invalid", draft };
         const sources = draft.language === "en" ? buildEnglishQuestionForm(draft.formId) : buildQuestionForm(draft.formId);
         const units = COMPLETE_ASSESSMENT.build(draft.formId,draft.language,sources);
-        return { status: COMPLETE_ASSESSMENT.draftStatus(draft,labVersions(),units), draft };
+        return { status: COMPLETE_ASSESSMENT.draftStatus(draft,versions,units), draft };
       }
-      return { status: LOCAL_LAB.draftStatus(draft, labVersions()), draft };
+      return { status: LOCAL_LAB.draftStatus(draft, versions), draft };
     }
     catch (error) { return { status: "invalid" }; }
   } catch (error) { return { status: "unavailable" }; }
 }
-function labStorageWarning() {
-  const text = labText("La bozza locale non è stata salvata o eliminata. Continua in questa pagina; il recupero dopo la chiusura potrebbe contenere uno stato precedente.", "The local draft could not be saved or removed. Continue on this page; recovery after closing may contain an earlier state.");
+function labStorageWarning(text = labText("La bozza locale non è stata salvata o eliminata. Continua in questa pagina. Il recupero dopo la chiusura potrebbe contenere uno stato precedente.", "The local draft could not be saved or removed. Continue on this page. Recovery after closing may contain an earlier state.")) {
   $("labStorageStatus").textContent = text;
   $("labStorageStatus").hidden = false;
   showToast(text);
@@ -38,9 +39,9 @@ function saveLabDraft() {
   try { localStorage.setItem(LOCAL_LAB.DRAFT_KEY, JSON.stringify(draft)); $("labStorageStatus").hidden = true; }
   catch (error) { labStorageWarning(); }
 }
-function removeLabDraft() {
+function removeLabDraft(warning) {
   try { localStorage.removeItem(LOCAL_LAB.DRAFT_KEY); $("labStorageStatus").hidden = true; return true; }
-  catch (error) { labStorageWarning(); return false; }
+  catch (error) { labStorageWarning(warning); return false; }
 }
 function renderLabDraftNotice() {
   const host = $("labDraftNotice");

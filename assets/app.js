@@ -82,7 +82,7 @@ function cloneQuestionData(value) {
       return selected;
     }
 
-    const APP_VERSION = "3.5.0";
+    const APP_VERSION = "3.5.1";
     const DEFAULT_TEST_MODE_ID = "complete";
     const COMPLETE_TEST_COUNT = 50;
     const TOPIC_TEST_COUNT = 10;
@@ -576,7 +576,6 @@ function cloneQuestionData(value) {
       formId: null,
       selectedModeId: DEFAULT_TEST_MODE_ID,
       latestReport: null,
-      historySaveWarning: false,
       unsavedReport: null,
       bibliographyBackView: "introView",
       autoAdvanceTimer: null,
@@ -1048,7 +1047,7 @@ function cloneQuestionData(value) {
       renderQuestionDistribution();
       renderLabDraftNotice();
       if ($("assessmentView").classList.contains("active")) renderQuestion();
-      if ($("dashboardView").classList.contains("active") && state.latestReport) renderDashboardWithoutSaving(state.latestReport);
+      if ($("dashboardView").classList.contains("active") && state.latestReport) renderDashboard(state.latestReport);
     }
 
     function bindLanguageSwitcher() {
@@ -1665,9 +1664,12 @@ function cloneQuestionData(value) {
         ? "Interrupt the current test and return to the home page? Your answers for this session will be discarded."
         : "Interrompere il test corrente e tornare alla pagina principale? Le risposte di questa sessione verranno eliminate.");
       if (!ok) return;
-      if (["complete", "operational-lab"].includes(state.meta?.testMode?.id) && !removeLabDraft()) return;
+      const draftRemoved = !["complete", "operational-lab"].includes(state.meta?.testMode?.id) || removeLabDraft(labText(
+        "Test interrotto. Il browser non ha consentito di eliminare la bozza: una copia precedente potrebbe essere ancora presente.",
+        "Test interrupted. The browser did not allow the draft to be removed. An earlier copy may still be present."
+      ));
       resetToInitialPage(false);
-      showToast(isEnglish() ? "Test interrupted." : "Test interrotto.");
+      if (draftRemoved) showToast(isEnglish() ? "Test interrupted." : "Test interrotto.");
     }
 
     function clamp(value, min, max) {
@@ -1756,8 +1758,8 @@ function cloneQuestionData(value) {
       const kind = ASSESSMENT_V3.reportKind(report);
       syncLanguageForReport(report);
       state.latestReport = report;
+      renderPendingReportNotice();
       if (kind === "unknown") { renderUnknownDashboard(report); return; }
-      saveReport(report);
       if (kind === "evidence") { renderEvidenceDashboard(report); return; }
       if (kind === "learning") { renderLearningDashboard(report); return; }
       report = { ...report, meta: report.meta || {}, answers: report.answers.filter(item => item && typeof item === "object"),
@@ -1901,7 +1903,12 @@ function cloneQuestionData(value) {
       const cards = units.map(unit => { const source = sourceLinks[unit.id]; return `<article class="card learning-unit"><p class="kicker">${isEnglish() ? "Review this" : "Da rivedere"}</p><h3>${escapeHtml(isEnglish() ? titlesEn[unit.id] : unit.title.it)}</h3><p>${escapeHtml(isEnglish() ? unit.principle.en : unit.principle.it)}</p><p><strong>${isEnglish() ? "Try this:" : "Prova così:"}</strong> ${escapeHtml(isEnglish() ? actionsEn[unit.id] : unit.action)}</p><a class="bibliography-link" href="${source[1]}" target="_blank" rel="noopener noreferrer">${escapeHtml(source[0])} ↗</a></article>`; }).join("");
       $("dashboard").innerHTML = `<div class="actions" style="margin-top:0;margin-bottom:18px"><button class="btn-primary" id="restartBtn">${isEnglish() ? "Back to paths" : "Torna ai percorsi"}</button><button class="btn-secondary" id="repeatLearningBtn">${isEnglish() ? "Repeat another form" : "Ripeti un'altra forma"}</button><button class="btn-ghost" id="exportJsonBtn">Export JSON</button><button class="btn-ghost" id="exportCsvBtn">Export CSV</button><button class="btn-ghost" id="printBtn">${isEnglish() ? "Print / save PDF" : "Stampa / salva PDF"}</button><button class="btn-ghost" id="bibliographyBtn">${isEnglish() ? "Bibliography" : "Bibliografia"}</button><button class="btn-danger" id="clearHistoryBtn">${isEnglish() ? "Clear local data" : "Cancella dati locali"}</button></div><section class="profile-band"><div class="profile-card"><p class="kicker" style="color:#a5b4fc">${isEnglish() ? "Foundational readiness" : "Preparazione sulle basi"}</p><div class="profile-title">${escapeHtml(report.profile)}</div><p>${report.correctCount}/10 ${isEnglish() ? "learning objectives consolidated. This is learning feedback, not an AI Skill score." : "obiettivi consolidati. È un feedback didattico, non un punteggio AI Skill."}</p></div><div class="card"><h3>${isEnglish() ? "Your next step" : "Il tuo prossimo passo"}</h3><p>${units.length ? (isEnglish() ? "Review the units below, then repeat or continue with a thematic path." : "Rivedi le unità qui sotto, poi ripeti o continua con un percorso tematico.") : (isEnglish() ? "All foundations are consolidated: you can continue with Literacy." : "Tutte le basi sono consolidate: puoi continuare con Literacy.")}</p></div></section><div class="learning-grid">${cards}</div>${historyBlock()}`;
       bindDashboardEvents();
-      $("repeatLearningBtn").addEventListener("click", () => { state.selectedModeId = "first-steps"; showView("profileView"); });
+      $("repeatLearningBtn").addEventListener("click", () => {
+        if (!confirmLeavingUnsavedReport()) return;
+        trackUnsavedReport(null);
+        state.selectedModeId = "first-steps";
+        showView("profileView");
+      });
       $("progressFill").style.width = "100%";
       showView("dashboardView");
     }
@@ -2181,10 +2188,31 @@ function cloneQuestionData(value) {
       `;
     }
 
+    function renderPendingReportNotice() {
+      const notice = $("pendingReportNotice");
+      notice.hidden = !state.unsavedReport;
+      if (notice.hidden) {
+        notice.innerHTML = "";
+        return;
+      }
+      if (state.unsavedReport !== state.latestReport) {
+        notice.innerHTML = `<p class="evidence-note">${reportText("Hai un report in attesa di salvataggio in questa pagina.", "A report is waiting to be saved on this page.")}</p>
+          <div class="actions"><button class="btn-secondary" type="button" id="openUnsavedReportBtn">${reportText("Torna al report da salvare", "Return to unsaved report")}</button></div>`;
+        $("openUnsavedReportBtn").addEventListener("click", () => {
+          if (!state.unsavedReport) return;
+          renderDashboard(state.unsavedReport);
+          $("retrySaveReportBtn").focus();
+        });
+        return;
+      }
+      notice.innerHTML = `<p class="evidence-note" role="status">${reportText("Il report corrente non è stato salvato nello storico. Esportalo per conservarlo oppure riprova a salvarlo. Una bozza già salvata resta disponibile.", "The current report was not saved to history. Export it to keep a copy or retry saving. Any previously saved draft remains available.")}</p>
+        <div class="actions"><button class="btn-secondary" type="button" id="retrySaveReportBtn">${reportText("Riprova a salvare", "Retry saving")}</button></div>`;
+      $("retrySaveReportBtn").addEventListener("click", retryUnsavedReport);
+    }
+
     function historyBlock() {
       const history = loadHistory();
-      const warning = state.historySaveWarning && state.unsavedReport === state.latestReport ? '<p class="evidence-note">' + reportText("Il report corrente non è stato salvato nello storico. Esportalo per conservarlo; i dati precedenti non sono stati sovrascritti.", "The current report was not saved to history. Export it to keep a copy; previous data has not been overwritten.") + '</p>' : '';
-      if (!history.length) return warning;
+      if (!history.length) return "";
       const rows = history.map((report, index) => {
         const kind = ASSESSMENT_V3.reportKind(report);
         const meta = report && typeof report.meta === "object" && report.meta || {};
@@ -2192,7 +2220,7 @@ function cloneQuestionData(value) {
         const family = kind === "evidence" ? reportText("Quadro delle evidenze", "Evidence overview") : kind === "legacy" ? reportText("Valutazione precedente (2.x)", "Previous assessment (2.x)") : kind === "learning" ? reportText("Apprendimento", "Learning") : reportText("Formato non supportato", "Unsupported format");
         return '<tr><td>' + escapeHtml(formatDate(meta.completedAt)) + '</td><td>' + escapeHtml(meta.name || '—') + '</td><td>' + escapeHtml(mode.label || mode.id || '—') + '</td><td>' + escapeHtml(meta.language || '—') + ' / ' + escapeHtml(meta.formId || '—') + '</td><td>' + escapeHtml(meta.assessmentVersion || '—') + '</td><td>' + escapeHtml(family) + '</td><td><button type="button" class="btn-ghost" data-history-index="' + index + '">' + reportText('Apri', 'Open') + '</button></td></tr>';
       }).reverse().join('');
-      return '<section class="card evidence-section"><h3>' + reportText('Storico locale', 'Local history') + '</h3>' + warning + '<p>' + reportText('Report salvati separatamente per modalità, lingua, forma e versione. Nessuna media o confronto fra risultati incompatibili.', 'Reports are stored separately by mode, language, form, and version. No averaging or comparison of incompatible results.') + '</p><div class="history-scroll"><table class="history-table"><thead><tr><th>' + reportText('Data', 'Date') + '</th><th>' + reportText('Nome', 'Name') + '</th><th>' + reportText('Modalità', 'Mode') + '</th><th>' + reportText('Lingua / forma', 'Language / form') + '</th><th>App</th><th>' + reportText('Tipo di risultato', 'Result type') + '</th><th>' + reportText('Report', 'Report') + '</th></tr></thead><tbody>' + rows + '</tbody></table></div></section>';
+      return '<section class="card evidence-section"><h3>' + reportText('Storico locale', 'Local history') + '</h3><p>' + reportText('Report salvati separatamente per modalità, lingua, forma e versione. Nessuna media o confronto fra risultati incompatibili.', 'Reports are stored separately by mode, language, form, and version. No averaging or comparison of incompatible results.') + '</p><div class="history-scroll"><table class="history-table"><thead><tr><th>' + reportText('Data', 'Date') + '</th><th>' + reportText('Nome', 'Name') + '</th><th>' + reportText('Modalità', 'Mode') + '</th><th>' + reportText('Lingua / forma', 'Language / form') + '</th><th>App</th><th>' + reportText('Tipo di risultato', 'Result type') + '</th><th>' + reportText('Report', 'Report') + '</th></tr></thead><tbody>' + rows + '</tbody></table></div></section>';
     }
 
     function scoreText(value) {
@@ -2203,15 +2231,19 @@ function cloneQuestionData(value) {
       document.querySelectorAll("#dashboard [data-history-index]").forEach(button => button.addEventListener("click", () => {
         const index = Number(button.dataset.historyIndex);
         const history = loadHistory();
-        if (Number.isInteger(index) && index >= 0 && index < history.length) renderDashboardWithoutSaving(history[index]);
+        if (Number.isInteger(index) && index >= 0 && index < history.length) renderDashboard(history[index]);
       }));
-      $("restartBtn").addEventListener("click", () => resetToInitialPage(false));
+      $("restartBtn").addEventListener("click", () => {
+        if (confirmLeavingUnsavedReport()) resetToInitialPage(false);
+      });
       $("exportJsonBtn").addEventListener("click", () => exportJson(state.latestReport));
       $("exportCsvBtn").addEventListener("click", () => exportCsv(state.latestReport));
       $("printBtn").addEventListener("click", () => window.print());
       $("bibliographyBtn").addEventListener("click", () => showBibliography("dashboardView"));
       $("clearHistoryBtn").addEventListener("click", () => {
-        const ok = window.confirm(isEnglish() ? "Clear local data, form rotation, and the incomplete session draft in this browser?" : "Eliminare storico locale, rotazione delle forme e bozza incompleta della sessione da questo browser?");
+        const prompt = reportText("Eliminare storico locale, rotazione delle forme e bozza incompleta della sessione da questo browser?", "Clear local data, form rotation, and the incomplete session draft in this browser?");
+        const unsaved = state.unsavedReport ? reportText(" Anche il report non salvato verrà perso.", " The unsaved report will also be lost.") : "";
+        const ok = window.confirm(prompt + unsaved);
         if (!ok) return;
         try {
           localStorage.removeItem("aiSkillAssessmentHistory");
@@ -2236,8 +2268,7 @@ function cloneQuestionData(value) {
       state.meta = {};
       state.formId = null;
       state.latestReport = null;
-      state.unsavedReport = null;
-      state.historySaveWarning = false;
+      trackUnsavedReport(null);
       state.bibliographyBackView = "introView";
       state.language = readStoredLanguage() || browserDefaultLanguage();
       applyLanguageChrome();
@@ -2253,10 +2284,36 @@ function cloneQuestionData(value) {
       showView("introView");
     }
 
-    function renderDashboardWithoutSaving(report) {
-      const previous = window.__skipSaveOnce;
-      window.__skipSaveOnce = true;
-      try { renderDashboard(report); } finally { window.__skipSaveOnce = previous; }
+    function warnBeforeLeavingUnsavedReport(event) {
+      event.preventDefault();
+      event.returnValue = true;
+    }
+
+    function trackUnsavedReport(report) {
+      if (report && !state.unsavedReport) window.addEventListener("beforeunload", warnBeforeLeavingUnsavedReport);
+      if (!report && state.unsavedReport) window.removeEventListener("beforeunload", warnBeforeLeavingUnsavedReport);
+      state.unsavedReport = report;
+    }
+
+    function confirmLeavingUnsavedReport() {
+      return !state.unsavedReport || window.confirm(reportText(
+        "Il report non è stato salvato nello storico. Vuoi tornare ai percorsi e abbandonare il report? Puoi annullare per esportarlo o riprovare il salvataggio.",
+        "The report has not been saved to history. Return to the paths and leave the report? Cancel to export it or retry saving."
+      ));
+    }
+
+    function retryUnsavedReport() {
+      const report = state.unsavedReport;
+      if (!report) return;
+      const saved = saveReport(report);
+      const draftRemoved = !saved || !["complete", "operational-lab"].includes(report.meta.testMode.id) || removeLabDraft();
+      renderDashboard(report);
+      if (saved) {
+        $("exportJsonBtn").focus();
+        if (draftRemoved) showToast(reportText("Report salvato nello storico.", "Report saved to history."));
+      } else {
+        $("retrySaveReportBtn").focus();
+      }
     }
 
     function finishAssessment() {
@@ -2265,8 +2322,12 @@ function cloneQuestionData(value) {
         return;
       }
       const report = calculateResults();
+      if (saveReport(report)) {
+        if (["complete", "operational-lab"].includes(report.meta.testMode.id)) removeLabDraft();
+      } else {
+        saveLabDraft();
+      }
       renderDashboard(report);
-      if (["complete", "operational-lab"].includes(state.meta?.testMode?.id)) removeLabDraft();
     }
 
     function historySnapshot() {
@@ -2281,18 +2342,18 @@ function cloneQuestionData(value) {
     }
 
     function saveReport(report) {
-      if (window.__skipSaveOnce) return;
       const snapshot = historySnapshot();
-      state.historySaveWarning = !snapshot.writable;
-      state.unsavedReport = snapshot.writable ? null : report;
-      if (!snapshot.writable) return;
-      try {
-        localStorage.setItem("aiSkillAssessmentHistory", JSON.stringify(snapshot.records.concat([report]).slice(-100)));
-      } catch (error) {
-        state.historySaveWarning = true;
-        state.unsavedReport = report;
-        console.warn("Impossibile salvare lo storico locale", error);
+      if (snapshot.writable) {
+        try {
+          localStorage.setItem("aiSkillAssessmentHistory", JSON.stringify(snapshot.records.concat([report]).slice(-100)));
+          trackUnsavedReport(null);
+          return true;
+        } catch (error) {
+          console.warn("Impossibile salvare lo storico locale", error);
+        }
       }
+      trackUnsavedReport(report);
+      return false;
     }
 
     function loadHistory() { return historySnapshot().records; }
@@ -2303,10 +2364,7 @@ function cloneQuestionData(value) {
         showToast(isEnglish() ? "No report in local history." : "Nessun report nello storico locale.");
         return;
       }
-      state.latestReport = history[history.length - 1];
-      window.__skipSaveOnce = true;
-      renderDashboard(state.latestReport);
-      window.__skipSaveOnce = false;
+      renderDashboard(history[history.length - 1]);
     }
 
     function exportJson(report) {

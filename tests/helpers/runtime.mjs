@@ -15,7 +15,8 @@ export function runtime({ assetReader = read } = {}) {
       addEventListener(type, callback) { this.events[type] = callback; }, focus() { this.focused = true; }, setAttribute() {}, querySelectorAll() { return []; }, classList: { toggle() {}, add() {}, remove() {}, contains() { return false; } } });
     return nodes.get(id);
   };
-  const window = { scrollTo() {}, print() {}, confirm() { return true; }, setTimeout(fn) { timers.set(timers.size + 1, fn); return timers.size; }, clearTimeout(id) { timers.delete(id); }, setInterval() { return 1; }, clearInterval() {} };
+  const window = { scrollTo() {}, print() {}, confirm() { return true; }, setTimeout(fn) { timers.set(timers.size + 1, fn); return timers.size; }, clearTimeout(id) { timers.delete(id); }, setInterval() { return 1; }, clearInterval() {},
+    events: new Map(), addEventListener(type, fn) { this.events.set(type, fn); }, removeEventListener(type) { this.events.delete(type); } };
   const context = vm.createContext({ console: { warn() {} }, window, navigator: { language: "it", languages: ["it"] },
     localStorage: { getItem: key => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, value), removeItem: key => storage.delete(key) },
     document: { getElementById: node, querySelector() { return null; }, querySelectorAll(selector) {

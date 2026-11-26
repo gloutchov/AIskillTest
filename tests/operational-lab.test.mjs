@@ -26,7 +26,7 @@ test("lab covers six E units, both cases and all six bilingual forms without alt
     assert.deepEqual(report.answers.map(a => a.objectiveId).join(","), "U06,U06,U06,A04,A03,H05");
     assert.ok(report.results.simulatedCases[1].effects.artifact.length > 20);
     assert.equal(report.meta.reportSchemaVersion, 4); assert.equal(report.meta.scoringVersion, "3.1.0");
-    r.context.sample = report; r.run("renderDashboardWithoutSaving(sample)");
+    r.context.sample = report; r.run("renderDashboard(sample)");
     const html = r.node("dashboard").innerHTML;
     assert.match(html, /100\/100/); assert.match(html, language === "it" ? /Esiti conformi/ : /Expected outcomes/);
     assert.doesNotMatch(html, /simulatedCases|journalEntries|Champion|Expert|Non presenti in questa versione/);
@@ -161,7 +161,7 @@ test("interrupt confirmation, draft replacement cancellation and clear local dat
   const draft = r.storage.get("aiSkillOperationalLabDraft"); assert.ok(draft);
   r.run("startAssessment()"); assert.equal(r.storage.get("aiSkillOperationalLabDraft"), draft);
   r.run("window.confirm=()=>true;interruptAssessment()"); assert.equal(r.storage.has("aiSkillOperationalLabDraft"), false);
-  r.run("state.selectedModeId='operational-lab';startAssessment();renderDashboardWithoutSaving(full())");
+  r.run("state.selectedModeId='operational-lab';startAssessment();renderDashboard(full())");
   r.node("clearHistoryBtn").events.click(); assert.equal(r.storage.has("aiSkillOperationalLabDraft"), false);
 });
 
@@ -171,11 +171,11 @@ test("completion freezes JSON/CSV/history, clears draft, and historical schema 3
   const report = r.run("state.latestReport"); assert.equal(report.criticalFindings.length, 2);
   assert.equal(JSON.parse(r.storage.get("aiSkillAssessmentHistory")).length, 1);
   const snapshot = JSON.stringify(report); r.context.saved = report;
-  r.run("state.language='en';lab.TITLES[0][0]='changed title';renderDashboardWithoutSaving(saved)"); assert.equal(JSON.stringify(report), snapshot);
+  r.run("state.language='en';lab.TITLES[0][0]='changed title';renderDashboard(saved)"); assert.equal(JSON.stringify(report), snapshot);
   assert.match(r.node("dashboard").innerHTML, /Verifica le evidenze/); assert.doesNotMatch(r.node("dashboard").innerHTML, /changed title/);
   const rows = plain(r.context.core.csvRows(report)); assert.ok(rows.some(row => row[1] === "criticalFindings.1.code" && row[2] === "duplicate-action"));
   const old = plain(r.run("(() => {const qs=questionsForMode(buildQuestionForm('A'),getModeById('harness'));return core.evaluate(qs,Object.fromEntries(qs.map(q=>[q.id,choose(q)])),{...meta,testMode:{id:'harness',questionCount:10}},'2026-11-25');})()")); old.meta.reportSchemaVersion = 3; old.meta.scoringVersion = "3.0.0"; old.meta.assessmentVersion = "3.3.0";
-  r.context.old = old; const original = JSON.stringify(old); r.run("renderDashboardWithoutSaving(old)"); assert.equal(r.run("core.reportKind(old)"), "evidence"); assert.equal(JSON.stringify(old), original);
+  r.context.old = old; const original = JSON.stringify(old); r.run("renderDashboard(old)"); assert.equal(r.run("core.reportKind(old)"), "evidence"); assert.equal(JSON.stringify(old), original);
 });
 
 test("local assets and native controls support offline operation and accessible structure", () => {
@@ -191,15 +191,27 @@ test("malformed simulation records fall back to raw inspection without breaking 
   const original = plain(r.run("report()"));
   for (const mutate of [v => delete v.results.simulatedCases[0].initialState, v => { v.results.simulatedCases[0].decisions = null; }, v => { v.results.simulatedSummary.value = "100"; }, v => { v.results.simulatedCases[1].effects.pendingWork = {}; }]) {
     const v = plain(original); mutate(v); r.context.broken = v;
-    assert.equal(r.run("core.reportKind(broken)"), "unknown"); r.run("renderDashboardWithoutSaving(broken)");
+    assert.equal(r.run("core.reportKind(broken)"), "unknown"); r.run("renderDashboard(broken)");
     assert.match(r.node("dashboard").innerHTML, /Formato del report non supportato/);
   }
 });
 
-test("failed draft removal leaves interruption pending and warns after completion", () => {
+test("failed draft removal permits interruption and warns after interruption or successful completion", () => {
   const r = lab(); r.start(); r.run("state.selectedModeId='operational-lab';startAssessment();localStorage.removeItem=()=>{throw Error('blocked')};interruptAssessment()");
-  assert.equal(r.run("state.meta.testMode.id"), "operational-lab"); assert.equal(r.node("labStorageStatus").hidden, false);
+  assert.equal(r.run("state.meta.testMode"), undefined); assert.equal(r.node("labStorageStatus").hidden, false);
+  assert.match(r.node("labStorageStatus").textContent, /copia precedente potrebbe essere ancora presente/);
+  r.run("resumeLabDraft()");
   r.run("state.answers=Object.fromEntries(questions.map((q,i)=>[q.id,['all-rows',{operation:'sum',total:lab.variant(state.formId,currentLanguage()).total},{action:'release',reference:true,keepClaim:false},'use-data','draft-only','continue'][i]]));finishAssessment()");
   assert.equal(r.run("state.latestReport.results.simulatedSummary.value"), 100); assert.equal(r.node("labStorageStatus").hidden, false);
   assert.ok(r.storage.has("aiSkillOperationalLabDraft"));
+});
+
+test("a session still exits when browser storage was blocked from the start", () => {
+  const r = lab();r.start();
+  r.run("const denied=()=>{throw Error('blocked')};localStorage.getItem=denied;localStorage.setItem=denied;localStorage.removeItem=denied;state.selectedModeId='complete';startAssessment()");
+  assert.equal(r.run("state.meta.testMode.id"), "complete");
+  r.run("interruptAssessment()");
+  assert.equal(r.run("state.meta.testMode"), undefined);
+  assert.equal(r.storage.has("aiSkillOperationalLabDraft"),false);
+  assert.match(r.node("labStorageStatus").textContent, /Test interrotto/);
 });
