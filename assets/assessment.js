@@ -344,50 +344,148 @@ const ASSESSMENT_V3 = (() => {
     return { meta, profile: label(["Quadro delle evidenze", "Evidence overview"], meta.language), answers: items, ...aggregation, criticalFindings: lab?.criticalFindings || [] };
   }
 
+  // Check the fields consumed by the report views without changing the stored record.
+  const isText = value => typeof value === "string";
+  const isCount = value => Number.isInteger(value) && value >= 0;
+  const inRange = (value, min, max) => Number.isFinite(value) && value >= min && value <= max;
+  const isPercent = value => inRange(value, 0, 100);
+  const isUnitCredit = value => inRange(value, 0, 1);
+  const listOf = (value, check) => Array.isArray(value) && value.every(check);
+  const textList = value => listOf(value, isText);
+  const optional = (value, check) => value == null || check(value);
+  const optionalFields = (record, keys, check) => keys.every(key => optional(record[key], check));
+  const evidenceTypes = ["Q", "D", "T", "E"];
+
+  function reportDate(value) {
+    if (!isText(value) || !/^\d{4}-\d{2}-\d{2}(?:T|$)/.test(value)) return null;
+    const day = value.slice(0, 10);
+    const calendarDate = new Date(day);
+    if (!Number.isFinite(calendarDate.getTime()) || calendarDate.toISOString().slice(0, 10) !== day) return null;
+    const time = Date.parse(value);
+    return Number.isFinite(time) ? new Date(time) : null;
+  }
+
+  function validReportMeta(meta) {
+    return isRecord(meta) && optionalFields(meta,
+      ["assessmentVersion", "name", "role", "area", "language", "formId", "questionBankVersion", "formVersion"], isText)
+      && optional(meta.completedAt, value => value === "" || reportDate(value) !== null)
+      && optional(meta.testMode, mode => isRecord(mode) && optionalFields(mode, ["id", "label", "type"], isText) && optional(mode.questionCount, isCount))
+      && optional(meta.selfAssessment, self => isRecord(self) && optionalFields(self, ["overall", "literacy", "fluency", "mindset"], isPercent));
+  }
+
+  function validLegacyReport(report) {
+    const scoreKeys = ["overall", "literacy", "agents", "fluency", "mindset", "delegation", "description", "discernment", "diligence", "technical", "execution"];
+    const comparison = item => isRecord(item) && optional(item.label, isText)
+      && optionalFields(item, ["declared", "measured"], isPercent)
+      && (item.declared == null || item.measured == null ? optional(item.gap, Number.isFinite) : Number.isFinite(item.gap));
+    const review = item => isRecord(item) && inRange(item.score, 1, 5)
+      && optionalFields(item, ["section", "sub", "dimension", "question", "feedback"], isText);
+    const recommendation = item => isRecord(item) && isText(item.area) && isPercent(item.score) && isText(item.action);
+    const note = item => isRecord(item) && optionalFields(item, ["label", "text"], isText);
+    return isText(report.profile) && isRecord(report.score) && scoreKeys.some(key => isPercent(report.score[key]))
+      && optionalFields(report.score, scoreKeys, isPercent)
+      && listOf(report.answers, item => isRecord(item) && optional(item.type, isText))
+      && optionalFields(report, ["likertPct", "scenarioPct", "practicalPct", "technicalPct"], isPercent)
+      && optional(report.calibrationGap, Number.isFinite) && optionalFields(report, ["mindsetLens", "calibration"], note)
+      && optional(report.selfComparison, items => listOf(items, comparison))
+      && optionalFields(report, ["lowBehaviorItems", "lowScenarioItems", "lowTechnicalItems"], items => listOf(items, review))
+      && optional(report.recommendations, rec => isRecord(rec) && optional(rec.profile, textList)
+        && optionalFields(rec, ["weakest", "strongest"], items => listOf(items, recommendation)));
+  }
+
+  function validEvidenceCounts(counts) {
+    return isRecord(counts) && evidenceTypes.every(type => isRecord(counts[type])
+      && ["planned", "proposed", "valid", "missing", "invalid"].every(key => isCount(counts[type][key])));
+  }
+
+  function validEvidenceArea(result, coverage) {
+    return isRecord(result) && (result.value === null || isPercent(result.value))
+      && ["not-assessed", "limited", "partial", "reached"].includes(result.status)
+      && [null, "review", "developing", "strong"].includes(result.band)
+      && isCount(result.validCount) && isCount(result.missingCount)
+      && listOf(result.objectives, item => isRecord(item) && isText(item.id) && (item.credit === null || isUnitCredit(item.credit)))
+      && isRecord(coverage) && validEvidenceCounts(coverage.byEvidence)
+      && textList(coverage.coveredObjectives) && textList(coverage.missingObjectives);
+  }
+
+  function validEvidenceAnswer(item, historical) {
+    if (!isRecord(item) || !isText(item.sourceId) || !isText(item.primaryArea) || !Object.hasOwn(AREA_LABELS, item.primaryArea)
+        || !evidenceTypes.includes(item.evidenceType) || (historical && item.evidenceType === "E")) return false;
+    if (item.evidenceType !== "Q") return true;
+    return isText(item.objectiveId) && ["valid", "missing", "invalid"].includes(item.responseStatus)
+      && (item.credit === null || isUnitCredit(item.credit))
+      && optionalFields(item, ["question", "answer", "answerText", "feedback"], isText)
+      && optionalFields(item, ["selectedRationales", "sourceRefs"], textList)
+      && optional(item.selectionReview, selection => isRecord(selection) && optionalFields(selection, ["omitted", "incompatible"], textList));
+  }
+
+  function validLabEffects({ caseId, initialState, effects }) {
+    if (!isRecord(initialState) || !isRecord(effects)) return false;
+    if (caseId === "K1") {
+      return listOf(initialState.rows, n => inRange(n, 0, 1000000)) && initialState.rows.length === 3
+        && inRange(initialState.draftTotal, 0, 1000000) && isText(effects.artifact)
+        && ["pending", "review", "release"].includes(effects.delivery);
+    }
+    return isText(initialState.receipt) && isText(effects.updateId) && [1, 2].includes(effects.journalEntries)
+      && ["pending", "resumed", "falsely-completed"].includes(effects.pendingWork)
+      && ["disclosed", "localDraft", "externalAction"].every(key => typeof effects[key] === "boolean")
+      && (effects.artifact === null || isText(effects.artifact));
+  }
+
+  function validLabResults(results, findings, historical, proposed) {
+    const cases = results.simulatedCases;
+    if (!Array.isArray(cases) || !Array.isArray(findings)) return false;
+    if (proposed === 0) return cases.length === 0 && findings.length === 0;
+    if (historical || cases.length !== 2) return false;
+    const finding = item => isRecord(item) && item.kind === "simulated-action" && ["K1", "K2"].includes(item.caseId)
+      && isText(item.decisionId) && isText(item.effect)
+      && ["unverified-release", "unauthorized-disclosure", "unauthorized-action", "duplicate-action"].includes(item.code);
+    const decision = item => isRecord(item) && ["decisionId", "title", "actionLabel", "explanation"].every(key => isText(item[key]))
+      && (item.credit === null || inRange(item.credit, 0, 2)) && item.maxCredit === 2;
+    const summary = results.simulatedSummary;
+    return isRecord(summary) && (summary.value === null || isPercent(summary.value))
+      && inRange(summary.credit, 0, 12) && summary.maxCredit === 12
+      && [null, "critical", "retry", "partial", "conform"].includes(summary.band)
+      && summary.expectedCases === 2 && [0, 1, 2].includes(summary.completedCases)
+      && findings.every(finding)
+      && cases.every(item => isRecord(item) && ["K1", "K2"].includes(item.caseId) && isText(item.title) && isText(item.caseVersion)
+        && inRange(item.credit, 0, 6) && item.maxCredit === 6 && ["complete", "incomplete"].includes(item.status)
+        && validLabEffects(item) && listOf(item.decisions, decision) && item.decisions.length === 3 && listOf(item.criticalFindings, finding))
+      && cases[0].caseId !== cases[1].caseId;
+  }
+
+  function validEvidenceReport(report, historical) {
+    const { results, coverage, answers, criticalFindings } = report;
+    const declared = item => isRecord(item) && isText(item.question) && (item.declaredValue === null || inRange(item.declaredValue, 1, 5))
+      && optionalFields(item, ["answer", "answerText"], isText);
+    const formative = item => isRecord(item) && isText(item.question)
+      && optionalFields(item, ["answerText", "feedback"], isText) && optional(item.checklist, textList);
+    const nextStep = item => isRecord(item) && isText(item.objectiveId) && isText(item.text);
+    return isRecord(results) && isRecord(results.knowledgeByArea) && isRecord(coverage) && isRecord(coverage.byArea)
+      && isCount(coverage.unproposedCount) && validEvidenceCounts(coverage.byEvidence)
+      && Object.keys(AREA_LABELS).every(area => validEvidenceArea(results.knowledgeByArea[area], coverage.byArea[area]))
+      && listOf(answers, item => validEvidenceAnswer(item, historical))
+      && listOf(results.declaredPractices, declared) && listOf(results.formativeFeedback, formative)
+      && listOf(results.declaredContrasts, id => isText(id) && Object.hasOwn(OBJECTIVES, id))
+      && optional(results.nextSteps, items => listOf(items, nextStep))
+      && validLabResults(results, criticalFindings, historical, coverage.byEvidence.E.proposed);
+  }
+
   function reportKind(report) {
-    if (!isRecord(report)) return "unknown";
-    const meta = isRecord(report.meta) ? report.meta : {};
-    const hasSchema = meta.reportSchemaVersion !== undefined;
-    const hasScoring = meta.scoringVersion !== undefined;
-    const appVersion = String(meta.assessmentVersion || "");
-    if (hasSchema || hasScoring) {
-      const validCounts = value => isRecord(value) && ["planned", "proposed", "valid", "missing", "invalid"].every(key => Number.isInteger(value[key]) && value[key] >= 0);
-      const validEvidenceCounts = value => isRecord(value) && ["Q", "D", "T", "E"].every(type => validCounts(value[type]));
+    if (!isRecord(report) || !optional(report.meta, validReportMeta)) return "unknown";
+    const meta = report.meta ?? {};
+    if (Object.hasOwn(meta, "reportSchemaVersion") || Object.hasOwn(meta, "scoringVersion")) {
       const historical = meta.reportSchemaVersion === 3 && meta.scoringVersion === "3.0.0";
       const current = meta.reportSchemaVersion === REPORT_SCHEMA_VERSION && meta.scoringVersion === SCORING_VERSION;
-      const finite = (v, max) => typeof v === "number" && Number.isFinite(v) && v >= 0 && v <= max;
-      const finding = f => isRecord(f) && f.kind === "simulated-action" && ["K1", "K2"].includes(f.caseId) && typeof f.decisionId === "string" && typeof f.effect === "string"
-        && ["unverified-release", "unauthorized-disclosure", "unauthorized-action", "duplicate-action"].includes(f.code);
-      const validLab = !historical && Array.isArray(report.results?.simulatedCases) && report.results.simulatedCases.length === 2
-        && new Set(report.results.simulatedCases.map(c => c?.caseId)).size === 2
-        && report.results.simulatedCases.every(c => isRecord(c) && typeof c.title === "string" && typeof c.caseVersion === "string" && ["K1", "K2"].includes(c.caseId)
-          && finite(c.credit, 6) && c.maxCredit === 6 && ["complete", "incomplete"].includes(c.status) && isRecord(c.initialState) && isRecord(c.effects)
-          && (c.caseId === "K1" ? Array.isArray(c.initialState.rows) && c.initialState.rows.length === 3 && c.initialState.rows.every(n => finite(n, 1000000)) && typeof c.effects.artifact === "string"
-            : typeof c.initialState.receipt === "string" && typeof c.effects.updateId === "string" && [1, 2].includes(c.effects.journalEntries) && ["pending", "resumed", "falsely-completed"].includes(c.effects.pendingWork))
-          && Array.isArray(c.decisions) && c.decisions.length === 3 && c.decisions.every(d => isRecord(d) && typeof d.decisionId === "string" && typeof d.title === "string" && typeof d.actionLabel === "string" && typeof d.explanation === "string" && (d.credit === null || finite(d.credit, 2)) && d.maxCredit === 2)
-          && Array.isArray(c.criticalFindings) && c.criticalFindings.every(finding))
-        && isRecord(report.results.simulatedSummary) && (report.results.simulatedSummary.value === null || finite(report.results.simulatedSummary.value, 100))
-        && finite(report.results.simulatedSummary.credit, 12) && report.results.simulatedSummary.maxCredit === 12
-        && [null, "critical", "retry", "partial", "conform"].includes(report.results.simulatedSummary.band)
-        && Array.isArray(report.criticalFindings) && report.criticalFindings.every(finding);
-      const emptyLab = Array.isArray(report.results?.simulatedCases) && !report.results.simulatedCases.length && report.coverage?.byEvidence?.E?.proposed === 0;
-      if ((historical || current) && meta.blueprintVersion === BLUEPRINT_VERSION
-          && isRecord(report.results?.knowledgeByArea) && validEvidenceCounts(report.coverage?.byEvidence) && isRecord(report.coverage?.byArea)
-          && Array.isArray(report.answers) && report.answers.every(item => isRecord(item) && typeof item.sourceId === "string" && AREA_LABELS[item.primaryArea] && (historical ? ["Q", "D", "T"] : ["Q", "D", "T", "E"]).includes(item.evidenceType))
-          && Array.isArray(report.results.declaredPractices) && report.results.declaredPractices.every(isRecord)
-          && Array.isArray(report.results.formativeFeedback) && report.results.formativeFeedback.every(isRecord)
-          && Array.isArray(report.results.declaredContrasts) && report.results.declaredContrasts.every(id => OBJECTIVES[id])
-          && (emptyLab || validLab) && Array.isArray(report.criticalFindings) && report.criticalFindings.every(isRecord)
-          && Object.keys(AREA_LABELS).every(area => isRecord(report.results.knowledgeByArea[area]) && Array.isArray(report.results.knowledgeByArea[area].objectives)
-            && report.results.knowledgeByArea[area].objectives.every(isRecord)
-            && isRecord(report.coverage.byArea[area]) && validEvidenceCounts(report.coverage.byArea[area].byEvidence)
-            && Array.isArray(report.coverage.byArea[area].coveredObjectives) && Array.isArray(report.coverage.byArea[area].missingObjectives))) return "evidence";
-      return "unknown";
+      return (historical || current) && meta.blueprintVersion === BLUEPRINT_VERSION && validEvidenceReport(report, historical) ? "evidence" : "unknown";
     }
+    const appVersion = meta.assessmentVersion;
     if (appVersion && !/^[123]\./.test(appVersion)) return "unknown";
-    if ((meta.testMode?.id === "first-steps" || meta.testMode?.type === "learning") && Number.isFinite(report.correctCount) && Array.isArray(report.recommendedUnitIds)) return "learning";
-    if (appVersion && !/^[12]\./.test(appVersion)) return "unknown";
-    return isRecord(report.score) && Array.isArray(report.answers) && typeof report.profile === "string" && Object.values(report.score).some(value => typeof value === "number" && Number.isFinite(value)) ? "legacy" : "unknown";
+    if (meta.testMode?.id === "first-steps" || meta.testMode?.type === "learning") {
+      return isText(report.profile) && isCount(report.correctCount) && report.correctCount <= 10 && listOf(report.answers, isRecord)
+        && listOf(report.recommendedUnitIds, id => FIRST_STEPS_UNITS.some(unit => unit.id === id)) ? "learning" : "unknown";
+    }
+    return (!appVersion || /^[12]\./.test(appVersion)) && validLegacyReport(report) ? "legacy" : "unknown";
   }
 
   function csvRows(report) {
@@ -403,5 +501,5 @@ const ASSESSMENT_V3 = (() => {
   }
 
   return { SCORING_VERSION, BLUEPRINT_VERSION, REPORT_SCHEMA_VERSION, AREA_LABELS, OBJECTIVES, ITEM_MAP, label, objectiveIds, responseStatus,
-    classify, itemResult, aggregate, comparisonKey, evaluate, reportKind, csvRows };
+    classify, itemResult, aggregate, comparisonKey, evaluate, reportKind, reportDate, csvRows };
 })();

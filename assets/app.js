@@ -82,7 +82,7 @@ function cloneQuestionData(value) {
       return selected;
     }
 
-    const APP_VERSION = "3.5.3";
+    const APP_VERSION = "3.5.4";
     const HISTORY_KEY = "aiSkillAssessmentHistory";
     const ASSESSMENT_EPOCH_KEY = "aiSkillAssessmentClearGeneration";
     const DEFAULT_TEST_MODE_ID = "complete";
@@ -421,7 +421,7 @@ function cloneQuestionData(value) {
         ],
         method: {
           title: "Nota metodologica",
-          text: "Il modello 3.x separa conoscenze e scenari, pratiche dichiarate e testi formativi. Gli obiettivi pesano uguale nella propria area; le percentuali richiedono almeno 3 quesiti e 2 obiettivi. Le fasce editoriali richiedono almeno 6 quesiti e tutti gli obiettivi dell’area. Un elenco di parole chiave non riceve un punteggio di qualità. Nessun esercizio simulato è ancora presente. Le forme sono equivalenti per progetto, non psicometricamente; pesi e soglie non sono validati. I report 2.x restano leggibili con il modello originale e non sono confrontabili con 3.x."
+          text: "Il report distingue i risultati dei quesiti, le pratiche dichiarate, i testi con feedback e gli esiti degli esercizi simulati. Gli obiettivi hanno lo stesso peso all’interno di ciascuna area. Le percentuali richiedono almeno tre quesiti validi e due obiettivi coperti. Le fasce richiedono almeno sei quesiti validi e la copertura di tutti gli obiettivi dell’area. I testi ricevono un feedback formativo. Pesi, soglie e forme sono scelte editoriali. Il test non è psicometricamente validato. I report 2.x si leggono secondo il loro modello originario."
         }
       },
       en: {
@@ -547,7 +547,7 @@ function cloneQuestionData(value) {
         ],
         method: {
           title: "Methodological note",
-          text: "The 3.x model separates knowledge/scenarios, self-reported practices, and formative text. Objectives carry equal weight within each area; percentages require at least 3 questions and 2 objectives. Editorial bands require at least 6 questions and all area objectives. A keyword list receives no quality score. No simulated exercise is included yet. Forms have designed, not psychometric, equivalence; weights and thresholds are not validated. Reports from 2.x retain their original model and cannot be compared with 3.x."
+          text: "The report distinguishes question results, self-reported practices, written responses with feedback, and simulated exercise outcomes. Objectives carry equal weight within each area. Percentages require at least three valid answers covering two objectives. Result bands require at least six valid answers and coverage of all objectives in the area. Written responses receive formative feedback. Weights, thresholds, and forms are editorial choices. The test has not been psychometrically validated. Reports from 2.x follow their original assessment model."
         }
       }
     };
@@ -768,6 +768,7 @@ function cloneQuestionData(value) {
         restartModeCarouselTimer();
       } else {
         clearModeCarouselTimer();
+        if ($("introHistory").hidden === false) setIntroHistoryOpen(false);
       }
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -839,29 +840,40 @@ function cloneQuestionData(value) {
       const modernNote = $("modernAiSourcesNote");
       const modernList = $("modernAiSourcesList");
       if (modernTitle) modernTitle.textContent = isEnglish() ? "Modern AI: capabilities and checks" : "AI moderne: capacità e controlli";
-      if (modernNote) modernNote.textContent = isEnglish()
-        ? "Primary sources reviewed on " + MODERN_AI.REVIEW_DATE + ". Scenarios are original editorial choices, not validated tests. Links open only on an explicit click."
-        : "Fonti primarie ricontrollate il " + MODERN_AI.REVIEW_DATE + ". Gli scenari sono scelte editoriali originali, non test validati. I link si aprono solo con un click esplicito.";
+      if (modernNote) modernNote.textContent = labText(
+        "Riferimenti per scegliere gli strumenti in base al compito, lavorare con testo, immagini e audio e verificare risultati e fonti.",
+        "Resources for choosing tools that suit the task, working with text, images, and audio, and checking outputs and sources."
+      );
       if (modernList) modernList.innerHTML = MODERN_AI.SOURCES.map(source => `<article class="bibliography-item"><div class="bibliography-source">${escapeHtml(source.id)}</div><h3>${escapeHtml(source.title)}</h3><p>${escapeHtml(source.note[isEnglish() ? 1 : 0])}</p><a class="bibliography-link" href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${isEnglish() ? "Open source ↗" : "Apri la fonte ↗"}</a></article>`).join("");
       const agentsTitle = $("agenticSourcesTitle");
       const agentsNote = $("agenticSourcesNote");
       const agentsList = $("agenticSourcesList");
       if (agentsTitle) agentsTitle.textContent = isEnglish() ? "AI Agents: processes, supervision, and diagnosis" : "AI Agents: processi, supervisione e diagnosi";
-      if (agentsNote) agentsNote.textContent = isEnglish()
-        ? `Primary sources reviewed on ${AGENTIC_WORKFLOWS.REVIEW_DATE}. Traces and rubrics are original editorial scenarios, not validated measures of practical execution. Links open on a click.`
-        : `Fonti primarie ricontrollate il ${AGENTIC_WORKFLOWS.REVIEW_DATE}. Tracce e rubriche sono scenari editoriali originali, non misure validate di esecuzione pratica. Link aperti su click.`;
+      if (agentsNote) agentsNote.textContent = labText(
+        "Letture per capire come un agente usa gli strumenti entro il mandato ricevuto, quando interviene una persona e come le tracce di esecuzione aiutano a diagnosticare gli errori.",
+        "Readings on how agents use tools within their assigned scope, when people need to step in, and how execution traces help diagnose errors."
+      );
       if (agentsList) agentsList.innerHTML = AGENTIC_WORKFLOWS.SOURCES.map(source => `<article class="bibliography-item"><div class="bibliography-source">${escapeHtml(source.id)}</div><h3>${escapeHtml(source.title)}</h3><p>${escapeHtml(source.note[isEnglish() ? 1 : 0])}</p><a class="bibliography-link" href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${isEnglish() ? "Open source ↗" : "Apri la fonte ↗"}</a></article>`).join("");
       $("labSourcesTitle").textContent = labText("Laboratorio: stato, ripresa e limiti", "Lab: state, recovery, and limitations");
+      $("labSourcesNote").textContent = labText(
+        "Riferimenti per verificare un riepilogo sui dati di partenza e riprendere un’attività dal punto salvato, rispettando i limiti del mandato.",
+        "Resources for checking a summary against its source data and resuming work from a checkpoint within the assigned scope."
+      );
       $("labSourcesList").innerHTML = LOCAL_LAB.SOURCES.map(source => `<article class="bibliography-item"><h3>${escapeHtml(source.title)}</h3><p>${escapeHtml(source.note[isEnglish() ? 1 : 0])}</p><a class="bibliography-link" href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${labText("Apri la fonte ↗", "Open source ↗")}</a></article>`).join("");
       $("completeSourcesTitle").textContent = labText("Completo: fondamenti e matrice", "Full test: foundations and matrix");
+      $("completeSourcesNote").textContent = labText(
+        "Materiali per leggere la matrice del test completo e capire come le domande e le prove coprono Fondamenti, AI moderne, Agenti e Harness.",
+        "Resources for reading the full test matrix and understanding how questions and exercises cover Foundations, Modern AI, Agents, and Harness."
+      );
       $("completeSourcesList").innerHTML = COMPLETE_ASSESSMENT.SOURCES.map(source => `<article class="bibliography-item"><h3>${escapeHtml(source.title)}</h3><p>${escapeHtml(source.note[isEnglish() ? 1 : 0])}</p><a class="bibliography-link" href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${labText("Apri la fonte ↗", "Open source ↗")}</a></article>`).join("");
       const harnessTitle = $("harnessSourcesTitle");
       const harnessNote = $("harnessSourcesNote");
       const harnessList = $("harnessSourcesList");
       if (harnessTitle) harnessTitle.textContent = isEnglish() ? "Harness: context, integration, and recovery" : "Harness: contesto, integrazioni e ripresa";
-      if (harnessNote) harnessNote.textContent = isEnglish()
-        ? `Primary sources reviewed on ${HARNESS_ASSESSMENT.REVIEW_DATE}. Scenarios assess understanding, not observed ability to build or administer a harness. Links open on a click.`
-        : `Fonti primarie ricontrollate il ${HARNESS_ASSESSMENT.REVIEW_DATE}. Gli scenari esplorano la comprensione, non l'abilità osservata di costruire o amministrare un harness. Link aperti su click.`;
+      if (harnessNote) harnessNote.textContent = labText(
+        "Letture su come l’ambiente che affianca il modello gestisce il contesto, collega strumenti e fonti e conserva lo stato per riprendere il lavoro.",
+        "Readings on how the system around a model manages context, connects tools and sources, and preserves state so work can resume."
+      );
       if (harnessList) harnessList.innerHTML = HARNESS_ASSESSMENT.SOURCES.map(source => `<article class="bibliography-item"><div class="bibliography-source">${escapeHtml(source.id)}</div><h3>${escapeHtml(source.title)}</h3><p>${escapeHtml(source.note[isEnglish() ? 1 : 0])}</p><a class="bibliography-link" href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${isEnglish() ? "Open source ↗" : "Apri la fonte ↗"}</a></article>`).join("");
     }
 
@@ -883,6 +895,7 @@ function cloneQuestionData(value) {
         autoplayPause: state.carouselPaused ? "Resume" : "Pause",
         start: "Start this test",
         bibliography: "Bibliography",
+        previousResults: "Previous results",
         output: "Output",
         profileDashboard: "Evidence overview",
         score: "Score",
@@ -928,6 +941,7 @@ function cloneQuestionData(value) {
         autoplayPause: state.carouselPaused ? "Riprendi" : "Pausa",
         start: "Inizia questo test",
         bibliography: "Bibliografia",
+        previousResults: "Risultati precedenti",
         output: "Output",
         profileDashboard: "Quadro delle evidenze",
         score: "Punteggio",
@@ -974,6 +988,7 @@ function cloneQuestionData(value) {
         ["#modeAutoplayBtn", staticText.autoplayPause],
         ["#introStartBtn", staticText.start],
         ["#introBibliographyBtn", staticText.bibliography],
+        ["#introHistoryBtn", staticText.previousResults],
         [".landing-metrics .metric-card:nth-child(1) span", staticText.output],
         [".landing-metrics .metric-card:nth-child(1) strong", staticText.profileDashboard],
         [".landing-metrics .metric-card:nth-child(2) span", staticText.score],
@@ -1047,6 +1062,7 @@ function cloneQuestionData(value) {
       renderModeSelector();
       renderQuestionDistribution();
       renderLabDraftNotice();
+      if ($("introHistory").hidden === false) setIntroHistoryOpen(true);
       if ($("assessmentView").classList.contains("active")) renderQuestion();
       if ($("dashboardView").classList.contains("active") && state.latestReport) renderDashboard(state.latestReport);
     }
@@ -1731,7 +1747,7 @@ function cloneQuestionData(value) {
         Expert: "High Literacy and low Fluency. The person knows concepts and risks, but needs to translate them into operational routines, templates, and daily use cases.",
         Champion: "High Literacy and high Fluency. The person can become an internal reference, mentor, or contributor to playbooks and practices."
       };
-      return descriptions[profile] || "";
+      return Object.hasOwn(descriptions, profile) ? descriptions[profile] : "";
     }
 
     function localizedProfileName(profile) {
@@ -1751,7 +1767,7 @@ function cloneQuestionData(value) {
         discernment: "Discernment",
         diligence: "Diligence"
       } : subLabels;
-      return labels[sub] || sub || "";
+      return Object.hasOwn(labels, sub) ? labels[sub] : (sub || "");
     }
 
     function sourceQuestionId(item) {
@@ -1771,11 +1787,6 @@ function cloneQuestionData(value) {
       return report?.calibration || { label: "—", text: isEnglish() ? "Not recorded in this report." : "Non registrata nel report." };
     }
 
-    function displayRecommendations(report, mode) {
-      const stored = report && report.recommendations;
-      return { profile: Array.isArray(stored?.profile) ? stored.profile.filter(item => typeof item === "string") : [], weakest: Array.isArray(stored?.weakest) ? stored.weakest.filter(item => item && typeof item === "object") : [], strongest: Array.isArray(stored?.strongest) ? stored.strongest.filter(item => item && typeof item === "object") : [] };
-    }
-
     function syncLanguageForReport(report) {
       const storedLanguage = readStoredLanguage();
       const reportLanguage = report && report.meta && report.meta.language;
@@ -1793,23 +1804,20 @@ function cloneQuestionData(value) {
       if (kind === "unknown") { renderUnknownDashboard(report); return; }
       if (kind === "evidence") { renderEvidenceDashboard(report); return; }
       if (kind === "learning") { renderLearningDashboard(report); return; }
-      report = { ...report, meta: report.meta || {}, answers: report.answers.filter(item => item && typeof item === "object"),
-        selfComparison: Array.isArray(report.selfComparison) ? report.selfComparison.filter(item => item && typeof item === "object") : [],
-        lowBehaviorItems: Array.isArray(report.lowBehaviorItems) ? report.lowBehaviorItems.filter(item => item && typeof item === "object") : undefined,
-        lowScenarioItems: Array.isArray(report.lowScenarioItems) ? report.lowScenarioItems.filter(item => item && typeof item === "object") : [],
-        lowTechnicalItems: Array.isArray(report.lowTechnicalItems) ? report.lowTechnicalItems.filter(item => item && typeof item === "object") : [] };
+      const meta = report.meta ?? {};
       const mode = getReportMode(report);
       const visibleMode = localizedMode(mode);
       const isCompleteMode = mode.id === DEFAULT_TEST_MODE_ID;
       const s = { ...report.score };
       const visibleMindsetLens = displayMindsetLens(report);
       const visibleCalibration = displayCalibration(report);
-      const visibleRecommendations = displayRecommendations(report, mode);
-      const metaTitle = [report.meta.name, report.meta.role, report.meta.area].filter(Boolean).join(" · ");
+      const visibleRecommendations = report.recommendations ?? {};
+      const metaTitle = [meta.name, meta.role, meta.area].filter(Boolean).join(" · ");
       const profileTitle = isCompleteMode ? report.profile : visibleMode.label;
       const profileKicker = isCompleteMode ? (isEnglish() ? "Main profile" : "Profilo principale") : (isEnglish() ? "Thematic profile" : "Profilo tematico");
+      const italianProfileDescription = Object.hasOwn(profileDescriptions, report.profile) ? profileDescriptions[report.profile] : "";
       const profileDescription = isCompleteMode
-        ? (isEnglish() ? englishProfileDescription(report.profile) : profileDescriptions[report.profile])
+        ? (isEnglish() ? englishProfileDescription(report.profile) : italianProfileDescription)
         : `${visibleMode.outputNote} ${isEnglish() ? "The score is calculated only on the" : "Il punteggio è calcolato solo sulle"} ${modeQuestionCount(report)} ${isEnglish() ? "answered questions." : "domande svolte."}`;
       const calibrationGapText = typeof report.calibrationGap === "number"
         ? (isEnglish() ? ` Declared/behavioral gap: <strong>${report.calibrationGap > 0 ? "+" : ""}${report.calibrationGap}</strong> points.` : ` Gap dichiarato/comportamentale: <strong>${report.calibrationGap > 0 ? "+" : ""}${report.calibrationGap}</strong> punti.`)
@@ -1817,7 +1825,7 @@ function cloneQuestionData(value) {
       const dashboardFootnote = isEnglish()
         ? "Sources, methodology references, and technical further reading are collected on the <strong>Bibliography</strong> page. The tool remains an internal draft: text tasks are scored with local heuristics and do not replace statistical validation, psychometric validation, or expert review."
         : "Fonti, riferimenti metodologici e approfondimenti tecnici sono raccolti nella pagina <strong>Bibliografia</strong>. Lo strumento resta una bozza interna: le prove testuali sono valutate con euristiche locali e non sostituiscono una validazione statistica, psicometrica o una review esperta.";
-      const chartBlock = isCompleteMode && [s.literacy, s.mindset, s.delegation, s.description, s.discernment, s.diligence].every(isScore) ? `
+      const chartBlock = isCompleteMode && [s.literacy, s.fluency, s.mindset, s.delegation, s.description, s.discernment, s.diligence].every(isScore) ? `
         <div class="grid-2">
           <section class="card chart-card">
             <div class="chart-title-row">
@@ -1864,7 +1872,7 @@ function cloneQuestionData(value) {
             <p class="kicker" style="color:#a5b4fc;">${escapeHtml(profileKicker)}</p>
             <div class="profile-title">${escapeHtml(profileTitle)}</div>
             <p>${escapeHtml(profileDescription)}</p>
-            <p class="small">${metaTitle ? escapeHtml(metaTitle) + " · " : ""}${formatDate(report.meta.completedAt)} · ${escapeHtml(visibleMode.label)} · ${isEnglish() ? "Form" : "Forma"} ${escapeHtml((report.meta && report.meta.formId) || (isEnglish() ? "not recorded" : "non registrata"))}</p>
+            <p class="small">${metaTitle ? escapeHtml(metaTitle) + " · " : ""}${escapeHtml(formatDate(meta.completedAt))} · ${escapeHtml(visibleMode.label)} · ${isEnglish() ? "Form" : "Forma"} ${escapeHtml(meta.formId || (isEnglish() ? "not recorded" : "non registrata"))}</p>
           </section>
           <section class="card">
             <h3>${isEnglish() ? "Mindset lens" : "Lente Mindset"}: ${escapeHtml(visibleMindsetLens.label)}</h3>
@@ -2252,10 +2260,13 @@ function cloneQuestionData(value) {
       if (!history.length) return "";
       const rows = history.map((report, index) => {
         const kind = ASSESSMENT_V3.reportKind(report);
-        const meta = report && typeof report.meta === "object" && report.meta || {};
-        const mode = meta.testMode || {};
+        const meta = report?.meta ?? {};
+        const mode = meta.testMode ?? {};
         const family = kind === "evidence" ? reportText("Quadro delle evidenze", "Evidence overview") : kind === "legacy" ? reportText("Valutazione precedente (2.x)", "Previous assessment (2.x)") : kind === "learning" ? reportText("Apprendimento", "Learning") : reportText("Formato non supportato", "Unsupported format");
-        return '<tr><td>' + escapeHtml(formatDate(meta.completedAt)) + '</td><td>' + escapeHtml(meta.name || '—') + '</td><td>' + escapeHtml(mode.label || mode.id || '—') + '</td><td>' + escapeHtml(meta.language || '—') + ' / ' + escapeHtml(meta.formId || '—') + '</td><td>' + escapeHtml(meta.assessmentVersion || '—') + '</td><td>' + escapeHtml(family) + '</td><td><button type="button" class="btn-ghost" data-history-index="' + index + '">' + reportText('Apri', 'Open') + '</button></td></tr>';
+        return `<tr><td>${escapeHtml(formatDate(meta.completedAt))}</td><td>${escapeHtml(reportField(meta.name, "—"))}</td>
+          <td>${escapeHtml(reportField(mode.label) || reportField(mode.id, "—"))}</td><td>${escapeHtml(reportField(meta.language, "—"))} / ${escapeHtml(reportField(meta.formId, "—"))}</td>
+          <td>${escapeHtml(reportField(meta.assessmentVersion, "—"))}</td><td>${escapeHtml(family)}</td>
+          <td><button type="button" class="btn-ghost" data-history-index="${index}">${reportText("Apri", "Open")}</button></td></tr>`;
       }).reverse().join('');
       return '<section class="card evidence-section"><h3>' + reportText('Storico locale', 'Local history') + '</h3><p>' + reportText('Report salvati separatamente per modalità, lingua, forma e versione. Nessuna media o confronto fra risultati incompatibili.', 'Reports are stored separately by mode, language, form, and version. No averaging or comparison of incompatible results.') + '</p><div class="history-scroll"><table class="history-table"><thead><tr><th>' + reportText('Data', 'Date') + '</th><th>' + reportText('Nome', 'Name') + '</th><th>' + reportText('Modalità', 'Mode') + '</th><th>' + reportText('Lingua / forma', 'Language / form') + '</th><th>App</th><th>' + reportText('Tipo di risultato', 'Result type') + '</th><th>' + reportText('Report', 'Report') + '</th></tr></thead><tbody>' + rows + '</tbody></table></div></section>';
     }
@@ -2264,12 +2275,16 @@ function cloneQuestionData(value) {
       return isScore(value) ? String(value) : "—";
     }
 
-    function bindDashboardEvents() {
-      document.querySelectorAll("#dashboard [data-history-index]").forEach(button => button.addEventListener("click", () => {
+    function bindHistoryRows(containerId) {
+      document.querySelectorAll(`#${containerId} [data-history-index]`).forEach(button => button.addEventListener("click", () => {
         const index = Number(button.dataset.historyIndex);
         const history = loadHistory();
         if (Number.isInteger(index) && index >= 0 && index < history.length) renderDashboard(history[index]);
       }));
+    }
+
+    function bindDashboardEvents() {
+      bindHistoryRows("dashboard");
       $("restartBtn").addEventListener("click", () => {
         if (confirmLeavingUnsavedReport()) resetToInitialPage(false);
       });
@@ -2447,10 +2462,22 @@ function cloneQuestionData(value) {
 
     function loadHistory() { return historySnapshot().records; }
 
+    function emptyHistoryMessage() {
+      return reportText("Nessun report nello storico locale.", "No report in local history.");
+    }
+
+    function setIntroHistoryOpen(open) {
+      const panel = $("introHistory");
+      $("introHistoryBtn").setAttribute("aria-expanded", String(open));
+      panel.hidden = !open;
+      panel.innerHTML = open ? (historyBlock() || `<p class="muted evidence-section" role="status">${emptyHistoryMessage()}</p>`) : "";
+      if (open) bindHistoryRows("introHistory");
+    }
+
     function loadLastReport() {
       const history = loadHistory();
       if (!history.length) {
-        showToast(isEnglish() ? "No report in local history." : "Nessun report nello storico locale.");
+        showToast(emptyHistoryMessage());
         return;
       }
       renderDashboard(history[history.length - 1]);
@@ -2469,13 +2496,12 @@ function cloneQuestionData(value) {
     }
 
     function reportFileName(report, ext) {
-      const meta = report?.meta || {};
-      const who = String(meta.name || "assessment").toLowerCase().replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "") || "assessment";
-      const completed = new Date(meta.completedAt);
-      const date = Number.isFinite(completed.getTime()) ? completed.toISOString().slice(0, 10) : "undated";
-      const form = meta.formId ? '-form-' + String(meta.formId).toLowerCase().replace(/[^a-z0-9-]/g, '') : '';
-      const mode = meta.testMode?.id ? '-' + String(meta.testMode.id).replace(/[^a-z0-9-]/gi, '') : '';
-      return 'ai-skill-' + who + '-' + date + mode + form + '.' + ext;
+      const meta = report?.meta ?? {};
+      const who = reportField(meta.name).toLowerCase().replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "") || "assessment";
+      const date = ASSESSMENT_V3.reportDate(meta.completedAt)?.toISOString().slice(0, 10) ?? "undated";
+      const form = reportField(meta.formId).toLowerCase().replace(/[^a-z0-9-]/g, "");
+      const mode = reportField(meta.testMode?.id).replace(/[^a-z0-9-]/gi, "");
+      return `ai-skill-${who}-${date}${mode ? `-${mode}` : ""}${form ? `-form-${form}` : ""}.${ext}`;
     }
 
     function csvCell(value) {
@@ -2508,15 +2534,16 @@ function cloneQuestionData(value) {
         .replace(/'/g, "&#039;");
     }
 
-    function formatDate(iso) {
-      if (!iso) return "—";
-      try {
-        return new Intl.DateTimeFormat(isEnglish() ? "en-US" : "it-IT", {
-          year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit"
-        }).format(new Date(iso));
-      } catch (error) {
-        return iso;
-      }
+    function reportField(value, fallback = "") {
+      return typeof value === "string" && value ? value : fallback;
+    }
+
+    function formatDate(value) {
+      const date = ASSESSMENT_V3.reportDate(value);
+      if (!date) return "—";
+      return new Intl.DateTimeFormat(isEnglish() ? "en-US" : "it-IT", {
+        year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit"
+      }).format(date);
     }
 
     bindLanguageSwitcher();
@@ -2534,6 +2561,7 @@ function cloneQuestionData(value) {
       openProfileStep();
     });
     $("introBibliographyBtn").addEventListener("click", () => showBibliography("introView"));
+    $("introHistoryBtn").addEventListener("click", () => setIntroHistoryOpen($("introHistory").hidden));
     $("profileBackBtn").addEventListener("click", () => showView("introView"));
     $("startBtn").addEventListener("click", startAssessment);
     $("loadLastBtn").addEventListener("click", loadLastReport);

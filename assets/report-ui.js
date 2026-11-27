@@ -5,7 +5,7 @@ function evidenceLabel(type) {
     { Q: "Knowledge and scenarios", D: "Self-reported practices", T: "Text with feedback", E: "Simulated exercises" }[type]);
 }
 function objectiveLabel(id) {
-  return ASSESSMENT_V3.OBJECTIVES[id] ? ASSESSMENT_V3.label(ASSESSMENT_V3.OBJECTIVES[id], currentLanguage()) : String(id);
+  return Object.hasOwn(ASSESSMENT_V3.OBJECTIVES, id) ? ASSESSMENT_V3.label(ASSESSMENT_V3.OBJECTIVES[id], currentLanguage()) : id;
 }
 function coverageLabel(status) {
   return reportText({ "not-assessed": "Non esplorata", limited: "Evidenza limitata", partial: "Copertura parziale", reached: "Copertura prevista raggiunta" }[status] || "Formato non riconosciuto",
@@ -26,8 +26,8 @@ function reportItem(item) {
     <p>${escapeHtml(item.answer || status)}</p>${item.answerText ? `<p class="answer-text">${escapeHtml(item.answerText)}</p>` : ""}
     ${item.objectiveAlignment === "supporting" ? `<p class="evidence-note">${reportText("Quesito di supporto: il credito individuale non entra nella percentuale o nella copertura dell'area.", "Supporting question: its individual credit does not enter the area percentage or coverage.")}</p>` : ""}
     ${item.feedback ? `<p>${escapeHtml(item.feedback)}</p>` : ""}
-    ${Array.isArray(item.selectedRationales) ? item.selectedRationales.filter(reason => typeof reason === "string").map(reason => `<p><strong>${reportText("La tua scelta", "Your choice")}:</strong> ${escapeHtml(reason)}</p>`).join("") : ""}
-    ${Array.isArray(item.sourceRefs) ? `<p class="small">${item.sourceRefs.map(id => {
+    ${(item.selectedRationales ?? []).map(reason => `<p><strong>${reportText("La tua scelta", "Your choice")}:</strong> ${escapeHtml(reason)}</p>`).join("")}
+    ${item.sourceRefs ? `<p class="small">${item.sourceRefs.map(id => {
       const source = [...MODERN_AI.SOURCES, ...AGENTIC_WORKFLOWS.SOURCES, ...HARNESS_ASSESSMENT.SOURCES, ...COMPLETE_ASSESSMENT.SOURCES].find(source => source.id === id);
       return source ? `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.title)}</a>` : escapeHtml(id);
     }).join(" · ")}</p>` : ""}
@@ -63,7 +63,7 @@ function renderEvidenceDashboard(report) {
   const self = meta.selfAssessment || {};
   const selfLabels = { overall: reportText("Stima complessiva", "Overall estimate"), literacy: "Literacy", fluency: "Fluency", mindset: "Mindset" };
   const selfEntries = Object.entries(selfLabels).filter(([key]) => typeof self[key] === "number" && Number.isFinite(self[key]));
-  const nextSteps = Array.isArray(results.nextSteps) ? results.nextSteps.filter(step => step && typeof step.objectiveId === "string" && typeof step.text === "string") : [];
+  const nextSteps = results.nextSteps ?? [];
   const counts = ["Q", "D", "T", "E"].map(type => `<article class="metric-card"><span>${evidenceLabel(type)}</span><strong>${coverage.byEvidence[type].proposed}</strong><span>${coverage.byEvidence[type].valid} ${reportText("risposte valide", "valid responses")}</span></article>`).join("");
   $("dashboard").innerHTML = `${reportActions()}<section class="card evidence-intro"><p class="kicker">${reportText("Risultati dell'assessment", "Assessment results")}</p>
     <h2>${reportText("Quadro delle evidenze", "Evidence overview")}</h2>
@@ -93,7 +93,9 @@ function renderEvidenceDashboard(report) {
 function renderUnknownDashboard(report) {
   $("dashboard").innerHTML = `${reportActions()}<section class="card"><h2>${reportText("Formato del report non supportato", "Unsupported report format")}</h2>
     <p>${reportText("Questo record è incompleto, non riconosciuto o usa una versione diversa. I dati originali restano disponibili senza ricalcolo: puoi consultarli ed esportarli.", "This record is incomplete, unrecognized, or uses a different version. Original data remains available without recalculation: you can inspect and export it.")}</p>
-    <details><summary>${reportText("Dati originali", "Original data")}</summary><pre class="raw-report">${escapeHtml(JSON.stringify(report, null, 2))}</pre></details></section>${historyBlock()}`;
+    <details><summary>${reportText("Dati originali", "Original data")}</summary><pre class="raw-report" id="rawReport"></pre></details></section>${historyBlock()}`;
+  $("rawReport").textContent = JSON.stringify(report, null, 2);
+  $("progressFill").style.width = "100%";
   bindDashboardEvents();
   showView("dashboardView");
 }

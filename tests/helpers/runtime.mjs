@@ -20,9 +20,11 @@ export function runtime({ assetReader = read, storage = new Map(), locks = { req
   const context = vm.createContext({ console: { warn() {} }, window, crypto: webcrypto, navigator: { language: "it", languages: ["it"], locks },
     localStorage: { getItem: key => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, value), removeItem: key => storage.delete(key) },
     document: { getElementById: node, querySelector() { return null; }, querySelectorAll(selector) {
-      if (selector !== "#dashboard [data-history-index]") return [];
-      return [...node("dashboard").innerHTML.matchAll(/data-history-index="(\d+)"/g)].map(match => {
-        const button = node(`history-${match[1]}`); button.dataset.historyIndex = match[1]; return button;
+      const historyContainer = /^#(dashboard|introHistory) \[data-history-index\]$/.exec(selector)?.[1];
+      if (!historyContainer) return [];
+      const prefix = historyContainer === "dashboard" ? "history" : "intro-history";
+      return [...node(historyContainer).innerHTML.matchAll(/data-history-index="(\d+)"/g)].map(match => {
+        const button = node(`${prefix}-${match[1]}`); button.dataset.historyIndex = match[1]; return button;
       });
     }, documentElement: {} } });
   const scripts = [...assetReader("ai_skill_test.html").matchAll(/<script src="(assets\/[^?]+)\?[^\"]+"><\/script>/g)].map(match => match[1]);

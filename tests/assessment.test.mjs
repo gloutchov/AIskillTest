@@ -38,7 +38,7 @@ test("declarations, initial estimates, and keyword lists do not increase questio
 
 test("Agents minimum cannot be hidden by other maximum answers", () => {
   const r = runtime();
-  const report = r.run(`(() => { const qs=questionsForMode(buildQuestionForm('A'),getModeById('complete'));return core.evaluate(qs,Object.fromEntries(qs.map(q=>[q.id,choose(q,q.section!=='AI Agents')])),meta,'now'); })()`);
+  const report = r.run(`(() => { const qs=questionsForMode(buildQuestionForm('A'),getModeById('complete'));return core.evaluate(qs,Object.fromEntries(qs.map(q=>[q.id,choose(q,q.section!=='AI Agents')])),meta,'2026-11-25T12:00:00Z'); })()`);
   assert.equal(report.results.knowledgeByArea.A.value, 0);
   assert.equal(report.results.knowledgeByArea.A.status, "reached");
   assert.equal(report.profile, "Quadro delle evidenze");
@@ -130,6 +130,72 @@ test("mixed, malformed, unknown and future records remain readable without block
   assert.equal(r.storage.get('aiSkillAssessmentHistory'),raw);
   assert.equal(r.context.core.reportKind(future),'unknown');assert.equal(r.context.core.reportKind({...modern,results:{...modern.results,declaredContrasts:null}}),'unknown');
   r.context.record={...legacy(),meta:{assessmentVersion:'3.1.0'}};assert.equal(r.run('core.reportKind(record)'),'unknown');
+});
+
+test("malformed history rows retain their original data and permit navigation, export and a new save", () => {
+  const r = runtime();
+  const incomplete = legacy();
+  incomplete.meta.completedAt = "2026-02-30";
+  incomplete.meta.name = { toString: null, label: "<strong>Synthetic name</strong>" };
+  incomplete.meta.formId = {};
+  incomplete.meta.testMode.id = [];
+  const saved = plain(r.run("full()"));
+  const historyKey = "aiSkillAssessmentHistory";
+  const before = JSON.stringify([legacy(), saved, incomplete, null]);
+  r.storage.set(historyKey, before);
+  r.run("downloadBlob=(content,name,type)=>{globalThis.download={content,name,type}}; loadLastReport()");
+
+  assert.equal(r.node("rawReport").textContent, "null");
+  for (const index of [2, 0, 1, 2]) {
+    r.node(`history-${index}`).events.click();
+    assert.equal(r.storage.get(historyKey), before);
+  }
+  assert.equal(r.node("rawReport").textContent, JSON.stringify(incomplete, null, 2));
+  assert.match(r.node("dashboard").innerHTML, /Formato non supportato/);
+  assert.doesNotMatch(r.node("dashboard").innerHTML, /<strong>Synthetic name<\/strong>/);
+  r.node("exportJsonBtn").events.click();
+  assert.equal(r.context.download.name, "ai-skill-assessment-undated.json");
+  assert.deepEqual(JSON.parse(r.context.download.content), incomplete);
+  r.node("exportCsvBtn").events.click();
+  assert.equal(r.context.download.name, "ai-skill-assessment-undated.csv");
+  assert.match(r.context.download.content, /meta,meta\.completedAt,2026-02-30/);
+  assert.equal(r.storage.get(historyKey), before);
+
+  assert.equal(r.run("saveReport(full(false))"), true);
+  assert.deepEqual(JSON.parse(r.storage.get(historyKey)).slice(0, -1), JSON.parse(before));
+  r.run("loadLastReport()");
+  assert.match(r.node("dashboard").innerHTML, /Quadro delle evidenze/);
+  r.node("history-2").events.click();
+  assert.equal(r.node("rawReport").textContent, JSON.stringify(incomplete, null, 2));
+});
+
+test("invalid fields in historical result views fall back to the original record", () => {
+  const r = runtime();
+  const schema3 = JSON.parse(read("tests/fixtures/m17-reports.json")).reports["declared-high-questions-low"];
+  const current = plain(r.run("full()"));
+  const cases = [
+    [legacy(), report => { report.meta.completedAt = "2026-02-30"; }],
+    [legacy(), report => { report.selfComparison = [{ declared: 70, measured: 65, gap: "5" }]; }],
+    [legacy(), report => { report.recommendations.weakest = [{ area: "Literacy", score: "51", action: "Review" }]; }],
+    [legacy(), report => { report.lowScenarioItems = [{ score: [], section: "Test" }]; }],
+    [legacy(), report => { report.score.literacy = "90"; }],
+    [schema3, report => { report.results.formativeFeedback[0].checklist = "Checklist"; }],
+    [schema3, report => { report.results.declaredPractices[0].declaredValue = []; }],
+    [schema3, report => { report.answers.find(answer => answer.evidenceType === "Q").selectionReview = { omitted: "Choice" }; }],
+    [schema3, report => { report.results.knowledgeByArea.F.validCount = "12"; }],
+    [current, report => { report.results.simulatedSummary.completedCases = "2"; }],
+    [current, report => { report.results.simulatedCases[0].initialState.draftTotal = {}; }],
+    [current, report => { report.results.simulatedCases[1].effects.disclosed = "false"; }]
+  ];
+  for (const [valid, damage] of cases) {
+    const record = structuredClone(valid);
+    damage(record);
+    r.context.record = record;
+    assert.equal(r.run("core.reportKind(record)"), "unknown");
+    r.run("renderDashboard(record)");
+    assert.match(r.node("dashboard").innerHTML, /Formato del report non supportato|Unsupported report format/);
+    assert.equal(r.node("rawReport").textContent, JSON.stringify(record, null, 2));
+  }
 });
 
 test("corrupt or non-array history is preserved; failed storage does not lose the current report", () => {
@@ -230,11 +296,11 @@ test("auto-advance remains reversible and requires explicit Next for multi/text"
   assert.equal(r.run("isAutoAdvanceQuestion(bank.find(q=>q.type==='multi'))"),false);assert.equal(r.run("isAutoAdvanceQuestion(bank.find(q=>q.type==='text'))"),false);
 });
 
-test("HTML loads local classic assets with consistent 3.5.3 cache keys", () => {
+test("HTML loads local classic assets with consistent 3.5.4 cache keys", () => {
   const html=read('ai_skill_test.html');const scripts=[...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map(m=>m[1]);
   assert.deepEqual(scripts.map(s=>s.split('?')[0]),['assets/questions.js','assets/i18n.js','assets/learning.js','assets/modern-ai.js','assets/agentic-workflows.js','assets/harness.js','assets/operational-lab.js','assets/complete-assessment.js','assets/lab-ui.js','assets/assessment.js','assets/report-ui.js','assets/app.js']);
-  for(const src of scripts){assert.ok(src.endsWith('?v=3.5.3'));assert.ok(fs.existsSync(path.join(root,src.split('?')[0])));}
-  assert.match(html,/Versione 3\.5\.3/);assert.doesNotMatch(html,/Champion|Expert|Indice 0-100/);
+  for(const src of scripts){assert.ok(src.endsWith('?v=3.5.4'));assert.ok(fs.existsSync(path.join(root,src.split('?')[0])));}
+  assert.match(html,/Versione 3\.5\.4/);assert.doesNotMatch(html,/Champion|Expert|Indice 0-100/);
 });
 
 test("browser startup bindings, optional empty data and completion execute with a minimal DOM adapter", () => {
@@ -251,12 +317,46 @@ test("history Open buttons select the original record without resaving it", () =
   assert.deepEqual(plain(r.run('state.latestReport')),old);assert.equal(r.storage.get('aiSkillAssessmentHistory'),raw);
 });
 
+test("Previous results opens the local history directly from the landing page", () => {
+  const html = read("ai_skill_test.html");
+  assert.match(html, /id="introBibliographyBtn"[^<]*<\/button>\s*<button[^>]+id="introHistoryBtn"[^>]+aria-expanded="false"[^>]+aria-controls="introHistory"/);
+  assert.match(html, /<div id="introHistory" hidden>/);
+  const r = runtime();
+  const panel = r.node("introHistory");
+  panel.hidden = true;
+  const button = r.node("introHistoryBtn");
+  const attributes = new Map();
+  button.setAttribute = (name, value) => attributes.set(name, value);
+  r.start();
+
+  button.events.click();
+  assert.equal(panel.hidden, false);
+  assert.equal(attributes.get("aria-expanded"), "true");
+  assert.match(panel.innerHTML, /Nessun report nello storico locale/);
+  r.run("setLanguage('en')");
+  assert.match(panel.innerHTML, /No report in local history/);
+  button.events.click();
+  assert.equal(panel.hidden, true);
+  assert.equal(attributes.get("aria-expanded"), "false");
+
+  const old = legacy();
+  const raw = JSON.stringify([old, null]);
+  r.storage.set("aiSkillAssessmentHistory", raw);
+  button.events.click();
+  assert.match(panel.innerHTML, /Local history/);
+  assert.ok(panel.innerHTML.indexOf('data-history-index="1"') < panel.innerHTML.indexOf('data-history-index="0"'));
+  r.node("intro-history-0").events.click();
+  assert.deepEqual(plain(r.run("state.latestReport")), old);
+  assert.equal(panel.hidden, true);
+  assert.equal(r.storage.get("aiSkillAssessmentHistory"), raw);
+});
+
 test("maintainer fixtures remain immutable and expose the intended contrasting evidence", () => {
   const fixtures=JSON.parse(read('tests/fixtures/m17-reports.json')).reports;
   assert.equal(fixtures['knowledge-high-declared-low'].results.knowledgeByArea.F.value,100);
   assert.equal(fixtures['declared-high-questions-low'].results.knowledgeByArea.A.value,0);
   assert.equal(fixtures['agents-gap'].results.knowledgeByArea.A.value,0);
-  const r=runtime();for(const sample of Object.values(fixtures)){const original=JSON.stringify(sample);r.context.sample=sample;r.run('renderDashboard(sample)');assert.equal(JSON.stringify(sample),original);}
+  const r=runtime();for(const [name,sample] of Object.entries(fixtures)){const original=JSON.stringify(sample);r.context.sample=sample;assert.equal(r.run('core.reportKind(sample)'),name==='legacy-2x'?'legacy':'evidence');r.run('renderDashboard(sample)');assert.equal(JSON.stringify(sample),original);}
 });
 
 test("Modern AI keeps the fixed ten-slot objective matrix in all six forms", () => {
@@ -312,11 +412,11 @@ test("Modern AI starts, returns to previous answers and saves complete bilingual
     r.run(`state.answers[questions[0].id]=choose(questions[0]);scheduleAutoAdvance(questions[0],0,state.answers[questions[0].id])`);
     assert.equal(r.timers.size,1);r.timers.values().next().value();assert.equal(r.run('state.index'),1);r.run('goPrev()');assert.equal(r.run('state.index'),0);assert.equal(r.run('state.answers[questions[0].id]===choose(questions[0])'),true);
     r.run(`state.answers=Object.fromEntries(questions.map(q=>[q.id,choose(q)]));finishAssessment()`);
-    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.3');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.testMode.id,'modern-ai');
+    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.4');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.testMode.id,'modern-ai');
     assert.deepEqual(JSON.parse(r.storage.get('aiSkillAssessmentHistory'))[0],report);
     for(const item of report.answers){assert.ok(item.question.includes('\n'));assert.equal(item.selectedRationales.length,1);assert.ok(item.sourceRefs.length>0);assert.ok(r.node('dashboard').innerHTML.includes(item.selectedRationales[0].replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;')));}
     r.run('downloadBlob=(content,name,type)=>{globalThis.download={content,name,type}};exportJson(state.latestReport)');assert.deepEqual(JSON.parse(r.context.download.content),report);
-    const rows=plain(r.context.core.csvRows(report));assert.ok(rows.some(row=>row[1]==='answers.0.selectedRationales.0'));assert.ok(rows.some(row=>row[1]==='answers.0.sourceRefs.0'));assert.equal(rows.find(row=>row[1]==='meta.assessmentVersion')[2],'3.5.3');
+    const rows=plain(r.context.core.csvRows(report));assert.ok(rows.some(row=>row[1]==='answers.0.selectedRationales.0'));assert.ok(rows.some(row=>row[1]==='answers.0.sourceRefs.0'));assert.equal(rows.find(row=>row[1]==='meta.assessmentVersion')[2],'3.5.4');
     const original=r.storage.get('aiSkillAssessmentHistory');r.run('loadLastReport()');assert.equal(r.storage.get('aiSkillAssessmentHistory'),original);
   }
 });
@@ -334,7 +434,12 @@ test("modern bibliography is bilingual, primary-source based and contains explic
   const r=runtime();
   const sources=plain(r.run('MODERN_AI.SOURCES'));assert.equal(sources.length,12);assert.equal(new Set(sources.map(s=>s.id)).size,12);
   for(const source of sources){const url=new URL(source.url);assert.equal(url.protocol,'https:');assert.ok(['developers.openai.com','developers.google.com','aistudio.google.com','aifluencyframework.org'].includes(url.hostname));}
-  for(const language of ['it','en']){r.context.language=language;r.run('state.language=language;applyBibliographyText()');assert.equal((r.node('modernAiSourcesList').innerHTML.match(/<a /g)||[]).length,12);assert.match(r.node('modernAiSourcesNote').textContent,/2026-11-25/);}
+  for (const [language, description] of [["it", /testo, immagini e audio/], ["en", /text, images, and audio/]]) {
+    r.context.language = language;
+    r.run("state.language=language;applyBibliographyText()");
+    assert.equal((r.node("modernAiSourcesList").innerHTML.match(/<a /g) || []).length, 12);
+    assert.match(r.node("modernAiSourcesNote").textContent, description);
+  }
   assert.doesNotMatch(read('assets/modern-ai.js'),/\bfetch\s*\(|XMLHttpRequest|sendBeacon|<iframe|<img|<audio|<video/);
 });
 
@@ -343,6 +448,8 @@ test("full-test and lab source links use the same presentation as the other bibl
   for (const [language, label] of [["it", "Apri la fonte ↗"], ["en", "Open source ↗"]]) {
     r.context.language = language;
     r.run("state.language=language;applyBibliographyText()");
+    assert.match(r.node("completeSourcesNote").textContent, language === "it" ? /matrice del test completo/ : /full test matrix/);
+    assert.match(r.node("labSourcesNote").textContent, language === "it" ? /dal punto salvato/ : /from a checkpoint/);
     for (const [id, count] of [["completeSourcesList", 4], ["labSourcesList", 2]]) {
       const html = r.node(id).innerHTML;
       const links = [...html.matchAll(/<a class="bibliography-link" href="https:\/\/[^\"]+" target="_blank" rel="noopener noreferrer">([^<]+)<\/a>/g)];
@@ -387,15 +494,19 @@ test("Agents reports distinguish reached coverage, partial credit, absent execut
     assert.equal(report.score,undefined);assert.equal(report.results.simulatedSummary.value,null);assert.equal(report.criticalFindings.length,0);
     assert.equal(report.results.nextSteps?.length||0,score===5?0:5);
   }
-  const data=r.run(`(()=>{const qs=questionsForMode(buildQuestionForm('A'),getModeById('agents'));const m={...meta,testMode:{id:'agents',questionCount:10}};const answers=Object.fromEntries(qs.map(q=>[q.id,choose(q)]));const wrong={...answers,[qs[0].id]:choose(qs[0],false)};delete answers[qs[6].id];return {missing:core.evaluate(qs,answers,m,'now'),wrong:core.evaluate(qs,wrong,m,'now')};})()`);
+  const data=r.run(`(()=>{const qs=questionsForMode(buildQuestionForm('A'),getModeById('agents'));const m={...meta,testMode:{id:'agents',questionCount:10}};const answers=Object.fromEntries(qs.map(q=>[q.id,choose(q)]));const wrong={...answers,[qs[0].id]:choose(qs[0],false)};delete answers[qs[6].id];const date='2026-11-25T12:00:00Z';return {missing:core.evaluate(qs,answers,m,date),wrong:core.evaluate(qs,wrong,m,date)};})()`);
   assert.equal(data.wrong.results.knowledgeByArea.A.value,90);assert.equal(data.wrong.results.nextSteps.length,1);assert.equal(data.wrong.results.nextSteps[0].objectiveId,'A01');
   assert.equal(data.missing.results.knowledgeByArea.A.status,'partial');assert.equal(data.missing.results.knowledgeByArea.A.band,null);assert.equal(data.missing.results.nextSteps,undefined);
   r.context.sample=plain(data.wrong);
-  r.run(`sample.results.nextSteps=[null,{},'unknown',{objectiveId:'A01',text:'<script>unsafe</script>'}]`);
-  const original=JSON.stringify(r.context.sample);
+  r.run(`sample.results.nextSteps[0].text='<strong>Original note</strong>'`);
   r.run('renderDashboard(sample)');
-  assert.match(r.node('dashboard').innerHTML,/&lt;script&gt;unsafe&lt;\/script&gt;/);assert.doesNotMatch(r.node('dashboard').innerHTML,/<script>unsafe/);
-  assert.equal(JSON.stringify(r.context.sample),original);
+  assert.match(r.node('dashboard').innerHTML,/&lt;strong&gt;Original note&lt;\/strong&gt;/);
+  assert.doesNotMatch(r.node('dashboard').innerHTML,/<strong>Original note/);
+  r.run(`sample.results.nextSteps.push(null)`);
+  const original=JSON.stringify(r.context.sample, null, 2);
+  r.run('renderDashboard(sample)');
+  assert.match(r.node('dashboard').innerHTML,/Formato del report non supportato/);
+  assert.equal(r.node('rawReport').textContent,original);
 });
 
 test("Agents completion, navigation, frozen recommendations, history and exports work in all six forms", () => {
@@ -406,7 +517,7 @@ test("Agents completion, navigation, frozen recommendations, history and exports
     r.run(`state.answers[questions[0].id]=choose(questions[0],false);scheduleAutoAdvance(questions[0],0,state.answers[questions[0].id])`);
     assert.equal(r.timers.size,1);r.timers.values().next().value();assert.equal(r.run('state.index'),1);r.run('goPrev()');assert.equal(r.run('state.index'),0);assert.equal(r.run('state.answers[questions[0].id]===choose(questions[0],false)'),true);
     r.run(`state.answers=Object.fromEntries(questions.map(q=>[q.id,q.options.findIndex(o=>o.score===3)]));finishAssessment()`);
-    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.3');assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.testMode.id,'agents');assert.equal(report.meta.formId,form);assert.equal(report.meta.language,language);
+    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.4');assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.testMode.id,'agents');assert.equal(report.meta.formId,form);assert.equal(report.meta.language,language);
     assert.equal(report.results.nextSteps.length,5);assert.ok(report.answers.every(q=>q.selectedRationales.length===1&&q.question.includes('\n')&&typeof q.nextStep==='string'));
     assert.match(r.node('dashboard').innerHTML,language==='it'?/Per approfondire le scelte/:/Develop your decisions/);
     r.run('downloadBlob=(content,name,type)=>{globalThis.download={content,name,type}};exportJson(state.latestReport)');assert.deepEqual(JSON.parse(r.context.download.content),report);
@@ -418,7 +529,12 @@ test("Agents completion, navigation, frozen recommendations, history and exports
 test("Agents sources load as explicit bilingual links and the full test uses the explicit Agents slots", () => {
   const r=runtime();const sources=plain(r.run('AGENTIC_WORKFLOWS.SOURCES'));assert.equal(sources.length,8);assert.equal(new Set(sources.map(s=>s.id)).size,8);
   for(const source of sources){const url=new URL(source.url);assert.equal(url.protocol,'https:');assert.ok(['www.anthropic.com','developers.openai.com','modelcontextprotocol.io'].includes(url.hostname));}
-  for(const language of ['it','en']){r.context.language=language;r.run('state.language=language;applyBibliographyText()');assert.equal((r.node('agenticSourcesList').innerHTML.match(/<a /g)||[]).length,8);assert.match(r.node('agenticSourcesNote').textContent,/2026-11-25/);}
+  for (const [language, description] of [["it", /tracce di esecuzione/], ["en", /execution traces/]]) {
+    r.context.language = language;
+    r.run("state.language=language;applyBibliographyText()");
+    assert.equal((r.node("agenticSourcesList").innerHTML.match(/<a /g) || []).length, 8);
+    assert.match(r.node("agenticSourcesNote").textContent, description);
+  }
   const report=r.run('full()');assert.deepEqual(plain(report.answers.filter(q=>q.section==='AI Agents').map(q=>q.sourceId)),['C29','C30','C31','C32','C33','C34','C35','C36','C37','C38']);assert.equal(report.results.nextSteps,undefined);
   assert.equal(r.run(`bank.filter(q=>/^AG[0-9]+$/.test(q.id)).length`),15);
   assert.doesNotMatch(read('assets/agentic-workflows.js'),/\bfetch\s*\(|XMLHttpRequest|sendBeacon|<iframe|<img|<audio|<video/);
@@ -464,7 +580,7 @@ test("Harness starts, navigates and persists frozen bilingual report/export cont
     const first=r.run('questions[0].options[choose(questions[0])].rationale');assert.ok(!r.node('options').innerHTML.includes(first));
     r.run(`state.answers[questions[0].id]=choose(questions[0]);scheduleAutoAdvance(questions[0],0,state.answers[questions[0].id])`);assert.equal(r.timers.size,1);r.timers.values().next().value();assert.equal(r.run('state.index'),1);r.run('goPrev()');assert.equal(r.run('state.index'),0);assert.equal(r.run('state.answers[questions[0].id]===choose(questions[0])'),true);
     r.run(`state.answers=Object.fromEntries(questions.map(q=>[q.id,q.options.findIndex(o=>o.score===3)]));finishAssessment()`);
-    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.3');assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.testMode.id,'harness');assert.equal(report.meta.formId,form);assert.equal(report.meta.language,language);assert.equal(report.results.nextSteps.length,6);
+    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.4');assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.testMode.id,'harness');assert.equal(report.meta.formId,form);assert.equal(report.meta.language,language);assert.equal(report.results.nextSteps.length,6);
     assert.ok(report.answers.every(q=>q.question.includes('\n')&&q.selectedRationales.length===1&&typeof q.nextStep==='string'));
     r.run('downloadBlob=(content,name,type)=>{globalThis.download={content,name,type}};exportJson(state.latestReport)');assert.deepEqual(JSON.parse(r.context.download.content),report);
     const rows=plain(r.context.core.csvRows(report));for(const field of ['answers.0.nextStep','answers.0.selectedRationales.0','answers.0.sourceRefs.0','results.nextSteps.0.text'])assert.ok(rows.some(row=>row[1]===field));
@@ -478,6 +594,11 @@ test("Harness discovery, local rotation and bibliography preserve the prior path
   r.run(`writeFormCycle('it','agents',{remaining:['B'],last:'A'});writeFormCycle('it','harness',{remaining:['C'],last:'B'});selectNextForm('harness','it')`);assert.equal(r.run(`selectNextForm('agents','it')`),'B');
   const sources=plain(r.run('HARNESS_ASSESSMENT.SOURCES'));assert.equal(sources.length,9);assert.equal(new Set(sources.map(s=>s.id)).size,9);
   for(const source of sources){const url=new URL(source.url);assert.equal(url.protocol,'https:');assert.ok(['www.anthropic.com','developers.openai.com','modelcontextprotocol.io','agentskills.io','agents.md'].includes(url.hostname));}
-  for(const language of ['it','en']){r.context.language=language;r.run('state.language=language;applyBibliographyText()');assert.equal((r.node('harnessSourcesList').innerHTML.match(/<a /g)||[]).length,9);assert.match(r.node('harnessSourcesNote').textContent,/2026-11-25/);}
+  for (const [language, description] of [["it", /gestisce il contesto/], ["en", /manages context/]]) {
+    r.context.language = language;
+    r.run("state.language=language;applyBibliographyText()");
+    assert.equal((r.node("harnessSourcesList").innerHTML.match(/<a /g) || []).length, 9);
+    assert.match(r.node("harnessSourcesNote").textContent, description);
+  }
   assert.doesNotMatch(read('assets/harness.js'),/\bfetch\s*\(|XMLHttpRequest|sendBeacon|<iframe|<img|<audio|<video/);
 });

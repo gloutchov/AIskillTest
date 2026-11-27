@@ -4,7 +4,7 @@ Questo piano governa le prossime modifiche del progetto `AIskillTest`. Ogni mile
 
 Versione di partenza: `1.0.0`.
 
-Release di riferimento `v3.5.3`, con le milestone 0–25 completate. La M25 è stata approvata dal maintainer il `2026-11-26`. La prossima attività della roadmap di review è la M26.
+Release di riferimento `v3.5.4`, con le milestone 0–26 completate. Il maintainer ha approvato la M26 il `2026-11-27`. La prossima attività della roadmap di review è la M27.
 
 ## Regole di release
 
@@ -854,7 +854,7 @@ Base della review `8a98a8f`. I target sono indicativi e seguono l'ordine delle m
 | 23 | Recupero dei risultati e interruzione con storage indisponibile | `3.5.1` | Completata |
 | 24 | Bozze tra schede, compatibilità tra versioni e stile dei link bibliografici | `3.5.2` | Completata |
 | 25 | Export CSV sicuro e protezione degli export dal versionamento | `3.5.3` | Completata |
-| 26 | Report storici danneggiati e gestione sicura dei campi | `3.5.4` | Pianificata |
+| 26 | Report storici danneggiati e gestione sicura dei campi | `3.5.4` | Completata |
 | 27 | Navigazione da tastiera e distribuzione sulla landing | `3.5.5` | Pianificata |
 | 28 | Pulizia del codice orfano e archivio dei quesiti Agents originali | `3.5.6` | Pianificata |
 | 29 | Pubblicazione selettiva e protezioni GitHub Pages | `3.5.7` | Pianificata |
@@ -892,6 +892,11 @@ Base della review `8a98a8f`. I target sono indicativi e seguono l'ordine delle m
 - Branch `fix/safe-history-rendering`, target patch `3.5.4`.
 - Validare i dati usati dai renderer attuali e legacy, comprese checklist, date, punteggi, raccomandazioni e risultati del laboratorio. Inserire i dati archiviati come testo e offrire la vista del record originale se il formato è incompleto.
 - Verificare che un record danneggiato non blocchi consultazione, export o salvataggi successivi. Preservare i dati originali dei report `2.x` e degli schemi `3` e `4`.
+- I report con campi di visualizzazione non validi si aprono nella vista «Dati originali», con export JSON e CSV. La tabella mostra un trattino per i metadati assenti o inutilizzabili. Un record danneggiato in uno storico leggibile resta al suo posto quando si aggiunge un nuovo report.
+- Il pulsante «Risultati precedenti» accanto a «Bibliografia» nella pagina iniziale apre l’elenco dei report locali.
+- La bibliografia usa la stessa spaziatura per tutti i riquadri. Le descrizioni IT/EN presentano i temi delle fonti e la nota metodologica include gli esercizi simulati.
+- Esiti e procedura di verifica nella [checklist M26](docs/QA.md#m26--report-storici-danneggiati).
+- Il maintainer ha approvato la chiusura della M26 e la release `v3.5.4` il `2026-11-27`.
 
 ### M27 — Navigazione da tastiera e distribuzione sulla landing
 

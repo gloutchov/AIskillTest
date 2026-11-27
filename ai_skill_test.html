@@ -4,12 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AI Skill & Adoption Assessment</title>
-  <link rel="icon" type="image/png" href="aiskilltest_icon.png?v=3.5.3" />
-  <link rel="apple-touch-icon" href="aiskilltest_icon.png?v=3.5.3" />
+  <link rel="icon" type="image/png" href="aiskilltest_icon.png?v=3.5.4" />
+  <link rel="apple-touch-icon" href="aiskilltest_icon.png?v=3.5.4" />
   <meta name="theme-color" content="#0f172a" />
   <meta name="application-name" content="AI Skill Assessment" />
   <meta name="theme-color" content="#0f172a" />
-  <link rel="stylesheet" href="assets/styles.css?v=3.5.3" />
+  <link rel="stylesheet" href="assets/styles.css?v=3.5.4" />
 </head>
 <body>
   <main class="shell">
@@ -18,7 +18,7 @@
         <div>
           <div class="hero-meta">
             <p class="kicker">AI Skill & Adoption Assessment</p>
-            <span class="version-badge" id="versionBadge">Versione 3.5.3</span>
+            <span class="version-badge" id="versionBadge">Versione 3.5.4</span>
             <div class="language-switcher" aria-label="Lingua">
               <button type="button" class="language-btn" data-language="it" aria-pressed="false">IT</button>
               <button type="button" class="language-btn" data-language="en" aria-pressed="false">EN</button>
@@ -85,7 +85,9 @@
             <div class="actions">
               <button class="btn-primary" id="introStartBtn">Inizia questo test</button>
               <button class="btn-secondary" id="introBibliographyBtn">Bibliografia</button>
+              <button class="btn-secondary" id="introHistoryBtn" type="button" aria-expanded="false" aria-controls="introHistory">Risultati precedenti</button>
             </div>
+            <div id="introHistory" hidden></div>
           </section>
 
           <div class="grid-3 landing-metrics" aria-label="Sintesi del risultato finale">
@@ -355,26 +357,36 @@
 
           <section class="card bibliography-section">
             <h3>Nota metodologica</h3>
-            <p>Il modello 3.x separa conoscenze e scenari, pratiche dichiarate e testi formativi. Gli obiettivi pesano uguale nella propria area; le percentuali richiedono almeno 3 quesiti e 2 obiettivi. Le fasce editoriali richiedono almeno 6 quesiti e tutti gli obiettivi dell’area. Un elenco di parole chiave non riceve un punteggio di qualità. Nessun esercizio simulato è ancora presente. Le forme sono equivalenti per progetto, non psicometricamente; pesi e soglie non sono validati. I report 2.x restano leggibili con il modello originale e non sono confrontabili con 3.x.</p>
+            <p>Il report distingue i risultati dei quesiti, le pratiche dichiarate, i testi con feedback e gli esiti degli esercizi simulati. Gli obiettivi hanno lo stesso peso all’interno di ciascuna area. Le percentuali richiedono almeno tre quesiti validi e due obiettivi coperti. Le fasce richiedono almeno sei quesiti validi e la copertura di tutti gli obiettivi dell’area. I testi ricevono un feedback formativo. Pesi, soglie e forme sono scelte editoriali. Il test non è psicometricamente validato. I report 2.x si leggono secondo il loro modello originario.</p>
           </section>
 
-          <section class="card modern-sources" id="modernAiSources" aria-labelledby="modernAiSourcesTitle">
+          <section class="card bibliography-section modern-sources" id="modernAiSources" aria-labelledby="modernAiSourcesTitle">
             <h2 id="modernAiSourcesTitle">AI moderne: capacità e controlli</h2>
-            <p id="modernAiSourcesNote">Fonti primarie e limiti degli scenari; collegamenti aperti solo su richiesta.</p>
+            <p class="muted" id="modernAiSourcesNote">Riferimenti per scegliere gli strumenti in base al compito, lavorare con testo, immagini e audio e verificare risultati e fonti.</p>
             <div class="bibliography-grid" id="modernAiSourcesList"></div>
           </section>
 
-          <section class="card agentic-sources" id="agenticSources" aria-labelledby="agenticSourcesTitle">
+          <section class="card bibliography-section agentic-sources" id="agenticSources" aria-labelledby="agenticSourcesTitle">
             <h2 id="agenticSourcesTitle">AI Agents: processi, supervisione e diagnosi</h2>
-            <p id="agenticSourcesNote">Fonti primarie e limiti delle tracce; collegamenti aperti solo su richiesta.</p>
+            <p class="muted" id="agenticSourcesNote">Letture per capire come un agente usa gli strumenti entro il mandato ricevuto, quando interviene una persona e come le tracce di esecuzione aiutano a diagnosticare gli errori.</p>
             <div class="bibliography-grid" id="agenticSourcesList"></div>
           </section>
 
-          <section class="card" aria-labelledby="completeSourcesTitle"><h2 id="completeSourcesTitle">Completo: fondamenti e matrice</h2><div class="bibliography-grid" id="completeSourcesList"></div></section>
-          <section class="card" aria-labelledby="labSourcesTitle"><h2 id="labSourcesTitle">Laboratorio: stato, ripresa e limiti</h2><div class="bibliography-grid" id="labSourcesList"></div></section>
-          <section class="card harness-sources" id="harnessSources" aria-labelledby="harnessSourcesTitle">
+          <section class="card bibliography-section" aria-labelledby="completeSourcesTitle">
+            <h2 id="completeSourcesTitle">Completo: fondamenti e matrice</h2>
+            <p class="muted" id="completeSourcesNote">Materiali per leggere la matrice del test completo e capire come le domande e le prove coprono Fondamenti, AI moderne, Agenti e Harness.</p>
+            <div class="bibliography-grid" id="completeSourcesList"></div>
+          </section>
+
+          <section class="card bibliography-section" aria-labelledby="labSourcesTitle">
+            <h2 id="labSourcesTitle">Laboratorio: stato, ripresa e limiti</h2>
+            <p class="muted" id="labSourcesNote">Riferimenti per verificare un riepilogo sui dati di partenza e riprendere un’attività dal punto salvato, rispettando i limiti del mandato.</p>
+            <div class="bibliography-grid" id="labSourcesList"></div>
+          </section>
+
+          <section class="card bibliography-section harness-sources" id="harnessSources" aria-labelledby="harnessSourcesTitle">
             <h2 id="harnessSourcesTitle">Harness: contesto, integrazioni e ripresa</h2>
-            <p id="harnessSourcesNote">Fonti e limiti degli scenari; collegamenti aperti solo su richiesta.</p>
+            <p class="muted" id="harnessSourcesNote">Letture su come l’ambiente che affianca il modello gestisce il contesto, collega strumenti e fonti e conserva lo stato per riprendere il lavoro.</p>
             <div class="bibliography-grid" id="harnessSourcesList"></div>
           </section>
 
@@ -392,17 +404,17 @@
 
   <div class="toast" id="toast">Operazione completata</div>
 
-  <script src="assets/questions.js?v=3.5.3"></script>
-  <script src="assets/i18n.js?v=3.5.3"></script>
-  <script src="assets/learning.js?v=3.5.3"></script>
-  <script src="assets/modern-ai.js?v=3.5.3"></script>
-  <script src="assets/agentic-workflows.js?v=3.5.3"></script>
-  <script src="assets/harness.js?v=3.5.3"></script>
-  <script src="assets/operational-lab.js?v=3.5.3"></script>
-  <script src="assets/complete-assessment.js?v=3.5.3"></script>
-  <script src="assets/lab-ui.js?v=3.5.3"></script>
-  <script src="assets/assessment.js?v=3.5.3"></script>
-  <script src="assets/report-ui.js?v=3.5.3"></script>
-  <script src="assets/app.js?v=3.5.3"></script>
+  <script src="assets/questions.js?v=3.5.4"></script>
+  <script src="assets/i18n.js?v=3.5.4"></script>
+  <script src="assets/learning.js?v=3.5.4"></script>
+  <script src="assets/modern-ai.js?v=3.5.4"></script>
+  <script src="assets/agentic-workflows.js?v=3.5.4"></script>
+  <script src="assets/harness.js?v=3.5.4"></script>
+  <script src="assets/operational-lab.js?v=3.5.4"></script>
+  <script src="assets/complete-assessment.js?v=3.5.4"></script>
+  <script src="assets/lab-ui.js?v=3.5.4"></script>
+  <script src="assets/assessment.js?v=3.5.4"></script>
+  <script src="assets/report-ui.js?v=3.5.4"></script>
+  <script src="assets/app.js?v=3.5.4"></script>
 </body>
 </html>

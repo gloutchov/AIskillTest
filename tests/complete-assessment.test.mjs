@@ -33,7 +33,7 @@ test("full assessment implements every approved slot and area/evidence quota in 
     assert.equal(results.answers.filter(q=>q.questionKind==="scenario").length,30);
     assert.equal(results.results.simulatedSummary.value,100); assert.equal(results.results.simulatedCases.length,2);
     assert.deepEqual(units.slice(44).map(q=>q.sourceId),plain(r.run("LOCAL_LAB.IDS")));
-    assert.equal(results.meta.assessmentVersion,"3.5.3"); assert.equal(results.meta.formVersion,"1.8");
+    assert.equal(results.meta.assessmentVersion,"3.5.4"); assert.equal(results.meta.formVersion,"1.8");
     assert.equal(results.meta.questionBankVersion,"2026.11-m22"); assert.equal(results.meta.scoringVersion,"3.1.0");
     assert.equal(results.meta.reportSchemaVersion,4); assert.equal(r.run("core.reportKind(report())"),"evidence");
   }
@@ -189,12 +189,14 @@ test("drafts from 3.5.0 migrate with matching contents and future UI-only versio
     r.storage.set("aiSkillOperationalLabDraft",JSON.stringify({...draft,assessmentVersion:"3.5.0"}));
     r.run("resumeLabDraft()");
     assert.equal(r.run("answeredCount()"),1);
-    assert.equal(r.run("state.meta.assessmentVersion"),"3.5.3");
+    assert.equal(r.run("state.meta.assessmentVersion"),"3.5.4");
     assert.equal(r.storage.has("aiSkillOperationalLabDraft"),false);
     const record = JSON.parse(r.storage.get("aiSkillAssessmentDraft"));
-    record.draft.assessmentVersion = "3.5.4";
-    r.storage.set("aiSkillAssessmentDraft", JSON.stringify(record));
-    assert.equal(r.run("readLabDraft().status"), "compatible");
+    for (const version of ["3.5.3", "3.5.5"]) {
+      record.draft.assessmentVersion = version;
+      r.storage.set("aiSkillAssessmentDraft", JSON.stringify(record));
+      assert.equal(r.run("readLabDraft().status"), "compatible");
+    }
   }
 });
 

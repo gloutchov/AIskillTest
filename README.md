@@ -6,7 +6,7 @@ Questionario interattivo in italiano e inglese per esplorare conoscenze, giudizi
 
 L'assessment produce un quadro delle evidenze: conoscenze/scenari, pratiche dichiarate, testi con feedback ed esiti simulati restano separati, con copertura e limiti per area. È pensato come strumento diagnostico interno e migliorabile, non come test psicometrico validato.
 
-Versione corrente dell'app **`3.5.3`**, milestone 25 approvata dal maintainer il `2026-11-26`. Il tag di riferimento è `v3.5.3`.
+Versione corrente dell'app **`3.5.4`**, milestone 26 approvata dal maintainer il `2026-11-27`. Il tag di riferimento è `v3.5.4`.
 
 ### Nota sullo sviluppo
 
@@ -127,7 +127,7 @@ Riprendere in un'altra scheda assegna a quella scheda il salvataggio della bozza
 
 - JSON: contiene il record completo originale, con versioni di app/scoring/schema/blueprint, lingua, modalità, forma, evidenze, copertura e risposte.
 - CSV: formato UTF-8 `type,field,value` con metadati, risposte, evidenze e copertura. I testi che un foglio di calcolo potrebbe leggere come formule ricevono un apostrofo iniziale. I valori numerici rimangono numeri nel CSV. In Excel usare **Dati → Da testo/CSV** con separatore virgola. [Impostazioni di importazione](docs/SCORING.md#m25--export-csv).
-- Storico locale: conserva fino a 100 report apribili singolarmente. I report 2.x restano originali con avviso, senza ricalcolo, medie o confronti diretti con 3.x. Formati sconosciuti sono consultabili ed esportabili senza alterare i dati.
+- Storico locale: dalla pagina iniziale, **Risultati precedenti** accanto a **Bibliografia** apre l’elenco, con fino a 100 report consultabili singolarmente. I report 2.x mostrano punteggi e raccomandazioni originali, con un avviso sul modello di valutazione precedente. Un report incompleto, danneggiato o di formato sconosciuto si può consultare in **Dati originali** ed esportare in JSON o CSV. Gli altri report rimangono accessibili e lo storico leggibile accetta nuovi salvataggi.
 
 Gli export sono azioni manuali. Se il salvataggio fallisce, il report resta disponibile nella pagina per l'export. La pagina permette di riprovare quando l'errore è recuperabile. Puoi consultare lo storico e poi tornare al report pendente. Una bozza esistente resta disponibile per riprendere il completo o il laboratorio. Tornare ai percorsi richiede conferma. Alla chiusura o al ricaricamento la pagina richiede un avviso, che il browser può omettere. Se il browser non ha salvato alcuna bozza, l’export è il modo per conservare il report prima di chiudere.
 
@@ -147,8 +147,8 @@ L'icona a forma di casa accanto al selettore della lingua rimanda al sito princi
 
 ### Versioning
 
-- Versione app `3.5.3`.
-- Tag Git `v3.5.3`.
+- Versione app `3.5.4`.
+- Tag Git `v3.5.4`.
 - Banca domande: `2026.11-m22`.
 - Forma assessment: `1.8`.
 - Scoring: `3.1.0`; schema report `4`; blueprint `1.0.0`; casi/laboratorio `1.0.0`.
@@ -196,7 +196,7 @@ Interactive questionnaire in Italian and English exploring GenAI knowledge, judg
 
 The assessment produces an evidence overview: knowledge/scenarios, self-reported practices, text with feedback, and simulated outcomes remain separate, with area coverage and limits. It is intended as an internal diagnostic tool that can evolve over time, not as a psychometrically validated test.
 
-The current app version is **`3.5.3`**. The maintainer approved milestone 25 on `2026-11-26`. The reference tag is `v3.5.3`.
+The current app version is **`3.5.4`**. The maintainer approved milestone 26 on `2026-11-27`. The reference tag is `v3.5.4`.
 
 ### Development Note
 
@@ -317,7 +317,7 @@ Resuming in another tab gives that tab control over subsequent draft saves. Repl
 
 - JSON: includes the complete original record, with app/scoring/schema/blueprint versions, language, mode, form, evidence, coverage, and answers.
 - CSV: UTF-8 `type,field,value` with metadata, answers, evidence, and coverage. Text that a spreadsheet could read as a formula gets a leading apostrophe. Numeric values stay numeric in the CSV. In Excel use **Data → From Text/CSV** with a comma delimiter. [Import settings](docs/SCORING.md#m25--export-csv).
-- Local history: keeps up to 100 individually openable reports. Reports from 2.x remain original with a notice, without recalculation, averaging, or direct comparison with 3.x. Unknown formats can be inspected and exported without altering data.
+- Local history: select **Previous results** next to **Bibliography** on the home page to see up to 100 reports that you can open individually. Reports from 2.x display their original scores and recommendations with a notice about the previous assessment model. Incomplete, damaged, or unrecognized reports can be inspected under **Original data** and exported as JSON or CSV. Other reports remain accessible, and readable history accepts new saves.
 
 Exports are explicit user actions. If saving fails, the report stays available on the page for export. The page offers a retry for recoverable errors. You can open the history and return to the pending report. An existing draft remains available to resume the full test or lab. Returning to the paths requires confirmation. The page requests a warning before closing or reloading, which the browser can omit. If no draft was saved, export the report to keep it before closing.
 
@@ -337,8 +337,8 @@ The home icon next to the language selector links to the main website, [glaucosi
 
 ### Versioning
 
-- App version `3.5.3`.
-- Git tag `v3.5.3`.
+- App version `3.5.4`.
+- Git tag `v3.5.4`.
 - Question bank: `2026.11-m22`.
 - Assessment form: `1.8`.
 - Scoring: `3.1.0`; report schema `4`; blueprint `1.0.0`; cases/lab `1.0.0`.

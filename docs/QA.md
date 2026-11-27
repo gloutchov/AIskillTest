@@ -85,3 +85,21 @@ Patch `3.5.3`, approvata dal maintainer il `2026-11-26`. Usare dati sintetici. L
 71 test automatici superati. Power Query in Excel 16 ha importato due CSV sintetici, uno del test completo e uno storico 2.x, con tre colonne, campi multilinea integri e nessuna formula. Su un campione a righe singole Excel ha anche confermato zero e valori negativi numerici e celle protette testuali. Il parser CSV di Python ha confermato struttura e valori. L'importazione guidata legacy di Excel ha spezzato un campo multilinea del report completo.
 
 Edge headless ha completato quattro download da localhost, JSON e CSV con e senza nome facoltativo. I nomi corrispondono a data, modalità e forma registrate. Il JSON registra la versione `3.5.3`. `git check-ignore` ha verificato i nomi con e senza profilo e una copia con suffisso.
+
+## M26 — Report storici danneggiati
+
+Patch `3.5.4`, approvata dal maintainer il `2026-11-27`. Usare un profilo browser di prova e i report sintetici delle fixture.
+
+1. Nella pagina iniziale selezionare **Risultati precedenti** accanto a **Bibliografia**. Verificare che l’elenco mostri per primi i report più recenti e che una seconda pressione lo chiuda. Con report validi 2.x e schema 3 e 4 accanto a record incompleti, verificare in IT/EN che i report validi mostrino i risultati originali e che date non utilizzabili o metadati mancanti appaiano come trattini. In un profilo senza storico verificare il messaggio di elenco vuoto.
+2. Aprire un record con un campo danneggiato, per esempio una checklist che contiene una stringa invece di un elenco. Espandere **Dati originali** e controllare che eventuali tag nel testo compaiano come caratteri. Aprire la bibliografia e ritornare allo stesso report.
+3. Scaricare JSON e CSV dal record danneggiato. Confrontare i valori col record archiviato. Una data inutilizzabile compare come `undated` nel nome dei file. Aprire un altro report e ricaricare la pagina per verificare che la consultazione e l’export non modifichino lo storico.
+4. Completare Primi passi o un altro percorso. Verificare che compaia un nuovo record, che quelli precedenti siano ancora consultabili e che il nuovo export riporti `3.5.4`.
+5. Aprire la bibliografia in IT/EN su desktop e mobile. Verificare che lo spazio tra i riquadri da **Nota metodologica** in poi sia quello delle sezioni precedenti e che ogni gruppo di fonti abbia un’introduzione al tema. Controllare che la nota metodologica menzioni gli esercizi simulati.
+
+74 test automatici superati. La suite copre l’accesso allo storico dalla pagina iniziale, checklist, selezioni, date, punteggi, raccomandazioni, dettagli del laboratorio, compatibilità delle bozze, export e salvataggio con uno storico misto.
+
+Edge headless su localhost, con un profilo temporaneo, ha verificato la vista IT/EN dei report, il ritorno dalla bibliografia, i download JSON e CSV del record danneggiato e l’apertura dei dati originali anche a 390 px emulati. Il completamento di Primi passi ha aggiunto un report `3.5.4` preservando i sei record sintetici esistenti. Durante la prova la pagina non ha generato eccezioni o richieste HTTP(S) verso destinazioni esterne. La verifica su un dispositivo mobile fisico resta aperta.
+
+In Edge headless è stato verificato anche il nuovo accesso allo storico dalla pagina iniziale. L’elenco vuoto e quello popolato sono leggibili in IT/EN, i report validi e danneggiati si aprono dall’elenco e a 390 px emulati la tabella resta contenuta nella pagina.
+
+In bibliografia Edge headless ha rilevato 18 px tra i riquadri a 1280 e 390 px emulati. Verificati i due testi introduttivi preesistenti, le cinque nuove introduzioni in IT/EN, la nota metodologica e la presenza dei 35 link dei gruppi tematici.
