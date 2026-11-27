@@ -1404,4 +1404,8 @@
 .lab-storage-status { margin: 16px; padding: 14px; border: 2px solid #9a3412; background: #fff7ed; color: #7c2d12; border-radius: 8px; }
 :focus-visible { outline: 3px solid #1d4ed8; outline-offset: 3px; }
 @media (max-width: 640px) { #options fieldset { padding: 12px; } #options button { max-width: 100%; white-space: normal; } }
+@media (prefers-reduced-motion: reduce) {
+  .mode-track, .progress-fill { transition: none; }
+  #modeCarousel button { transition: none; transform: none; }
+}
 @media print { .lab-storage-status, .lab-draft-notice { display: none; } }

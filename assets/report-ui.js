@@ -87,7 +87,6 @@ function renderEvidenceDashboard(report) {
     ${historyBlock()}<p class="footer-note">${reportText("Risposte e report restano nel browser. Export solo su richiesta. Il test non è psicometricamente validato; fonti e limiti sono consultabili nella Bibliografia.", "Responses and reports stay in the browser. Export only on request. The test is not psychometrically validated; sources and limitations are available in the Bibliography.")}</p>`;
   $("progressFill").style.width = "100%";
   bindDashboardEvents();
-  showView("dashboardView");
 }
 
 function renderUnknownDashboard(report) {
@@ -97,5 +96,4 @@ function renderUnknownDashboard(report) {
   $("rawReport").textContent = JSON.stringify(report, null, 2);
   $("progressFill").style.width = "100%";
   bindDashboardEvents();
-  showView("dashboardView");
 }

@@ -103,3 +103,17 @@ Edge headless su localhost, con un profilo temporaneo, ha verificato la vista IT
 In Edge headless è stato verificato anche il nuovo accesso allo storico dalla pagina iniziale. L’elenco vuoto e quello popolato sono leggibili in IT/EN, i report validi e danneggiati si aprono dall’elenco e a 390 px emulati la tabella resta contenuta nella pagina.
 
 In bibliografia Edge headless ha rilevato 18 px tra i riquadri a 1280 e 390 px emulati. Verificati i due testi introduttivi preesistenti, le cinque nuove introduzioni in IT/EN, la nota metodologica e la presenza dei 35 link dei gruppi tematici.
+
+## M27 — Tastiera e distribuzione sulla landing
+
+Patch `3.5.5`, approvata dal maintainer il `2026-11-27`.
+
+1. Verificare dalla landing che la distribuzione del completo sia 12, 16, 12, 10 con totale 50. Cambiare percorso e lingua e verificare che il riepilogo segua entrambi.
+2. Raggiungere il carosello con `Tab`. Verificare che la rotazione si fermi e che il focus rimanga su frecce e indicatori dopo l’attivazione con `Invio` o `Spazio`. Usare `Riprendi` e ripetere con la preferenza di movimento ridotto.
+3. Avviare un test da tastiera. Verificare il focus sul titolo alla prima domanda, dopo l’avanzamento e tornando con `Indietro`. Modificare la scelta, aprire e chiudere i dettagli, selezionare risposte multiple e modificare un testo. Verificare che `Avanti` resti necessario per selezioni multiple e testi.
+4. Nel laboratorio confermare un’azione, verificare il focus sul messaggio di conferma, proseguire e tornare indietro. Invertire verifica e calcolo nel caso K1 e verificare il focus sulla domanda risultante.
+5. Completare un test, aprire la bibliografia e tornare ai risultati. Verificare il focus sulla vista dei risultati e poi sul pulsante che ha aperto la bibliografia. Ripetere dalla landing e dallo step dei dati. Ripetere in IT/EN, a larghezza desktop e mobile.
+
+77 test automatici superati. Le verifiche includono la presenza della distribuzione nell’HTML, le quote nelle due lingue, le transizioni di focus e la pausa del carosello. La suite verifica anche la ripresa delle bozze compatibili della `3.5.4`.
+
+Edge headless su localhost e profilo temporaneo ha verificato eventi di tastiera a 1280 px in italiano e a 390 px emulati in inglese. Verificati indicatori stabili al cambio di slide e lingua, pausa e ripresa del carosello, avvio e completamento di Primi passi, ritorno dalla bibliografia, selezioni multiple nel Practical Lab, testo nel completo e conferma, ritorno e inversione K1 nel laboratorio. Sulle unità a scelta multipla e a testo la prova ha impostato la posizione con dati sintetici, quindi ha usato i controlli della pagina. Con movimento ridotto, rotazione in pausa e transizioni del carosello e della barra di avanzamento a zero. La prova non ha prodotto eccezioni o richieste HTTP(S) esterne. Restano da provare un dispositivo mobile fisico e la lettura con uno screen reader.

@@ -189,7 +189,9 @@ function openLabDraft(saved, writable) {
   state.draftOwner = { slot: saved.slot, sessionId, revision: saved.revision || 0, readOnly: !writable };
   if (writable) writeLabDraft(state.draftOwner, snapshotLabDraft());
   else warnUncoordinatedStorage();
-  clearAutoAdvance(); showView("assessmentView"); renderQuestion(); $("questionTitle").focus();
+  clearAutoAdvance();
+  renderQuestion();
+  showView("assessmentView");
 }
 function labCommit(question, raw) {
   state.answers = LOCAL_LAB.change(state.answers, question, raw);

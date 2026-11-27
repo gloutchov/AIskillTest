@@ -6,7 +6,7 @@ Questionario interattivo in italiano e inglese per esplorare conoscenze, giudizi
 
 L'assessment produce un quadro delle evidenze: conoscenze/scenari, pratiche dichiarate, testi con feedback ed esiti simulati restano separati, con copertura e limiti per area. È pensato come strumento diagnostico interno e migliorabile, non come test psicometrico validato.
 
-Versione corrente dell'app **`3.5.4`**, milestone 26 approvata dal maintainer il `2026-11-27`. Il tag di riferimento è `v3.5.4`.
+Versione corrente dell'app **`3.5.5`**, milestone 27 approvata dal maintainer il `2026-11-27`. Il tag di riferimento è `v3.5.5`.
 
 ### Nota sullo sviluppo
 
@@ -54,9 +54,9 @@ Apri `ai_skill_test.html` in un browser moderno. Non servono build, dipendenze o
 
 La lingua iniziale segue le impostazioni del browser: italiano se il browser è in italiano; inglese se il browser è in inglese o in qualunque altra lingua. Il selettore `IT` / `EN` nella home consente il cambio manuale e salva la preferenza nel `localStorage`. Per evitare report misti, il cambio lingua va fatto prima di iniziare un assessment.
 
-La home mostra un carosello con test completo e percorsi tematici. Il carosello avanza automaticamente ogni 5 secondi e resta controllabile con frecce, indicatori, swipe touch e pulsante `Pausa`.
+La home mostra un carosello con test completo e percorsi tematici. Il riepilogo del completo indica 12 unità per Fondamenti, 16 per Uso operativo e multimodale, 12 per Agenti e 10 per Harness. Il carosello avanza ogni 5 secondi quando la rotazione è attiva. Frecce, indicatori e swipe touch permettono di scegliere il percorso. L’interazione da tastiera sospende la rotazione fino a `Riprendi`. Con la preferenza per movimento ridotto, il carosello parte in pausa e i passaggi di slide sono istantanei.
 
-Durante il test, le domande a scelta singola avanzano automaticamente dopo la selezione. Domande a scelta multipla e prove testuali richiedono il pulsante `Avanti`. Nel Laboratorio operativo occorrono sempre conferma esplicita dell’azione e Avanti. Il pulsante `Interrompi il test` annulla la sessione corrente, previa conferma, e torna alla home senza salvare un report.
+Durante il test, le domande a scelta singola avanzano automaticamente dopo la selezione. `Indietro` riapre la domanda con la risposta selezionata. Domande a scelta multipla e prove testuali richiedono `Avanti`. Nel Laboratorio operativo occorrono conferma esplicita dell’azione e `Avanti`. Quando cambia la domanda, il focus va al suo titolo. Il pulsante `Interrompi il test` annulla la sessione corrente, previa conferma, e torna alla home senza salvare un report.
 
 Nelle domande dichiarative, le alternative restano senza livelli numerici e sono presentate in ordine casuale per favorire la lettura del comportamento descritto. Il comando `Mostra i dettagli` chiarisce le differenze tra applicazione con supporto, autonomia caso per caso, metodo stabile e pratica verificata e condivisibile.
 
@@ -147,8 +147,8 @@ L'icona a forma di casa accanto al selettore della lingua rimanda al sito princi
 
 ### Versioning
 
-- Versione app `3.5.4`.
-- Tag Git `v3.5.4`.
+- Versione app `3.5.5`.
+- Tag Git `v3.5.5`.
 - Banca domande: `2026.11-m22`.
 - Forma assessment: `1.8`.
 - Scoring: `3.1.0`; schema report `4`; blueprint `1.0.0`; casi/laboratorio `1.0.0`.
@@ -196,7 +196,7 @@ Interactive questionnaire in Italian and English exploring GenAI knowledge, judg
 
 The assessment produces an evidence overview: knowledge/scenarios, self-reported practices, text with feedback, and simulated outcomes remain separate, with area coverage and limits. It is intended as an internal diagnostic tool that can evolve over time, not as a psychometrically validated test.
 
-The current app version is **`3.5.4`**. The maintainer approved milestone 26 on `2026-11-27`. The reference tag is `v3.5.4`.
+The current app version is **`3.5.5`**. The maintainer approved milestone 27 on `2026-11-27`. The reference tag is `v3.5.5`.
 
 ### Development Note
 
@@ -244,9 +244,9 @@ Open `ai_skill_test.html` in a modern browser. No build, dependency, or server i
 
 The initial language follows the browser settings: Italian if the browser is in Italian; English if the browser is in English or any other language. The `IT` / `EN` selector on the home page allows manual switching and stores the preference in browser `localStorage`. To avoid mixed-language reports, switch language before starting an assessment.
 
-The home page shows a carousel with the full test and thematic paths. The carousel advances automatically every 5 seconds and remains controllable through arrows, indicators, touch swipe, and the `Pause` button.
+The home page shows a carousel with the full test and thematic paths. The full-test breakdown lists 12 units for Foundations, 16 for Operational and multimodal use, 12 for Agents, and 10 for Harnesses. The carousel advances every 5 seconds while rotation is active. Use the arrows, indicators, or touch swipes to select a path. Keyboard interaction pauses rotation until you select `Resume`. With reduced motion enabled, the carousel starts paused and slide changes are immediate.
 
-During the test, single-choice questions advance automatically after selection. Multiple-choice questions and text tasks still require the `Next` button. Operational lab decisions always require explicit action confirmation followed by Next. The `Interrupt test` button cancels the current session after confirmation and returns to the home page without saving a report.
+During the test, single-choice questions advance automatically after selection. `Back` reopens the question with the selected answer. Multiple-choice questions and text tasks require `Next`. Operational lab decisions require explicit confirmation followed by `Next`. When the question changes, focus moves to its heading. The `Interrupt test` button cancels the current session after confirmation and returns to the home page without saving a report.
 
 In declarative questions, options remain unnumbered and are presented in random order to encourage reading the described behavior. The `Show details` control clarifies the differences between applying something with support, working independently case by case, using a stable method, and maintaining a verified, shareable practice.
 
@@ -337,8 +337,8 @@ The home icon next to the language selector links to the main website, [glaucosi
 
 ### Versioning
 
-- App version `3.5.4`.
-- Git tag `v3.5.4`.
+- App version `3.5.5`.
+- Git tag `v3.5.5`.
 - Question bank: `2026.11-m22`.
 - Assessment form: `1.8`.
 - Scoring: `3.1.0`; report schema `4`; blueprint `1.0.0`; cases/lab `1.0.0`.

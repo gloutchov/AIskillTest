@@ -82,7 +82,7 @@ function cloneQuestionData(value) {
       return selected;
     }
 
-    const APP_VERSION = "3.5.4";
+    const APP_VERSION = "3.5.5";
     const HISTORY_KEY = "aiSkillAssessmentHistory";
     const ASSESSMENT_EPOCH_KEY = "aiSkillAssessmentClearGeneration";
     const DEFAULT_TEST_MODE_ID = "complete";
@@ -583,6 +583,7 @@ function cloneQuestionData(value) {
       draftOwner: null,
       assessmentEpoch: undefined,
       finishing: false,
+      profileBackFocus: "introStartBtn",
       bibliographyBackView: "introView",
       autoAdvanceTimer: null,
       carouselTimer: null,
@@ -760,8 +761,13 @@ function cloneQuestionData(value) {
       }));
     }
 
-    function showView(id) {
-      ["introView", "profileView", "assessmentView", "dashboardView", "bibliographyView"].forEach(viewId => {
+    const viewFocusTargets = {
+      introView: "modeCarouselTitle", profileView: "profileTitle", assessmentView: "questionTitle",
+      dashboardView: "dashboardView", bibliographyView: "bibliographyTitle"
+    };
+
+    function showView(id, focusId = viewFocusTargets[id]) {
+      Object.keys(viewFocusTargets).forEach(viewId => {
         $(viewId).classList.toggle("active", viewId === id);
       });
       if (id === "introView") {
@@ -770,10 +776,11 @@ function cloneQuestionData(value) {
         clearModeCarouselTimer();
         if ($("introHistory").hidden === false) setIntroHistoryOpen(false);
       }
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      if (focusId) $(focusId).focus();
     }
 
-    function openProfileStep() {
+    function openProfileStep(backFocus = "introStartBtn") {
+      state.profileBackFocus = backFocus;
       showView("profileView");
     }
 
@@ -790,7 +797,8 @@ function cloneQuestionData(value) {
     }
 
     function closeBibliography() {
-      showView(state.bibliographyBackView || "introView");
+      const fromResults = state.bibliographyBackView === "dashboardView";
+      showView(fromResults ? "dashboardView" : "introView", fromResults ? "bibliographyBtn" : "introBibliographyBtn");
     }
 
     function applyBibliographyText() {
@@ -886,6 +894,7 @@ function cloneQuestionData(value) {
       });
       const versionBadge = $("versionBadge");
       if (versionBadge) versionBadge.textContent = lang === "en" ? `Version ${APP_VERSION}` : `Versione ${APP_VERSION}`;
+      $("dashboardView").setAttribute("aria-label", labText("Risultati dell’assessment", "Assessment results"));
       const staticText = lang === "en" ? {
         heroTitle: "Knowledge and practices in AI use",
         subtitle: "Explore knowledge and judgment on scenarios, self-reported practices, written prompts, and simulated outcomes. Results distinguish each evidence type and its coverage.",
@@ -1064,7 +1073,7 @@ function cloneQuestionData(value) {
       renderLabDraftNotice();
       if ($("introHistory").hidden === false) setIntroHistoryOpen(true);
       if ($("assessmentView").classList.contains("active")) renderQuestion();
-      if ($("dashboardView").classList.contains("active") && state.latestReport) renderDashboard(state.latestReport);
+      if ($("dashboardView").classList.contains("active")) renderDashboard(state.latestReport, null);
     }
 
     function bindLanguageSwitcher() {
@@ -1237,13 +1246,18 @@ function cloneQuestionData(value) {
     function renderModeDots() {
       const dots = $("testModeDots");
       if (!dots) return;
-      dots.innerHTML = TEST_MODES.map(mode => {
+      if (!dots.firstElementChild) {
+        dots.innerHTML = TEST_MODES.map(mode => `<button type="button" class="carousel-dot" data-mode-id="${escapeHtml(mode.id)}"></button>`).join("");
+        dots.querySelectorAll("[data-mode-id]").forEach(button => {
+          button.addEventListener("click", () => updateSelectedMode(button.dataset.modeId));
+        });
+      }
+      dots.querySelectorAll("[data-mode-id]").forEach(button => {
+        const mode = localizedMode(getModeById(button.dataset.modeId));
         const selected = mode.id === selectedTestModeId();
-        const visibleMode = localizedMode(mode);
-        return `<button type="button" class="carousel-dot ${selected ? "active" : ""}" data-mode-id="${escapeHtml(mode.id)}" aria-label="${isEnglish() ? "Show" : "Mostra"} ${escapeHtml(visibleMode.label)}" aria-current="${selected ? "true" : "false"}"></button>`;
-      }).join("");
-      Array.from(dots.querySelectorAll("[data-mode-id]")).forEach(button => {
-        button.addEventListener("click", (event) => updateSelectedMode(event.currentTarget.dataset.modeId));
+        button.classList.toggle("active", selected);
+        button.setAttribute("aria-label", `${labText("Mostra", "Show")} ${mode.label}`);
+        button.setAttribute("aria-current", String(selected));
       });
     }
 
@@ -1269,6 +1283,14 @@ function cloneQuestionData(value) {
       if (!button) return;
       button.textContent = state.carouselPaused ? (isEnglish() ? "Resume" : "Riprendi") : (isEnglish() ? "Pause" : "Pausa");
       button.setAttribute("aria-pressed", state.carouselPaused ? "true" : "false");
+      $("modeCarouselFrame").setAttribute("aria-live", state.carouselPaused ? "polite" : "off");
+    }
+
+    function pauseModeCarousel() {
+      if (state.carouselPaused) return;
+      state.carouselPaused = true;
+      clearModeCarouselTimer();
+      updateModeAutoplayButton();
     }
 
     function toggleModeCarouselAutoplay() {
@@ -1300,13 +1322,18 @@ function cloneQuestionData(value) {
     }
 
     function bindModeCarouselAutoplay() {
-      if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        state.carouselPaused = true;
-      }
+      const motion = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+      if (motion?.matches) pauseModeCarousel();
+      motion?.addEventListener?.("change", event => { if (event.matches) pauseModeCarousel(); });
       const autoplayButton = $("modeAutoplayBtn");
-      if (autoplayButton) {
-        autoplayButton.addEventListener("click", toggleModeCarouselAutoplay);
-      }
+      autoplayButton.addEventListener("click", toggleModeCarouselAutoplay);
+      const carousel = $("modeCarousel");
+      carousel.addEventListener("focusin", event => {
+        if (event.target.matches(":focus-visible")) pauseModeCarousel();
+      });
+      carousel.addEventListener("keydown", event => {
+        if (event.target !== autoplayButton) pauseModeCarousel();
+      });
       updateModeAutoplayButton();
       restartModeCarouselTimer();
     }
@@ -1321,6 +1348,7 @@ function cloneQuestionData(value) {
       const total = modeQuestions.length;
       const container = $("questionDistribution");
       if (container) {
+        container.setAttribute("aria-label", labText("Distribuzione delle unità del percorso", "Distribution of response units in this path"));
         const rows = mode.id === "complete" ? ["F","U","A","H"].map(area => `<div class="topic-row"><span>${escapeHtml(ASSESSMENT_V3.label(ASSESSMENT_V3.AREA_LABELS[area],currentLanguage()))}</span><strong>${COMPLETE_ASSESSMENT.SLOTS.filter(slot => slot.primaryArea === area).length}</strong></div>`).join("") : SECTION_ORDER
           .filter(section => counts[section])
           .map(section => `<div class="topic-row"><span>${escapeHtml(sectionLabel(section))}</span><strong>${counts[section]}</strong></div>`)
@@ -1461,9 +1489,8 @@ function cloneQuestionData(value) {
       if (state.draftOwner) writeLabDraft(state.draftOwner, snapshotLabDraft());
       else if (!writable) warnUncoordinatedStorage();
       else if (["complete", "operational-lab"].includes(selectedMode.id)) labStorageWarning();
-      showView("assessmentView");
       renderQuestion();
-      if (selectedMode.id === "operational-lab") $("questionTitle").focus();
+      showView("assessmentView");
     }
 
     function optionSource(question) {
@@ -1539,7 +1566,7 @@ function cloneQuestionData(value) {
 
       if (q.type === "text") {
         $("options").innerHTML = `
-          <textarea id="${q.id}_text" placeholder="${isEnglish() ? "Write exactly what you would use in the real situation..." : "Scrivi esattamente ciò che useresti nella situazione reale..."}">${escapeHtml(currentValue || "")}</textarea>
+          <textarea id="${q.id}_text" aria-labelledby="questionTitle" placeholder="${isEnglish() ? "Write exactly what you would use in the real situation..." : "Scrivi esattamente ciò che useresti nella situazione reale..."}">${escapeHtml(currentValue || "")}</textarea>
         `;
         const textarea = $(`${q.id}_text`);
         textarea.addEventListener("input", (event) => {
@@ -1547,50 +1574,31 @@ function cloneQuestionData(value) {
           saveLabDraft();
           updateNavigationState(q);
         });
-      } else if (q.type === "multi") {
+      } else {
+        const multiple = q.type === "multi";
         const selectedValues = Array.isArray(currentValue) ? currentValue : [];
         const opts = displayOptionsFor(q);
         const detailsVisible = Boolean(state.hintsVisible[q.id]);
         const optionMarkup = opts.map(({ option: opt, value: optionValue, displayIndex }) => {
-          const checked = selectedValues.includes(Number(optionValue));
+          const checked = multiple ? selectedValues.includes(Number(optionValue)) : String(currentValue) === String(optionValue);
           return `
             <label class="option ${checked ? "selected" : ""}" for="${q.id}_${displayIndex}">
-              <input id="${q.id}_${displayIndex}" type="checkbox" name="${q.id}" value="${optionValue}" ${checked ? "checked" : ""} />
+              <input id="${q.id}_${displayIndex}" type="${multiple ? "checkbox" : "radio"}" name="${q.id}" value="${optionValue}" ${checked ? "checked" : ""} />
               <span><strong>${escapeHtml(opt.title)}</strong>${detailsVisible && opt.text ? `<span class="option-detail">${escapeHtml(opt.text)}</span>` : ""}</span>
             </label>
           `;
         }).join("");
         $("options").innerHTML = optionMarkup + optionHintToggle(q, opts, detailsVisible);
 
-        Array.from(document.querySelectorAll(`input[name="${q.id}"]`)).forEach(input => {
+        const inputs = Array.from(document.querySelectorAll(`input[name="${q.id}"]`));
+        inputs.forEach(input => {
           input.addEventListener("change", () => {
-            state.answers[q.id] = Array.from(document.querySelectorAll(`input[name="${q.id}"]:checked`)).map(item => Number(item.value));
+            const value = Number(input.value);
+            state.answers[q.id] = multiple ? inputs.filter(item => item.checked).map(item => Number(item.value)) : value;
             saveLabDraft();
-            renderQuestion();
-          });
-        });
-        bindHintToggle(q);
-      } else {
-        const opts = displayOptionsFor(q);
-        const detailsVisible = Boolean(state.hintsVisible[q.id]);
-        const optionMarkup = opts.map(({ option: opt, value: optionValue, displayIndex }) => {
-          const checked = String(currentValue) === String(optionValue);
-          return `
-            <label class="option ${checked ? "selected" : ""}" for="${q.id}_${displayIndex}">
-              <input id="${q.id}_${displayIndex}" type="radio" name="${q.id}" value="${optionValue}" ${checked ? "checked" : ""} />
-              <span><strong>${escapeHtml(opt.title)}</strong>${detailsVisible && opt.text ? `<span class="option-detail">${escapeHtml(opt.text)}</span>` : ""}</span>
-            </label>
-          `;
-        }).join("");
-        $("options").innerHTML = optionMarkup + optionHintToggle(q, opts, detailsVisible);
-
-        Array.from(document.querySelectorAll(`input[name="${q.id}"]`)).forEach(input => {
-          input.addEventListener("change", (event) => {
-            const selectedValue = Number(event.target.value);
-            state.answers[q.id] = selectedValue;
-            saveLabDraft();
-            renderQuestion();
-            scheduleAutoAdvance(q, state.index, selectedValue);
+            inputs.forEach(item => item.closest(".option").classList.toggle("selected", item.checked));
+            updateNavigationState(q);
+            if (!multiple) scheduleAutoAdvance(q, state.index, value);
           });
         });
         bindHintToggle(q);
@@ -1630,15 +1638,17 @@ function cloneQuestionData(value) {
       const label = visible
         ? (isEnglish() ? "Hide details" : "Nascondi i dettagli")
         : (isEnglish() ? "Show details" : "Mostra i dettagli");
-      return `<div class="hint-toggle-row"><button type="button" class="hint-toggle" id="optionHintToggle">${label}</button></div>`;
+      return `<div class="hint-toggle-row"><button type="button" class="hint-toggle" id="optionHintToggle" aria-expanded="${visible}">${label}</button></div>`;
     }
 
     function bindHintToggle(question) {
       const button = $("optionHintToggle");
       if (!button) return;
       button.addEventListener("click", () => {
+        clearAutoAdvance();
         state.hintsVisible[question.id] = !state.hintsVisible[question.id];
         renderQuestion();
+        $("optionHintToggle").focus({ preventScroll: true });
       });
     }
 
@@ -1681,7 +1691,7 @@ function cloneQuestionData(value) {
         state.index += 1;
         saveLabDraft();
         renderQuestion();
-        if (q.type === "simulation" || questions[state.index].type === "simulation") $("questionTitle").focus();
+        $("questionTitle").focus();
       }
     }
 
@@ -1691,7 +1701,7 @@ function cloneQuestionData(value) {
         state.index -= 1;
         saveLabDraft();
         renderQuestion();
-        if (questions[state.index].type === "simulation") $("questionTitle").focus();
+        $("questionTitle").focus();
       }
     }
 
@@ -1796,14 +1806,19 @@ function cloneQuestionData(value) {
       applyLanguageChrome();
     }
 
-    function renderDashboard(report) {
+    function renderDashboard(report, focusId = "dashboardView") {
       const kind = ASSESSMENT_V3.reportKind(report);
       syncLanguageForReport(report);
       state.latestReport = report;
       renderPendingReportNotice();
-      if (kind === "unknown") { renderUnknownDashboard(report); return; }
-      if (kind === "evidence") { renderEvidenceDashboard(report); return; }
-      if (kind === "learning") { renderLearningDashboard(report); return; }
+      if (kind === "evidence") renderEvidenceDashboard(report);
+      else if (kind === "learning") renderLearningDashboard(report);
+      else if (kind === "legacy") renderLegacyDashboard(report);
+      else renderUnknownDashboard(report);
+      showView("dashboardView", focusId);
+    }
+
+    function renderLegacyDashboard(report) {
       const meta = report.meta ?? {};
       const mode = getReportMode(report);
       const visibleMode = localizedMode(mode);
@@ -1925,7 +1940,6 @@ function cloneQuestionData(value) {
 
       $("progressFill").style.width = "100%";
       bindDashboardEvents();
-      showView("dashboardView");
     }
 
     function renderLearningDashboard(report) {
@@ -1946,10 +1960,9 @@ function cloneQuestionData(value) {
         if (!confirmLeavingUnsavedReport()) return;
         trackUnsavedReport(null);
         state.selectedModeId = "first-steps";
-        showView("profileView");
+        openProfileStep("noviceQuickStartBtn");
       });
       $("progressFill").style.width = "100%";
-      showView("dashboardView");
     }
 
     function getReportMode(report) {
@@ -2239,7 +2252,7 @@ function cloneQuestionData(value) {
           <div class="actions"><button class="btn-secondary" type="button" id="openUnsavedReportBtn">${reportText("Torna al report da salvare", "Return to unsaved report")}</button></div>`;
         $("openUnsavedReportBtn").addEventListener("click", () => {
           if (!state.unsavedReport) return;
-          renderDashboard(state.unsavedReport);
+          renderDashboard(state.unsavedReport, null);
           ($("retrySaveReportBtn") || $("exportJsonBtn")).focus();
         });
         return;
@@ -2368,7 +2381,7 @@ function cloneQuestionData(value) {
         if (state.unsavedReport !== report) return;
         const saved = saveReport(report);
         const draftRemoved = saved && removeCompletedDraft();
-        renderDashboard(report);
+        renderDashboard(report, null);
         if (saved || state.reportSaveConflict) $("exportJsonBtn").focus();
         else $("retrySaveReportBtn").focus();
         if (draftRemoved) showToast(reportText("Report salvato nello storico.", "Report saved to history."));
@@ -2555,14 +2568,14 @@ function cloneQuestionData(value) {
     bindModeCarouselAutoplay();
     $("modePrevBtn").addEventListener("click", () => moveSelectedMode(-1));
     $("modeNextBtn").addEventListener("click", () => moveSelectedMode(1));
-    $("introStartBtn").addEventListener("click", openProfileStep);
+    $("introStartBtn").addEventListener("click", () => openProfileStep());
     $("noviceQuickStartBtn").addEventListener("click", () => {
       updateSelectedMode("first-steps");
-      openProfileStep();
+      openProfileStep("noviceQuickStartBtn");
     });
     $("introBibliographyBtn").addEventListener("click", () => showBibliography("introView"));
     $("introHistoryBtn").addEventListener("click", () => setIntroHistoryOpen($("introHistory").hidden));
-    $("profileBackBtn").addEventListener("click", () => showView("introView"));
+    $("profileBackBtn").addEventListener("click", () => showView("introView", state.profileBackFocus));
     $("startBtn").addEventListener("click", startAssessment);
     $("loadLastBtn").addEventListener("click", loadLastReport);
     $("nextBtn").addEventListener("click", goNext);

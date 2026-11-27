@@ -296,11 +296,75 @@ test("auto-advance remains reversible and requires explicit Next for multi/text"
   assert.equal(r.run("isAutoAdvanceQuestion(bank.find(q=>q.type==='multi'))"),false);assert.equal(r.run("isAutoAdvanceQuestion(bank.find(q=>q.type==='text'))"),false);
 });
 
-test("HTML loads local classic assets with consistent 3.5.4 cache keys", () => {
+test("the full-test breakdown exists in the landing markup and displays all four areas in either language", () => {
+  const html = read("ai_skill_test.html");
+  const intro = /<section id="introView"[\s\S]*?<section id="profileView"/.exec(html)?.[0];
+  assert.ok(intro, "The landing view exists");
+  const distribution = /<div class="topic-summary" id="questionDistribution"[^>]*>([\s\S]*?)<\/div>\s*<\/section>/.exec(intro)?.[1];
+  assert.ok(distribution, "The landing contains a real distribution element");
+  const counts = markup => [...markup.matchAll(/<strong>(\d+)<\/strong>/g)].map(match => Number(match[1]));
+  assert.deepEqual(counts(distribution), [12, 16, 12, 10, 50]);
+
+  const r = runtime();
+  r.run("renderQuestionDistribution()");
+  assert.match(r.node("questionDistribution").innerHTML, /Uso operativo e multimodale/);
+  assert.deepEqual(counts(r.node("questionDistribution").innerHTML), [12, 16, 12, 10, 50]);
+  r.run("state.language='en'; renderQuestionDistribution()");
+  assert.match(r.node("questionDistribution").innerHTML, /Operational and multimodal use/);
+  assert.deepEqual(counts(r.node("questionDistribution").innerHTML), [12, 16, 12, 10, 50]);
+});
+
+test("keyboard navigation focuses the next question and restores focus to view controls", () => {
+  const r = runtime();
+  r.start();
+  r.node("introStartBtn").events.click();
+  assert.equal(r.node("profileTitle").focused, true);
+  r.node("profileBackBtn").events.click();
+  assert.equal(r.node("introStartBtn").focused, true);
+  r.node("introBibliographyBtn").events.click();
+  assert.equal(r.node("bibliographyTitle").focused, true);
+  r.run("closeBibliography()");
+  assert.equal(r.node("introBibliographyBtn").focused, true);
+
+  r.node("noviceQuickStartBtn").events.click();
+  r.node("profileBackBtn").events.click();
+  assert.equal(r.node("noviceQuickStartBtn").focused, true);
+  r.node("noviceQuickStartBtn").events.click();
+  r.node("startBtn").events.click();
+  const title = r.node("questionTitle");
+  assert.equal(title.focused, true);
+  title.focused = false;
+  r.run("state.answers[questions[0].id]=choose(questions[0]); scheduleAutoAdvance(questions[0], 0, state.answers[questions[0].id])");
+  r.timers.values().next().value();
+  assert.equal(r.run("state.index"), 1);
+  assert.equal(title.focused, true);
+  title.focused = false;
+  r.node("prevBtn").events.click();
+  assert.equal(r.run("state.index"), 0);
+  assert.equal(title.focused, true);
+  r.run("state.answers=Object.fromEntries(questions.map(q=>[q.id, choose(q)])); finishAssessment()");
+  assert.equal(r.node("dashboardView").focused, true);
+});
+
+test("keyboard focus pauses the carousel until the user resumes it", () => {
+  const r = runtime();
+  r.node("introView").classList.contains = name => name === "active";
+  r.start();
+  assert.notEqual(r.run("state.carouselTimer"), null);
+  const carousel = r.node("modeCarousel");
+  carousel.events.focusin({ target: { matches: selector => selector === ":focus-visible" } });
+  assert.equal(r.run("state.carouselTimer"), null);
+  r.node("modeNextBtn").events.click();
+  assert.equal(r.run("state.carouselTimer"), null);
+  r.node("modeAutoplayBtn").events.click();
+  assert.notEqual(r.run("state.carouselTimer"), null);
+});
+
+test("HTML loads local classic assets with consistent 3.5.5 cache keys", () => {
   const html=read('ai_skill_test.html');const scripts=[...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map(m=>m[1]);
   assert.deepEqual(scripts.map(s=>s.split('?')[0]),['assets/questions.js','assets/i18n.js','assets/learning.js','assets/modern-ai.js','assets/agentic-workflows.js','assets/harness.js','assets/operational-lab.js','assets/complete-assessment.js','assets/lab-ui.js','assets/assessment.js','assets/report-ui.js','assets/app.js']);
-  for(const src of scripts){assert.ok(src.endsWith('?v=3.5.4'));assert.ok(fs.existsSync(path.join(root,src.split('?')[0])));}
-  assert.match(html,/Versione 3\.5\.4/);assert.doesNotMatch(html,/Champion|Expert|Indice 0-100/);
+  for(const src of scripts){assert.ok(src.endsWith('?v=3.5.5'));assert.ok(fs.existsSync(path.join(root,src.split('?')[0])));}
+  assert.match(html,/Versione 3\.5\.5/);assert.doesNotMatch(html,/Champion|Expert|Indice 0-100/);
 });
 
 test("browser startup bindings, optional empty data and completion execute with a minimal DOM adapter", () => {
@@ -412,11 +476,11 @@ test("Modern AI starts, returns to previous answers and saves complete bilingual
     r.run(`state.answers[questions[0].id]=choose(questions[0]);scheduleAutoAdvance(questions[0],0,state.answers[questions[0].id])`);
     assert.equal(r.timers.size,1);r.timers.values().next().value();assert.equal(r.run('state.index'),1);r.run('goPrev()');assert.equal(r.run('state.index'),0);assert.equal(r.run('state.answers[questions[0].id]===choose(questions[0])'),true);
     r.run(`state.answers=Object.fromEntries(questions.map(q=>[q.id,choose(q)]));finishAssessment()`);
-    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.4');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.testMode.id,'modern-ai');
+    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.5');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.testMode.id,'modern-ai');
     assert.deepEqual(JSON.parse(r.storage.get('aiSkillAssessmentHistory'))[0],report);
     for(const item of report.answers){assert.ok(item.question.includes('\n'));assert.equal(item.selectedRationales.length,1);assert.ok(item.sourceRefs.length>0);assert.ok(r.node('dashboard').innerHTML.includes(item.selectedRationales[0].replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;')));}
     r.run('downloadBlob=(content,name,type)=>{globalThis.download={content,name,type}};exportJson(state.latestReport)');assert.deepEqual(JSON.parse(r.context.download.content),report);
-    const rows=plain(r.context.core.csvRows(report));assert.ok(rows.some(row=>row[1]==='answers.0.selectedRationales.0'));assert.ok(rows.some(row=>row[1]==='answers.0.sourceRefs.0'));assert.equal(rows.find(row=>row[1]==='meta.assessmentVersion')[2],'3.5.4');
+    const rows=plain(r.context.core.csvRows(report));assert.ok(rows.some(row=>row[1]==='answers.0.selectedRationales.0'));assert.ok(rows.some(row=>row[1]==='answers.0.sourceRefs.0'));assert.equal(rows.find(row=>row[1]==='meta.assessmentVersion')[2],'3.5.5');
     const original=r.storage.get('aiSkillAssessmentHistory');r.run('loadLastReport()');assert.equal(r.storage.get('aiSkillAssessmentHistory'),original);
   }
 });
@@ -517,7 +581,7 @@ test("Agents completion, navigation, frozen recommendations, history and exports
     r.run(`state.answers[questions[0].id]=choose(questions[0],false);scheduleAutoAdvance(questions[0],0,state.answers[questions[0].id])`);
     assert.equal(r.timers.size,1);r.timers.values().next().value();assert.equal(r.run('state.index'),1);r.run('goPrev()');assert.equal(r.run('state.index'),0);assert.equal(r.run('state.answers[questions[0].id]===choose(questions[0],false)'),true);
     r.run(`state.answers=Object.fromEntries(questions.map(q=>[q.id,q.options.findIndex(o=>o.score===3)]));finishAssessment()`);
-    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.4');assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.testMode.id,'agents');assert.equal(report.meta.formId,form);assert.equal(report.meta.language,language);
+    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.5');assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.testMode.id,'agents');assert.equal(report.meta.formId,form);assert.equal(report.meta.language,language);
     assert.equal(report.results.nextSteps.length,5);assert.ok(report.answers.every(q=>q.selectedRationales.length===1&&q.question.includes('\n')&&typeof q.nextStep==='string'));
     assert.match(r.node('dashboard').innerHTML,language==='it'?/Per approfondire le scelte/:/Develop your decisions/);
     r.run('downloadBlob=(content,name,type)=>{globalThis.download={content,name,type}};exportJson(state.latestReport)');assert.deepEqual(JSON.parse(r.context.download.content),report);
@@ -580,7 +644,7 @@ test("Harness starts, navigates and persists frozen bilingual report/export cont
     const first=r.run('questions[0].options[choose(questions[0])].rationale');assert.ok(!r.node('options').innerHTML.includes(first));
     r.run(`state.answers[questions[0].id]=choose(questions[0]);scheduleAutoAdvance(questions[0],0,state.answers[questions[0].id])`);assert.equal(r.timers.size,1);r.timers.values().next().value();assert.equal(r.run('state.index'),1);r.run('goPrev()');assert.equal(r.run('state.index'),0);assert.equal(r.run('state.answers[questions[0].id]===choose(questions[0])'),true);
     r.run(`state.answers=Object.fromEntries(questions.map(q=>[q.id,q.options.findIndex(o=>o.score===3)]));finishAssessment()`);
-    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.4');assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.testMode.id,'harness');assert.equal(report.meta.formId,form);assert.equal(report.meta.language,language);assert.equal(report.results.nextSteps.length,6);
+    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.5');assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.testMode.id,'harness');assert.equal(report.meta.formId,form);assert.equal(report.meta.language,language);assert.equal(report.results.nextSteps.length,6);
     assert.ok(report.answers.every(q=>q.question.includes('\n')&&q.selectedRationales.length===1&&typeof q.nextStep==='string'));
     r.run('downloadBlob=(content,name,type)=>{globalThis.download={content,name,type}};exportJson(state.latestReport)');assert.deepEqual(JSON.parse(r.context.download.content),report);
     const rows=plain(r.context.core.csvRows(report));for(const field of ['answers.0.nextStep','answers.0.selectedRationales.0','answers.0.sourceRefs.0','results.nextSteps.0.text'])assert.ok(rows.some(row=>row[1]===field));

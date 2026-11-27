@@ -4,12 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AI Skill & Adoption Assessment</title>
-  <link rel="icon" type="image/png" href="aiskilltest_icon.png?v=3.5.4" />
-  <link rel="apple-touch-icon" href="aiskilltest_icon.png?v=3.5.4" />
+  <link rel="icon" type="image/png" href="aiskilltest_icon.png?v=3.5.5" />
+  <link rel="apple-touch-icon" href="aiskilltest_icon.png?v=3.5.5" />
   <meta name="theme-color" content="#0f172a" />
   <meta name="application-name" content="AI Skill Assessment" />
   <meta name="theme-color" content="#0f172a" />
-  <link rel="stylesheet" href="assets/styles.css?v=3.5.4" />
+  <link rel="stylesheet" href="assets/styles.css?v=3.5.5" />
 </head>
 <body>
   <main class="shell">
@@ -18,7 +18,7 @@
         <div>
           <div class="hero-meta">
             <p class="kicker">AI Skill & Adoption Assessment</p>
-            <span class="version-badge" id="versionBadge">Versione 3.5.4</span>
+            <span class="version-badge" id="versionBadge">Versione 3.5.5</span>
             <div class="language-switcher" aria-label="Lingua">
               <button type="button" class="language-btn" data-language="it" aria-pressed="false">IT</button>
               <button type="button" class="language-btn" data-language="en" aria-pressed="false">EN</button>
@@ -51,7 +51,7 @@
       <div class="content">
         <section id="introView" class="view active">
           <aside class="card lab-draft-notice" id="labDraftNotice" hidden></aside>
-          <section class="card landing-card assessment-carousel" aria-labelledby="modeCarouselTitle">
+          <section class="card landing-card assessment-carousel" id="modeCarousel" aria-labelledby="modeCarouselTitle">
             <aside class="novice-callout" aria-labelledby="noviceCalloutTitle">
               <div>
                 <span class="novice-callout-badge">Nuovo · Percorso guidato</span>
@@ -63,7 +63,7 @@
             <div class="carousel-heading">
               <div>
                 <p class="kicker">Assessment AI</p>
-                <h2 id="modeCarouselTitle">Scegli il tuo percorso</h2>
+                <h2 id="modeCarouselTitle" tabindex="-1">Scegli il tuo percorso</h2>
                 <p>Il completo copre Fondamenti, AI moderne, Agenti e Harness, con due casi simulati locali. I percorsi brevi mostrano soltanto le evidenze raccolte.</p>
               </div>
               <div class="carousel-controls" aria-label="Scorri percorsi">
@@ -73,7 +73,7 @@
               </div>
             </div>
 
-            <div class="carousel-frame" id="modeCarouselFrame" aria-live="polite">
+            <div class="carousel-frame" id="modeCarouselFrame" aria-live="off">
               <div class="mode-selector mode-track" id="testModeSelector" aria-label="Modalità di test"></div>
             </div>
 
@@ -88,6 +88,14 @@
               <button class="btn-secondary" id="introHistoryBtn" type="button" aria-expanded="false" aria-controls="introHistory">Risultati precedenti</button>
             </div>
             <div id="introHistory" hidden></div>
+
+            <div class="topic-summary" id="questionDistribution" role="group" aria-label="Distribuzione delle unità del percorso">
+              <div class="topic-row"><span>Fondamenti</span><strong>12</strong></div>
+              <div class="topic-row"><span>Uso operativo e multimodale</span><strong>16</strong></div>
+              <div class="topic-row"><span>Agenti</span><strong>12</strong></div>
+              <div class="topic-row"><span>Harness</span><strong>10</strong></div>
+              <div class="topic-row topic-total"><span>Test completo</span><strong>50</strong></div>
+            </div>
           </section>
 
           <div class="grid-3 landing-metrics" aria-label="Sintesi del risultato finale">
@@ -115,7 +123,7 @@
           <div class="grid-2">
             <div class="card">
               <p class="kicker">Dati facoltativi</p>
-              <h2>Prima del test</h2>
+              <h2 id="profileTitle" tabindex="-1">Prima del test</h2>
               <p>Puoi indicare nome, ruolo, team e una stima iniziale delle tue skill. Tutti i campi sono facoltativi: puoi iniziare anche lasciando tutto vuoto.</p>
               <p class="muted">Le informazioni restano locali nella cache e nel localStorage del browser. Non vengono inviate automaticamente a server esterni. Servono solo a rendere più utile il report locale e l'eventuale export manuale.</p>
               <p class="muted">Le stime iniziali sono aspettative personali. Restano separate, senza scarti automatici o modifiche ai risultati dei quesiti.</p>
@@ -188,7 +196,7 @@
             <article class="question-main">
               <span class="section-badge" id="sectionBadge">Literacy</span>
               <p class="question-context" id="questionContext" hidden></p>
-              <h2 class="question-title" id="questionTitle" tabindex="-1"></h2>
+              <h2 class="question-title" id="questionTitle" tabindex="-1" aria-describedby="progressText questionContext"></h2>
               <p class="question-hint" id="questionHint"></p>
               <p class="response-guide" id="responseGuide" hidden></p>
               <div class="options" id="options"></div>
@@ -207,7 +215,7 @@
           </div>
         </section>
 
-        <section id="dashboardView" class="view">
+        <section id="dashboardView" class="view" tabindex="-1" aria-label="Risultati dell’assessment">
           <div id="pendingReportNotice" hidden></div>
           <div id="dashboard"></div>
         </section>
@@ -219,7 +227,7 @@
 
           <section class="card bibliography-intro">
             <p class="kicker">Fonti e approfondimenti</p>
-            <h2>Bibliografia</h2>
+            <h2 id="bibliographyTitle" tabindex="-1">Bibliografia</h2>
             <p>Questa pagina raccoglie il riferimento che ha ispirato la struttura dell’assessment, alcune fonti metodologiche richiamate nell’articolo Datapizza e gli approfondimenti tecnici usati per costruire le domande sugli LLM.</p>
             <p class="muted small">I collegamenti si aprono in una nuova scheda. Alcune pubblicazioni possono richiedere registrazione o accesso istituzionale sul sito dell’editore.</p>
           </section>
@@ -402,19 +410,19 @@
     </footer>
   </main>
 
-  <div class="toast" id="toast">Operazione completata</div>
+  <div class="toast" id="toast" role="status"></div>
 
-  <script src="assets/questions.js?v=3.5.4"></script>
-  <script src="assets/i18n.js?v=3.5.4"></script>
-  <script src="assets/learning.js?v=3.5.4"></script>
-  <script src="assets/modern-ai.js?v=3.5.4"></script>
-  <script src="assets/agentic-workflows.js?v=3.5.4"></script>
-  <script src="assets/harness.js?v=3.5.4"></script>
-  <script src="assets/operational-lab.js?v=3.5.4"></script>
-  <script src="assets/complete-assessment.js?v=3.5.4"></script>
-  <script src="assets/lab-ui.js?v=3.5.4"></script>
-  <script src="assets/assessment.js?v=3.5.4"></script>
-  <script src="assets/report-ui.js?v=3.5.4"></script>
-  <script src="assets/app.js?v=3.5.4"></script>
+  <script src="assets/questions.js?v=3.5.5"></script>
+  <script src="assets/i18n.js?v=3.5.5"></script>
+  <script src="assets/learning.js?v=3.5.5"></script>
+  <script src="assets/modern-ai.js?v=3.5.5"></script>
+  <script src="assets/agentic-workflows.js?v=3.5.5"></script>
+  <script src="assets/harness.js?v=3.5.5"></script>
+  <script src="assets/operational-lab.js?v=3.5.5"></script>
+  <script src="assets/complete-assessment.js?v=3.5.5"></script>
+  <script src="assets/lab-ui.js?v=3.5.5"></script>
+  <script src="assets/assessment.js?v=3.5.5"></script>
+  <script src="assets/report-ui.js?v=3.5.5"></script>
+  <script src="assets/app.js?v=3.5.5"></script>
 </body>
 </html>

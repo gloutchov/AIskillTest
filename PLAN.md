@@ -4,7 +4,7 @@ Questo piano governa le prossime modifiche del progetto `AIskillTest`. Ogni mile
 
 Versione di partenza: `1.0.0`.
 
-Release di riferimento `v3.5.4`, con le milestone 0–26 completate. Il maintainer ha approvato la M26 il `2026-11-27`. La prossima attività della roadmap di review è la M27.
+Release di riferimento `v3.5.5`, con le milestone 0–27 completate. Il maintainer ha approvato la M27 il `2026-11-27`. La prossima attività della roadmap di review è la M28.
 
 ## Regole di release
 
@@ -855,7 +855,7 @@ Base della review `8a98a8f`. I target sono indicativi e seguono l'ordine delle m
 | 24 | Bozze tra schede, compatibilità tra versioni e stile dei link bibliografici | `3.5.2` | Completata |
 | 25 | Export CSV sicuro e protezione degli export dal versionamento | `3.5.3` | Completata |
 | 26 | Report storici danneggiati e gestione sicura dei campi | `3.5.4` | Completata |
-| 27 | Navigazione da tastiera e distribuzione sulla landing | `3.5.5` | Pianificata |
+| 27 | Navigazione da tastiera e distribuzione sulla landing | `3.5.5` | Completata |
 | 28 | Pulizia del codice orfano e archivio dei quesiti Agents originali | `3.5.6` | Pianificata |
 | 29 | Pubblicazione selettiva e protezioni GitHub Pages | `3.5.7` | Pianificata |
 
@@ -904,6 +904,9 @@ Base della review `8a98a8f`. I target sono indicativi e seguono l'ordine delle m
 - Ripristinare il riepilogo F/U/A/H 12/16/12/10 nel markup della landing. Usare test che distinguono un elemento mancante da un elemento esistente.
 - Gestire il focus durante avanzamento, ritorno, modifica, conferma dei casi e cambi di vista. Preservare il focus quando si cambia slide o si aggiornano gli indicatori. Sospendere l'autoplay durante l'interazione da tastiera.
 - Verificare desktop e mobile, IT/EN, tastiera e preferenza per movimento ridotto. Conservare l'auto-advance reversibile e Avanti nei flussi che lo richiedono.
+- Il riepilogo del completo è presente nell’HTML iniziale e segue il percorso selezionato e la lingua. La navigazione porta il focus alla domanda, conserva il controllo durante la modifica e restituisce il focus al pulsante di apertura quando si torna dalla bibliografia o dallo step dati.
+- Gli indicatori del carosello conservano il proprio elemento quando cambia la selezione o la lingua. L’interazione da tastiera sospende l’autoplay fino a «Riprendi». La preferenza per movimento ridotto avvia il carosello in pausa e disattiva la transizione di scorrimento. [Checklist M27](docs/QA.md#m27--tastiera-e-distribuzione-sulla-landing).
+- Il maintainer ha approvato la chiusura della M27 e la release `v3.5.5` il `2026-11-27`.
 
 ### M28 — Pulizia del codice orfano e archivio Agents
 
