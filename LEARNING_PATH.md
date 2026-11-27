@@ -4,7 +4,7 @@ Questo documento definisce il blueprint editoriale e didattico del percorso intr
 
 Nota di compatibilità della milestone 17: l'assessment 3.x usa un quadro delle evidenze separato, mentre Primi passi mantiene domande, tutorial, feedback e risultato didattico esistenti. I report didattici riportano la versione dell'app ma non adottano scoring/schema dell'assessment 3.x, né vengono mediati o confrontati con esso. Lo storico comune è accessibile anche dai risultati didattici per poter aprire i report precedenti quando l'ultima sessione è Primi passi. Questo aggiornamento riguarda navigazione dello storico e contesto dei report, senza cambiare il percorso didattico.
 
-Stato del documento: proposta per validazione del maintainer.
+Stato del documento: percorso pubblicato. La revisione editoriale `3.5.8` usa la banca `2026.11-first-steps-2` e le forme `first-steps-1.0`.
 
 Data di verifica delle fonti: 2026-07-11.
 
@@ -96,91 +96,111 @@ Ogni domanda ha quattro alternative. La risposta corretta è identificata per il
 
 **Domanda:** Quale descrizione rappresenta meglio ciò che fa un sistema di AI generativa quando risponde a una richiesta?
 
-- A. Cerca sempre sul web e copia la pagina più pertinente.
-- B. Genera un contenuto usando l'input ricevuto e pattern appresi dai dati. **[corretta]**
-- C. Recupera sempre una risposta già scritta e conservata in un archivio.
-- D. Verifica automaticamente che ogni frase sia vera prima di mostrarla.
+- A. Cerca una pagina online che corrisponda alla richiesta.
+- B. Crea una risposta usando la richiesta e ciò che ha imparato. **[corretta]**
+- C. Sceglie una risposta pronta tra quelle archiviate durante l’addestramento.
+- D. Controlla la verità delle frasi su fonti esterne prima di rispondere.
+
+**Perché:** Creare una risposta significa usare ciò che il sistema ha imparato. Per sapere se ha anche cercato o verificato qualcosa servono prove di quei passaggi.
 
 #### `N_A_CAP_2` - `CAP-2` - S
 
 **Domanda:** Devi preparare idee per una riunione di team. Quale uso dell'AI è più utile come primo passo?
 
-- A. Chiederle diverse proposte, poi confrontarle con obiettivo e vincoli reali. **[corretta]**
-- B. Chiederle di scegliere da sola la proposta definitiva per il team.
-- C. Accettare la prima idea perché generata rapidamente.
-- D. Evitare l'AI: le idee generate non possono mai essere utili.
+- A. Chiedo più idee e le confronto con i vincoli. **[corretta]**
+- B. Chiedo all’AI di scegliere per il gruppo.
+- C. Porto la prima idea e rimando il confronto alla riunione.
+- D. Chiedo una sola proposta prima di dire che cosa deve ottenere il gruppo.
+
+**Perché:** Confrontare più idee aiuta a vedere i compromessi. Il gruppo può decidere tenendo conto di vincoli che l’AI potrebbe ignorare.
 
 #### `N_A_LIM_1` - `LIM-1` - S
 
 **Domanda:** Un chatbot fornisce un numero molto preciso, ma non indica da dove proviene. Come lo consideri?
 
-- A. Affidabile, perché la precisione indica un calcolo reale.
-- B. Probabilmente vero se la frase è scritta con sicurezza.
-- C. Un dato da verificare prima di usarlo. **[corretta]**
-- D. Sicuramente falso, perché i chatbot non possono usare numeri.
+- A. Lo uso perché le cifre decimali fanno pensare a un calcolo preciso.
+- B. Gli do credito perché il chatbot presenta il numero con sicurezza.
+- C. Lo verifico prima di usarlo. **[corretta]**
+- D. Lo scarto perché penso che un chatbot non possa riportare numeri corretti.
+
+**Perché:** Le cifre decimali e il tono sicuro non dicono da dove viene un numero. Per usarlo, cerca una fonte o ripeti il calcolo sui dati di partenza.
 
 #### `N_A_LIM_2` - `LIM-2` - S
 
-**Domanda:** Vuoi conoscere una regola o un orario che potrebbe essere cambiato di recente. Che cosa fai?
+**Domanda:** Vuoi conoscere una regola o un orario che potrebbe essere cambiato di recente. Come controlli che sia ancora valido?
 
-- A. Uso la risposta del modello senza altre verifiche.
-- B. Chiedo al modello di rispondere con maggiore sicurezza.
-- C. Controllo una fonte ufficiale aggiornata e la data di validità. **[corretta]**
-- D. Considero valida la risposta se contiene molti dettagli.
+- A. Mi affido alla risposta se indica un orario o una regola precisa.
+- B. Chiedo all’AI se è aggiornata.
+- C. Controllo una fonte ufficiale e la data. **[corretta]**
+- D. Uso la versione più dettagliata che il modello riesce a produrre.
+
+**Perché:** La fonte dell’ente interessato e la data di validità permettono di controllare che la regola o l’orario valgano ancora.
 
 #### `N_A_REQ_1` - `REQ-1` - S
 
 **Domanda:** Vuoi far riassumere un testo per persone che non conoscono l'argomento. Quale richiesta è più utile?
 
-- A. "Riassumi."
-- B. "Scrivi qualcosa di interessante su questo testo."
-- C. "Riassumi il testo in cinque punti, per un pubblico non tecnico, spiegando i termini indispensabili." **[corretta]**
-- D. "Produci il miglior riassunto possibile senza farmi domande."
+- A. Riassumi in cinque punti.
+- B. Metti in evidenza i dettagli che potrebbero interessare a chi conosce già l’argomento.
+- C. Riassumi in cinque punti per chi è alle prime armi. **[corretta]**
+- D. Rendi il testo breve e mantieni la stessa difficoltà dell’originale.
+
+**Perché:** Indicare chi leggerà il riassunto e quanto deve essere lungo aiuta l’AI a scegliere cosa spiegare e cosa tralasciare.
 
 #### `N_A_REQ_2` - `REQ-2` - S
 
 **Domanda:** La prima risposta dell'AI è generica. Qual è il passo successivo più utile?
 
-- A. Ripetere identica la domanda finché cambia risposta.
-- B. Aggiungere contesto, indicare che cosa manca e chiedere una nuova versione. **[corretta]**
-- C. Considerare il primo output come il massimo possibile.
-- D. Cambiare immediatamente strumento senza chiarire il compito.
+- A. Ripeto la richiesta identica e scelgo la risposta più dettagliata.
+- B. Dico che cosa manca e aggiungo il contesto utile. **[corretta]**
+- C. Tengo la risposta e ne cambio solo il tono, lasciando invariato il contenuto.
+- D. Cambio strumento con la stessa richiesta.
+
+**Perché:** Dire che cosa manca orienta la correzione. Riprovare da capo con le stesse informazioni lascia il problema irrisolto.
 
 #### `N_A_VER_1` - `VER-1` - S
 
 **Domanda:** L'AI propone titolo, autore e link di una fonte. Prima di citarla, che cosa fai?
 
-- A. La uso: tanti dettagli dimostrano che esiste.
-- B. Apro il link e verifico identità, contenuto e sostegno alla frase. **[corretta]**
-- C. Chiedo allo stesso chatbot se la fonte è reale.
-- D. Controllo soltanto che il link abbia un aspetto professionale.
+- A. Cito la fonte usando autore, titolo e link che l’AI ha dato.
+- B. Apro la fonte e controllo che sostenga ciò che voglio citare. **[corretta]**
+- C. Chiedo allo stesso chatbot di confermare che la citazione sia vera.
+- D. Controllo che il sito sia affidabile, senza leggere la pubblicazione.
+
+**Perché:** Un link può essere corretto e rimandare a un testo che non sostiene la tua affermazione. Controlla sia la pubblicazione sia ciò che dice.
 
 #### `N_A_VER_2` - `VER-2` - S
 
-**Domanda:** In quale caso serve una revisione più rigorosa dell'output AI?
+**Domanda:** Quale risultato dell’AI richiede più controlli prima di essere usato?
 
-- A. Un elenco privato di possibili titoli per una playlist.
-- B. Una comunicazione ufficiale che può influenzare altre persone. **[corretta]**
-- C. Una lista informale di idee da scartare o modificare.
-- D. Un esercizio creativo che non verrà pubblicato.
+- A. Una lista di titoli per una playlist che resterà privata.
+- B. Un avviso ufficiale che cambia una procedura per il pubblico. **[corretta]**
+- C. Un elenco di idee da discutere al prossimo incontro interno.
+- D. Una prova di scrittura da conservare tra i propri appunti.
+
+**Perché:** Un avviso ufficiale può cambiare il comportamento di altre persone. Gli errori hanno conseguenze maggiori e meritano controlli più accurati.
 
 #### `N_A_DAT_1` - `DAT-1` - S
 
 **Domanda:** Devi analizzare un elenco con nomi, email e note sui clienti. Prima di caricarlo in uno strumento AI, che cosa fai?
 
-- A. Lo carico se lo strumento è facile da usare.
-- B. Tolgo soltanto il nome del file.
-- C. Verifico autorizzazione e policy, scelgo uno strumento approvato e riduco i dati al minimo necessario. **[corretta]**
-- D. Lo trasformo in PDF, perché così i dati diventano anonimi.
+- A. Carico il file completo perché lo strumento semplifica l’analisi.
+- B. Rinomino il file, ma lascio nomi e indirizzi email nelle righe.
+- C. Verifico le regole e uso solo i dati necessari in uno strumento approvato. **[corretta]**
+- D. Converto il file in PDF e mantengo tutte le informazioni originali.
+
+**Perché:** Cambiare nome o formato non protegge i dati. Prima controlla se puoi usarli in quello strumento e quali informazioni servono davvero.
 
 #### `N_A_DAT_2` - `DAT-2` - S
 
 **Domanda:** Usi l'AI per preparare un documento che verrà inviato all'esterno. Chi mantiene la responsabilità finale?
 
-- A. Il modello, perché ha scritto gran parte del testo.
-- B. Il fornitore dello strumento in ogni circostanza.
-- C. La persona o l'organizzazione che revisiona e usa il documento. **[corretta]**
-- D. Nessuno, se nel documento compare la parola "bozza".
+- A. Il modello, perché ha scritto buona parte del documento.
+- B. Il fornitore del servizio, perché mette a disposizione lo strumento.
+- C. Chi rivede e usa il documento. **[corretta]**
+- D. Chi ha avviato la richiesta iniziale, anche se altri decidono l’invio.
+
+**Perché:** La responsabilità finale resta a chi controlla il documento e decide di usarlo o inviarlo.
 
 ### Forma B
 
@@ -188,91 +208,111 @@ Ogni domanda ha quattro alternative. La risposta corretta è identificata per il
 
 **Domanda:** Un'AI riassume un articolo che hai incollato nella conversazione. Che cosa puoi concludere?
 
-- A. Ha necessariamente cercato e confrontato altre fonti online.
-- B. Ha trasformato il contenuto fornito, ma questo non equivale a una ricerca indipendente. **[corretta]**
-- C. Ha verificato automaticamente tutte le affermazioni dell'articolo.
-- D. Ha memorizzato definitivamente l'articolo nei propri parametri.
+- A. Ha confrontato il contenuto dell’articolo con altre fonti online.
+- B. Ha riassunto il testo che le ho dato. **[corretta]**
+- C. Ha verificato le affermazioni dell’articolo prima di scrivere il riassunto.
+- D. Ha memorizzato l’articolo.
+
+**Perché:** Un riassunto rielabora il testo fornito. Da solo non dimostra una ricerca o una verifica indipendente.
 
 #### `N_B_CAP_2` - `CAP-2` - S
 
 **Domanda:** Devi scrivere una prima bozza di email. Quale collaborazione con l'AI è più appropriata?
 
-- A. Fornire scopo, destinatario e tono, poi revisionare la bozza prima dell'invio. **[corretta]**
-- B. Far scegliere al modello destinatari e contenuto senza contesto.
-- C. Inviare automaticamente il primo testo generato.
-- D. Usare l'AI soltanto se può assumersi la responsabilità dell'invio.
+- A. Do scopo, destinatario e tono. Prima di inviare verifico i fatti e chi riceverà il messaggio. **[corretta]**
+- B. Le faccio indovinare destinatario e scopo dal mio ruolo in azienda.
+- C. Invio la prima bozza se il testo è scritto bene e non contiene refusi.
+- D. Le chiedo di preparare la bozza e di decidere al posto mio quando inviarla.
+
+**Perché:** Dare indicazioni rende la prima bozza più pertinente. La rilettura prima dell’invio resta utile per controllare contenuto e destinatari.
 
 #### `N_B_LIM_1` - `LIM-1` - S
 
 **Domanda:** Una citazione generata contiene autore, anno e titolo completi. Che cosa dimostrano questi dettagli?
 
-- A. Che la pubblicazione esiste sicuramente.
-- B. Che il modello ha letto l'intera pubblicazione.
-- C. Che la citazione appare plausibile, ma deve ancora essere verificata. **[corretta]**
-- D. Che ogni affermazione associata alla citazione è corretta.
+- A. Che la pubblicazione è identificata con certezza dal titolo indicato.
+- B. Che il modello ha letto la pubblicazione che cita.
+- C. Che la citazione sembra plausibile e va verificata. **[corretta]**
+- D. Che le affermazioni associate alla citazione sono riportate correttamente.
+
+**Perché:** Autore, anno e titolo possono sembrare precisi anche quando il riferimento è sbagliato. Cerca la pubblicazione e leggila.
 
 #### `N_B_LIM_2` - `LIM-2` - S
 
 **Domanda:** Chiedi all'AI di confrontare prodotti i cui prezzi e caratteristiche cambiano spesso. Quale cautela è essenziale?
 
-- A. Controllare data e fonti dei dati usati nel confronto. **[corretta]**
-- B. Preferire sempre la risposta più lunga.
-- C. Considerare aggiornato il confronto se contiene una tabella.
-- D. Chiedere di non mostrare incertezze.
+- A. Controllo le fonti e la data dei dati. **[corretta]**
+- B. Scelgo la tabella più ricca.
+- C. Mi fido della tabella se le righe sono complete e i prezzi sono precisi.
+- D. Chiedo di fare una classifica unica senza indicare dati incerti.
+
+**Perché:** Per confrontare prezzi e caratteristiche che cambiano, controlla da dove vengono i dati e a quale data si riferiscono.
 
 #### `N_B_REQ_1` - `REQ-1` - S
 
 **Domanda:** Vuoi trasformare alcuni appunti in una tabella operativa. Quale richiesta offre il contesto migliore?
 
-- A. "Metti in tabella."
-- B. "Organizza questi appunti in colonne Attività, Responsabile, Scadenza e Dubbi; non inventare i dati mancanti." **[corretta]**
-- C. "Crea una tabella perfetta e completa."
-- D. "Decidi tu struttura e informazioni mancanti."
+- A. Organizza gli appunti in una tabella breve.
+- B. Usa Attività, Responsabile e Scadenza. Segna i dati mancanti. **[corretta]**
+- C. Completa ogni riga usando stime quando dagli appunti manca un dato.
+- D. Usa pure le colonne che preferisci, purché la tabella sia facile da leggere.
+
+**Perché:** Specificare le colonne rende il risultato riutilizzabile. Segnalare i dati mancanti evita di scambiare una stima per un fatto.
 
 #### `N_B_REQ_2` - `REQ-2` - S
 
 **Domanda:** L'AI restituisce il contenuto giusto nel formato sbagliato. Come procedi?
 
-- A. Scarto tutto senza spiegare il problema.
-- B. Chiedo una nuova versione indicando il formato atteso e mostrando, se utile, un esempio. **[corretta]**
-- C. Riparto con una richiesta ancora più generica.
-- D. Copio il risultato così com'è, perché il contenuto è sufficiente.
+- A. Scarto il contenuto e faccio riscrivere tutto senza spiegare il motivo.
+- B. Chiedo di mantenere il contenuto e mostro il formato atteso. **[corretta]**
+- C. Chiedo una revisione generale.
+- D. Uso la versione ricevuta perché le informazioni principali sono corrette.
+
+**Perché:** Se il contenuto va bene, chiedi una correzione mirata al formato. Un esempio aiuta a capire che cosa vuoi ottenere.
 
 #### `N_B_VER_1` - `VER-1` - S
 
 **Domanda:** L'AI indica una percentuale da usare in una presentazione. Qual è una verifica indipendente?
 
-- A. Chiedere allo stesso modello di ripetere la percentuale.
-- B. Cercare il rapporto originale o una fonte affidabile e controllare periodo e campione. **[corretta]**
-- C. Verificare che la percentuale abbia due decimali.
-- D. Usarla se è simile a ciò che ti aspettavi.
+- A. Chiedo al modello di ripetere la percentuale e di indicare quanto è sicuro.
+- B. Cerco il rapporto originale e controllo periodo e campione. **[corretta]**
+- C. Controllo come appare il dato nella slide.
+- D. Confronto la percentuale con ciò che mi aspettavo prima di fare la richiesta.
+
+**Perché:** Il rapporto originale aiuta a controllare se la percentuale riguarda le persone e il periodo che ti interessano.
 
 #### `N_B_VER_2` - `VER-2` - S
 
 **Domanda:** Quale attività richiede più controllo umano?
 
-- A. Generare nomi provvisori per una cartella personale.
-- B. Suggerire varianti di una frase per esercizio.
-- C. Proporre una decisione che impegna denaro dell'organizzazione. **[corretta]**
-- D. Creare tre idee da discutere e scartare liberamente.
+- A. Trovare nomi provvisori per cartelle che uso solo per i miei appunti.
+- B. Scrivere frasi alternative per un esercizio che non dovrà essere pubblicato.
+- C. Proporre una decisione di spesa che potrebbe impegnare parte del bilancio dell’organizzazione. **[corretta]**
+- D. Preparare idee da discutere internamente, lasciando aperta la scelta.
+
+**Perché:** Una decisione di spesa può impegnare risorse reali. Chi decide deve verificare dati e conseguenze prima di approvarla.
 
 #### `N_B_DAT_1` - `DAT-1` - S
 
 **Domanda:** Devi sintetizzare curriculum ricevuti per una selezione. Qual è il primo controllo?
 
-- A. Verificare finalità, autorizzazioni, policy e dati realmente necessari prima di usare uno strumento approvato. **[corretta]**
-- B. Caricare tutti i file e cancellarli dal computer dopo l'uso.
-- C. Rimuovere soltanto le fotografie.
-- D. Usare un account personale per separare il lavoro dall'azienda.
+- A. Controllo autorizzazioni, strumento e dati necessari. **[corretta]**
+- B. Carico i curriculum completi e cancello le copie locali una volta finito.
+- C. Rimuovo le foto ma lascio nomi, indirizzi e altri dati che non servono.
+- D. Uso un account personale per separare i documenti da quelli già in azienda.
+
+**Perché:** I curriculum contengono dati personali. Prima di usarli, verifica per quale scopo sei autorizzato e quali informazioni servono davvero.
 
 #### `N_B_DAT_2` - `DAT-2` - S
 
 **Domanda:** L'AI genera un'immagine per una campagna. Prima di pubblicarla, quale comportamento è più responsabile?
 
-- A. Pubblicarla subito, perché un contenuto generato non richiede controlli.
-- B. Verificare adeguatezza, possibili somiglianze o diritti coinvolti e regole di trasparenza applicabili. **[corretta]**
-- C. Dichiararla automaticamente libera da qualunque diritto.
-- D. Attribuire l'immagine a un artista reale per renderla credibile.
+- A. Controllo colori e formato, perché sono gli aspetti più visibili della campagna.
+- B. Controllo se l’immagine è adatta, se compaiono persone o opere riconoscibili e quali regole si applicano. **[corretta]**
+- C. Do per scontato di poterla pubblicare perché l’ho generata con il mio account.
+- D. Aggiungo la dicitura «creata con AI» e la considero una verifica sufficiente.
+
+**Perché:** Prima di pubblicare, valuta se l’immagine è adatta e se ci sono persone, opere o marchi riconoscibili. Controlla anche le regole applicabili.
 
 ### Forma C
 
@@ -280,91 +320,111 @@ Ogni domanda ha quattro alternative. La risposta corretta è identificata per il
 
 **Domanda:** Chiedi a un sistema generativo di creare l'immagine di una città immaginaria. Quale descrizione è più corretta?
 
-- A. Deve trovare nel proprio archivio una fotografia identica già esistente.
-- B. Compone un nuovo output usando richiesta e pattern appresi, senza garantire che ogni dettaglio sia realistico. **[corretta]**
-- C. Fotografa in tempo reale una città scelta casualmente.
-- D. Verifica automaticamente che edifici e segnali rispettino regole reali.
+- A. Recupera una foto della città da un archivio.
+- B. Genera un’immagine dalla richiesta e da ciò che ha imparato. **[corretta]**
+- C. Combina immagini in diretta di città reali fino a trovare la più simile.
+- D. Controlla che i dettagli disegnati rispettino le regole del mondo reale.
+
+**Perché:** L’AI può creare un’immagine nuova anche se la città non esiste. I dettagli disegnati possono sembrare realistici senza esserlo.
 
 #### `N_C_CAP_2` - `CAP-2` - S
 
 **Domanda:** Devi organizzare un'attività con diversi vincoli. Come può aiutarti l'AI senza sostituire la decisione?
 
-- A. Generando alternative con vantaggi e limiti da confrontare. **[corretta]**
-- B. Scegliendo autonomamente l'opzione finale senza conoscere le persone coinvolte.
-- C. Eliminando la necessità di chiarire obiettivi e vincoli.
-- D. Garantendo che la prima proposta sia la più adatta.
+- A. Propone alternative con vantaggi e limiti. **[corretta]**
+- B. Sceglie subito l’opzione finale anche se non conosce le persone coinvolte.
+- C. Organizza l’attività senza che io dica quali impegni non si possono spostare.
+- D. Tratto la prima proposta come definitiva.
+
+**Perché:** Avere più alternative aiuta a confrontare i compromessi. La scelta finale resta a chi conosce le persone e gli impegni.
 
 #### `N_C_LIM_1` - `LIM-1` - S
 
 **Domanda:** Domandi "Sei sicuro?" e l'AI conferma la risposta con tono ancora più deciso. Che cosa è cambiato?
 
-- A. La risposta è diventata una prova indipendente.
-- B. Il modello ha necessariamente consultato una fonte esterna.
-- C. Hai ottenuto una nuova formulazione, non una verifica indipendente. **[corretta]**
-- D. La sicurezza del tono rende trascurabile il rischio di errore.
+- A. La seconda risposta costituisce una conferma indipendente della prima.
+- B. Il tono più deciso mostra che il modello ha verificato una fonte esterna.
+- C. Il tono è cambiato. Per verificare la risposta devo ancora controllare una fonte indipendente. **[corretta]**
+- D. Se la formulazione è più sicura, è ragionevole ridurre i controlli.
+
+**Perché:** Lo stesso sistema può ripetere un errore con parole più decise. Per verificarlo, cerca una fonte diversa o controlla i dati originali.
 
 #### `N_C_LIM_2` - `LIM-2` - S
 
 **Domanda:** Chiedi informazioni su una procedura interna che non hai fornito al modello. Qual è il rischio principale?
 
-- A. Che il modello rifiuti sempre di rispondere.
-- B. Che produca una procedura plausibile ma diversa da quella reale. **[corretta]**
-- C. Che recuperi automaticamente il documento interno corretto.
-- D. Che aggiorni la procedura ufficiale senza autorizzazione.
+- A. Che chieda più dettagli prima di rispondere.
+- B. Che inventi una procedura plausibile ma diversa da quella reale. **[corretta]**
+- C. Che recuperi il documento aziendale corretto dal nome della procedura.
+- D. Che usi una procedura generica e la presenti come un esempio, dichiarandolo.
+
+**Perché:** Se il sistema non ha il documento, può colmare il vuoto con una risposta credibile. Per sapere cosa fare serve la procedura approvata.
 
 #### `N_C_REQ_1` - `REQ-1` - S
 
 **Domanda:** Vuoi un messaggio breve per rinviare una riunione. Quale richiesta è più controllabile?
 
-- A. "Scrivi un messaggio."
-- B. "Scrivi un messaggio cortese di massimo 60 parole: rinvia la riunione a data da definire, non inventare motivazioni e chiedi conferma di lettura." **[corretta]**
-- C. "Scrivi il messaggio migliore in assoluto."
-- D. "Comunica quello che ritieni opportuno."
+- A. Scrivi un messaggio cortese che proponga una nuova data a tua scelta.
+- B. In 60 parole, rinvia la riunione senza inventare date o motivi. **[corretta]**
+- C. Scrivi un messaggio formale e inventa una motivazione se serve a renderlo credibile.
+- D. Comunica il rinvio nel formato che preferisci.
+
+**Perché:** Indicare lunghezza e informazioni da lasciare aperte aiuta a ottenere un messaggio che non prometta date né attribuisca motivi inventati.
 
 #### `N_C_REQ_2` - `REQ-2` - S
 
-**Domanda:** L'AI basa la risposta su un'assunzione sbagliata. Che cosa fai?
+**Domanda:** L’AI ha risposto dando per scontata un’informazione sbagliata. Che cosa fai?
 
-- A. Correggo esplicitamente l'assunzione e chiedo di rivedere le parti influenzate. **[corretta]**
-- B. Continuo la conversazione senza segnalarla.
-- C. Chiedo soltanto una risposta più lunga.
-- D. Considero impossibile migliorare il risultato.
+- A. Correggo il presupposto e chiedo di rivedere le parti coinvolte. **[corretta]**
+- B. Aggiungo solo la mia preferenza.
+- C. Chiedo di ampliare la risposta, senza dire quale informazione è sbagliata.
+- D. Tengo la risposta e correggo solo la frase in cui compare l’errore.
+
+**Perché:** Un presupposto errato può cambiare anche le conclusioni. Chiedere di riesaminarle aiuta a correggere tutto ciò che ne dipende.
 
 #### `N_C_VER_1` - `VER-1` - S
 
 **Domanda:** L'AI descrive un obbligo previsto da una norma. Prima di agire, quale controllo è più solido?
 
-- A. Verificare testo vigente, data, ambito e, se l'impatto è rilevante, chiedere supporto competente. **[corretta]**
-- B. Accettare la spiegazione se usa un linguaggio giuridico.
-- C. Chiedere allo stesso modello di riscriverla in modo più formale.
-- D. Usare la risposta se cita un numero di articolo non verificato.
+- A. Controllo la norma vigente e a chi si applica. **[corretta]**
+- B. Mi affido alla spiegazione se cita i termini giuridici corretti e l’articolo.
+- C. Chiedo al modello una formulazione più formale per capire se è coerente.
+- D. Rileggo il numero di articolo.
+
+**Perché:** Prima di agire, controlla il testo vigente, la data e se la norma vale per il tuo caso. Se le conseguenze contano, chiedi supporto competente.
 
 #### `N_C_VER_2` - `VER-2` - S
 
-**Domanda:** Quale output richiede il controllo più rigoroso prima dell'uso?
+**Domanda:** Quale risultato richiede più controlli prima di essere usato?
 
-- A. Appunti privati per immaginare la trama di un racconto.
-- B. Un possibile consiglio sanitario destinato a una persona. **[corretta]**
-- C. Idee di nomi per un personaggio immaginario.
-- D. Una lista provvisoria di film da vedere.
+- A. Una bozza di trama per un racconto che tengo per me.
+- B. Un consiglio sulla salute da dare a una persona. **[corretta]**
+- C. Una lista di nomi per personaggi che posso cambiare in seguito.
+- D. Un elenco provvisorio di film da vedere con amici nel fine settimana.
+
+**Perché:** Un consiglio sulla salute può avere conseguenze sulla persona. Merita controlli più rigorosi di un’idea creativa o reversibile.
 
 #### `N_C_DAT_1` - `DAT-1` - S
 
 **Domanda:** Vuoi far riassumere il verbale di una riunione interna. Qual è il comportamento più prudente?
 
-- A. Incollarlo in qualunque chatbot, perché è solo testo.
-- B. Verificare classificazione, partecipanti, policy e strumento; rimuovere ciò che non serve. **[corretta]**
-- C. Cambiare i nomi delle persone lasciando tutti gli altri dettagli identificativi.
-- D. Aggiungere la frase "contenuto riservato" prima del testo.
+- A. Uso il mio chatbot preferito perché il verbale è già in formato testo.
+- B. Controllo se posso condividerlo, quale strumento è approvato e quali informazioni posso togliere. **[corretta]**
+- C. Cambio i nomi delle persone ma lascio gli altri dettagli identificativi.
+- D. Aggiungo «contenuto riservato» prima di incollare il verbale completo.
+
+**Perché:** Un verbale può contenere informazioni riservate anche senza nomi. Controlla autorizzazioni, strumento e dati strettamente necessari.
 
 #### `N_C_DAT_2` - `DAT-2` - S
 
 **Domanda:** Un collega vuole usare senza controlli una raccomandazione prodotta dall'AI. Qual è la risposta più responsabile?
 
-- A. "Usala: se sembra ragionevole, la responsabilità è del sistema."
-- B. "Revisioniamo dati, assunzioni e conseguenze; la decisione resta nostra." **[corretta]**
-- C. "Basta chiedere al modello di assumersi la responsabilità."
-- D. "Ogni uso dell'AI deve essere vietato, indipendentemente dal contesto."
+- A. Usala se ti sembra ragionevole e cita il modello come responsabile.
+- B. Rivediamo dati e conseguenze prima di decidere. **[corretta]**
+- C. Chiediamo al modello se conferma.
+- D. Usiamo la raccomandazione come ricevuta, indicando solo che è stata generata con AI.
+
+**Perché:** Dire che una proposta viene dall’AI non trasferisce la responsabilità. Chi decide deve controllarne dati, presupposti e possibili conseguenze.
 
 ## 6. English question bank
 
@@ -376,91 +436,111 @@ The identifiers, objectives, types, and correct-answer positions match the Itali
 
 **Question:** Which description best represents what a generative AI system does when responding to a request?
 
-- A. It always searches the web and copies the most relevant page.
-- B. It generates content using the input and patterns learned from data. **[correct]**
-- C. It always retrieves a previously written answer from an archive.
-- D. It automatically verifies every sentence before showing it.
+- A. It searches for a web page that matches the request.
+- B. It creates an answer using the request and what it learned. **[correct]**
+- C. It picks a ready-made answer from an archive built during training.
+- D. It checks each claim against outside sources before it answers.
+
+**Why:** Creating an answer uses what the system has learned. To know whether it also searched or checked something, look for evidence of those steps.
 
 #### `N_A_CAP_2` - `CAP-2` - S
 
 **Question:** You need ideas for a team meeting. What is the most useful first use of AI?
 
-- A. Ask for several proposals, then compare them with the real goal and constraints. **[correct]**
-- B. Ask it to choose the final proposal for the team on its own.
-- C. Accept the first idea because it was generated quickly.
-- D. Avoid AI because generated ideas can never be useful.
+- A. Ask for several ideas and compare them with the constraints. **[correct]**
+- B. Ask AI to pick for the group.
+- C. Bring the first idea and wait until the meeting to compare it with the goal.
+- D. Request one idea without saying what the team needs to achieve.
+
+**Why:** Comparing several ideas makes trade-offs visible. The team can decide with constraints the AI might not know about.
 
 #### `N_A_LIM_1` - `LIM-1` - S
 
 **Question:** A chatbot gives a very precise number but does not say where it came from. How should you treat it?
 
-- A. As reliable, because precision indicates a real calculation.
-- B. As probably true if it is written confidently.
-- C. As a figure to verify before using it. **[correct]**
-- D. As certainly false, because chatbots cannot use numbers.
+- A. Use it because the decimal places suggest a precise calculation.
+- B. Trust it because the chatbot states the number with confidence.
+- C. Check it before using it. **[correct]**
+- D. Discard it because a chatbot cannot give accurate numbers.
+
+**Why:** Precision and confident wording do not tell you where the number came from. Find the source or redo the calculation with the original data.
 
 #### `N_A_LIM_2` - `LIM-2` - S
 
 **Question:** You want a rule or opening time that may have changed recently. What do you do?
 
-- A. Use the model's answer without further checks.
-- B. Ask the model to answer more confidently.
-- C. Check a current official source and its effective date. **[correct]**
-- D. Treat the answer as valid if it contains many details.
+- A. Trust the answer if it gives a precise rule or opening time.
+- B. Ask AI if the answer is current.
+- C. Check an official source and the date. **[correct]**
+- D. Use the version with the most detail the model can provide.
+
+**Why:** An official source and its effective date show whether the rule or opening time still applies.
 
 #### `N_A_REQ_1` - `REQ-1` - S
 
 **Question:** You want a text summarized for people who are new to the subject. Which request is most useful?
 
-- A. "Summarize."
-- B. "Write something interesting about this text."
-- C. "Summarize the text in five points for a non-technical audience, explaining essential terms." **[correct]**
-- D. "Produce the best possible summary without asking questions."
+- A. Summarize it in five points.
+- B. Highlight the details that would interest a reader who already knows the subject.
+- C. Summarize in five points for someone new to the subject. **[correct]**
+- D. Shorten the text and keep the original level of technical detail.
+
+**Why:** Naming the audience and the length helps the AI decide what to explain and what to leave out.
 
 #### `N_A_REQ_2` - `REQ-2` - S
 
 **Question:** The first AI response is generic. What is the most useful next step?
 
-- A. Repeat the same question until the answer changes.
-- B. Add context, identify what is missing, and request a new version. **[correct]**
-- C. Treat the first output as the best the system can do.
-- D. Immediately change tools without clarifying the task.
+- A. Repeat the same request and select the most detailed answer.
+- B. Say what is missing and add the relevant background. **[correct]**
+- C. Keep the answer and change only its tone, leaving the content as it is.
+- D. Send the same request to a different tool.
+
+**Why:** Pointing out what is missing directs the revision. Repeating the same request leaves the problem unresolved.
 
 #### `N_A_VER_1` - `VER-1` - S
 
 **Question:** AI suggests the title, author, and link of a source. What do you do before citing it?
 
-- A. Use it: extensive detail proves it exists.
-- B. Open the link and verify identity, content, and support for the claim. **[correct]**
-- C. Ask the same chatbot whether the source is real.
-- D. Check only that the link looks professional.
+- A. Cite the source with the author, title, and link that AI supplied.
+- B. Open the source, check that it is the publication cited, and read whether it supports the claim. **[correct]**
+- C. Ask the same chatbot to confirm that the citation is accurate.
+- D. Check that the website is reputable without reading the publication.
+
+**Why:** A real link can lead to a publication that does not support your claim. Check both the publication and what it says.
 
 #### `N_A_VER_2` - `VER-2` - S
 
 **Question:** Which case requires a more rigorous review of AI output?
 
-- A. A private list of possible playlist titles.
-- B. An official communication that may affect other people. **[correct]**
-- C. An informal list of ideas that can be changed or discarded.
-- D. A creative exercise that will not be published.
+- A. A private list of possible names for a playlist.
+- B. An official notice that changes a procedure for the public. **[correct]**
+- C. A list of ideas to discuss at the next internal meeting.
+- D. A writing exercise kept in your personal notes.
+
+**Why:** An official notice can change what other people do. Its errors have more serious consequences and deserve closer review.
 
 #### `N_A_DAT_1` - `DAT-1` - S
 
 **Question:** You need to analyze a list containing customer names, emails, and notes. What do you do before uploading it to an AI tool?
 
-- A. Upload it if the tool is easy to use.
-- B. Remove only the file name.
-- C. Check authorization and policy, choose an approved tool, and minimize the data. **[correct]**
-- D. Convert it to PDF because that makes the data anonymous.
+- A. Upload the full list because the tool makes the analysis easier.
+- B. Rename the file but leave the names and email addresses in its rows.
+- C. Check the rules and share only needed data in an approved tool. **[correct]**
+- D. Convert the list to PDF and keep all the original information.
+
+**Why:** Renaming or converting the file does not protect the data. Check what you may share and which pieces are actually needed.
 
 #### `N_A_DAT_2` - `DAT-2` - S
 
 **Question:** You use AI to prepare a document that will be sent externally. Who retains final responsibility?
 
-- A. The model, because it wrote much of the text.
-- B. The tool provider in every circumstance.
-- C. The person or organization that reviews and uses the document. **[correct]**
-- D. Nobody, if the document contains the word "draft."
+- A. The model, because it wrote much of the document.
+- B. The provider, because it makes the tool available.
+- C. Whoever reviews and uses the document. **[correct]**
+- D. The person who sent the first request, even if others approve the release.
+
+**Why:** Final responsibility stays with whoever checks the document and decides to use or send it.
 
 ### Form B
 
@@ -468,91 +548,111 @@ The identifiers, objectives, types, and correct-answer positions match the Itali
 
 **Question:** AI summarizes an article you pasted into the conversation. What can you conclude?
 
-- A. It necessarily searched for and compared other online sources.
-- B. It transformed the supplied content, but this is not independent research. **[correct]**
-- C. It automatically verified every claim in the article.
-- D. It permanently stored the article in its parameters.
+- A. It compared the article with other sources available on the web.
+- B. It summarized the text I provided. **[correct]**
+- C. It verified the article’s claims before writing the summary.
+- D. It memorized the article.
+
+**Why:** A summary reworks the supplied text. On its own it does not show that the system researched or independently verified the claims.
 
 #### `N_B_CAP_2` - `CAP-2` - S
 
 **Question:** You need a first email draft. Which collaboration with AI is most appropriate?
 
-- A. Provide purpose, recipient, and tone, then review the draft before sending. **[correct]**
-- B. Let the model choose recipients and content without context.
-- C. Automatically send the first generated text.
-- D. Use AI only if it can take responsibility for sending it.
+- A. Give the purpose, recipient, and tone. Before sending, check the facts and who will receive it. **[correct]**
+- B. Let it infer the purpose and recipient from my role at work.
+- C. Send the first draft if it reads well and has no spelling mistakes.
+- D. Ask it to draft the email and choose when to send it for me.
+
+**Why:** Giving clear directions improves the draft. Reading it before sending helps you check the facts and recipient.
 
 #### `N_B_LIM_1` - `LIM-1` - S
 
 **Question:** A generated citation includes a complete author, year, and title. What do those details prove?
 
-- A. That the publication certainly exists.
-- B. That the model read the entire publication.
-- C. That the citation looks plausible but still needs verification. **[correct]**
-- D. That every claim associated with it is correct.
+- A. That the title identifies an existing publication with certainty.
+- B. That the AI read the publication it cites.
+- C. That the citation looks plausible and needs checking. **[correct]**
+- D. That any claim linked to this citation matches the original publication.
+
+**Why:** An author, year, and title can look precise even if the citation is wrong. Find and read the actual publication.
 
 #### `N_B_LIM_2` - `LIM-2` - S
 
 **Question:** You ask AI to compare products whose prices and features change often. Which precaution is essential?
 
-- A. Check the date and sources of the comparison data. **[correct]**
-- B. Always prefer the longest answer.
-- C. Treat the comparison as current if it contains a table.
-- D. Ask it not to show uncertainty.
+- A. Check the sources and dates of the data. **[correct]**
+- B. Choose the most detailed table.
+- C. Trust the table if all rows are filled and its prices look precise.
+- D. Ask for a single ranking that leaves out uncertain data.
+
+**Why:** Prices and features change. Check where the comparison data came from and when it was current.
 
 #### `N_B_REQ_1` - `REQ-1` - S
 
 **Question:** You want to turn notes into an operational table. Which request provides the best context?
 
-- A. "Put this in a table."
-- B. "Organize these notes into Task, Owner, Deadline, and Open questions; do not invent missing data." **[correct]**
-- C. "Create a perfect and complete table."
-- D. "Choose the structure and missing information yourself."
+- A. Arrange the notes in a short table.
+- B. Use Task, Owner, and Deadline. Mark missing details. **[correct]**
+- C. Fill every row by estimating details that are missing from the notes.
+- D. Use any columns you prefer, as long as the table is easy to read.
+
+**Why:** Naming the columns makes the table usable. Marking gaps prevents an estimate from being mistaken for a fact.
 
 #### `N_B_REQ_2` - `REQ-2` - S
 
 **Question:** AI returns the right content in the wrong format. What do you do?
 
-- A. Discard everything without explaining the issue.
-- B. Request a new version, state the expected format, and provide an example if useful. **[correct]**
-- C. Start over with an even more generic request.
-- D. Copy the result as it is because the content is enough.
+- A. Discard it and have everything rewritten without explaining why.
+- B. Keep the content and show the format I need. **[correct]**
+- C. Ask for a general revision.
+- D. Use the original version because the key information is correct.
+
+**Why:** When the content is useful, ask for a change to the format. An example shows what the revised version should look like.
 
 #### `N_B_VER_1` - `VER-1` - S
 
 **Question:** AI gives you a percentage for a presentation. What counts as an independent check?
 
-- A. Ask the same model to repeat the percentage.
-- B. Find the original report or a reliable source and check period and sample. **[correct]**
-- C. Check that the percentage has two decimal places.
-- D. Use it if it is close to what you expected.
+- A. Ask the same model to repeat the percentage and state its confidence.
+- B. Find the original report and check the period and sample. **[correct]**
+- C. Check how the number looks on the slide.
+- D. Compare the percentage with what I expected before making the request.
+
+**Why:** The original report lets you check whether the percentage covers the people and time period you need.
 
 #### `N_B_VER_2` - `VER-2` - S
 
 **Question:** Which activity requires more human oversight?
 
-- A. Generate temporary names for a personal folder.
-- B. Suggest sentence variations for practice.
-- C. Propose a decision that commits organizational funds. **[correct]**
-- D. Create three ideas that can be freely discussed and discarded.
+- A. Generate temporary folder names for my personal notes.
+- B. Write alternative sentences for an exercise that will stay private.
+- C. Propose a spending decision that could commit part of the organization’s budget. **[correct]**
+- D. Prepare ideas for an internal discussion where the decision is still open.
+
+**Why:** Spending can commit real resources. Whoever decides should check the evidence and consequences before approving it.
 
 #### `N_B_DAT_1` - `DAT-1` - S
 
 **Question:** You need to summarize resumes received for recruitment. What is the first check?
 
-- A. Check purpose, authorization, policy, and necessary data before using an approved tool. **[correct]**
-- B. Upload every file and delete it from your computer afterwards.
-- C. Remove only the photographs.
-- D. Use a personal account to separate the task from the company.
+- A. Check permission, the tool, and which details I need. **[correct]**
+- B. Upload the full résumés and delete the local copies afterwards.
+- C. Remove photos but keep names, addresses, and other details I do not need.
+- D. Use a personal account to separate these files from those already at work.
+
+**Why:** Résumés contain personal information. Check what you are allowed to use, for which purpose, and which details you need.
 
 #### `N_B_DAT_2` - `DAT-2` - S
 
 **Question:** AI generates an image for a campaign. What is the most responsible action before publishing it?
 
-- A. Publish immediately because generated content needs no checks.
-- B. Check suitability, possible similarities or rights, and applicable transparency rules. **[correct]**
-- C. Automatically declare it free of all rights.
-- D. Attribute it to a real artist to make it credible.
+- A. Check colors and dimensions because they are the most visible campaign details.
+- B. Check whether the image is suitable, whether it shows recognizable people or works, and which rules apply. **[correct]**
+- C. Assume I can publish it because I generated it with my own account.
+- D. Add an “AI-generated” label and consider that enough to publish it.
+
+**Why:** Before publishing, check whether the image is suitable and whether it includes recognizable people, works, or brands. Check which rules apply.
 
 ### Form C
 
@@ -560,91 +660,111 @@ The identifiers, objectives, types, and correct-answer positions match the Itali
 
 **Question:** You ask a generative system to create an image of an imaginary city. Which description is most accurate?
 
-- A. It must find an identical existing photograph in its archive.
-- B. It composes a new output from the request and learned patterns, without guaranteeing realistic details. **[correct]**
-- C. It takes a live photograph of a randomly selected city.
-- D. It automatically verifies that buildings and signs follow real rules.
+- A. Copy a photo of the city from an archive.
+- B. Creates an image from the request and patterns it has learned. **[correct]**
+- C. Combines live pictures of real cities until it finds the closest match.
+- D. Checks whether the buildings and signs it draws follow real-world rules.
+
+**Why:** AI can create an image of a city that does not exist. Its details may look real even when they are not.
 
 #### `N_C_CAP_2` - `CAP-2` - S
 
 **Question:** You need to organize an activity with several constraints. How can AI help without replacing the decision?
 
-- A. Generate alternatives with advantages and limitations to compare. **[correct]**
-- B. Choose the final option without knowing the people involved.
-- C. Remove the need to clarify goals and constraints.
-- D. Guarantee that the first proposal is the best fit.
+- A. Offer alternatives with benefits and drawbacks. **[correct]**
+- B. Pick the final option without needing to know the people involved.
+- C. Arrange everything without first asking which commitments cannot move.
+- D. Treat the first proposal as final.
+
+**Why:** Alternatives help you compare trade-offs. The final choice stays with the people who know the commitments and priorities.
 
 #### `N_C_LIM_1` - `LIM-1` - S
 
 **Question:** You ask "Are you sure?" and AI confirms the answer even more confidently. What changed?
 
-- A. The answer became independent evidence.
-- B. The model necessarily consulted an external source.
-- C. You received another formulation, not an independent check. **[correct]**
-- D. The confident tone makes the risk of error negligible.
+- A. The second answer is independent confirmation of the first one.
+- B. The stronger wording means the model has checked an outside source.
+- C. The wording changed. To check the answer, I still need to look at an independent source. **[correct]**
+- D. The more confident phrasing means I can reasonably do fewer checks.
+
+**Why:** The same system can repeat an error in stronger words. Check a separate source or the original data.
 
 #### `N_C_LIM_2` - `LIM-2` - S
 
 **Question:** You ask about an internal procedure that you did not provide to the model. What is the main risk?
 
-- A. The model will always refuse to answer.
-- B. It may produce a plausible procedure that differs from the real one. **[correct]**
-- C. It will automatically retrieve the correct internal document.
-- D. It will update the official procedure without authorization.
+- A. It may ask for details before answering.
+- B. It may invent a plausible procedure that differs from the real one. **[correct]**
+- C. It may retrieve the correct internal document from the procedure’s name.
+- D. It may give a generic procedure and clearly label it as an example.
+
+**Why:** Without the document, AI can fill in gaps with a convincing answer. Use the approved procedure to decide what to do.
 
 #### `N_C_REQ_1` - `REQ-1` - S
 
 **Question:** You want a short message to postpone a meeting. Which request is easiest to control?
 
-- A. "Write a message."
-- B. "Write a polite message of no more than 60 words: postpone the meeting to a date to be decided, do not invent reasons, and ask recipients to confirm they read it." **[correct]**
-- C. "Write the best possible message."
-- D. "Communicate whatever you think is appropriate."
+- A. Write a polite message that proposes a new date of your choice.
+- B. In 60 words, postpone the meeting without inventing dates or reasons. **[correct]**
+- C. Write a formal message and invent a reason if that makes it convincing.
+- D. Announce the postponement in any format.
+
+**Why:** Specify the length and what is unknown. This helps AI avoid promising dates or giving invented reasons.
 
 #### `N_C_REQ_2` - `REQ-2` - S
 
 **Question:** AI bases its answer on a wrong assumption. What do you do?
 
-- A. Explicitly correct the assumption and request a revision of affected parts. **[correct]**
-- B. Continue without pointing it out.
-- C. Ask only for a longer answer.
-- D. Treat the result as impossible to improve.
+- A. Correct the assumption and ask it to revise affected parts. **[correct]**
+- B. Add only my preference.
+- C. Ask for a fuller answer without saying what information is wrong.
+- D. Keep the answer and correct only the sentence where the error appears.
+
+**Why:** A mistaken assumption can affect the conclusions too. Reviewing the parts that depend on it corrects more than the original sentence.
 
 #### `N_C_VER_1` - `VER-1` - S
 
 **Question:** AI describes a legal obligation. What is the strongest check before acting?
 
-- A. Check the current text, date, scope, and seek qualified support if the impact is significant. **[correct]**
-- B. Accept the explanation if it uses legal language.
-- C. Ask the same model to rewrite it more formally.
-- D. Use it if it cites an unverified article number.
+- A. Check the current rule and who it applies to. **[correct]**
+- B. Trust the explanation if it uses the right legal terms and cites a section.
+- C. Ask the model to rewrite it more formally and see if the explanation is consistent.
+- D. Check the section number.
+
+**Why:** Before acting, check the current wording, date, and whether the rule applies to your case. Get qualified help if the consequences matter.
 
 #### `N_C_VER_2` - `VER-2` - S
 
 **Question:** Which output needs the most rigorous check before use?
 
-- A. Private notes for imagining a story plot.
-- B. Possible health advice intended for another person. **[correct]**
-- C. Character-name ideas for fiction.
-- D. A temporary list of films to watch.
+- A. A draft story outline kept in a private notebook.
+- B. Health advice intended for another person. **[correct]**
+- C. A list of character names that I can change later.
+- D. A provisional list of films to watch with friends over the weekend.
+
+**Why:** Health advice can affect a person’s well-being. It deserves closer checking than a creative idea you can readily change.
 
 #### `N_C_DAT_1` - `DAT-1` - S
 
 **Question:** You want to summarize an internal meeting record. What is the most cautious approach?
 
-- A. Paste it into any chatbot because it is only text.
-- B. Check classification, participants, policy, and tool; remove anything unnecessary. **[correct]**
-- C. Change people's names while keeping all other identifying details.
-- D. Add the words "confidential content" before the text.
+- A. Paste the minutes into my usual chatbot because they are already plain text.
+- B. Check whether I may share the minutes, which tool is approved, and what details can be removed. **[correct]**
+- C. Change people’s names but keep other details that can identify them.
+- D. Add “confidential” before pasting the complete minutes into the tool.
+
+**Why:** Meeting minutes can contain confidential information even without names. Check permission, the tool, and what you actually need to share.
 
 #### `N_C_DAT_2` - `DAT-2` - S
 
 **Question:** A colleague wants to use an AI-generated recommendation without checks. What is the most responsible response?
 
-- A. "Use it: if it sounds reasonable, the system is responsible."
-- B. "Let's review data, assumptions, and consequences; the decision remains ours." **[correct]**
-- C. "Just ask the model to take responsibility."
-- D. "Every use of AI must be banned, regardless of context."
+- A. Use it if it seems reasonable and credit the model as responsible.
+- B. Review the data and consequences before deciding. **[correct]**
+- C. Ask the same model to confirm.
+- D. Use the recommendation as written and just label it as AI-generated.
+
+**Why:** Saying a proposal came from AI does not transfer responsibility. Whoever decides should check the data, assumptions, and consequences.
 
 ## 7. Unita' didattiche riutilizzabili
 
@@ -653,8 +773,8 @@ Le trenta domande non producono trenta tutorial. Ogni errore rimanda a una delle
 ### `U-CAP-1` - Generare non significa cercare
 
 - Obiettivo: `CAP-1`
-- Principio IT: un sistema generativo produce output a partire dall'input e da pattern appresi; non cerca necessariamente sul web, non recupera sempre un documento e non verifica automaticamente la verità.
-- Principle EN: a generative system produces output from the input and learned patterns; it does not necessarily search the web, retrieve a document, or automatically verify truth.
+- Principio IT: un sistema generativo crea contenuti usando la richiesta e ciò che ha imparato dai dati. Una ricerca, la lettura di un documento e la verifica delle informazioni sono passaggi distinti.
+- Principle EN: a generative system creates content from the request and what it learned from data. Searching, reading a document, and checking facts are separate steps.
 - Equivoco tipico: confondere generazione, ricerca, archivio e verifica.
 - Esempio: un riassunto di un testo incollato può essere utile senza costituire una ricerca indipendente.
 - Micro-azione: prima di usare un output, chiedersi quali informazioni il sistema ha realmente ricevuto.
@@ -769,6 +889,7 @@ Per ogni risposta l'app salva localmente:
 - ID domanda e forma
 - obiettivo e unità didattica
 - alternativa scelta
+- risposta attesa e spiegazione della domanda per i nuovi report
 - esito corretto/da rivedere
 - versione della banca e della forma
 
@@ -776,12 +897,11 @@ Non viene salvato o inviato alcun profilo psicologico. Nessun dato lascia il bro
 
 ### 8.2 Composizione
 
-1. Raggruppare gli errori per `learningUnitId`.
-2. Mostrare ogni unità una sola volta anche se più domande future vi fanno riferimento.
-3. Ordinare prima le unità con errore, seguendo la sequenza: possibilità, limiti, richieste, verifica, dati/responsabilità.
-4. Mostrare poi un riepilogo compatto degli obiettivi risposti correttamente.
-5. Non mostrare classifiche, percentile o confronti con altri utenti.
-6. Se tutte le risposte sono corrette, proporre comunque una sintesi e il passaggio a Literacy o Fondamenti tecnici.
+1. Mostrare il conteggio delle risposte corrette su 10.
+2. Aprire per prime le risposte da rivedere. Mostrare domanda, risposta scelta, risposta attesa e spiegazione salvate nel report.
+3. Rendere consultabili anche le risposte corrette e le loro spiegazioni.
+4. Mostrare una scheda di esercizio per ogni `learningUnitId` da rivedere.
+5. Con tutte le risposte corrette, proporre Literacy o un’altra forma di Primi passi.
 
 ### 8.3 Scheda di errore
 
@@ -808,14 +928,13 @@ Le risposte corrette ricevono una frase breve collegata all'unità, senza lingua
 
 ### 8.5 Risultato sintetico
 
-Il risultato può mostrare il numero di obiettivi consolidati su 10, ma non deve essere chiamato indice AI Skill. Fasce proposte:
+Il risultato riporta il numero di risposte corrette su 10 in questa prova. Il testo di orientamento segue il risultato.
 
-- `0-3`: Inizia dalle basi / Start with the foundations
-- `4-6`: Basi in costruzione / Foundations in progress
-- `7-8`: Basi presenti, continua ad allenarle / Foundations in place, keep practicing
-- `9-10`: Pronto per un percorso tematico / Ready for a thematic path
+- `0–6` · Rivedi le basi con gli esercizi / Practice the basics with the exercises
+- `7–9` · Rileggi le risposte da rivedere / Review the answers you missed
+- `10` · Hai risposto bene a tutte le domande / You answered every question correctly
 
-Le fasce sono feedback didattico progettato, non soglie validate. Prima dell'implementazione il maintainer deve decidere se mostrare il conteggio numerico o soltanto le etichette.
+Sono indicazioni di studio. I report precedenti conservano risposte e testi originali e mostrano le schede didattiche. I dettagli per domanda sono disponibili nei nuovi report che li salvano.
 
 ### 8.6 Passo successivo
 
@@ -933,7 +1052,7 @@ Prima della milestone 14 vanno approvati o modificati:
 3. testo delle 30 domande in italiano e inglese
 4. dieci unità didattiche e relativo tono
 5. fonti da mostrare nell'app, incluse EUIPO per copyright e Commissione europea per trasparenza
-6. uso del conteggio `obiettivi consolidati su 10` oppure sole etichette formative
+6. uso del conteggio delle risposte corrette su 10 con un’indicazione formativa
 7. fasce formative proposte
 8. percorsi successivi suggeriti in base agli errori
 

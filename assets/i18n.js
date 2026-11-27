@@ -109,6 +109,10 @@ const AI_SKILL_I18N = {
     },
     formOverrides: {
       B: {
+        F_DG_1: {
+          text: "When I use AI output in important work, I keep enough information to reconstruct the inputs, sources, revisions, and final decision.",
+          hint: "Think about the records you actually keep."
+        },
         P_DS_1: {
           text: "Write the prompt you would use to ask AI to design a data-analysis dashboard from a CSV export with undocumented fields and some missing rows. You do not want it to invent KPIs, values, or interpretations.",
           hint: "Write the prompt you would actually use to get a controllable dashboard.",

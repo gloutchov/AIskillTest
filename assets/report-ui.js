@@ -19,14 +19,17 @@ function reportActions() {
 }
 function reportItem(item) {
   const status = item.responseStatus === "missing" ? reportText("Risposta mancante", "Missing answer") : reportText("Risposta non valida", "Invalid answer");
-  const credit = typeof item.credit === "number" ? `${reportText("Credito", "Credit")}: ${item.credit.toLocaleString(currentLanguage(), { maximumFractionDigits: 4 })}/1` : status;
+  const outcome = item.credit === 1 ? reportText("Credito pieno", "Full credit")
+    : item.credit > 0 ? reportText("Credito parziale", "Partial credit")
+    : reportText("Risposta da rivedere", "Answer to review");
+  const credit = typeof item.credit === "number" ? `${outcome} · ${item.credit.toLocaleString(currentLanguage(), { maximumFractionDigits: 4 })}/1` : status;
   const selection = item.selectionReview;
   return `<article class="analysis-item"><h4>${escapeHtml(item.question || item.sourceId)}</h4>
     <p class="muted small">${escapeHtml(objectiveLabel(item.objectiveId))} · ${escapeHtml(credit)}</p>
-    <p>${escapeHtml(item.answer || status)}</p>${item.answerText ? `<p class="answer-text">${escapeHtml(item.answerText)}</p>` : ""}
+    <p>${item.answer ? `<strong>${reportText("La tua risposta", "Your answer")}</strong> · ${escapeHtml(item.answer)}` : escapeHtml(status)}</p>${item.answerText ? `<p class="answer-text">${escapeHtml(item.answerText)}</p>` : ""}
     ${item.objectiveAlignment === "supporting" ? `<p class="evidence-note">${reportText("Quesito di supporto: il credito individuale non entra nella percentuale o nella copertura dell'area.", "Supporting question: its individual credit does not enter the area percentage or coverage.")}</p>` : ""}
     ${item.feedback ? `<p>${escapeHtml(item.feedback)}</p>` : ""}
-    ${(item.selectedRationales ?? []).map(reason => `<p><strong>${reportText("La tua scelta", "Your choice")}:</strong> ${escapeHtml(reason)}</p>`).join("")}
+    ${(item.selectedRationales ?? []).map(reason => `<p><strong>${reportText("Motivo del risultato", "Why this answer received that credit")}</strong> · ${escapeHtml(reason)}</p>`).join("")}
     ${item.sourceRefs ? `<p class="small">${item.sourceRefs.map(id => {
       const source = [...MODERN_AI.SOURCES, ...AGENTIC_WORKFLOWS.SOURCES, ...HARNESS_ASSESSMENT.SOURCES, ...COMPLETE_ASSESSMENT.SOURCES].find(source => source.id === id);
       return source ? `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.title)}</a>` : escapeHtml(id);
@@ -34,8 +37,32 @@ function reportItem(item) {
     ${selection?.omitted?.length ? `<p><strong>${reportText("Azioni utili non selezionate", "Useful actions not selected")}:</strong> ${escapeHtml(selection.omitted.join("; "))}</p>` : ""}
     ${selection?.incompatible?.length ? `<p><strong>${reportText("Scelte incompatibili", "Incompatible choices")}:</strong> ${escapeHtml(selection.incompatible.join("; "))}</p>` : ""}</article>`;
 }
+function renderLearningAnswers(answers) {
+  const reviewable = answers.filter(item => typeof item.question === "string" && typeof item.answer === "string"
+    && typeof item.expectedAnswer === "string" && typeof item.feedback === "string");
+  const review = (items, heading, open = false) => items.length ? `<details class="card evidence-section"${open ? " open" : ""}>
+    <summary>${heading} (${items.length})</summary>${items.map(item => `<article class="analysis-item"><h4>${escapeHtml(item.question)}</h4>
+      <p><strong>${reportText("La tua risposta", "Your answer")}</strong> · ${escapeHtml(item.answer || reportText("Risposta mancante", "Missing answer"))}</p>
+      ${item.correct === true ? "" : `<p><strong>${reportText("Risposta attesa", "Expected answer")}</strong> · ${escapeHtml(item.expectedAnswer)}</p>`}
+      <p>${escapeHtml(item.feedback)}</p></article>`).join("")}</details>` : "";
+  return review(reviewable.filter(item => item.correct !== true), reportText("Risposte da rivedere", "Answers to review"), true)
+    + review(reviewable.filter(item => item.correct === true), reportText("Risposte corrette", "Correct answers"));
+}
+
 function renderEvidenceDashboard(report) {
   const { results, coverage, meta } = report;
+  const self = meta.selfAssessment || {};
+  const selfLabels = { overall: reportText("Stima complessiva", "Overall estimate"), literacy: "Literacy", fluency: "Fluency", mindset: "Mindset" };
+  const selfEntries = Object.entries(selfLabels).filter(([key]) => typeof self[key] === "number" && Number.isFinite(self[key]));
+  const selfEstimates = selfEntries.length ? `<h3>${reportText("Stime iniziali facoltative", "Optional initial estimates")}</h3><ul>${selfEntries.map(([key, label]) => `<li>${escapeHtml(label)} · ${self[key]}/100</li>`).join("")}</ul><p>${reportText("Sono aspettative personali. Il risultato del test resta separato.", "These are personal expectations. The test results are reported separately.")}</p>` : "";
+  const session = [meta.name, meta.role, meta.area, formatDate(meta.completedAt), meta.testMode?.label, `${reportText("Forma", "Form")} ${meta.formId || "—"}`].filter(Boolean).join(" · ");
+  if (meta.testMode?.id === "operational-lab") {
+    $("dashboard").innerHTML = `${reportActions()}<section class="card evidence-section"><h2>${reportText("Esito del laboratorio operativo", "Operational lab results")}</h2>
+      <p class="muted small">${escapeHtml(session)}</p>${renderLabResults(report, true)}</section>${selfEstimates}${historyBlock()}`;
+    $("progressFill").style.width = "100%";
+    bindDashboardEvents();
+    return;
+  }
   const areas = Object.keys(ASSESSMENT_V3.AREA_LABELS);
   const activeAreas = areas.filter(area => ["Q", "D", "T"].some(type => coverage.byArea[area].byEvidence[type].proposed));
   const absentAreas = areas.filter(area => !activeAreas.includes(area));
@@ -60,15 +87,12 @@ function renderEvidenceDashboard(report) {
     <p><strong>${reportText("Spunti per rileggere il testo", "Prompts for reviewing your text")}</strong></p>
     <ul>${(item.checklist || []).map(label => `<li>${escapeHtml(label)}</li>`).join("")}</ul>
     <p>${escapeHtml(item.feedback)}</p><p class="muted small">${reportText("Checklist formativa: questi requisiti non sono verificati automaticamente. La presenza di parole chiave non dimostra la qualità della risposta.", "Formative checklist: these requirements are not automatically verified. The presence of keywords does not demonstrate answer quality.")}</p></article>`).join("");
-  const self = meta.selfAssessment || {};
-  const selfLabels = { overall: reportText("Stima complessiva", "Overall estimate"), literacy: "Literacy", fluency: "Fluency", mindset: "Mindset" };
-  const selfEntries = Object.entries(selfLabels).filter(([key]) => typeof self[key] === "number" && Number.isFinite(self[key]));
   const nextSteps = results.nextSteps ?? [];
   const counts = ["Q", "D", "T", "E"].map(type => `<article class="metric-card"><span>${evidenceLabel(type)}</span><strong>${coverage.byEvidence[type].proposed}</strong><span>${coverage.byEvidence[type].valid} ${reportText("risposte valide", "valid responses")}</span></article>`).join("");
   $("dashboard").innerHTML = `${reportActions()}<section class="card evidence-intro"><p class="kicker">${reportText("Risultati dell'assessment", "Assessment results")}</p>
     <h2>${reportText("Quadro delle evidenze", "Evidence overview")}</h2>
     <p>${reportText("I quiz e gli scenari esplorano conoscenze e giudizio su situazioni ipotetiche. Dichiarazioni e testi formativi sono separati. Questo risultato non certifica capacità operative o prestazioni sul lavoro.", "Questions and scenarios explore knowledge and judgment on hypothetical situations. Self-reports and formative text are separate. This result does not certify operational capabilities or workplace performance.")}</p>
-    <p class="muted small">${escapeHtml([meta.name, meta.role, meta.area].filter(Boolean).join(" · "))} · ${escapeHtml(formatDate(meta.completedAt))} · ${escapeHtml(meta.testMode?.label || "")} · ${reportText("Forma", "Form")} ${escapeHtml(meta.formId || "—")}</p>
+    <p class="muted small">${escapeHtml(session)}</p>
     <p class="evidence-note">${reportText("I report 2.x usano un modello diverso: nessun confronto diretto o media con questi risultati.", "Reports from 2.x use a different model: no direct comparison or averaging with these results.")}</p></section>
     ${report.criticalFindings.length ? `<p class="evidence-note" role="status"><strong>${reportText("Criticità nelle azioni simulate", "Critical simulated actions")}:</strong> ${escapeHtml(report.criticalFindings.map(f => f.effect).join(" "))} ${reportText("I risultati dei quiz non compensano questi esiti. Consulta i due casi nella sezione Esercizi simulati.", "Question results do not compensate for these outcomes. Review both cases in Simulated exercises.")}</p>` : ""}
     <div class="grid-4 evidence-counts">${counts}</div>
@@ -80,7 +104,7 @@ function renderEvidenceDashboard(report) {
     <section class="card evidence-section"><h2>${evidenceLabel("D")}</h2><p>${reportText("Descrivono ciò che dichiari di fare; non aumentano il risultato dei quiz e non dimostrano un'esecuzione. Una dichiarazione alta o bassa non è un voto di merito.", "These describe what you report doing; they do not increase question results or demonstrate execution. A high or low self-report is not a performance grade.")}</p>
       ${results.declaredContrasts.length ? `<p class="evidence-note">${reportText("Hai dichiarato un metodo stabile su obiettivi in cui alcune risposte ai quesiti sono da rivedere. Prova un esercizio guidato su:", "You reported a stable method on objectives where some question answers need review. Try a guided exercise on:")} ${escapeHtml(results.declaredContrasts.map(objectiveLabel).join("; "))}.</p>` : ""}
       ${declarations ? `<details><summary>${reportText("Leggi le dichiarazioni", "Read self-reports")} (${results.declaredPractices.length})</summary>${declarations}</details>` : `<p>${reportText("Nessun item dichiarativo in questo percorso.", "No self-report items in this path.")}</p>`}
-      ${selfEntries.length ? `<h3>${reportText("Stime iniziali facoltative", "Optional initial estimates")}</h3><ul>${selfEntries.map(([key, label]) => `<li>${escapeHtml(label)}: ${self[key]}/100</li>`).join("")}</ul><p>${reportText("Sono aspettative personali, conservate senza sottrarle ai risultati o ricavare un gap di competenza.", "These are personal expectations, stored without subtracting them from results or producing a competence gap.")}</p>` : ""}</section>
+      ${selfEstimates}</section>
     <section class="evidence-section"><h2>${evidenceLabel("T")}</h2><p>${reportText("Rileggi il testo con la checklist. Non viene assegnato un punteggio automatico di qualità.", "Review your text using the checklist. No automatic quality score is assigned.")}</p>${texts || `<p>${reportText("Nessun testo formativo in questo percorso.", "No formative text in this path.")}</p>`}</section>
     <section class="card evidence-section"><h2>${evidenceLabel("E")}</h2>${renderLabResults(report)}</section>
     <details class="card evidence-section"><summary>${reportText("Come leggere copertura e versioni", "Understanding coverage and versions")}</summary><p>${reportText("La copertura prevista richiede almeno 6 quesiti validi e tutti gli obiettivi dell'area. Solo in questo caso si usano le fasce editoriali: meno di 40 da riprendere, 40–69 in consolidamento, da 70 buon esito nei quesiti. Coperture parziali non qualificano l'intera area.", "Planned coverage requires at least 6 valid questions and all area objectives. Only then are editorial bands used: below 40 review foundations, 40–69 developing, 70 or above strong question results. Partial coverage does not qualify the whole area.")}</p><p>App ${escapeHtml(meta.assessmentVersion)} · Scoring ${escapeHtml(meta.scoringVersion)} · Blueprint ${escapeHtml(meta.blueprintVersion)} · ${reportText("Banca", "Bank")} ${escapeHtml(meta.questionBankVersion)} · ${reportText("Versione forma", "Form version")} ${escapeHtml(meta.formVersion)}</p></details>

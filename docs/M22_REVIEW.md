@@ -2,7 +2,7 @@
 
 Stato: M22 approvata dal maintainer il `2026-11-26`, release `v3.5.0`, con autorizzazione a commit, merge, tag, push e rimozione del branch `feature/balanced-complete-assessment`. Banca `2026.11-m22`, forma `1.8`; scoring `3.1.0`, schema `4`, blueprint `1.0.0`, laboratorio/casi `1.0.0` invariati.
 
-Generato con `node scripts/build-complete-review.mjs` dai contenuti effettivamente selezionati dall'app. Le righe C01–C50 sono slot editoriali espliciti: 44 ID Q/D/T dedicati al completo e sei ID LAB riusati con slotId. I 31 riusi Q/D/T conservano originSourceId, lingua e forma; 11 Fondamenti e due dichiarazioni A/H sono nuovi. All’uscita della M22 la banca tematica contava 145 ID e il runtime classificava 195 ID, escluso Primi passi. La [mappa degli item](ASSESSMENT_ITEM_MAP.md) riporta i conteggi attivi.
+Generato con `node scripts/build-complete-review.mjs` dai contenuti effettivamente selezionati dall'app. Le righe C01–C50 sono slot editoriali espliciti: 44 ID Q/D/T dedicati al completo e sei ID LAB riusati con slotId. I 31 riusi Q/D/T conservano originSourceId, lingua e forma; 11 Fondamenti e due dichiarazioni A/H sono nuovi. All’uscita della M22 la banca tematica contava 145 ID e il runtime classificava 195 ID, escluso Primi passi. La [mappa degli item](ASSESSMENT_ITEM_MAP.md) riporta i conteggi attivi. La patch 3.5.8 aggiorna il testo di C22 nella forma B inglese per allinearlo al comportamento descritto nella forma B italiana.
 
 ## Distribuzione e ordine
 
@@ -3096,7 +3096,7 @@ Fonti: M18-S01, M18-S12.
 
 
 
-**I take final responsibility for what I produce with AI, even when the tool contributes substantially.**
+**When I use AI output in important work, I keep enough information to reconstruct the inputs, sources, revisions, and final decision.**
 
 - 1: I do not apply it in my work — In practice I do not do it, or I would not know where to begin without specific guidance.
 - 2: I apply it with external support — I can do it when I start from an example, tutorial, template, or ready-made procedure.

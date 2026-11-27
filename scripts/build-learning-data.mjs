@@ -12,12 +12,17 @@ function questionBlock(sectionTitle, endTitle, language) {
     const [, id, objectiveId, typeCode] = head;
     const promptPrefix = language === "it" ? "**Domanda:** " : "**Question:** ";
     const text = lines.find(line => line.startsWith(promptPrefix)).slice(promptPrefix.length);
+    const feedbackPrefix = language === "it" ? "**Perché:** " : "**Why:** ";
+    const feedback = lines.find(line => line.startsWith(feedbackPrefix))?.slice(feedbackPrefix.length).trim();
     const optionLines = lines.filter(line => /^- [A-D]\. /.test(line));
     const options = optionLines.map(line => ({
       title: line.replace(/^- [A-D]\. /, "").replace(/ \*\*\[(corretta|correct)\]\*\*$/, ""),
       correct: /\*\*\[(corretta|correct)\]\*\*$/.test(line)
     }));
-    return { id, formId: id.split("_")[1], objectiveId, learningUnitId: `U-${objectiveId}`, type: typeCode === "C" ? "knowledge" : "scenario", language, text, options };
+    if (!feedback || options.length !== 4 || options.filter(option => option.correct).length !== 1) {
+      throw new Error(`Domanda senza spiegazione o con alternative non valide: ${language} ${id}`);
+    }
+    return { id, formId: id.split("_")[1], objectiveId, learningUnitId: `U-${objectiveId}`, type: typeCode === "C" ? "knowledge" : "scenario", language, text, options, feedback };
   });
 }
 
@@ -45,5 +50,5 @@ const units = unitSection.split(/^### `/m).slice(1).map(part => {
 });
 
 const questionMap = { it: italian, en: english };
-const output = `// Generato da LEARNING_PATH.md con scripts/build-learning-data.mjs.\nconst FIRST_STEPS_QUESTIONS = ${JSON.stringify(questionMap, null, 2)};\nconst FIRST_STEPS_UNITS = ${JSON.stringify(units, null, 2)};\n`;
+const output = `// Generato da LEARNING_PATH.md con scripts/build-learning-data.mjs.\nconst FIRST_STEPS_BANK_VERSION = "2026.11-first-steps-2";\nconst FIRST_STEPS_QUESTIONS = ${JSON.stringify(questionMap, null, 2)};\nconst FIRST_STEPS_UNITS = ${JSON.stringify(units, null, 2)};\n`;
 fs.writeFileSync(new URL("../assets/learning.js", import.meta.url), output);

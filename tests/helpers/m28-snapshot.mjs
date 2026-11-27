@@ -4,8 +4,8 @@ export function digest(value) {
   return createHash("sha256").update(JSON.stringify(value)).digest("hex");
 }
 
-export function snapshotForms(runtime, archivedIds = []) {
-  runtime.context.archivedIds = archivedIds;
+export function snapshotForms(runtime, { bankVersion } = {}) {
+  runtime.context.snapshotBankVersion = bankVersion;
   return runtime.run(`(() => {
     const forms = {};
     for (const language of ['it', 'en']) for (const form of FORM_IDS) {
@@ -17,6 +17,7 @@ export function snapshotForms(runtime, archivedIds = []) {
         state.selectedModeId = mode.id;
         writeFormCycle(language, mode.id, { remaining: [form], last: null });
         startAssessment();
+        if (snapshotBankVersion && mode.type !== 'learning') state.meta.questionBankVersion = snapshotBankVersion;
         state.answers = Object.fromEntries(questions.map((question, index) =>
           [question.id, choose(question, index % 3 !== 1)]));
         const report = calculateResults();
@@ -25,12 +26,23 @@ export function snapshotForms(runtime, archivedIds = []) {
         modes[mode.id] = { questions, report, csvRows: core.csvRows(report) };
       }
       const bank = language === 'en' ? buildEnglishQuestionForm(form) : buildQuestionForm(form);
-      const activeBank = bank.filter(question => !archivedIds.includes(question.sourceId));
       forms[language + ':' + form] = {
-        bank: activeBank.map(question => [question, core.ITEM_MAP[question.sourceId]]),
+        bank: bank.map(question => [question, core.ITEM_MAP[question.sourceId]]),
         ...modes
       };
     }
     return forms;
   })()`);
+}
+
+export function scoringSignatures(runtime) {
+  const rules = question => [question.id, question.type, question.proceedChars,
+    question.options?.map(option => [option.score, option.correct, option.value]), question.rubric];
+  return Object.fromEntries(Object.entries(snapshotForms(runtime)).map(([form, { bank, ...modes }]) => [form, digest({
+    bank: bank.map(([question, classification]) => [rules(question), classification]),
+    modes: Object.entries(modes).map(([mode, { questions, report }]) => [mode, questions.map(rules),
+      report.answers.map(answer => [answer.id, answer.credit, answer.score, answer.correct, answer.declaredValue]),
+      report.correctCount, report.recommendedUnitIds, report.results?.knowledgeByArea,
+      report.results?.declaredContrasts, report.results?.simulatedSummary, report.coverage])
+  })]));
 }

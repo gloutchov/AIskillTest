@@ -140,3 +140,13 @@ Edge headless ha aperto la root, l’app diretta e `index.html` da file. Su loca
 4. Verificare via HTTP sullo stesso dominio che, per esempio, `tests/fixtures/m21-regression.json`, `scripts/build-pages-artifact.mjs` e `docs/archive/agents-original.json` restituiscano `404`.
 
 La sorgente di partenza della C29 era la root di `main`. La prova mobile locale è stata eseguita con un viewport emulato.
+
+## Patch 3.5.8 — Revisione editoriale
+
+Il maintainer ha approvato il diff locale il `2026-11-27`.
+
+Superati 87 test. Il confronto con `v3.5.7` copre 84 combinazioni di percorso, lingua e forma. Conserva chiavi di risposta, crediti, rubriche e risultati sintetici, comprese le criticità del laboratorio. Il confronto dei contenuti con la baseline M28 resta attivo per le varianti fuori dalla revisione.
+
+In Primi passi, tutte le 60 varianti IT/EN hanno una spiegazione specifica. La risposta corretta è tra le più lunghe in 14 casi su 60, rispetto a 53 prima della revisione, e tra le più brevi in 8 casi. La lunghezza è un controllo editoriale. Le istruzioni dei quiz si leggono prima della scelta, le motivazioni dopo il test. I dettagli delle dichiarazioni restano accessibili durante la prova.
+
+In Edge con profilo temporaneo, verificati quiz e dichiarazioni in italiano, Primi passi in inglese a 390 px emulati, conteggio delle risposte, spiegazione della scelta ed export JSON. Il laboratorio ha segnalato in apertura una decisione critica simulata. Una bozza sintetica EN B del completo è ripartita dalla dichiarazione aggiornata conservando l’altra risposta. Durante la prova da file locale non sono emerse eccezioni o richieste esterne. Le verifiche usano risposte sintetiche.

@@ -6,7 +6,7 @@ Questionario interattivo in italiano e inglese per esplorare conoscenze, giudizi
 
 L'assessment produce un quadro delle evidenze: conoscenze/scenari, pratiche dichiarate, testi con feedback ed esiti simulati restano separati, con copertura e limiti per area. È pensato come strumento diagnostico interno e migliorabile, non come test psicometrico validato.
 
-Versione dell’app **`3.5.7`**, milestone C29.
+Versione dell’app **`3.5.8`**, patch editoriale di domande e resoconti.
 
 ### Nota sullo sviluppo
 
@@ -59,7 +59,7 @@ La home mostra un carosello con test completo e percorsi tematici. Il riepilogo 
 
 Durante il test, le domande a scelta singola avanzano automaticamente dopo la selezione. `Indietro` riapre la domanda con la risposta selezionata. Domande a scelta multipla e prove testuali richiedono `Avanti`. Nel Laboratorio operativo occorrono conferma esplicita dell’azione e `Avanti`. Quando cambia la domanda, il focus va al suo titolo. Il pulsante `Interrompi il test` annulla la sessione corrente, previa conferma, e torna alla home senza salvare un report.
 
-Nelle domande dichiarative, le alternative restano senza livelli numerici e sono presentate in ordine casuale per favorire la lettura del comportamento descritto. Il comando `Mostra i dettagli` chiarisce le differenze tra applicazione con supporto, autonomia caso per caso, metodo stabile e pratica verificata e condivisibile.
+Nelle domande dichiarative, le alternative restano senza livelli numerici e sono presentate in ordine casuale per favorire la lettura del comportamento descritto. Il comando `Mostra i dettagli` chiarisce le differenze tra applicazione con supporto, autonomia caso per caso, metodo stabile e pratica verificata e condivisibile. Nei quiz, le motivazioni delle alternative si leggono dopo il test nel resoconto.
 
 ### Cosa misura
 
@@ -100,7 +100,7 @@ AI Agents seleziona due scenari per ciascuno degli obiettivi A01–A05: processo
 
 Harness seleziona sempre H01, H02×2, H03×2, H04×2, H05×2 e H06, tutti Q di livello S. I termini tecnici sono spiegati nei casi e nel feedback; non servono installazioni o credenziali. Il percorso può raggiungere la copertura prevista di H con dieci risposte valide, ma non certifica capacità di costruire o amministrare un harness. Le tracce restano testo ipotetico, senza esecuzioni reali o simulate E. [Scenari e motivazioni bilingui](docs/HARNESS_REVIEW.md).
 
-`Primi passi con l'AI` è un'esperienza di apprendimento, non un assessment comparabile con gli altri risultati. Usa tre forme da 10 domande e propone spiegazioni locali e letture facoltative. I link esterni si aprono soltanto dopo un click esplicito.
+`Primi passi con l'AI` è un'esperienza di apprendimento, non un assessment comparabile con gli altri risultati. Usa tre forme da 10 domande. Il resoconto conta le risposte corrette e dà la precedenza a quelle da rivedere. Mostra scelta, risposta attesa e spiegazione, poi propone esercizi e letture facoltative. I link esterni si aprono soltanto dopo un click esplicito.
 
 Il completo contiene **36 quiz/scenari Q, 6 dichiarazioni D, 2 testi formativi T e 6 decisioni E**, già comprese nelle 50 unità. Copre Fondamenti (12), Uso operativo e multimodale (16), Agenti (12) e Harness (10), con Q diretti su tutti i 25 obiettivi. I quiz si rimescolano entro area; seguono due casi simulati contigui, con contatore delle unità e possibilità di invertire verifica/calcolo di K1. Le tre forme mantengono la matrice approvata. La durata 40–55 minuti è una stima editoriale da verificare con completamenti IT/EN; nessuna equivalenza psicometrica o durata empirica è dichiarata.
 
@@ -122,13 +122,15 @@ Lo step iniziale consente di inserire nome, ruolo, area/team e autovalutazione d
 
 Completo e Laboratorio operativo condividono una bozza locale in `aiSkillAssessmentDraft`, separata dallo storico. Conserva versione dei contenuti, modalità, lingua, forma, posizione, ordine, risposte, testi e azioni E confermate. Esclude i dati iniziali del profilo, i tempi e il log dei tentativi. Riprendi mantiene lingua e forma e lascia vuoti i dati iniziali. Le bozze compatibili di `3.5.0` e `3.5.1` vengono trasferite dalla chiave precedente `aiSkillOperationalLabDraft` al primo salvataggio dopo la ripresa.
 
-Riprendere in un'altra scheda assegna a quella scheda il salvataggio della bozza. Sostituire la bozza richiede conferma. La scheda precedente può completare ed esportare il proprio risultato. Il completamento rimuove la bozza dopo il salvataggio del report. Si può rimuoverla anche con Interrompi confermato, Elimina bozza o Cancella dati locali. Se il browser blocca il salvataggio tra schede, risposte e risultato restano nella pagina aperta per l'export. La persistenza da `file://` dipende dal browser. Dopo un aggiornamento, ricaricare le schede ancora aperte sulla versione precedente.
+Riprendere in un'altra scheda assegna a quella scheda il salvataggio della bozza. Sostituire la bozza richiede conferma. La scheda precedente può completare ed esportare il proprio risultato. Il completamento rimuove la bozza dopo il salvataggio del report. Si può rimuoverla anche con Interrompi confermato, Elimina bozza o Cancella dati locali. Se il browser blocca il salvataggio tra schede, risposte e risultato restano nella pagina aperta per l'export. La persistenza da `file://` dipende dal browser. Dopo un aggiornamento, ricaricare le schede ancora aperte sulla versione precedente. Riprendere una bozza della forma B inglese del completo con la dichiarazione aggiornata già compilata riapre quel quesito e conserva le altre risposte.
 
 ### Export e storico
 
 - JSON: contiene il record completo originale, con versioni di app/scoring/schema/blueprint, lingua, modalità, forma, evidenze, copertura e risposte.
 - CSV: formato UTF-8 `type,field,value` con metadati, risposte, evidenze e copertura. I testi che un foglio di calcolo potrebbe leggere come formule ricevono un apostrofo iniziale. I valori numerici rimangono numeri nel CSV. In Excel usare **Dati → Da testo/CSV** con separatore virgola. [Impostazioni di importazione](docs/SCORING.md#m25--export-csv).
 - Storico locale: dalla pagina iniziale, **Risultati precedenti** accanto a **Bibliografia** apre l’elenco, con fino a 100 report consultabili singolarmente. I report 2.x mostrano punteggi e raccomandazioni originali, con un avviso sul modello di valutazione precedente. Un report incompleto, danneggiato o di formato sconosciuto si può consultare in **Dati originali** ed esportare in JSON o CSV. Gli altri report rimangono accessibili e lo storico leggibile accetta nuovi salvataggi.
+
+Nei resoconti dei quiz puoi vedere se hai ottenuto credito pieno, parziale o zero e leggere il motivo della scelta. Nel Laboratorio operativo, il resoconto apre con l’esito dei casi e indica la prima decisione da rivedere quando serve.
 
 Gli export sono azioni manuali. Se il salvataggio fallisce, il report resta disponibile nella pagina per l'export. La pagina permette di riprovare quando l'errore è recuperabile. Puoi consultare lo storico e poi tornare al report pendente. Una bozza esistente resta disponibile per riprendere il completo o il laboratorio. Tornare ai percorsi richiede conferma. Alla chiusura o al ricaricamento la pagina richiede un avviso, che il browser può omettere. Se il browser non ha salvato alcuna bozza, l’export è il modo per conservare il report prima di chiudere.
 
@@ -152,12 +154,12 @@ L'icona a forma di casa accanto al selettore della lingua rimanda al sito princi
 
 ### Versioning
 
-- Versione app `3.5.7`.
-- Tag Git di riferimento `v3.5.7`.
-- Banca domande: `2026.11-m22`.
+- Versione app `3.5.8`.
+- Tag Git di riferimento `v3.5.8`.
+- Banca domande: `2026.11-editorial-1`.
 - Forma assessment: `1.8`.
 - Scoring: `3.1.0`; schema report `4`; blueprint `1.0.0`; casi/laboratorio `1.0.0`.
-- Banca Primi passi: `2026.07-first-steps-1`.
+- Banca Primi passi: `2026.11-first-steps-2`.
 - Forma Primi passi: `first-steps-1.0`.
 
 I tag seguono il formato `vX.Y.Z`. Le modifiche patch aggiornano documentazione o correzioni piccole; le modifiche minor o major introducono cambiamenti funzionali più ampi.
@@ -201,7 +203,7 @@ Interactive questionnaire in Italian and English exploring GenAI knowledge, judg
 
 The assessment produces an evidence overview: knowledge/scenarios, self-reported practices, text with feedback, and simulated outcomes remain separate, with area coverage and limits. It is intended as an internal diagnostic tool that can evolve over time, not as a psychometrically validated test.
 
-App version **`3.5.7`**, milestone C29.
+App version **`3.5.8`**, an editorial update to questions and reports.
 
 ### Development Note
 
@@ -254,7 +256,7 @@ The home page shows a carousel with the full test and thematic paths. The full-t
 
 During the test, single-choice questions advance automatically after selection. `Back` reopens the question with the selected answer. Multiple-choice questions and text tasks require `Next`. Operational lab decisions require explicit confirmation followed by `Next`. When the question changes, focus moves to its heading. The `Interrupt test` button cancels the current session after confirmation and returns to the home page without saving a report.
 
-In declarative questions, options remain unnumbered and are presented in random order to encourage reading the described behavior. The `Show details` control clarifies the differences between applying something with support, working independently case by case, using a stable method, and maintaining a verified, shareable practice.
+In declarative questions, options remain unnumbered and are presented in random order to encourage reading the described behavior. The `Show details` control clarifies the differences between applying something with support, working independently case by case, using a stable method, and maintaining a verified, shareable practice. For scored questions, answer explanations are available in the report after the test.
 
 ### What It Measures
 
@@ -295,7 +297,7 @@ AI Agents selects two scenarios for each A01–A05 objective: process, tool/argu
 
 Harness always selects H01, H02×2, H03×2, H04×2, H05×2, and H06, all level-S Q. Technical terms are explained in cases and feedback; no installation or credentials are needed. The path can reach planned H coverage with ten valid answers but does not certify ability to build or administer a harness. Traces remain hypothetical text without real execution or simulated E exercises. [Bilingual scenarios and rationales](docs/HARNESS_REVIEW.md).
 
-`AI First Steps` is a learning experience, not an assessment comparable with the other results. It uses three 10-question forms and provides local explanations and optional readings. External links open only after an explicit click.
+`AI First Steps` is a learning experience, not an assessment comparable with the other results. It uses three 10-question forms. The report counts correct answers and puts the questions to review first. It shows the selected and expected answers with an explanation, followed by activities and optional reading. External links open only after an explicit click.
 
 The full test contains **36 Q questions/scenarios, 6 D self-reports, 2 T formative texts, and 6 E decisions**, already included in its 50 units. It covers Foundations (12), Operational and multimodal use (16), Agents (12), and Harness (10), with direct Q coverage for all 25 objectives. Questions shuffle within areas; two contiguous simulated cases follow, with a response-unit counter and the option to swap K1 verification/calculation. All forms preserve the approved matrix. The 40–55 minute duration is an editorial estimate to verify with IT/EN completions; no psychometric equivalence or empirical timing is claimed.
 
@@ -317,13 +319,15 @@ The initial step can collect name, role, area/team, and self-assessed skills. Al
 
 The full test and Operational lab share a local draft in `aiSkillAssessmentDraft`, separate from history. It retains content versions, mode, language, form, position, order, answers, text, and confirmed E actions. It excludes initial profile data, timing, and attempt logs. Resuming preserves the language and form and leaves initial profile data blank. Compatible drafts from `3.5.0` and `3.5.1` move from the earlier `aiSkillOperationalLabDraft` key on the first save after resuming.
 
-Resuming in another tab gives that tab control over subsequent draft saves. Replacing the draft requires confirmation. The previous tab can complete the test and export its result. Completing a session removes the draft after saving the report. Confirming Interrupt, Discard draft, or Clear local data can also remove it. If the browser cannot coordinate saving across tabs, answers and results stay in the open page for export. Persistence from `file://` depends on the browser. After upgrading, reload any tabs still running the previous version.
+Resuming in another tab gives that tab control over subsequent draft saves. Replacing the draft requires confirmation. The previous tab can complete the test and export its result. Completing a session removes the draft after saving the report. Confirming Interrupt, Discard draft, or Clear local data can also remove it. If the browser cannot coordinate saving across tabs, answers and results stay in the open page for export. Persistence from `file://` depends on the browser. After upgrading, reload any tabs still running the previous version. Resuming an English Form B full-test draft that already answered the revised declaration reopens that question and keeps the other answers.
 
 ### Export And History
 
 - JSON: includes the complete original record, with app/scoring/schema/blueprint versions, language, mode, form, evidence, coverage, and answers.
 - CSV: UTF-8 `type,field,value` with metadata, answers, evidence, and coverage. Text that a spreadsheet could read as a formula gets a leading apostrophe. Numeric values stay numeric in the CSV. In Excel use **Data → From Text/CSV** with a comma delimiter. [Import settings](docs/SCORING.md#m25--export-csv).
 - Local history: select **Previous results** next to **Bibliography** on the home page to see up to 100 reports that you can open individually. Reports from 2.x display their original scores and recommendations with a notice about the previous assessment model. Incomplete, damaged, or unrecognized reports can be inspected under **Original data** and exported as JSON or CSV. Other reports remain accessible, and readable history accepts new saves.
+
+Quiz reports show whether you earned full, partial, or zero credit and explain the choice. The Operational lab report opens with the case results and identifies the first decision to review when needed.
 
 Exports are explicit user actions. If saving fails, the report stays available on the page for export. The page offers a retry for recoverable errors. You can open the history and return to the pending report. An existing draft remains available to resume the full test or lab. Returning to the paths requires confirmation. The page requests a warning before closing or reloading, which the browser can omit. If no draft was saved, export the report to keep it before closing.
 
@@ -347,12 +351,12 @@ The home icon next to the language selector links to the main website, [glaucosi
 
 ### Versioning
 
-- App version `3.5.7`.
-- Reference Git tag `v3.5.7`.
-- Question bank: `2026.11-m22`.
+- App version `3.5.8`.
+- Reference Git tag `v3.5.8`.
+- Question bank: `2026.11-editorial-1`.
 - Assessment form: `1.8`.
 - Scoring: `3.1.0`; report schema `4`; blueprint `1.0.0`; cases/lab `1.0.0`.
-- First Steps bank: `2026.07-first-steps-1`.
+- First Steps bank: `2026.11-first-steps-2`.
 - First Steps form: `first-steps-1.0`.
 
 Tags follow the `vX.Y.Z` format. Patch releases cover documentation or small fixes; minor and major releases introduce broader functional changes.

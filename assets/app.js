@@ -82,7 +82,7 @@ function cloneQuestionData(value) {
       return selected;
     }
 
-    const APP_VERSION = "3.5.7";
+    const APP_VERSION = "3.5.8";
     const HISTORY_KEY = "aiSkillAssessmentHistory";
     const ASSESSMENT_EPOCH_KEY = "aiSkillAssessmentClearGeneration";
     const DEFAULT_TEST_MODE_ID = "complete";
@@ -1457,7 +1457,7 @@ function cloneQuestionData(value) {
         languageSource: languageSource(),
         formId: selectedForm,
         formVersion: selectedMode.type === "learning" ? "first-steps-1.0" : FORM_VERSION,
-        questionBankVersion: selectedMode.type === "learning" ? "2026.07-first-steps-1" : QUESTION_BANK_VERSION,
+        questionBankVersion: selectedMode.type === "learning" ? FIRST_STEPS_BANK_VERSION : QUESTION_BANK_VERSION,
         testMode: {
           id: selectedMode.id,
           label: visibleMode.label,
@@ -1543,7 +1543,12 @@ function cloneQuestionData(value) {
       const questionContext = $("questionContext");
       questionContext.hidden = !q.context;
       questionContext.textContent = q.context || "";
-      $("questionHint").textContent = (q.hint || "") + (q.type === "text" ? (isEnglish() ? " Formative text: no automatic quality score." : " Testo formativo: nessun punteggio automatico di qualità.") : "");
+      const hasAnswerCommentary = q.type !== "likert" && q.options?.some(option => option.text);
+      const hint = hasAnswerCommentary
+        ? q.type === "multi" ? labText("Seleziona le azioni che ritieni adatte. Poi premi Avanti.", "Select the actions you consider appropriate, then select Next.")
+          : labText("Scegli una risposta in base alla domanda e alle informazioni disponibili.", "Choose one answer based on the question and the information provided.")
+        : q.hint || "";
+      $("questionHint").textContent = hint + (q.type === "text" ? (isEnglish() ? " Formative text: no automatic quality score." : " Testo formativo: nessun punteggio automatico di qualità.") : "");
       const responseGuide = $("responseGuide");
       responseGuide.hidden = q.type !== "likert";
       responseGuide.textContent = q.type === "likert"
@@ -1574,7 +1579,7 @@ function cloneQuestionData(value) {
         const multiple = q.type === "multi";
         const selectedValues = Array.isArray(currentValue) ? currentValue : [];
         const opts = displayOptionsFor(q);
-        const detailsVisible = Boolean(state.hintsVisible[q.id]);
+        const detailsVisible = q.type === "likert" && Boolean(state.hintsVisible[q.id]);
         const optionMarkup = opts.map(({ option: opt, value: optionValue, displayIndex }) => {
           const checked = multiple ? selectedValues.includes(Number(optionValue)) : String(currentValue) === String(optionValue);
           return `
@@ -1629,8 +1634,7 @@ function cloneQuestionData(value) {
     }
 
     function optionHintToggle(question, displayedOptions, visible) {
-      const hasDetails = displayedOptions.some(item => item.option && item.option.text);
-      if (!hasDetails) return "";
+      if (question.type !== "likert" || !displayedOptions.some(item => item.option?.text)) return "";
       const label = visible
         ? (isEnglish() ? "Hide details" : "Nascondi i dettagli")
         : (isEnglish() ? "Show details" : "Mostra i dettagli");
@@ -1738,11 +1742,14 @@ function cloneQuestionData(value) {
     function calculateLearningResults() {
       const answers = questions.map(question => {
         const selected = question.options[Number(state.answers[question.id])];
-        return { id: question.id, sourceId: question.id, formId: question.formId, section: question.section, dimension: question.dimension, sub: question.objectiveId, type: question.type, question: question.text, answer: selected ? selected.title : "", answerText: "", score: selected && selected.correct ? 5 : 1, correct: Boolean(selected && selected.correct), objectiveId: question.objectiveId, learningUnitId: question.learningUnitId };
+        return { id: question.id, sourceId: question.id, formId: question.formId, section: question.section, dimension: question.dimension, sub: question.objectiveId, type: question.type, question: question.text, answer: selected ? selected.title : "", answerText: "", score: selected && selected.correct ? 5 : 1, correct: Boolean(selected && selected.correct), objectiveId: question.objectiveId, learningUnitId: question.learningUnitId,
+          expectedAnswer: question.options.find(option => option.correct).title, feedback: question.feedback };
       });
       const correctCount = answers.filter(answer => answer.correct).length;
       const recommendedUnitIds = [...new Set(answers.filter(answer => !answer.correct).map(answer => answer.learningUnitId))];
-      const profile = correctCount <= 3 ? (isEnglish() ? "Start with the foundations" : "Inizia dalle basi") : correctCount <= 6 ? (isEnglish() ? "Foundations in progress" : "Basi in costruzione") : correctCount <= 8 ? (isEnglish() ? "Foundations in place, keep practicing" : "Basi presenti, continua ad allenarle") : (isEnglish() ? "Ready for a thematic path" : "Pronto per un percorso tematico");
+      const profile = correctCount <= 6 ? labText("Rivedi le basi con gli esercizi", "Practice the basics with the exercises")
+        : correctCount < 10 ? labText("Rileggi le risposte da rivedere", "Review the answers you missed")
+        : labText("Hai risposto bene a tutte le domande", "You answered every question correctly");
       return { meta: { ...state.meta, completedAt: new Date().toISOString() }, score: { overall: correctCount * 10 }, profile, answers, correctCount, recommendedUnitIds, recommendations: { profile: [], dimensions: [] } };
     }
 
@@ -1938,7 +1945,26 @@ function cloneQuestionData(value) {
       };
       const units = report.recommendedUnitIds.map(id => FIRST_STEPS_UNITS.find(unit => unit.id === id)).filter(Boolean);
       const cards = units.map(unit => { const source = sourceLinks[unit.id]; return `<article class="card learning-unit"><p class="kicker">${isEnglish() ? "Review this" : "Da rivedere"}</p><h3>${escapeHtml(isEnglish() ? titlesEn[unit.id] : unit.title.it)}</h3><p>${escapeHtml(isEnglish() ? unit.principle.en : unit.principle.it)}</p><p><strong>${isEnglish() ? "Try this:" : "Prova così:"}</strong> ${escapeHtml(isEnglish() ? actionsEn[unit.id] : unit.action)}</p><a class="bibliography-link" href="${source[1]}" target="_blank" rel="noopener noreferrer">${escapeHtml(source[0])} ↗</a></article>`; }).join("");
-      $("dashboard").innerHTML = `<div class="actions" style="margin-top:0;margin-bottom:18px"><button class="btn-primary" id="restartBtn">${isEnglish() ? "Back to paths" : "Torna ai percorsi"}</button><button class="btn-secondary" id="repeatLearningBtn">${isEnglish() ? "Repeat another form" : "Ripeti un'altra forma"}</button><button class="btn-ghost" id="exportJsonBtn">Export JSON</button><button class="btn-ghost" id="exportCsvBtn">Export CSV</button><button class="btn-ghost" id="printBtn">${isEnglish() ? "Print / save PDF" : "Stampa / salva PDF"}</button><button class="btn-ghost" id="bibliographyBtn">${isEnglish() ? "Bibliography" : "Bibliografia"}</button><button class="btn-danger" id="clearHistoryBtn">${isEnglish() ? "Clear local data" : "Cancella dati locali"}</button></div><section class="profile-band"><div class="profile-card"><p class="kicker" style="color:#a5b4fc">${isEnglish() ? "Foundational readiness" : "Preparazione sulle basi"}</p><div class="profile-title">${escapeHtml(report.profile)}</div><p>${report.correctCount}/10 ${isEnglish() ? "learning objectives consolidated. This is learning feedback, not an AI Skill score." : "obiettivi consolidati. È un feedback didattico, non un punteggio AI Skill."}</p></div><div class="card"><h3>${isEnglish() ? "Your next step" : "Il tuo prossimo passo"}</h3><p>${units.length ? (isEnglish() ? "Review the units below, then repeat or continue with a thematic path." : "Rivedi le unità qui sotto, poi ripeti o continua con un percorso tematico.") : (isEnglish() ? "All foundations are consolidated: you can continue with Literacy." : "Tutte le basi sono consolidate: puoi continuare con Literacy.")}</p></div></section><div class="learning-grid">${cards}</div>${historyBlock()}`;
+      const countLabel = report.correctCount === 1
+        ? labText("risposta corretta su 10 in questa prova.", "correct answer out of 10 in this exercise.")
+        : labText("risposte corrette su 10 in questa prova.", "correct answers out of 10 in this exercise.");
+      const nextStep = units.length
+        ? labText("Prova gli esercizi qui sotto. Poi puoi ripetere la prova o scegliere un altro percorso.", "Try the activities below before repeating the exercise or choosing another path.")
+        : labText("Puoi continuare con Literacy o provare un’altra forma di Primi passi.", "You can continue with the Literacy path or try another form of First Steps.");
+      $("dashboard").innerHTML = `<div class="actions report-actions">
+        <button class="btn-primary" id="restartBtn">${labText("Torna ai percorsi", "Back to paths")}</button>
+        <button class="btn-secondary" id="repeatLearningBtn">${labText("Ripeti un’altra forma", "Repeat another form")}</button>
+        <button class="btn-ghost" id="exportJsonBtn">${labText("Esporta JSON", "Export JSON")}</button>
+        <button class="btn-ghost" id="exportCsvBtn">${labText("Esporta CSV", "Export CSV")}</button>
+        <button class="btn-ghost" id="printBtn">${labText("Stampa / salva PDF", "Print / save PDF")}</button>
+        <button class="btn-ghost" id="bibliographyBtn">${labText("Bibliografia", "Bibliography")}</button>
+        <button class="btn-danger" id="clearHistoryBtn">${labText("Cancella dati locali", "Clear local data")}</button>
+      </div><section class="profile-band"><div class="profile-card">
+        <p class="kicker" style="color:#a5b4fc;">${labText("Preparazione sulle basi", "Foundational readiness")}</p>
+        <div class="profile-title">${escapeHtml(report.profile)}</div>
+        <p>${report.correctCount} ${countLabel}</p>
+      </div><div class="card"><h3>${labText("Il tuo prossimo passo", "Your next step")}</h3><p>${nextStep}</p></div></section>
+      ${renderLearningAnswers(report.answers)}<div class="learning-grid">${cards}</div>${historyBlock()}`;
       bindDashboardEvents();
       $("repeatLearningBtn").addEventListener("click", () => {
         if (!confirmLeavingUnsavedReport()) return;

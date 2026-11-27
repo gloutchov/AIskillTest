@@ -4,7 +4,7 @@ Questo piano governa le prossime modifiche del progetto `AIskillTest`. Ogni mile
 
 Versione di partenza: `1.0.0`.
 
-Versione di riferimento `3.5.7`, con le milestone 0–28 completate e il diff della C29 validato dal maintainer il `2026-11-27`. La chiusura della C29 richiede la verifica dei tag e del deploy selettivo di Pages.
+Versione di riferimento `3.5.8`, con le milestone 0–29 completate. Il maintainer ha validato il diff della patch editoriale il `2026-11-27`.
 
 ## Regole di release
 
@@ -857,7 +857,7 @@ Base della review `8a98a8f`. I target sono indicativi e seguono l'ordine delle m
 | 26 | Report storici danneggiati e gestione sicura dei campi | `3.5.4` | Completata |
 | 27 | Navigazione da tastiera e distribuzione sulla landing | `3.5.5` | Completata |
 | 28 | Pulizia del codice orfano e archivio dei quesiti Agents originali | `3.5.6` | Completata |
-| 29 | Pubblicazione selettiva e protezioni GitHub Pages | `3.5.7` | Implementazione approvata |
+| 29 | Pubblicazione selettiva e protezioni GitHub Pages | `3.5.7` | Completata |
 
 ### M23 — Recupero dei risultati e interruzione con storage indisponibile
 
@@ -917,10 +917,17 @@ Base della review `8a98a8f`. I target sono indicativi e seguono l'ordine delle m
 
 ### C29 — Pubblicazione selettiva e protezioni GitHub Pages
 
-- Branch `fix/github-pages-artifact-and-csp`, versione `3.5.7`, tag di versione `v3.5.7` e checkpoint `milestone/C29` da verificare su `main`.
+- Branch `fix/github-pages-artifact-and-csp`, versione `3.5.7`, tag `v3.5.7` e checkpoint `milestone/C29` verificati su `main` al commit `44dce70`. Deploy selettivo, HTTPS ed esclusioni verificati. Branch rimosso. [Run Pages](https://github.com/gloutchov/AIskillTest/actions/runs/46025385061)
 - Il workflow esegue i test e distribuisce un artefatto di 18 file da `main`, con pagine, risorse locali e licenza. La CSP nelle due pagine blocca script inline e connessioni avviate dall’app. L’avvio da file resta disponibile. Le direttive che richiedono header HTTP sono indicate nel [modello di sicurezza](SECURITY_MODEL.md).
 - Il maintainer ha approvato il diff locale il `2026-11-27`. Superati 82 test e `actionlint`. Verificati in Edge storico, bibliografia, export, blocchi CSP e navigazione da file e localhost. La prova mobile ha usato un viewport emulato. Le risorse interne risultano assenti dall’artefatto locale.
 - Durante la pubblicazione, passare a GitHub Actions come sorgente Pages e verificare HTTPS, root, apertura diretta, asset e risposta `404` per fixture e script sul dominio pubblico. La visibilità dei file nel repository segue i permessi GitHub. [Verifiche M29](docs/QA.md#m29--artefatto-pages-e-csp)
+
+## Patch 3.5.8 — Chiarezza di domande e risultati
+
+- Branch `fix/assessment-editorial-clarity`, versione `3.5.8`. Diff validato dal maintainer. La pubblicazione richiede la verifica di `main`, del tag `v3.5.8` e del deploy Pages.
+- Alternative e spiegazioni di Primi passi riscritte in IT/EN A/B/C. I quiz mostrano istruzioni neutre e conservano le motivazioni nei risultati. La dichiarazione `F_DG_1` nella forma EN B valuta la stessa pratica della variante IT B.
+- Primi passi mostra il numero di risposte corrette e spiega le scelte. I resoconti dei quiz distinguono il credito parziale. Il Laboratorio operativo porta in apertura la prima decisione da rivedere.
+- Banche `2026.11-editorial-1` e `2026.11-first-steps-2`. Forme, chiavi, rubriche e storico preservati. Nel completo EN B, una bozza con la domanda `C22` già compilata riparte da quella domanda e conserva le altre risposte. [Compatibilità](docs/SCORING.md#patch-358--testi-e-report)
 
 ## Backlog opzionale
 

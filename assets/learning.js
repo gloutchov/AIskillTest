@@ -1,4 +1,5 @@
 // Generato da LEARNING_PATH.md con scripts/build-learning-data.mjs.
+const FIRST_STEPS_BANK_VERSION = "2026.11-first-steps-2";
 const FIRST_STEPS_QUESTIONS = {
   "it": [
     {
@@ -11,22 +12,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Quale descrizione rappresenta meglio ciò che fa un sistema di AI generativa quando risponde a una richiesta?",
       "options": [
         {
-          "title": "Cerca sempre sul web e copia la pagina più pertinente.",
+          "title": "Cerca una pagina online che corrisponda alla richiesta.",
           "correct": false
         },
         {
-          "title": "Genera un contenuto usando l'input ricevuto e pattern appresi dai dati.",
+          "title": "Crea una risposta usando la richiesta e ciò che ha imparato.",
           "correct": true
         },
         {
-          "title": "Recupera sempre una risposta già scritta e conservata in un archivio.",
+          "title": "Sceglie una risposta pronta tra quelle archiviate durante l’addestramento.",
           "correct": false
         },
         {
-          "title": "Verifica automaticamente che ogni frase sia vera prima di mostrarla.",
+          "title": "Controlla la verità delle frasi su fonti esterne prima di rispondere.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Creare una risposta significa usare ciò che il sistema ha imparato. Per sapere se ha anche cercato o verificato qualcosa servono prove di quei passaggi."
     },
     {
       "id": "N_A_CAP_2",
@@ -38,22 +40,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Devi preparare idee per una riunione di team. Quale uso dell'AI è più utile come primo passo?",
       "options": [
         {
-          "title": "Chiederle diverse proposte, poi confrontarle con obiettivo e vincoli reali.",
+          "title": "Chiedo più idee e le confronto con i vincoli.",
           "correct": true
         },
         {
-          "title": "Chiederle di scegliere da sola la proposta definitiva per il team.",
+          "title": "Chiedo all’AI di scegliere per il gruppo.",
           "correct": false
         },
         {
-          "title": "Accettare la prima idea perché generata rapidamente.",
+          "title": "Porto la prima idea e rimando il confronto alla riunione.",
           "correct": false
         },
         {
-          "title": "Evitare l'AI: le idee generate non possono mai essere utili.",
+          "title": "Chiedo una sola proposta prima di dire che cosa deve ottenere il gruppo.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Confrontare più idee aiuta a vedere i compromessi. Il gruppo può decidere tenendo conto di vincoli che l’AI potrebbe ignorare."
     },
     {
       "id": "N_A_LIM_1",
@@ -65,22 +68,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Un chatbot fornisce un numero molto preciso, ma non indica da dove proviene. Come lo consideri?",
       "options": [
         {
-          "title": "Affidabile, perché la precisione indica un calcolo reale.",
+          "title": "Lo uso perché le cifre decimali fanno pensare a un calcolo preciso.",
           "correct": false
         },
         {
-          "title": "Probabilmente vero se la frase è scritta con sicurezza.",
+          "title": "Gli do credito perché il chatbot presenta il numero con sicurezza.",
           "correct": false
         },
         {
-          "title": "Un dato da verificare prima di usarlo.",
+          "title": "Lo verifico prima di usarlo.",
           "correct": true
         },
         {
-          "title": "Sicuramente falso, perché i chatbot non possono usare numeri.",
+          "title": "Lo scarto perché penso che un chatbot non possa riportare numeri corretti.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Le cifre decimali e il tono sicuro non dicono da dove viene un numero. Per usarlo, cerca una fonte o ripeti il calcolo sui dati di partenza."
     },
     {
       "id": "N_A_LIM_2",
@@ -89,25 +93,26 @@ const FIRST_STEPS_QUESTIONS = {
       "learningUnitId": "U-LIM-2",
       "type": "scenario",
       "language": "it",
-      "text": "Vuoi conoscere una regola o un orario che potrebbe essere cambiato di recente. Che cosa fai?",
+      "text": "Vuoi conoscere una regola o un orario che potrebbe essere cambiato di recente. Come controlli che sia ancora valido?",
       "options": [
         {
-          "title": "Uso la risposta del modello senza altre verifiche.",
+          "title": "Mi affido alla risposta se indica un orario o una regola precisa.",
           "correct": false
         },
         {
-          "title": "Chiedo al modello di rispondere con maggiore sicurezza.",
+          "title": "Chiedo all’AI se è aggiornata.",
           "correct": false
         },
         {
-          "title": "Controllo una fonte ufficiale aggiornata e la data di validità.",
+          "title": "Controllo una fonte ufficiale e la data.",
           "correct": true
         },
         {
-          "title": "Considero valida la risposta se contiene molti dettagli.",
+          "title": "Uso la versione più dettagliata che il modello riesce a produrre.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "La fonte dell’ente interessato e la data di validità permettono di controllare che la regola o l’orario valgano ancora."
     },
     {
       "id": "N_A_REQ_1",
@@ -119,22 +124,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Vuoi far riassumere un testo per persone che non conoscono l'argomento. Quale richiesta è più utile?",
       "options": [
         {
-          "title": "\"Riassumi.\"",
+          "title": "Riassumi in cinque punti.",
           "correct": false
         },
         {
-          "title": "\"Scrivi qualcosa di interessante su questo testo.\"",
+          "title": "Metti in evidenza i dettagli che potrebbero interessare a chi conosce già l’argomento.",
           "correct": false
         },
         {
-          "title": "\"Riassumi il testo in cinque punti, per un pubblico non tecnico, spiegando i termini indispensabili.\"",
+          "title": "Riassumi in cinque punti per chi è alle prime armi.",
           "correct": true
         },
         {
-          "title": "\"Produci il miglior riassunto possibile senza farmi domande.\"",
+          "title": "Rendi il testo breve e mantieni la stessa difficoltà dell’originale.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Indicare chi leggerà il riassunto e quanto deve essere lungo aiuta l’AI a scegliere cosa spiegare e cosa tralasciare."
     },
     {
       "id": "N_A_REQ_2",
@@ -146,22 +152,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "La prima risposta dell'AI è generica. Qual è il passo successivo più utile?",
       "options": [
         {
-          "title": "Ripetere identica la domanda finché cambia risposta.",
+          "title": "Ripeto la richiesta identica e scelgo la risposta più dettagliata.",
           "correct": false
         },
         {
-          "title": "Aggiungere contesto, indicare che cosa manca e chiedere una nuova versione.",
+          "title": "Dico che cosa manca e aggiungo il contesto utile.",
           "correct": true
         },
         {
-          "title": "Considerare il primo output come il massimo possibile.",
+          "title": "Tengo la risposta e ne cambio solo il tono, lasciando invariato il contenuto.",
           "correct": false
         },
         {
-          "title": "Cambiare immediatamente strumento senza chiarire il compito.",
+          "title": "Cambio strumento con la stessa richiesta.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Dire che cosa manca orienta la correzione. Riprovare da capo con le stesse informazioni lascia il problema irrisolto."
     },
     {
       "id": "N_A_VER_1",
@@ -173,22 +180,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "L'AI propone titolo, autore e link di una fonte. Prima di citarla, che cosa fai?",
       "options": [
         {
-          "title": "La uso: tanti dettagli dimostrano che esiste.",
+          "title": "Cito la fonte usando autore, titolo e link che l’AI ha dato.",
           "correct": false
         },
         {
-          "title": "Apro il link e verifico identità, contenuto e sostegno alla frase.",
+          "title": "Apro la fonte e controllo che sostenga ciò che voglio citare.",
           "correct": true
         },
         {
-          "title": "Chiedo allo stesso chatbot se la fonte è reale.",
+          "title": "Chiedo allo stesso chatbot di confermare che la citazione sia vera.",
           "correct": false
         },
         {
-          "title": "Controllo soltanto che il link abbia un aspetto professionale.",
+          "title": "Controllo che il sito sia affidabile, senza leggere la pubblicazione.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Un link può essere corretto e rimandare a un testo che non sostiene la tua affermazione. Controlla sia la pubblicazione sia ciò che dice."
     },
     {
       "id": "N_A_VER_2",
@@ -197,25 +205,26 @@ const FIRST_STEPS_QUESTIONS = {
       "learningUnitId": "U-VER-2",
       "type": "scenario",
       "language": "it",
-      "text": "In quale caso serve una revisione più rigorosa dell'output AI?",
+      "text": "Quale risultato dell’AI richiede più controlli prima di essere usato?",
       "options": [
         {
-          "title": "Un elenco privato di possibili titoli per una playlist.",
+          "title": "Una lista di titoli per una playlist che resterà privata.",
           "correct": false
         },
         {
-          "title": "Una comunicazione ufficiale che può influenzare altre persone.",
+          "title": "Un avviso ufficiale che cambia una procedura per il pubblico.",
           "correct": true
         },
         {
-          "title": "Una lista informale di idee da scartare o modificare.",
+          "title": "Un elenco di idee da discutere al prossimo incontro interno.",
           "correct": false
         },
         {
-          "title": "Un esercizio creativo che non verrà pubblicato.",
+          "title": "Una prova di scrittura da conservare tra i propri appunti.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Un avviso ufficiale può cambiare il comportamento di altre persone. Gli errori hanno conseguenze maggiori e meritano controlli più accurati."
     },
     {
       "id": "N_A_DAT_1",
@@ -227,22 +236,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Devi analizzare un elenco con nomi, email e note sui clienti. Prima di caricarlo in uno strumento AI, che cosa fai?",
       "options": [
         {
-          "title": "Lo carico se lo strumento è facile da usare.",
+          "title": "Carico il file completo perché lo strumento semplifica l’analisi.",
           "correct": false
         },
         {
-          "title": "Tolgo soltanto il nome del file.",
+          "title": "Rinomino il file, ma lascio nomi e indirizzi email nelle righe.",
           "correct": false
         },
         {
-          "title": "Verifico autorizzazione e policy, scelgo uno strumento approvato e riduco i dati al minimo necessario.",
+          "title": "Verifico le regole e uso solo i dati necessari in uno strumento approvato.",
           "correct": true
         },
         {
-          "title": "Lo trasformo in PDF, perché così i dati diventano anonimi.",
+          "title": "Converto il file in PDF e mantengo tutte le informazioni originali.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Cambiare nome o formato non protegge i dati. Prima controlla se puoi usarli in quello strumento e quali informazioni servono davvero."
     },
     {
       "id": "N_A_DAT_2",
@@ -254,22 +264,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Usi l'AI per preparare un documento che verrà inviato all'esterno. Chi mantiene la responsabilità finale?",
       "options": [
         {
-          "title": "Il modello, perché ha scritto gran parte del testo.",
+          "title": "Il modello, perché ha scritto buona parte del documento.",
           "correct": false
         },
         {
-          "title": "Il fornitore dello strumento in ogni circostanza.",
+          "title": "Il fornitore del servizio, perché mette a disposizione lo strumento.",
           "correct": false
         },
         {
-          "title": "La persona o l'organizzazione che revisiona e usa il documento.",
+          "title": "Chi rivede e usa il documento.",
           "correct": true
         },
         {
-          "title": "Nessuno, se nel documento compare la parola \"bozza\".",
+          "title": "Chi ha avviato la richiesta iniziale, anche se altri decidono l’invio.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "La responsabilità finale resta a chi controlla il documento e decide di usarlo o inviarlo."
     },
     {
       "id": "N_B_CAP_1",
@@ -281,22 +292,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Un'AI riassume un articolo che hai incollato nella conversazione. Che cosa puoi concludere?",
       "options": [
         {
-          "title": "Ha necessariamente cercato e confrontato altre fonti online.",
+          "title": "Ha confrontato il contenuto dell’articolo con altre fonti online.",
           "correct": false
         },
         {
-          "title": "Ha trasformato il contenuto fornito, ma questo non equivale a una ricerca indipendente.",
+          "title": "Ha riassunto il testo che le ho dato.",
           "correct": true
         },
         {
-          "title": "Ha verificato automaticamente tutte le affermazioni dell'articolo.",
+          "title": "Ha verificato le affermazioni dell’articolo prima di scrivere il riassunto.",
           "correct": false
         },
         {
-          "title": "Ha memorizzato definitivamente l'articolo nei propri parametri.",
+          "title": "Ha memorizzato l’articolo.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Un riassunto rielabora il testo fornito. Da solo non dimostra una ricerca o una verifica indipendente."
     },
     {
       "id": "N_B_CAP_2",
@@ -308,22 +320,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Devi scrivere una prima bozza di email. Quale collaborazione con l'AI è più appropriata?",
       "options": [
         {
-          "title": "Fornire scopo, destinatario e tono, poi revisionare la bozza prima dell'invio.",
+          "title": "Do scopo, destinatario e tono. Prima di inviare verifico i fatti e chi riceverà il messaggio.",
           "correct": true
         },
         {
-          "title": "Far scegliere al modello destinatari e contenuto senza contesto.",
+          "title": "Le faccio indovinare destinatario e scopo dal mio ruolo in azienda.",
           "correct": false
         },
         {
-          "title": "Inviare automaticamente il primo testo generato.",
+          "title": "Invio la prima bozza se il testo è scritto bene e non contiene refusi.",
           "correct": false
         },
         {
-          "title": "Usare l'AI soltanto se può assumersi la responsabilità dell'invio.",
+          "title": "Le chiedo di preparare la bozza e di decidere al posto mio quando inviarla.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Dare indicazioni rende la prima bozza più pertinente. La rilettura prima dell’invio resta utile per controllare contenuto e destinatari."
     },
     {
       "id": "N_B_LIM_1",
@@ -335,22 +348,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Una citazione generata contiene autore, anno e titolo completi. Che cosa dimostrano questi dettagli?",
       "options": [
         {
-          "title": "Che la pubblicazione esiste sicuramente.",
+          "title": "Che la pubblicazione è identificata con certezza dal titolo indicato.",
           "correct": false
         },
         {
-          "title": "Che il modello ha letto l'intera pubblicazione.",
+          "title": "Che il modello ha letto la pubblicazione che cita.",
           "correct": false
         },
         {
-          "title": "Che la citazione appare plausibile, ma deve ancora essere verificata.",
+          "title": "Che la citazione sembra plausibile e va verificata.",
           "correct": true
         },
         {
-          "title": "Che ogni affermazione associata alla citazione è corretta.",
+          "title": "Che le affermazioni associate alla citazione sono riportate correttamente.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Autore, anno e titolo possono sembrare precisi anche quando il riferimento è sbagliato. Cerca la pubblicazione e leggila."
     },
     {
       "id": "N_B_LIM_2",
@@ -362,22 +376,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Chiedi all'AI di confrontare prodotti i cui prezzi e caratteristiche cambiano spesso. Quale cautela è essenziale?",
       "options": [
         {
-          "title": "Controllare data e fonti dei dati usati nel confronto.",
+          "title": "Controllo le fonti e la data dei dati.",
           "correct": true
         },
         {
-          "title": "Preferire sempre la risposta più lunga.",
+          "title": "Scelgo la tabella più ricca.",
           "correct": false
         },
         {
-          "title": "Considerare aggiornato il confronto se contiene una tabella.",
+          "title": "Mi fido della tabella se le righe sono complete e i prezzi sono precisi.",
           "correct": false
         },
         {
-          "title": "Chiedere di non mostrare incertezze.",
+          "title": "Chiedo di fare una classifica unica senza indicare dati incerti.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Per confrontare prezzi e caratteristiche che cambiano, controlla da dove vengono i dati e a quale data si riferiscono."
     },
     {
       "id": "N_B_REQ_1",
@@ -389,22 +404,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Vuoi trasformare alcuni appunti in una tabella operativa. Quale richiesta offre il contesto migliore?",
       "options": [
         {
-          "title": "\"Metti in tabella.\"",
+          "title": "Organizza gli appunti in una tabella breve.",
           "correct": false
         },
         {
-          "title": "\"Organizza questi appunti in colonne Attività, Responsabile, Scadenza e Dubbi; non inventare i dati mancanti.\"",
+          "title": "Usa Attività, Responsabile e Scadenza. Segna i dati mancanti.",
           "correct": true
         },
         {
-          "title": "\"Crea una tabella perfetta e completa.\"",
+          "title": "Completa ogni riga usando stime quando dagli appunti manca un dato.",
           "correct": false
         },
         {
-          "title": "\"Decidi tu struttura e informazioni mancanti.\"",
+          "title": "Usa pure le colonne che preferisci, purché la tabella sia facile da leggere.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Specificare le colonne rende il risultato riutilizzabile. Segnalare i dati mancanti evita di scambiare una stima per un fatto."
     },
     {
       "id": "N_B_REQ_2",
@@ -416,22 +432,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "L'AI restituisce il contenuto giusto nel formato sbagliato. Come procedi?",
       "options": [
         {
-          "title": "Scarto tutto senza spiegare il problema.",
+          "title": "Scarto il contenuto e faccio riscrivere tutto senza spiegare il motivo.",
           "correct": false
         },
         {
-          "title": "Chiedo una nuova versione indicando il formato atteso e mostrando, se utile, un esempio.",
+          "title": "Chiedo di mantenere il contenuto e mostro il formato atteso.",
           "correct": true
         },
         {
-          "title": "Riparto con una richiesta ancora più generica.",
+          "title": "Chiedo una revisione generale.",
           "correct": false
         },
         {
-          "title": "Copio il risultato così com'è, perché il contenuto è sufficiente.",
+          "title": "Uso la versione ricevuta perché le informazioni principali sono corrette.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Se il contenuto va bene, chiedi una correzione mirata al formato. Un esempio aiuta a capire che cosa vuoi ottenere."
     },
     {
       "id": "N_B_VER_1",
@@ -443,22 +460,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "L'AI indica una percentuale da usare in una presentazione. Qual è una verifica indipendente?",
       "options": [
         {
-          "title": "Chiedere allo stesso modello di ripetere la percentuale.",
+          "title": "Chiedo al modello di ripetere la percentuale e di indicare quanto è sicuro.",
           "correct": false
         },
         {
-          "title": "Cercare il rapporto originale o una fonte affidabile e controllare periodo e campione.",
+          "title": "Cerco il rapporto originale e controllo periodo e campione.",
           "correct": true
         },
         {
-          "title": "Verificare che la percentuale abbia due decimali.",
+          "title": "Controllo come appare il dato nella slide.",
           "correct": false
         },
         {
-          "title": "Usarla se è simile a ciò che ti aspettavi.",
+          "title": "Confronto la percentuale con ciò che mi aspettavo prima di fare la richiesta.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Il rapporto originale aiuta a controllare se la percentuale riguarda le persone e il periodo che ti interessano."
     },
     {
       "id": "N_B_VER_2",
@@ -470,22 +488,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Quale attività richiede più controllo umano?",
       "options": [
         {
-          "title": "Generare nomi provvisori per una cartella personale.",
+          "title": "Trovare nomi provvisori per cartelle che uso solo per i miei appunti.",
           "correct": false
         },
         {
-          "title": "Suggerire varianti di una frase per esercizio.",
+          "title": "Scrivere frasi alternative per un esercizio che non dovrà essere pubblicato.",
           "correct": false
         },
         {
-          "title": "Proporre una decisione che impegna denaro dell'organizzazione.",
+          "title": "Proporre una decisione di spesa che potrebbe impegnare parte del bilancio dell’organizzazione.",
           "correct": true
         },
         {
-          "title": "Creare tre idee da discutere e scartare liberamente.",
+          "title": "Preparare idee da discutere internamente, lasciando aperta la scelta.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Una decisione di spesa può impegnare risorse reali. Chi decide deve verificare dati e conseguenze prima di approvarla."
     },
     {
       "id": "N_B_DAT_1",
@@ -497,22 +516,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Devi sintetizzare curriculum ricevuti per una selezione. Qual è il primo controllo?",
       "options": [
         {
-          "title": "Verificare finalità, autorizzazioni, policy e dati realmente necessari prima di usare uno strumento approvato.",
+          "title": "Controllo autorizzazioni, strumento e dati necessari.",
           "correct": true
         },
         {
-          "title": "Caricare tutti i file e cancellarli dal computer dopo l'uso.",
+          "title": "Carico i curriculum completi e cancello le copie locali una volta finito.",
           "correct": false
         },
         {
-          "title": "Rimuovere soltanto le fotografie.",
+          "title": "Rimuovo le foto ma lascio nomi, indirizzi e altri dati che non servono.",
           "correct": false
         },
         {
-          "title": "Usare un account personale per separare il lavoro dall'azienda.",
+          "title": "Uso un account personale per separare i documenti da quelli già in azienda.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "I curriculum contengono dati personali. Prima di usarli, verifica per quale scopo sei autorizzato e quali informazioni servono davvero."
     },
     {
       "id": "N_B_DAT_2",
@@ -524,22 +544,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "L'AI genera un'immagine per una campagna. Prima di pubblicarla, quale comportamento è più responsabile?",
       "options": [
         {
-          "title": "Pubblicarla subito, perché un contenuto generato non richiede controlli.",
+          "title": "Controllo colori e formato, perché sono gli aspetti più visibili della campagna.",
           "correct": false
         },
         {
-          "title": "Verificare adeguatezza, possibili somiglianze o diritti coinvolti e regole di trasparenza applicabili.",
+          "title": "Controllo se l’immagine è adatta, se compaiono persone o opere riconoscibili e quali regole si applicano.",
           "correct": true
         },
         {
-          "title": "Dichiararla automaticamente libera da qualunque diritto.",
+          "title": "Do per scontato di poterla pubblicare perché l’ho generata con il mio account.",
           "correct": false
         },
         {
-          "title": "Attribuire l'immagine a un artista reale per renderla credibile.",
+          "title": "Aggiungo la dicitura «creata con AI» e la considero una verifica sufficiente.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Prima di pubblicare, valuta se l’immagine è adatta e se ci sono persone, opere o marchi riconoscibili. Controlla anche le regole applicabili."
     },
     {
       "id": "N_C_CAP_1",
@@ -551,22 +572,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Chiedi a un sistema generativo di creare l'immagine di una città immaginaria. Quale descrizione è più corretta?",
       "options": [
         {
-          "title": "Deve trovare nel proprio archivio una fotografia identica già esistente.",
+          "title": "Recupera una foto della città da un archivio.",
           "correct": false
         },
         {
-          "title": "Compone un nuovo output usando richiesta e pattern appresi, senza garantire che ogni dettaglio sia realistico.",
+          "title": "Genera un’immagine dalla richiesta e da ciò che ha imparato.",
           "correct": true
         },
         {
-          "title": "Fotografa in tempo reale una città scelta casualmente.",
+          "title": "Combina immagini in diretta di città reali fino a trovare la più simile.",
           "correct": false
         },
         {
-          "title": "Verifica automaticamente che edifici e segnali rispettino regole reali.",
+          "title": "Controlla che i dettagli disegnati rispettino le regole del mondo reale.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "L’AI può creare un’immagine nuova anche se la città non esiste. I dettagli disegnati possono sembrare realistici senza esserlo."
     },
     {
       "id": "N_C_CAP_2",
@@ -578,22 +600,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Devi organizzare un'attività con diversi vincoli. Come può aiutarti l'AI senza sostituire la decisione?",
       "options": [
         {
-          "title": "Generando alternative con vantaggi e limiti da confrontare.",
+          "title": "Propone alternative con vantaggi e limiti.",
           "correct": true
         },
         {
-          "title": "Scegliendo autonomamente l'opzione finale senza conoscere le persone coinvolte.",
+          "title": "Sceglie subito l’opzione finale anche se non conosce le persone coinvolte.",
           "correct": false
         },
         {
-          "title": "Eliminando la necessità di chiarire obiettivi e vincoli.",
+          "title": "Organizza l’attività senza che io dica quali impegni non si possono spostare.",
           "correct": false
         },
         {
-          "title": "Garantendo che la prima proposta sia la più adatta.",
+          "title": "Tratto la prima proposta come definitiva.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Avere più alternative aiuta a confrontare i compromessi. La scelta finale resta a chi conosce le persone e gli impegni."
     },
     {
       "id": "N_C_LIM_1",
@@ -605,22 +628,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Domandi \"Sei sicuro?\" e l'AI conferma la risposta con tono ancora più deciso. Che cosa è cambiato?",
       "options": [
         {
-          "title": "La risposta è diventata una prova indipendente.",
+          "title": "La seconda risposta costituisce una conferma indipendente della prima.",
           "correct": false
         },
         {
-          "title": "Il modello ha necessariamente consultato una fonte esterna.",
+          "title": "Il tono più deciso mostra che il modello ha verificato una fonte esterna.",
           "correct": false
         },
         {
-          "title": "Hai ottenuto una nuova formulazione, non una verifica indipendente.",
+          "title": "Il tono è cambiato. Per verificare la risposta devo ancora controllare una fonte indipendente.",
           "correct": true
         },
         {
-          "title": "La sicurezza del tono rende trascurabile il rischio di errore.",
+          "title": "Se la formulazione è più sicura, è ragionevole ridurre i controlli.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Lo stesso sistema può ripetere un errore con parole più decise. Per verificarlo, cerca una fonte diversa o controlla i dati originali."
     },
     {
       "id": "N_C_LIM_2",
@@ -632,22 +656,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Chiedi informazioni su una procedura interna che non hai fornito al modello. Qual è il rischio principale?",
       "options": [
         {
-          "title": "Che il modello rifiuti sempre di rispondere.",
+          "title": "Che chieda più dettagli prima di rispondere.",
           "correct": false
         },
         {
-          "title": "Che produca una procedura plausibile ma diversa da quella reale.",
+          "title": "Che inventi una procedura plausibile ma diversa da quella reale.",
           "correct": true
         },
         {
-          "title": "Che recuperi automaticamente il documento interno corretto.",
+          "title": "Che recuperi il documento aziendale corretto dal nome della procedura.",
           "correct": false
         },
         {
-          "title": "Che aggiorni la procedura ufficiale senza autorizzazione.",
+          "title": "Che usi una procedura generica e la presenti come un esempio, dichiarandolo.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Se il sistema non ha il documento, può colmare il vuoto con una risposta credibile. Per sapere cosa fare serve la procedura approvata."
     },
     {
       "id": "N_C_REQ_1",
@@ -659,22 +684,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Vuoi un messaggio breve per rinviare una riunione. Quale richiesta è più controllabile?",
       "options": [
         {
-          "title": "\"Scrivi un messaggio.\"",
+          "title": "Scrivi un messaggio cortese che proponga una nuova data a tua scelta.",
           "correct": false
         },
         {
-          "title": "\"Scrivi un messaggio cortese di massimo 60 parole: rinvia la riunione a data da definire, non inventare motivazioni e chiedi conferma di lettura.\"",
+          "title": "In 60 parole, rinvia la riunione senza inventare date o motivi.",
           "correct": true
         },
         {
-          "title": "\"Scrivi il messaggio migliore in assoluto.\"",
+          "title": "Scrivi un messaggio formale e inventa una motivazione se serve a renderlo credibile.",
           "correct": false
         },
         {
-          "title": "\"Comunica quello che ritieni opportuno.\"",
+          "title": "Comunica il rinvio nel formato che preferisci.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Indicare lunghezza e informazioni da lasciare aperte aiuta a ottenere un messaggio che non prometta date né attribuisca motivi inventati."
     },
     {
       "id": "N_C_REQ_2",
@@ -683,25 +709,26 @@ const FIRST_STEPS_QUESTIONS = {
       "learningUnitId": "U-REQ-2",
       "type": "scenario",
       "language": "it",
-      "text": "L'AI basa la risposta su un'assunzione sbagliata. Che cosa fai?",
+      "text": "L’AI ha risposto dando per scontata un’informazione sbagliata. Che cosa fai?",
       "options": [
         {
-          "title": "Correggo esplicitamente l'assunzione e chiedo di rivedere le parti influenzate.",
+          "title": "Correggo il presupposto e chiedo di rivedere le parti coinvolte.",
           "correct": true
         },
         {
-          "title": "Continuo la conversazione senza segnalarla.",
+          "title": "Aggiungo solo la mia preferenza.",
           "correct": false
         },
         {
-          "title": "Chiedo soltanto una risposta più lunga.",
+          "title": "Chiedo di ampliare la risposta, senza dire quale informazione è sbagliata.",
           "correct": false
         },
         {
-          "title": "Considero impossibile migliorare il risultato.",
+          "title": "Tengo la risposta e correggo solo la frase in cui compare l’errore.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Un presupposto errato può cambiare anche le conclusioni. Chiedere di riesaminarle aiuta a correggere tutto ciò che ne dipende."
     },
     {
       "id": "N_C_VER_1",
@@ -713,22 +740,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "L'AI descrive un obbligo previsto da una norma. Prima di agire, quale controllo è più solido?",
       "options": [
         {
-          "title": "Verificare testo vigente, data, ambito e, se l'impatto è rilevante, chiedere supporto competente.",
+          "title": "Controllo la norma vigente e a chi si applica.",
           "correct": true
         },
         {
-          "title": "Accettare la spiegazione se usa un linguaggio giuridico.",
+          "title": "Mi affido alla spiegazione se cita i termini giuridici corretti e l’articolo.",
           "correct": false
         },
         {
-          "title": "Chiedere allo stesso modello di riscriverla in modo più formale.",
+          "title": "Chiedo al modello una formulazione più formale per capire se è coerente.",
           "correct": false
         },
         {
-          "title": "Usare la risposta se cita un numero di articolo non verificato.",
+          "title": "Rileggo il numero di articolo.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Prima di agire, controlla il testo vigente, la data e se la norma vale per il tuo caso. Se le conseguenze contano, chiedi supporto competente."
     },
     {
       "id": "N_C_VER_2",
@@ -737,25 +765,26 @@ const FIRST_STEPS_QUESTIONS = {
       "learningUnitId": "U-VER-2",
       "type": "scenario",
       "language": "it",
-      "text": "Quale output richiede il controllo più rigoroso prima dell'uso?",
+      "text": "Quale risultato richiede più controlli prima di essere usato?",
       "options": [
         {
-          "title": "Appunti privati per immaginare la trama di un racconto.",
+          "title": "Una bozza di trama per un racconto che tengo per me.",
           "correct": false
         },
         {
-          "title": "Un possibile consiglio sanitario destinato a una persona.",
+          "title": "Un consiglio sulla salute da dare a una persona.",
           "correct": true
         },
         {
-          "title": "Idee di nomi per un personaggio immaginario.",
+          "title": "Una lista di nomi per personaggi che posso cambiare in seguito.",
           "correct": false
         },
         {
-          "title": "Una lista provvisoria di film da vedere.",
+          "title": "Un elenco provvisorio di film da vedere con amici nel fine settimana.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Un consiglio sulla salute può avere conseguenze sulla persona. Merita controlli più rigorosi di un’idea creativa o reversibile."
     },
     {
       "id": "N_C_DAT_1",
@@ -767,22 +796,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Vuoi far riassumere il verbale di una riunione interna. Qual è il comportamento più prudente?",
       "options": [
         {
-          "title": "Incollarlo in qualunque chatbot, perché è solo testo.",
+          "title": "Uso il mio chatbot preferito perché il verbale è già in formato testo.",
           "correct": false
         },
         {
-          "title": "Verificare classificazione, partecipanti, policy e strumento; rimuovere ciò che non serve.",
+          "title": "Controllo se posso condividerlo, quale strumento è approvato e quali informazioni posso togliere.",
           "correct": true
         },
         {
-          "title": "Cambiare i nomi delle persone lasciando tutti gli altri dettagli identificativi.",
+          "title": "Cambio i nomi delle persone ma lascio gli altri dettagli identificativi.",
           "correct": false
         },
         {
-          "title": "Aggiungere la frase \"contenuto riservato\" prima del testo.",
+          "title": "Aggiungo «contenuto riservato» prima di incollare il verbale completo.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Un verbale può contenere informazioni riservate anche senza nomi. Controlla autorizzazioni, strumento e dati strettamente necessari."
     },
     {
       "id": "N_C_DAT_2",
@@ -794,22 +824,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Un collega vuole usare senza controlli una raccomandazione prodotta dall'AI. Qual è la risposta più responsabile?",
       "options": [
         {
-          "title": "\"Usala: se sembra ragionevole, la responsabilità è del sistema.\"",
+          "title": "Usala se ti sembra ragionevole e cita il modello come responsabile.",
           "correct": false
         },
         {
-          "title": "\"Revisioniamo dati, assunzioni e conseguenze; la decisione resta nostra.\"",
+          "title": "Rivediamo dati e conseguenze prima di decidere.",
           "correct": true
         },
         {
-          "title": "\"Basta chiedere al modello di assumersi la responsabilità.\"",
+          "title": "Chiediamo al modello se conferma.",
           "correct": false
         },
         {
-          "title": "\"Ogni uso dell'AI deve essere vietato, indipendentemente dal contesto.\"",
+          "title": "Usiamo la raccomandazione come ricevuta, indicando solo che è stata generata con AI.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Dire che una proposta viene dall’AI non trasferisce la responsabilità. Chi decide deve controllarne dati, presupposti e possibili conseguenze."
     }
   ],
   "en": [
@@ -823,22 +854,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Which description best represents what a generative AI system does when responding to a request?",
       "options": [
         {
-          "title": "It always searches the web and copies the most relevant page.",
+          "title": "It searches for a web page that matches the request.",
           "correct": false
         },
         {
-          "title": "It generates content using the input and patterns learned from data.",
+          "title": "It creates an answer using the request and what it learned.",
           "correct": true
         },
         {
-          "title": "It always retrieves a previously written answer from an archive.",
+          "title": "It picks a ready-made answer from an archive built during training.",
           "correct": false
         },
         {
-          "title": "It automatically verifies every sentence before showing it.",
+          "title": "It checks each claim against outside sources before it answers.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Creating an answer uses what the system has learned. To know whether it also searched or checked something, look for evidence of those steps."
     },
     {
       "id": "N_A_CAP_2",
@@ -850,22 +882,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "You need ideas for a team meeting. What is the most useful first use of AI?",
       "options": [
         {
-          "title": "Ask for several proposals, then compare them with the real goal and constraints.",
+          "title": "Ask for several ideas and compare them with the constraints.",
           "correct": true
         },
         {
-          "title": "Ask it to choose the final proposal for the team on its own.",
+          "title": "Ask AI to pick for the group.",
           "correct": false
         },
         {
-          "title": "Accept the first idea because it was generated quickly.",
+          "title": "Bring the first idea and wait until the meeting to compare it with the goal.",
           "correct": false
         },
         {
-          "title": "Avoid AI because generated ideas can never be useful.",
+          "title": "Request one idea without saying what the team needs to achieve.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Comparing several ideas makes trade-offs visible. The team can decide with constraints the AI might not know about."
     },
     {
       "id": "N_A_LIM_1",
@@ -877,22 +910,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "A chatbot gives a very precise number but does not say where it came from. How should you treat it?",
       "options": [
         {
-          "title": "As reliable, because precision indicates a real calculation.",
+          "title": "Use it because the decimal places suggest a precise calculation.",
           "correct": false
         },
         {
-          "title": "As probably true if it is written confidently.",
+          "title": "Trust it because the chatbot states the number with confidence.",
           "correct": false
         },
         {
-          "title": "As a figure to verify before using it.",
+          "title": "Check it before using it.",
           "correct": true
         },
         {
-          "title": "As certainly false, because chatbots cannot use numbers.",
+          "title": "Discard it because a chatbot cannot give accurate numbers.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Precision and confident wording do not tell you where the number came from. Find the source or redo the calculation with the original data."
     },
     {
       "id": "N_A_LIM_2",
@@ -904,22 +938,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "You want a rule or opening time that may have changed recently. What do you do?",
       "options": [
         {
-          "title": "Use the model's answer without further checks.",
+          "title": "Trust the answer if it gives a precise rule or opening time.",
           "correct": false
         },
         {
-          "title": "Ask the model to answer more confidently.",
+          "title": "Ask AI if the answer is current.",
           "correct": false
         },
         {
-          "title": "Check a current official source and its effective date.",
+          "title": "Check an official source and the date.",
           "correct": true
         },
         {
-          "title": "Treat the answer as valid if it contains many details.",
+          "title": "Use the version with the most detail the model can provide.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "An official source and its effective date show whether the rule or opening time still applies."
     },
     {
       "id": "N_A_REQ_1",
@@ -931,22 +966,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "You want a text summarized for people who are new to the subject. Which request is most useful?",
       "options": [
         {
-          "title": "\"Summarize.\"",
+          "title": "Summarize it in five points.",
           "correct": false
         },
         {
-          "title": "\"Write something interesting about this text.\"",
+          "title": "Highlight the details that would interest a reader who already knows the subject.",
           "correct": false
         },
         {
-          "title": "\"Summarize the text in five points for a non-technical audience, explaining essential terms.\"",
+          "title": "Summarize in five points for someone new to the subject.",
           "correct": true
         },
         {
-          "title": "\"Produce the best possible summary without asking questions.\"",
+          "title": "Shorten the text and keep the original level of technical detail.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Naming the audience and the length helps the AI decide what to explain and what to leave out."
     },
     {
       "id": "N_A_REQ_2",
@@ -958,22 +994,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "The first AI response is generic. What is the most useful next step?",
       "options": [
         {
-          "title": "Repeat the same question until the answer changes.",
+          "title": "Repeat the same request and select the most detailed answer.",
           "correct": false
         },
         {
-          "title": "Add context, identify what is missing, and request a new version.",
+          "title": "Say what is missing and add the relevant background.",
           "correct": true
         },
         {
-          "title": "Treat the first output as the best the system can do.",
+          "title": "Keep the answer and change only its tone, leaving the content as it is.",
           "correct": false
         },
         {
-          "title": "Immediately change tools without clarifying the task.",
+          "title": "Send the same request to a different tool.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Pointing out what is missing directs the revision. Repeating the same request leaves the problem unresolved."
     },
     {
       "id": "N_A_VER_1",
@@ -985,22 +1022,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "AI suggests the title, author, and link of a source. What do you do before citing it?",
       "options": [
         {
-          "title": "Use it: extensive detail proves it exists.",
+          "title": "Cite the source with the author, title, and link that AI supplied.",
           "correct": false
         },
         {
-          "title": "Open the link and verify identity, content, and support for the claim.",
+          "title": "Open the source, check that it is the publication cited, and read whether it supports the claim.",
           "correct": true
         },
         {
-          "title": "Ask the same chatbot whether the source is real.",
+          "title": "Ask the same chatbot to confirm that the citation is accurate.",
           "correct": false
         },
         {
-          "title": "Check only that the link looks professional.",
+          "title": "Check that the website is reputable without reading the publication.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "A real link can lead to a publication that does not support your claim. Check both the publication and what it says."
     },
     {
       "id": "N_A_VER_2",
@@ -1012,22 +1050,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Which case requires a more rigorous review of AI output?",
       "options": [
         {
-          "title": "A private list of possible playlist titles.",
+          "title": "A private list of possible names for a playlist.",
           "correct": false
         },
         {
-          "title": "An official communication that may affect other people.",
+          "title": "An official notice that changes a procedure for the public.",
           "correct": true
         },
         {
-          "title": "An informal list of ideas that can be changed or discarded.",
+          "title": "A list of ideas to discuss at the next internal meeting.",
           "correct": false
         },
         {
-          "title": "A creative exercise that will not be published.",
+          "title": "A writing exercise kept in your personal notes.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "An official notice can change what other people do. Its errors have more serious consequences and deserve closer review."
     },
     {
       "id": "N_A_DAT_1",
@@ -1039,22 +1078,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "You need to analyze a list containing customer names, emails, and notes. What do you do before uploading it to an AI tool?",
       "options": [
         {
-          "title": "Upload it if the tool is easy to use.",
+          "title": "Upload the full list because the tool makes the analysis easier.",
           "correct": false
         },
         {
-          "title": "Remove only the file name.",
+          "title": "Rename the file but leave the names and email addresses in its rows.",
           "correct": false
         },
         {
-          "title": "Check authorization and policy, choose an approved tool, and minimize the data.",
+          "title": "Check the rules and share only needed data in an approved tool.",
           "correct": true
         },
         {
-          "title": "Convert it to PDF because that makes the data anonymous.",
+          "title": "Convert the list to PDF and keep all the original information.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Renaming or converting the file does not protect the data. Check what you may share and which pieces are actually needed."
     },
     {
       "id": "N_A_DAT_2",
@@ -1066,22 +1106,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "You use AI to prepare a document that will be sent externally. Who retains final responsibility?",
       "options": [
         {
-          "title": "The model, because it wrote much of the text.",
+          "title": "The model, because it wrote much of the document.",
           "correct": false
         },
         {
-          "title": "The tool provider in every circumstance.",
+          "title": "The provider, because it makes the tool available.",
           "correct": false
         },
         {
-          "title": "The person or organization that reviews and uses the document.",
+          "title": "Whoever reviews and uses the document.",
           "correct": true
         },
         {
-          "title": "Nobody, if the document contains the word \"draft.\"",
+          "title": "The person who sent the first request, even if others approve the release.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Final responsibility stays with whoever checks the document and decides to use or send it."
     },
     {
       "id": "N_B_CAP_1",
@@ -1093,22 +1134,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "AI summarizes an article you pasted into the conversation. What can you conclude?",
       "options": [
         {
-          "title": "It necessarily searched for and compared other online sources.",
+          "title": "It compared the article with other sources available on the web.",
           "correct": false
         },
         {
-          "title": "It transformed the supplied content, but this is not independent research.",
+          "title": "It summarized the text I provided.",
           "correct": true
         },
         {
-          "title": "It automatically verified every claim in the article.",
+          "title": "It verified the article’s claims before writing the summary.",
           "correct": false
         },
         {
-          "title": "It permanently stored the article in its parameters.",
+          "title": "It memorized the article.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "A summary reworks the supplied text. On its own it does not show that the system researched or independently verified the claims."
     },
     {
       "id": "N_B_CAP_2",
@@ -1120,22 +1162,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "You need a first email draft. Which collaboration with AI is most appropriate?",
       "options": [
         {
-          "title": "Provide purpose, recipient, and tone, then review the draft before sending.",
+          "title": "Give the purpose, recipient, and tone. Before sending, check the facts and who will receive it.",
           "correct": true
         },
         {
-          "title": "Let the model choose recipients and content without context.",
+          "title": "Let it infer the purpose and recipient from my role at work.",
           "correct": false
         },
         {
-          "title": "Automatically send the first generated text.",
+          "title": "Send the first draft if it reads well and has no spelling mistakes.",
           "correct": false
         },
         {
-          "title": "Use AI only if it can take responsibility for sending it.",
+          "title": "Ask it to draft the email and choose when to send it for me.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Giving clear directions improves the draft. Reading it before sending helps you check the facts and recipient."
     },
     {
       "id": "N_B_LIM_1",
@@ -1147,22 +1190,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "A generated citation includes a complete author, year, and title. What do those details prove?",
       "options": [
         {
-          "title": "That the publication certainly exists.",
+          "title": "That the title identifies an existing publication with certainty.",
           "correct": false
         },
         {
-          "title": "That the model read the entire publication.",
+          "title": "That the AI read the publication it cites.",
           "correct": false
         },
         {
-          "title": "That the citation looks plausible but still needs verification.",
+          "title": "That the citation looks plausible and needs checking.",
           "correct": true
         },
         {
-          "title": "That every claim associated with it is correct.",
+          "title": "That any claim linked to this citation matches the original publication.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "An author, year, and title can look precise even if the citation is wrong. Find and read the actual publication."
     },
     {
       "id": "N_B_LIM_2",
@@ -1174,22 +1218,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "You ask AI to compare products whose prices and features change often. Which precaution is essential?",
       "options": [
         {
-          "title": "Check the date and sources of the comparison data.",
+          "title": "Check the sources and dates of the data.",
           "correct": true
         },
         {
-          "title": "Always prefer the longest answer.",
+          "title": "Choose the most detailed table.",
           "correct": false
         },
         {
-          "title": "Treat the comparison as current if it contains a table.",
+          "title": "Trust the table if all rows are filled and its prices look precise.",
           "correct": false
         },
         {
-          "title": "Ask it not to show uncertainty.",
+          "title": "Ask for a single ranking that leaves out uncertain data.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Prices and features change. Check where the comparison data came from and when it was current."
     },
     {
       "id": "N_B_REQ_1",
@@ -1201,22 +1246,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "You want to turn notes into an operational table. Which request provides the best context?",
       "options": [
         {
-          "title": "\"Put this in a table.\"",
+          "title": "Arrange the notes in a short table.",
           "correct": false
         },
         {
-          "title": "\"Organize these notes into Task, Owner, Deadline, and Open questions; do not invent missing data.\"",
+          "title": "Use Task, Owner, and Deadline. Mark missing details.",
           "correct": true
         },
         {
-          "title": "\"Create a perfect and complete table.\"",
+          "title": "Fill every row by estimating details that are missing from the notes.",
           "correct": false
         },
         {
-          "title": "\"Choose the structure and missing information yourself.\"",
+          "title": "Use any columns you prefer, as long as the table is easy to read.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Naming the columns makes the table usable. Marking gaps prevents an estimate from being mistaken for a fact."
     },
     {
       "id": "N_B_REQ_2",
@@ -1228,22 +1274,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "AI returns the right content in the wrong format. What do you do?",
       "options": [
         {
-          "title": "Discard everything without explaining the issue.",
+          "title": "Discard it and have everything rewritten without explaining why.",
           "correct": false
         },
         {
-          "title": "Request a new version, state the expected format, and provide an example if useful.",
+          "title": "Keep the content and show the format I need.",
           "correct": true
         },
         {
-          "title": "Start over with an even more generic request.",
+          "title": "Ask for a general revision.",
           "correct": false
         },
         {
-          "title": "Copy the result as it is because the content is enough.",
+          "title": "Use the original version because the key information is correct.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "When the content is useful, ask for a change to the format. An example shows what the revised version should look like."
     },
     {
       "id": "N_B_VER_1",
@@ -1255,22 +1302,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "AI gives you a percentage for a presentation. What counts as an independent check?",
       "options": [
         {
-          "title": "Ask the same model to repeat the percentage.",
+          "title": "Ask the same model to repeat the percentage and state its confidence.",
           "correct": false
         },
         {
-          "title": "Find the original report or a reliable source and check period and sample.",
+          "title": "Find the original report and check the period and sample.",
           "correct": true
         },
         {
-          "title": "Check that the percentage has two decimal places.",
+          "title": "Check how the number looks on the slide.",
           "correct": false
         },
         {
-          "title": "Use it if it is close to what you expected.",
+          "title": "Compare the percentage with what I expected before making the request.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "The original report lets you check whether the percentage covers the people and time period you need."
     },
     {
       "id": "N_B_VER_2",
@@ -1282,22 +1330,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Which activity requires more human oversight?",
       "options": [
         {
-          "title": "Generate temporary names for a personal folder.",
+          "title": "Generate temporary folder names for my personal notes.",
           "correct": false
         },
         {
-          "title": "Suggest sentence variations for practice.",
+          "title": "Write alternative sentences for an exercise that will stay private.",
           "correct": false
         },
         {
-          "title": "Propose a decision that commits organizational funds.",
+          "title": "Propose a spending decision that could commit part of the organization’s budget.",
           "correct": true
         },
         {
-          "title": "Create three ideas that can be freely discussed and discarded.",
+          "title": "Prepare ideas for an internal discussion where the decision is still open.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Spending can commit real resources. Whoever decides should check the evidence and consequences before approving it."
     },
     {
       "id": "N_B_DAT_1",
@@ -1309,22 +1358,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "You need to summarize resumes received for recruitment. What is the first check?",
       "options": [
         {
-          "title": "Check purpose, authorization, policy, and necessary data before using an approved tool.",
+          "title": "Check permission, the tool, and which details I need.",
           "correct": true
         },
         {
-          "title": "Upload every file and delete it from your computer afterwards.",
+          "title": "Upload the full résumés and delete the local copies afterwards.",
           "correct": false
         },
         {
-          "title": "Remove only the photographs.",
+          "title": "Remove photos but keep names, addresses, and other details I do not need.",
           "correct": false
         },
         {
-          "title": "Use a personal account to separate the task from the company.",
+          "title": "Use a personal account to separate these files from those already at work.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Résumés contain personal information. Check what you are allowed to use, for which purpose, and which details you need."
     },
     {
       "id": "N_B_DAT_2",
@@ -1336,22 +1386,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "AI generates an image for a campaign. What is the most responsible action before publishing it?",
       "options": [
         {
-          "title": "Publish immediately because generated content needs no checks.",
+          "title": "Check colors and dimensions because they are the most visible campaign details.",
           "correct": false
         },
         {
-          "title": "Check suitability, possible similarities or rights, and applicable transparency rules.",
+          "title": "Check whether the image is suitable, whether it shows recognizable people or works, and which rules apply.",
           "correct": true
         },
         {
-          "title": "Automatically declare it free of all rights.",
+          "title": "Assume I can publish it because I generated it with my own account.",
           "correct": false
         },
         {
-          "title": "Attribute it to a real artist to make it credible.",
+          "title": "Add an “AI-generated” label and consider that enough to publish it.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Before publishing, check whether the image is suitable and whether it includes recognizable people, works, or brands. Check which rules apply."
     },
     {
       "id": "N_C_CAP_1",
@@ -1363,22 +1414,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "You ask a generative system to create an image of an imaginary city. Which description is most accurate?",
       "options": [
         {
-          "title": "It must find an identical existing photograph in its archive.",
+          "title": "Copy a photo of the city from an archive.",
           "correct": false
         },
         {
-          "title": "It composes a new output from the request and learned patterns, without guaranteeing realistic details.",
+          "title": "Creates an image from the request and patterns it has learned.",
           "correct": true
         },
         {
-          "title": "It takes a live photograph of a randomly selected city.",
+          "title": "Combines live pictures of real cities until it finds the closest match.",
           "correct": false
         },
         {
-          "title": "It automatically verifies that buildings and signs follow real rules.",
+          "title": "Checks whether the buildings and signs it draws follow real-world rules.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "AI can create an image of a city that does not exist. Its details may look real even when they are not."
     },
     {
       "id": "N_C_CAP_2",
@@ -1390,22 +1442,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "You need to organize an activity with several constraints. How can AI help without replacing the decision?",
       "options": [
         {
-          "title": "Generate alternatives with advantages and limitations to compare.",
+          "title": "Offer alternatives with benefits and drawbacks.",
           "correct": true
         },
         {
-          "title": "Choose the final option without knowing the people involved.",
+          "title": "Pick the final option without needing to know the people involved.",
           "correct": false
         },
         {
-          "title": "Remove the need to clarify goals and constraints.",
+          "title": "Arrange everything without first asking which commitments cannot move.",
           "correct": false
         },
         {
-          "title": "Guarantee that the first proposal is the best fit.",
+          "title": "Treat the first proposal as final.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Alternatives help you compare trade-offs. The final choice stays with the people who know the commitments and priorities."
     },
     {
       "id": "N_C_LIM_1",
@@ -1417,22 +1470,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "You ask \"Are you sure?\" and AI confirms the answer even more confidently. What changed?",
       "options": [
         {
-          "title": "The answer became independent evidence.",
+          "title": "The second answer is independent confirmation of the first one.",
           "correct": false
         },
         {
-          "title": "The model necessarily consulted an external source.",
+          "title": "The stronger wording means the model has checked an outside source.",
           "correct": false
         },
         {
-          "title": "You received another formulation, not an independent check.",
+          "title": "The wording changed. To check the answer, I still need to look at an independent source.",
           "correct": true
         },
         {
-          "title": "The confident tone makes the risk of error negligible.",
+          "title": "The more confident phrasing means I can reasonably do fewer checks.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "The same system can repeat an error in stronger words. Check a separate source or the original data."
     },
     {
       "id": "N_C_LIM_2",
@@ -1444,22 +1498,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "You ask about an internal procedure that you did not provide to the model. What is the main risk?",
       "options": [
         {
-          "title": "The model will always refuse to answer.",
+          "title": "It may ask for details before answering.",
           "correct": false
         },
         {
-          "title": "It may produce a plausible procedure that differs from the real one.",
+          "title": "It may invent a plausible procedure that differs from the real one.",
           "correct": true
         },
         {
-          "title": "It will automatically retrieve the correct internal document.",
+          "title": "It may retrieve the correct internal document from the procedure’s name.",
           "correct": false
         },
         {
-          "title": "It will update the official procedure without authorization.",
+          "title": "It may give a generic procedure and clearly label it as an example.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Without the document, AI can fill in gaps with a convincing answer. Use the approved procedure to decide what to do."
     },
     {
       "id": "N_C_REQ_1",
@@ -1471,22 +1526,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "You want a short message to postpone a meeting. Which request is easiest to control?",
       "options": [
         {
-          "title": "\"Write a message.\"",
+          "title": "Write a polite message that proposes a new date of your choice.",
           "correct": false
         },
         {
-          "title": "\"Write a polite message of no more than 60 words: postpone the meeting to a date to be decided, do not invent reasons, and ask recipients to confirm they read it.\"",
+          "title": "In 60 words, postpone the meeting without inventing dates or reasons.",
           "correct": true
         },
         {
-          "title": "\"Write the best possible message.\"",
+          "title": "Write a formal message and invent a reason if that makes it convincing.",
           "correct": false
         },
         {
-          "title": "\"Communicate whatever you think is appropriate.\"",
+          "title": "Announce the postponement in any format.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Specify the length and what is unknown. This helps AI avoid promising dates or giving invented reasons."
     },
     {
       "id": "N_C_REQ_2",
@@ -1498,22 +1554,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "AI bases its answer on a wrong assumption. What do you do?",
       "options": [
         {
-          "title": "Explicitly correct the assumption and request a revision of affected parts.",
+          "title": "Correct the assumption and ask it to revise affected parts.",
           "correct": true
         },
         {
-          "title": "Continue without pointing it out.",
+          "title": "Add only my preference.",
           "correct": false
         },
         {
-          "title": "Ask only for a longer answer.",
+          "title": "Ask for a fuller answer without saying what information is wrong.",
           "correct": false
         },
         {
-          "title": "Treat the result as impossible to improve.",
+          "title": "Keep the answer and correct only the sentence where the error appears.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "A mistaken assumption can affect the conclusions too. Reviewing the parts that depend on it corrects more than the original sentence."
     },
     {
       "id": "N_C_VER_1",
@@ -1525,22 +1582,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "AI describes a legal obligation. What is the strongest check before acting?",
       "options": [
         {
-          "title": "Check the current text, date, scope, and seek qualified support if the impact is significant.",
+          "title": "Check the current rule and who it applies to.",
           "correct": true
         },
         {
-          "title": "Accept the explanation if it uses legal language.",
+          "title": "Trust the explanation if it uses the right legal terms and cites a section.",
           "correct": false
         },
         {
-          "title": "Ask the same model to rewrite it more formally.",
+          "title": "Ask the model to rewrite it more formally and see if the explanation is consistent.",
           "correct": false
         },
         {
-          "title": "Use it if it cites an unverified article number.",
+          "title": "Check the section number.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Before acting, check the current wording, date, and whether the rule applies to your case. Get qualified help if the consequences matter."
     },
     {
       "id": "N_C_VER_2",
@@ -1552,22 +1610,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "Which output needs the most rigorous check before use?",
       "options": [
         {
-          "title": "Private notes for imagining a story plot.",
+          "title": "A draft story outline kept in a private notebook.",
           "correct": false
         },
         {
-          "title": "Possible health advice intended for another person.",
+          "title": "Health advice intended for another person.",
           "correct": true
         },
         {
-          "title": "Character-name ideas for fiction.",
+          "title": "A list of character names that I can change later.",
           "correct": false
         },
         {
-          "title": "A temporary list of films to watch.",
+          "title": "A provisional list of films to watch with friends over the weekend.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Health advice can affect a person’s well-being. It deserves closer checking than a creative idea you can readily change."
     },
     {
       "id": "N_C_DAT_1",
@@ -1579,22 +1638,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "You want to summarize an internal meeting record. What is the most cautious approach?",
       "options": [
         {
-          "title": "Paste it into any chatbot because it is only text.",
+          "title": "Paste the minutes into my usual chatbot because they are already plain text.",
           "correct": false
         },
         {
-          "title": "Check classification, participants, policy, and tool; remove anything unnecessary.",
+          "title": "Check whether I may share the minutes, which tool is approved, and what details can be removed.",
           "correct": true
         },
         {
-          "title": "Change people's names while keeping all other identifying details.",
+          "title": "Change people’s names but keep other details that can identify them.",
           "correct": false
         },
         {
-          "title": "Add the words \"confidential content\" before the text.",
+          "title": "Add “confidential” before pasting the complete minutes into the tool.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Meeting minutes can contain confidential information even without names. Check permission, the tool, and what you actually need to share."
     },
     {
       "id": "N_C_DAT_2",
@@ -1606,22 +1666,23 @@ const FIRST_STEPS_QUESTIONS = {
       "text": "A colleague wants to use an AI-generated recommendation without checks. What is the most responsible response?",
       "options": [
         {
-          "title": "\"Use it: if it sounds reasonable, the system is responsible.\"",
+          "title": "Use it if it seems reasonable and credit the model as responsible.",
           "correct": false
         },
         {
-          "title": "\"Let's review data, assumptions, and consequences; the decision remains ours.\"",
+          "title": "Review the data and consequences before deciding.",
           "correct": true
         },
         {
-          "title": "\"Just ask the model to take responsibility.\"",
+          "title": "Ask the same model to confirm.",
           "correct": false
         },
         {
-          "title": "\"Every use of AI must be banned, regardless of context.\"",
+          "title": "Use the recommendation as written and just label it as AI-generated.",
           "correct": false
         }
-      ]
+      ],
+      "feedback": "Saying a proposal came from AI does not transfer responsibility. Whoever decides should check the data, assumptions, and consequences."
     }
   ]
 };
@@ -1631,11 +1692,11 @@ const FIRST_STEPS_UNITS = [
     "objectiveId": "CAP-1",
     "title": {
       "it": "Generare non significa cercare",
-      "en": "a generative system produces output from the input and learned patterns"
+      "en": "a generative system creates content from the request and what it learned from data. Searching, reading a document, and checking facts are separate steps."
     },
     "principle": {
-      "it": "un sistema generativo produce output a partire dall'input e da pattern appresi; non cerca necessariamente sul web, non recupera sempre un documento e non verifica automaticamente la verità.",
-      "en": "a generative system produces output from the input and learned patterns; it does not necessarily search the web, retrieve a document, or automatically verify truth."
+      "it": "un sistema generativo crea contenuti usando la richiesta e ciò che ha imparato dai dati. Una ricerca, la lettura di un documento e la verifica delle informazioni sono passaggi distinti.",
+      "en": "a generative system creates content from the request and what it learned from data. Searching, reading a document, and checking facts are separate steps."
     },
     "misconception": "confondere generazione, ricerca, archivio e verifica.",
     "example": "un riassunto di un testo incollato può essere utile senza costituire una ricerca indipendente.",

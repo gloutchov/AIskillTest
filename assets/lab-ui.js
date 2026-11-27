@@ -50,11 +50,16 @@ function readLabDraft() {
       const draft = legacy ? record : record.draft;
       const identity = legacy ? {} : { sessionId: record.sessionId, revision: record.revision };
       const versions = labContentVersions();
+      const oldBank = draft?.questionBankVersion === "2026.11-m22";
+      if (oldBank) versions.questionBankVersion = draft.questionBankVersion;
       if (draft?.modeId === "complete") {
         if (!["A","B","C"].includes(draft.formId) || !["it","en"].includes(draft.language)) return { status: "invalid", draft, slot };
         const sources = draft.language === "en" ? buildEnglishQuestionForm(draft.formId) : buildQuestionForm(draft.formId);
         const units = COMPLETE_ASSESSMENT.build(draft.formId,draft.language,sources);
-        return { status: COMPLETE_ASSESSMENT.draftStatus(draft, versions, units), draft, slot, ...identity };
+        const status = COMPLETE_ASSESSMENT.draftStatus(draft, versions, units);
+        const revisedQuestionId = status === "compatible" && oldBank && draft.language === "en" && draft.formId === "B"
+          && Object.hasOwn(draft.choices, "B_C22") ? "B_C22" : null;
+        return { status, draft, slot, ...identity, revisedQuestionId };
       }
       return { status: LOCAL_LAB.draftStatus(draft, versions), draft, slot, ...identity };
     }
@@ -140,11 +145,12 @@ function renderLabDraftNotice() {
   if (host.hidden) { host.innerHTML = ""; return; }
   const compatible = saved.status === "compatible";
   const complete = saved.draft?.modeId === "complete";
+  const reviewNotice = saved.revisedQuestionId ? `<p>${labText("Una domanda è stata aggiornata. Quando riprendi, rispondi alla nuova formulazione. Le altre risposte restano nella bozza.", "One question was updated. When you resume, answer the revised question. The other answers stay in your draft.")}</p>` : "";
   host.innerHTML = `<h3>${complete ? labText("Bozza del test completo", "Full-test draft") : labText("Bozza del laboratorio", "Lab draft")}</h3><p>${compatible
     ? labText(`Una sessione incompleta è salvata solo in questo browser (forma ${saved.draft.formId}, ${saved.draft.language.toUpperCase()}). Il recupero conserva risposte e azioni confermate, senza dati iniziali del profilo.`, `An incomplete session is saved only in this browser (form ${saved.draft.formId}, ${saved.draft.language.toUpperCase()}). Recovery retains answers and confirmed actions, without initial profile data.`)
     : saved.status === "unavailable" ? labText("Il browser non consente l'accesso al salvataggio locale. Puoi svolgere il laboratorio in questa pagina, ma il recupero non è garantito.", "The browser blocks local storage. You can run the lab on this page, but recovery is not guaranteed.")
     : labText("La bozza non è compatibile con le regole attuali oppure non è leggibile. Non verrà ricalcolata: eliminala per iniziare una nuova sessione.", "The draft is incompatible with current rules or cannot be read. It will not be recalculated: discard it to start a new session.")}</p>
-    <div class="actions">${compatible ? `<button class="btn-primary" id="resumeLabBtn">${complete ? labText("Riprendi completo", "Resume full test") : labText("Riprendi laboratorio", "Resume lab")}</button>` : ""}${saved.status !== "unavailable" ? `<button class="btn-ghost" id="discardLabBtn">${labText("Elimina bozza", "Discard draft")}</button>` : ""}</div>`;
+    ${reviewNotice}<div class="actions">${compatible ? `<button class="btn-primary" id="resumeLabBtn">${complete ? labText("Riprendi completo", "Resume full test") : labText("Riprendi laboratorio", "Resume lab")}</button>` : ""}${saved.status !== "unavailable" ? `<button class="btn-ghost" id="discardLabBtn">${labText("Elimina bozza", "Discard draft")}</button>` : ""}</div>`;
   if (compatible) $("resumeLabBtn").addEventListener("click", () => resumeLabDraft(saved));
   if (saved.status !== "unavailable") $("discardLabBtn").addEventListener("click", () => {
     if (!window.confirm(labText("Eliminare la bozza locale della sessione?", "Discard the local session draft?"))) return;
@@ -181,6 +187,10 @@ function openLabDraft(saved, writable) {
   state.answers = Object.fromEntries(questions.filter(q => complete ? COMPLETE_ASSESSMENT.draftAnswerValid(q,d.choices[q.id]) : LOCAL_LAB.valid(q.sourceId,d.choices[q.id]))
     .map(q => [q.id, q.type === "simulation" ? LOCAL_LAB.sanitize(q.sourceId,d.choices[q.id]) : d.choices[q.id]]));
   state.index = d.index;
+  if (saved.revisedQuestionId) {
+    delete state.answers[saved.revisedQuestionId];
+    state.index = questions.findIndex(q => q.id === saved.revisedQuestionId);
+  }
   state.finishing = false;
   state.optionOrders = {}; state.hintsVisible = {};
   const mode = getModeById(d.modeId);
@@ -192,6 +202,7 @@ function openLabDraft(saved, writable) {
   clearAutoAdvance();
   renderQuestion();
   showView("assessmentView");
+  if (saved.revisedQuestionId) showToast(labText("Rispondi alla domanda aggiornata. Le altre risposte sono state conservate.", "Answer the updated question. Your other answers were kept."));
 }
 function labCommit(question, raw) {
   state.answers = LOCAL_LAB.change(state.answers, question, raw);
@@ -292,12 +303,17 @@ function renderLabQuestion(q) {
   updateNavigationState(q);
 }
 
-function renderLabResults(report) {
+function renderLabResults(report, showPriority = false) {
   if (!report.results.simulatedCases.length) return `<p>${labText("Nessun esercizio simulato in questo percorso. Quiz e testi non sono esecuzioni.", "No simulated exercises in this path. Questions and text are not executions.")}</p>`;
   const s = report.results.simulatedSummary;
   const bands = { retry: labText("Esercizi da riprovare", "Retry the exercises"), partial: labText("Esiti parziali", "Partial outcomes"), conform: labText("Esiti conformi nei casi simulati", "Expected outcomes in simulated cases"), critical: labText("Decisione critica da rivedere", "Review a critical decision") };
-  return `<p>${labText("Esiti di simulazioni locali con dati sintetici; non attestano prestazioni in produzione. Il credito E resta separato dai quesiti Q.", "Outcomes from local simulations with synthetic data; they do not establish production performance. E credit stays separate from Q questions.")}</p><p class="evidence-value">${s.value === null ? "—" : `${Math.round(s.value)}/100`}</p><p><strong>${escapeHtml(bands[s.band] || labText("Laboratorio incompleto", "Incomplete lab"))}</strong> · ${s.completedCases}/${s.expectedCases} ${labText("casi completati", "cases completed")}</p>
-    <p>${labText("Credito grezzo confermato", "Confirmed raw credit")}: ${s.credit}/${s.maxCredit}. ${labText("Percentuale solo con entrambi i casi completi. Un errore critico prevale sulla fascia senza cancellare il credito. Soglie editoriali: meno di 50 riprovare; 50–79 parziale; da 80 conforme con almeno 4/6 in ogni caso.", "Percentage requires both complete cases. A critical error overrides the band without removing raw credit. Editorial thresholds: below 50 retry; 50–79 partial; 80 or above conforming with at least 4/6 in each case.")}</p>
+  const decisions = report.results.simulatedCases.flatMap(caseResult => caseResult.decisions);
+  const critical = report.criticalFindings[0];
+  const priority = decisions.find(decision => critical ? decision.decisionId === critical.decisionId : decision.credit === null || decision.credit < decision.maxCredit);
+  const firstReview = showPriority && priority ? `<div class="evidence-note" role="status"><strong>${labText("Da rivedere per prima", "Review this decision first")}</strong> · ${escapeHtml(priority.title)}<p>${escapeHtml(critical?.effect || priority.explanation)}</p></div>` : "";
+  return `<p>${labText("Il resoconto riguarda le tue decisioni in due casi simulati con dati fittizi.", "These results describe your decisions in two simulated cases using fictional data.")}</p><p class="evidence-value">${s.value === null ? "—" : `${Math.round(s.value)}/100`}</p><p><strong>${escapeHtml(bands[s.band] || labText("Laboratorio incompleto", "Incomplete lab"))}</strong> · ${s.completedCases}/${s.expectedCases} ${labText("casi completati", "cases completed")}</p>
+    ${firstReview}<p>${labText("Punti ottenuti", "Points earned")} · ${s.credit}/${s.maxCredit}. ${labText("La percentuale è disponibile quando completi entrambi i casi. Se c’è un errore critico, il resoconto gli dà precedenza anche se hai ottenuto punti nelle altre decisioni.", "The percentage is available once both cases are complete. A critical error takes priority even if you earned points on other decisions.")}</p>
     ${report.results.simulatedCases.map(c => `<article class="analysis-item"><h3>${escapeHtml(c.title)} · ${c.credit}/${c.maxCredit}</h3><p class="small">${escapeHtml(c.caseId === "K1" ? `${labText("Fonte originale: righe", "Original source: rows")} ${c.initialState.rows.join(", ")}; ${labText("totale bozza", "draft total")}: ${c.initialState.draftTotal}.` : `${labText("Ricevuta originale", "Original receipt")}: ${c.initialState.receipt}.`)}</p><p>${c.status === "complete" ? labText("Caso completato", "Case complete") : labText("Caso incompleto: credito riferito alle sole decisioni valide", "Incomplete case: credit covers valid decisions only")}</p><p class="answer-text">${escapeHtml(labEffectText(c))}</p>${c.criticalFindings.map(f => `<p class="evidence-note"><strong>${escapeHtml(f.code)}</strong> · ${escapeHtml(f.decisionId)}: ${escapeHtml(f.effect)}</p>`).join("")}
-    <details><summary>${labText("Decisioni e credito parziale", "Decisions and partial credit")}</summary>${c.decisions.map(d => `<div class="analysis-item"><h4>${escapeHtml(d.title || d.decisionId)}</h4><p>${d.credit === null ? labText("Mancante o non valida", "Missing or invalid") : `${d.credit}/${d.maxCredit}`} · ${escapeHtml(d.actionLabel)}</p><p>${escapeHtml(d.explanation)}</p></div>`).join("")}</details></article>`).join("")}`;
+    <details><summary>${labText("Decisioni e credito parziale", "Decisions and partial credit")}</summary>${c.decisions.map(d => `<div class="analysis-item"><h4>${escapeHtml(d.title || d.decisionId)}</h4><p>${d.credit === null ? labText("Mancante o non valida", "Missing or invalid") : `${d.credit}/${d.maxCredit}`} · ${escapeHtml(d.actionLabel)}</p><p>${escapeHtml(d.explanation)}</p></div>`).join("")}</details></article>`).join("")}
+    <details><summary>${labText("Come si leggono i punti", "How to read the points")}</summary><p>${labText("Sotto 50 conviene riprovare. Da 50 a meno di 80 l’esito è parziale. Servono almeno 80 e almeno 4 punti su 6 in ciascun caso per ottenere l’esito atteso.", "Below 50, try again. From 50 to under 80, the outcome is partial. To reach the expected outcome, you need at least 80 and at least 4 points out of 6 in each case.")}</p></details>`;
 }

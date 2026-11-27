@@ -22,6 +22,7 @@
 |   `-- build-*.mjs             Generatori di contenuti e revisioni editoriali
 |-- tests/
 |   |-- *.test.mjs              Test di app, storico, simulazioni e artefatto
+|   |-- editorial-text.test.mjs Verifica di spiegazioni, resoconti e punteggi
 |   |-- helpers/                Adattatore DOM e confronti con versioni precedenti
 |   `-- fixtures/               Dati sintetici e SHA-256 di riferimento
 |-- .github/workflows/pages.yml Test, creazione artefatto e deploy da main

@@ -7,12 +7,13 @@ import { runtime } from "./helpers/runtime.mjs";
 const read = path => fs.readFileSync(new URL(path, import.meta.url), "utf8");
 const baseline = JSON.parse(read("./fixtures/m28-baseline.json"));
 
-test("the active bank and all 84 paths retain their 3.5.5 questions, results and CSV fields", () => {
-  const forms = snapshotForms(runtime());
+test("content outside the editorial revision retains its 3.5.5 questions, results and CSV fields", () => {
+  const forms = snapshotForms(runtime(), { bankVersion: "2026.11-m22" });
   assert.deepEqual(Object.keys(forms), Object.keys(baseline.hashes));
   for (const [form, snapshots] of Object.entries(forms)) {
     assert.deepEqual(Object.keys(snapshots), Object.keys(baseline.hashes[form]), form);
     for (const [mode, snapshot] of Object.entries(snapshots)) {
+      if (mode === "first-steps" || (form === "en:B" && ["bank", "complete", "diligence"].includes(mode))) continue;
       assert.equal(digest(snapshot), baseline.hashes[form][mode], `${form} ${mode}`);
     }
   }

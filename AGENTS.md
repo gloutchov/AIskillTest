@@ -68,6 +68,7 @@ Prima di proporre una modifica per la validazione:
 - Nei test brevi, non mostrare punteggi globali se le dimensioni mancanti rendono il risultato fuorviante.
 - Nelle scelte singole, l'auto-advance deve essere rapido ma reversibile tramite `Indietro`.
 - Nelle scelte multiple e nei campi testo, il pulsante `Avanti` deve restare obbligatorio.
+- Nei quiz valutati, usare istruzioni neutre prima della risposta e mostrare le motivazioni nel resoconto. I dettagli delle dichiarazioni restano disponibili durante il test.
 
 ## Struttura file
 
