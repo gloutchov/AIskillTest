@@ -82,7 +82,7 @@ function cloneQuestionData(value) {
       return selected;
     }
 
-    const APP_VERSION = "3.5.6";
+    const APP_VERSION = "3.5.7";
     const HISTORY_KEY = "aiSkillAssessmentHistory";
     const ASSESSMENT_EPOCH_KEY = "aiSkillAssessmentClearGeneration";
     const DEFAULT_TEST_MODE_ID = "complete";

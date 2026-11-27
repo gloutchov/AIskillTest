@@ -78,6 +78,8 @@ Prima di proporre una modifica per la validazione:
   - preservare compatibilita' con hosting statico e dominio personalizzato
   - documentare se serve un server locale per lo sviluppo
 - Non introdurre chiamate di rete per salvare risposte o profilazioni.
+- Pubblicare Pages con l'artefatto generato da `scripts/build-pages-artifact.mjs`. Se cambia una risorsa caricata dalle pagine, aggiornare l'elenco dei file pubblici e verificare `tests/pages-artifact.test.mjs`.
+- Verificare le modifiche alle risorse e alla Content Security Policy su un artefatto locale e documentare le direttive e i limiti in `SECURITY_MODEL.md`.
 
 ## Gestione dati
 

@@ -125,3 +125,18 @@ Il maintainer ha approvato il diff locale della patch `3.5.6` il `2026-11-27`. L
 Edge headless con un profilo temporaneo ha completato Primi passi a 1280 px in italiano e il tematico Agents a 390 px emulati in inglese. Verificati risposta conservata con Indietro, bibliografia dalla landing e dai risultati, sette download JSON/CSV e lettura dei report sintetici 2.x e 3.4.0, compreso `AG2`. Gli export JSON storici corrispondono ai report originali e la consultazione ha preservato lo storico. Durante la prova non sono emerse eccezioni della pagina, richieste HTTP(S) esterne o richieste dell’archivio. Il mobile fisico e il deploy Pages restano fuori da questa verifica locale.
 
 L’apertura diretta di `index.html` da file locale reindirizza a `ai_skill_test.html` e mostra la versione `3.5.6` e tutti i 14 percorsi in Edge headless.
+
+## M29 — Artefatto Pages e CSP
+
+Il maintainer ha approvato il diff locale della patch `3.5.7` il `2026-11-27`. La suite Node 24 ha superato 82 test e il workflow è stato verificato con `actionlint` 1.7.12. L’artefatto contiene esattamente 18 file, incluse le due pagine, le loro risorse locali e `LICENSE`. I test confrontano ogni file con la sorgente, rifiutano un collegamento simbolico della directory `assets` e controllano la posizione e le direttive della CSP. La prova HTTP su localhost ha verificato root e tutti i 18 file. Nove URL esclusi, fra cui fixture, script, archivio Agents e percorsi di export sintetici, hanno restituito `404`.
+
+Edge headless ha aperto la root, l’app diretta e `index.html` da file. Su localhost ha completato Primi passi in italiano a 1280 px e il tematico Agents in inglese a 390 px emulati. Verificati storico 2.x e 3.4.0, bibliografia, stili dinamici e sette download JSON/CSV. Nessuna eccezione, richiesta esterna automatica o violazione CSP nei percorsi provati. Due prove locali hanno confermato il blocco di uno script inline e di una connessione vietata da `connect-src`.
+
+### Primo deploy selettivo
+
+1. Dopo l’approvazione del commit, verificare in Pages il dominio personalizzato e l’opzione HTTPS. Impostare **GitHub Actions** come sorgente prima del push su `main`. L’ambiente `github-pages` del repository consente il deploy da `main`. [Configurazione della sorgente Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site)
+2. Attendere il run **Publish GitHub Pages** e verificare checkout, test, elenco dei file, upload e deployment sul commit approvato. Confrontare i contenuti pubblicati con l’artefatto.
+3. Sul dominio personalizzato verificare redirect HTTP → HTTPS, root, apertura diretta di `ai_skill_test.html`, CSS, icona e script. Usare una sessione con dati sintetici per verificare console, rete ed export.
+4. Verificare via HTTP sullo stesso dominio che, per esempio, `tests/fixtures/m21-regression.json`, `scripts/build-pages-artifact.mjs` e `docs/archive/agents-original.json` restituiscano `404`.
+
+La sorgente di partenza della C29 era la root di `main`. La prova mobile locale è stata eseguita con un viewport emulato.

@@ -6,7 +6,7 @@ Questionario interattivo in italiano e inglese per esplorare conoscenze, giudizi
 
 L'assessment produce un quadro delle evidenze: conoscenze/scenari, pratiche dichiarate, testi con feedback ed esiti simulati restano separati, con copertura e limiti per area. È pensato come strumento diagnostico interno e migliorabile, non come test psicometrico validato.
 
-Versione dell’app **`3.5.6`**, milestone C28.
+Versione dell’app **`3.5.7`**, milestone C29.
 
 ### Nota sullo sviluppo
 
@@ -142,14 +142,18 @@ L'applicazione è disponibile all'indirizzo:
 
 - [https://aiskilltest.glaucosilvestri.it](https://aiskilltest.glaucosilvestri.it)
 
-Il file `CNAME` associa il dominio personalizzato al progetto. `index.html` reindirizza automaticamente a `ai_skill_test.html`, quindi la root del sito funziona senza build step.
+`index.html` reindirizza automaticamente a `ai_skill_test.html`. L’app funziona anche da file locale, senza installare un server o eseguire una build.
+
+Per il deploy selettivo della M29, impostare **Settings → Pages → Source → GitHub Actions** prima del push approvato su `main`. Dominio personalizzato ed HTTPS si configurano nelle impostazioni Pages. Il workflow esegue i test e pubblica l’artefatto con le due pagine, le risorse locali e la licenza. Fixture, script di manutenzione, documentazione di sviluppo ed export restano fuori dal sito. [Configurazione GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site)
+
+Per preparare l’artefatto in locale, eseguire `node scripts/build-pages-artifact.mjs` con Node 24. Lo script stampa la directory temporanea da aprire o servire su localhost. Le due pagine dichiarano una Content Security Policy che limita le risorse alla stessa origine e blocca le connessioni avviate dall’app. [Modello di sicurezza](SECURITY_MODEL.md) · [Mappa del repository](MAP.md)
 
 L'icona a forma di casa accanto al selettore della lingua rimanda al sito principale [glaucosilvestri.it](https://www.glaucosilvestri.it).
 
 ### Versioning
 
-- Versione app `3.5.6`.
-- Tag Git di riferimento `v3.5.6`.
+- Versione app `3.5.7`.
+- Tag Git di riferimento `v3.5.7`.
 - Banca domande: `2026.11-m22`.
 - Forma assessment: `1.8`.
 - Scoring: `3.1.0`; schema report `4`; blueprint `1.0.0`; casi/laboratorio `1.0.0`.
@@ -197,7 +201,7 @@ Interactive questionnaire in Italian and English exploring GenAI knowledge, judg
 
 The assessment produces an evidence overview: knowledge/scenarios, self-reported practices, text with feedback, and simulated outcomes remain separate, with area coverage and limits. It is intended as an internal diagnostic tool that can evolve over time, not as a psychometrically validated test.
 
-App version **`3.5.6`**, milestone C28.
+App version **`3.5.7`**, milestone C29.
 
 ### Development Note
 
@@ -333,14 +337,18 @@ The application is available at:
 
 - [https://aiskilltest.glaucosilvestri.it](https://aiskilltest.glaucosilvestri.it)
 
-The `CNAME` file associates the custom domain with the project. `index.html` automatically redirects to `ai_skill_test.html`, so the site root works without a build step.
+`index.html` automatically redirects to `ai_skill_test.html`. You can also open the app from a local file, with no server or build step.
+
+For M29's selective deployment, set **Settings → Pages → Source → GitHub Actions** before the approved push to `main`. Configure the custom domain and HTTPS in Pages settings. The workflow runs the tests and publishes the two pages, their local resources, and the license. Fixtures, maintenance scripts, developer documentation, and exports stay outside the site. [GitHub Pages setup](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site)
+
+To prepare the artifact locally, run `node scripts/build-pages-artifact.mjs` with Node 24. The script prints the temporary directory to open or serve on localhost. Both pages declare a Content Security Policy that limits resources to the site origin and blocks app-initiated connections. [Security model](SECURITY_MODEL.md) · [Repository map](MAP.md)
 
 The home icon next to the language selector links to the main website, [glaucosilvestri.it](https://www.glaucosilvestri.it).
 
 ### Versioning
 
-- App version `3.5.6`.
-- Reference Git tag `v3.5.6`.
+- App version `3.5.7`.
+- Reference Git tag `v3.5.7`.
 - Question bank: `2026.11-m22`.
 - Assessment form: `1.8`.
 - Scoring: `3.1.0`; report schema `4`; blueprint `1.0.0`; cases/lab `1.0.0`.

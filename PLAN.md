@@ -4,7 +4,7 @@ Questo piano governa le prossime modifiche del progetto `AIskillTest`. Ogni mile
 
 Versione di partenza: `1.0.0`.
 
-Versione di riferimento `3.5.6`, con le milestone 0–27 completate e la C28 validata dal maintainer il `2026-11-27`. Il completamento della pubblicazione richiede la verifica di `main` e dei tag della C28 prima di avviare la M29.
+Versione di riferimento `3.5.7`, con le milestone 0–28 completate e il diff della C29 validato dal maintainer il `2026-11-27`. La chiusura della C29 richiede la verifica dei tag e del deploy selettivo di Pages.
 
 ## Regole di release
 
@@ -856,8 +856,8 @@ Base della review `8a98a8f`. I target sono indicativi e seguono l'ordine delle m
 | 25 | Export CSV sicuro e protezione degli export dal versionamento | `3.5.3` | Completata |
 | 26 | Report storici danneggiati e gestione sicura dei campi | `3.5.4` | Completata |
 | 27 | Navigazione da tastiera e distribuzione sulla landing | `3.5.5` | Completata |
-| 28 | Pulizia del codice orfano e archivio dei quesiti Agents originali | `3.5.6` | Implementazione approvata |
-| 29 | Pubblicazione selettiva e protezioni GitHub Pages | `3.5.7` | Pianificata |
+| 28 | Pulizia del codice orfano e archivio dei quesiti Agents originali | `3.5.6` | Completata |
+| 29 | Pubblicazione selettiva e protezioni GitHub Pages | `3.5.7` | Implementazione approvata |
 
 ### M23 — Recupero dei risultati e interruzione con storage indisponibile
 
@@ -910,17 +910,17 @@ Base della review `8a98a8f`. I target sono indicativi e seguono l'ordine delle m
 
 ### C28 — Pulizia del codice orfano e archivio Agents
 
-- Branch `fix/remove-unused-assessment-code`, versione `3.5.6`, tag di versione `v3.5.6` e checkpoint `milestone/C28` da verificare su `main`.
+- Branch `fix/remove-unused-assessment-code`, versione `3.5.6`, tag di versione `v3.5.6` e checkpoint `milestone/C28` verificati su `main` al commit `cb9df9c`. Deploy Pages verificato e branch rimosso.
 - Rimosse le funzioni prive di chiamanti `localizedProfileName`, `sourceQuestionId`, `scoreText` e rami e stili inutilizzati. Aggiornate versione e cache degli asset.
 - L’[archivio AG1–AG15](docs/archive/agents-original.json) conserva definizioni, traduzioni, varianti IT/EN e classificazione. Le 84 combinazioni attive corrispondono alla `v3.5.5`. Verificati anche i report 2.x, la conservazione dei dati storici e la compatibilità delle bozze.
 - Il maintainer ha approvato il diff locale il `2026-11-27`. Superati 79 test e la verifica dei sei generatori. In Edge sono stati verificati percorsi, storico ed export da localhost e apertura da file locale. La prova mobile ha usato un viewport emulato. [Verifiche M28](docs/QA.md#m28--pulizia-e-compatibilità).
 
-### M29 — Pubblicazione selettiva e protezioni GitHub Pages
+### C29 — Pubblicazione selettiva e protezioni GitHub Pages
 
-- Branch `fix/github-pages-artifact-and-csp`, target patch `3.5.7`.
-- Preparare un artefatto Pages che includa solo entry point, asset e file necessari. Escludere fixture, script, documentazione di sviluppo ed export dal deploy. Eseguire i test e controllare l'elenco dei file prima di pubblicare.
-- Configurare una Content Security Policy compatibile con Pages e con le risorse locali. Documentare quali direttive richiedono header HTTP. Verificare HTTPS, dominio personalizzato, root e asset, accesso diretto e assenza di richieste automatiche con dati utente.
-- Verificare che fixture e script non siano serviti dal sito dopo il cambio di sorgente. La visibilità dei file nel repository GitHub segue le impostazioni del repository.
+- Branch `fix/github-pages-artifact-and-csp`, versione `3.5.7`, tag di versione `v3.5.7` e checkpoint `milestone/C29` da verificare su `main`.
+- Il workflow esegue i test e distribuisce un artefatto di 18 file da `main`, con pagine, risorse locali e licenza. La CSP nelle due pagine blocca script inline e connessioni avviate dall’app. L’avvio da file resta disponibile. Le direttive che richiedono header HTTP sono indicate nel [modello di sicurezza](SECURITY_MODEL.md).
+- Il maintainer ha approvato il diff locale il `2026-11-27`. Superati 82 test e `actionlint`. Verificati in Edge storico, bibliografia, export, blocchi CSP e navigazione da file e localhost. La prova mobile ha usato un viewport emulato. Le risorse interne risultano assenti dall’artefatto locale.
+- Durante la pubblicazione, passare a GitHub Actions come sorgente Pages e verificare HTTPS, root, apertura diretta, asset e risposta `404` per fixture e script sul dominio pubblico. La visibilità dei file nel repository segue i permessi GitHub. [Verifiche M29](docs/QA.md#m29--artefatto-pages-e-csp)
 
 ## Backlog opzionale
 
