@@ -4,11 +4,11 @@
 - Revisione: `2026-11-25`; mappa dei 115 item approvata nella milestone 16, estesa con MA01–MA10 nella M18 approvata; AW01–AW10 nella M19 approvata; HR01–HR10 aggiunti nella M20 approvata dal maintainer; blueprint `1.0.0`.
 - Contratto e definizioni: [ASSESSMENT_BLUEPRINT.md](../ASSESSMENT_BLUEPRINT.md).
 
-La tabella classifica tutti i 145 `sourceId` di `baseQuestions`, ciascuno una sola volta. È implementata nei metadati JavaScript e non assegna retroattivamente punteggi ai report storici. Il widget attuale è mantenuto come informazione tecnica; il tipo di evidenza dipende dal compito. Tutti i multi/choice della banca restano Q. La M21 ha aggiunto sei decisioni E di tipo simulation in un inventario separato, senza inserirle in baseQuestions. La M22 approvata aggiunge 44 ID del completo: 195 ID classificati complessivi; mappa separata in fondo, con origine esplicita dei riusi.
+La tabella classifica i 130 `sourceId` di `baseQuestions`, ciascuno una sola volta. La classificazione è implementata nei metadati JavaScript e si usa per i nuovi risultati. Il widget indica il controllo tecnico, mentre il tipo di evidenza dipende dal compito. Tutti i multi/choice della banca restano Q. Le sei decisioni E e i 44 ID del completo sono nelle tabelle separate in fondo. La M28 ha trasferito i metadati di AG1–AG15 nell’[archivio storico](archive/agents-original.json).
 
 Le righe valgono come mappa degli obiettivi comuni per le forme A/B/C e le traduzioni IT/EN. Gli override attuali richiedono revisione editoriale quando si riusano gli item: la classificazione non dimostra equivalenza di difficoltà. Non si assegna automaticamente un nuovo slot C01-C50 a un vecchio ID.
 
-Q = conoscenze/scenari; D = pratiche dichiarate; T = testo con feedback. Area e obiettivo sono primari; i tag non aggiungono punti. Il livello B/O/S descrive il compito, non la persona. La modalità attuale resta separata dall'area: AG12 e AG9/AG13, per esempio, sono item storici della sezione Agents con area primaria H; non entrano nel nuovo percorso vincolato della M19.
+Q = conoscenze/scenari; D = pratiche dichiarate; T = testo con feedback. Area e obiettivo sono primari; i tag non aggiungono punti. Il livello B/O/S descrive il compito, non la persona.
 
 | ID attuale | Widget | Evidenza | Area | Obiettivo | Allineamento | Livello | Tag secondari |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -112,21 +112,6 @@ Q = conoscenze/scenari; D = pratiche dichiarate; T = testo con feedback. Area e 
 | T13 | knowledge | Q | F | F02 | direct | B | — |
 | M13 | likert | D | U | U08 | direct | O | mindset |
 | P_M_2 | choice | Q | U | U08 | direct | O | mindset |
-| AG1 | likert | D | A | A01 | direct | O | delegation |
-| AG2 | knowledge | Q | A | A01 | direct | O | delegation |
-| AG3 | scenario | Q | A | A03 | direct | S | delegation, diligence |
-| AG4 | multi | Q | A | A03 | direct | S | delegation, diligence |
-| AG5 | likert | D | A | A03 | direct | S | delegation, diligence |
-| AG6 | scenario | Q | A | A03 | direct | S | delegation, diligence |
-| AG7 | knowledge | Q | A | A02 | direct | S | verification |
-| AG8 | scenario | Q | A | A05 | direct | S | verification |
-| AG9 | multi | Q | H | H06 | direct | S | verification |
-| AG10 | text | T | A | A03 | direct | S | delegation, diligence |
-| AG11 | scenario | Q | A | A03 | direct | S | delegation, diligence |
-| AG12 | knowledge | Q | H | H02 | direct | S | context |
-| AG13 | choice | Q | H | H06 | direct | S | verification |
-| AG14 | likert | D | A | A03 | direct | S | delegation, diligence |
-| AG15 | multi | Q | A | A03 | direct | S | delegation, diligence |
 | MA01 | scenario | Q | U | U01 | direct | O | delegation, multimodal, context |
 | MA02 | scenario | Q | U | U01 | direct | O | delegation |
 | MA03 | scenario | Q | U | U02 | direct | O | multimodal, verification |
@@ -160,13 +145,13 @@ Q = conoscenze/scenari; D = pratiche dichiarate; T = testo con feedback. Area e 
 
 ## Controlli e copertura
 
-La classificazione dei 115 item preesistenti implementata nella milestone 17 resta invariata. La milestone 18 aggiunge dieci ID con varianti A/B/C IT/EN in `assets/modern-ai.js`, banca `2026.11-m18`, forma `1.4`. Il comando `node tests/assessment.test.mjs` verifica la corrispondenza fra mappa Markdown e metadati runtime. La classificazione è parte delle regole di scoring, documentate in [SCORING.md](SCORING.md).
+La classificazione dei quesiti della milestone 17 si conserva anche per gli ID archiviati. La milestone 18 aggiunge dieci ID con varianti A/B/C IT/EN in `assets/modern-ai.js`, banca `2026.11-m18`, forma `1.4`. Il comando `node tests/assessment.test.mjs` verifica la corrispondenza fra mappa Markdown e metadati runtime. La classificazione è parte delle regole di scoring, documentate in [SCORING.md](SCORING.md).
 
-Totale corrente: **145 ID**; **86 Q, 55 D, 4 T, 0 E**. La M19 conteneva 135 ID (76 Q, 55 D, 4 T). La M18 conteneva 125 ID (66 Q, 55 D, 4 T). La baseline M16/M17 conteneva 115 ID (56 Q, 55 D, 4 T). Il completo attuale seleziona 50 ID: **27 Q, 21 D, 2 T, 0 E**. Le autovalutazioni facoltative iniziali sono escluse.
+Totale corrente della banca tematica **130 ID** (75 Q, 52 D, 3 T). Con i 44 ID Q/D/T del completo e le sei decisioni E, il runtime classifica **180 ID**. La M21 aveva 145 ID nella banca tematica, la M19 ne contava 135, la M18 125 e la baseline M16/M17 115. Le autovalutazioni facoltative iniziali sono escluse.
 
 AI moderne propone sempre MA01–MA10: **U01×2, U02×2, U03–U08×1**, tutti Q diretti di livello O. Questi slot non entrano nel completo o negli altri tematici prima della milestone 22. La scelta in uno scenario non dimostra esecuzione pratica. Testi bilingui, crediti e fonti sono in [MODERN_AI_REVIEW.md](MODERN_AI_REVIEW.md).
 
-Tutti gli obiettivi hanno ora almeno un Q direttamente allineato nella banca, eccetto **F06**, collegato solo a un quesito storico di supporto. H01, H03, H04 e H05 acquisiscono Q dedicati nel percorso Harness. U02, U03 e U05 hanno ora Q dedicati in AI moderne, ma rimangono assenti dal completo. Alcuni sono richiamati indirettamente in altri quesiti: un richiamo non conta come copertura dedicata. A04 ha ora due Q dedicati nel percorso Agents (AW07/AW08); nel completo resta solo la dichiarazione L9. T10 è collegato a F06 solo come supporto storico (`supporting`): non verifica la scelta della famiglia di soluzione e non soddisfa la copertura dedicata di F06. Le coperture mancanti nel completo e le prove E restano nelle milestone 21-22.
+Prima della M22 tutti gli obiettivi avevano almeno un Q direttamente allineato nella banca, eccetto **F06**, collegato solo a un quesito storico di supporto. H01, H03, H04 e H05 acquisiscono Q dedicati nel percorso Harness. U02, U03 e U05 hanno ora Q dedicati in AI moderne, ma rimangono assenti dal completo. Alcuni sono richiamati indirettamente in altri quesiti: un richiamo non conta come copertura dedicata. A04 ha ora due Q dedicati nel percorso Agents (AW07/AW08); nel completo resta solo la dichiarazione L9. T10 è collegato a F06 solo come supporto storico (`supporting`): non verifica la scelta della famiglia di soluzione e non soddisfa la copertura dedicata di F06. Le coperture mancanti nel completo e le prove E restano nelle milestone 21-22.
 
 Nella milestone 17 la mappa serve a separare le evidenze dei nuovi report. Le revisioni dei contenuti e la composizione finale seguono le milestone del piano; per cambiare testo, alternative, obiettivo o rubrica bisogna aggiornare le versioni pertinenti. Gli slot futuri e i relativi tipi di prova sono nella sezione 5 del blueprint.
 
@@ -195,7 +180,7 @@ Sei ID separati dai 145 quesiti base: 151 ID complessivi. In ogni forma A/B/C IT
 
 ## Slot del completo nella milestone 22
 
-Release v3.5.0, approvata dal maintainer il 2026-11-26. I 44 ID seguenti sono separati da baseQuestions: 36 Q, 6 D e 2 T. Le sei E usano gli ID LAB con slotId C26/C27/C28/C39/C40/C50, senza duplicare il conteggio. In totale 195 ID classificati: 145 tematici + 44 completo + 6 E. Allineamento direct per tutti i nuovi slot; nessun credito dai tag. C41 e C43 sono Q di comprensione che riusano i compiti di identificazione di HR01/HR04. [Varianti e motivazioni bilingui](M22_REVIEW.md).
+Release v3.5.0, approvata dal maintainer il 2026-11-26. I 44 ID seguenti sono separati da baseQuestions: 36 Q, 6 D e 2 T. Le sei E usano gli ID LAB con slotId C26/C27/C28/C39/C40/C50, senza duplicare il conteggio. All’uscita della M22 il runtime classificava 195 ID (145 tematici, 44 del completo e 6 E). Allineamento direct per tutti i nuovi slot; nessun credito dai tag. C41 e C43 sono Q di comprensione che riusano i compiti di identificazione di HR01/HR04. [Varianti e motivazioni bilingui](M22_REVIEW.md).
 
 | ID | Tipo di prova | Evidenza | Area | Obiettivo | Livello | Origine esplicita |
 | --- | --- | --- | --- | --- | --- | --- |

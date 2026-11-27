@@ -10,11 +10,11 @@ const read = name => fs.readFileSync(path.join(root, name), "utf8");
 const plain = value => JSON.parse(JSON.stringify(value));
 
 
-test("mapping covers 145 items and matches the Markdown inventory", () => {
+test("the active bank and the Markdown inventory classify the same 130 thematic items", () => {
   const r = runtime();
   const rows = [...read("docs/ASSESSMENT_ITEM_MAP.md").matchAll(/^\| (\S+) \| (likert|knowledge|scenario|multi|choice|text) \| ([QDT]) \| ([FUAH]) \| ([FUAH]\d{2}) \| (direct|supporting) \| ([BOS]) \| (.+) \|$/gm)];
-  assert.equal(rows.length, 145);
-  assert.equal(r.run("bank.length"), 145);
+  assert.equal(rows.length, 130);
+  assert.deepEqual(rows.map(row => row[1]), plain(r.run("bank.map(question => question.id)")));
   for (const row of rows) {
     const mapped = plain(r.context.core.ITEM_MAP[row[1]]);
     assert.equal(mapped.evidenceType, row[3]); assert.equal(mapped.primaryArea, row[4]);
@@ -360,11 +360,15 @@ test("keyboard focus pauses the carousel until the user resumes it", () => {
   assert.notEqual(r.run("state.carouselTimer"), null);
 });
 
-test("HTML loads local classic assets with consistent 3.5.5 cache keys", () => {
+test("HTML loads local classic assets with consistent 3.5.6 cache keys", () => {
   const html=read('ai_skill_test.html');const scripts=[...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map(m=>m[1]);
   assert.deepEqual(scripts.map(s=>s.split('?')[0]),['assets/questions.js','assets/i18n.js','assets/learning.js','assets/modern-ai.js','assets/agentic-workflows.js','assets/harness.js','assets/operational-lab.js','assets/complete-assessment.js','assets/lab-ui.js','assets/assessment.js','assets/report-ui.js','assets/app.js']);
-  for(const src of scripts){assert.ok(src.endsWith('?v=3.5.5'));assert.ok(fs.existsSync(path.join(root,src.split('?')[0])));}
-  assert.match(html,/Versione 3\.5\.5/);assert.doesNotMatch(html,/Champion|Expert|Indice 0-100/);
+  for(const src of scripts){assert.ok(src.endsWith('?v=3.5.6'));assert.ok(fs.existsSync(path.join(root,src.split('?')[0])));}
+  assert.match(html, /href="assets\/styles\.css\?v=3\.5\.6"/);
+  for (const page of [html, read('index.html')]) {
+    assert.equal([...page.matchAll(/href="aiskilltest_icon\.png\?v=3\.5\.6"/g)].length, 2);
+  }
+  assert.match(html,/Versione 3\.5\.6/);assert.doesNotMatch(html,/Champion|Expert|Indice 0-100/);
 });
 
 test("browser startup bindings, optional empty data and completion execute with a minimal DOM adapter", () => {
@@ -476,11 +480,11 @@ test("Modern AI starts, returns to previous answers and saves complete bilingual
     r.run(`state.answers[questions[0].id]=choose(questions[0]);scheduleAutoAdvance(questions[0],0,state.answers[questions[0].id])`);
     assert.equal(r.timers.size,1);r.timers.values().next().value();assert.equal(r.run('state.index'),1);r.run('goPrev()');assert.equal(r.run('state.index'),0);assert.equal(r.run('state.answers[questions[0].id]===choose(questions[0])'),true);
     r.run(`state.answers=Object.fromEntries(questions.map(q=>[q.id,choose(q)]));finishAssessment()`);
-    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.5');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.testMode.id,'modern-ai');
+    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.6');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.testMode.id,'modern-ai');
     assert.deepEqual(JSON.parse(r.storage.get('aiSkillAssessmentHistory'))[0],report);
     for(const item of report.answers){assert.ok(item.question.includes('\n'));assert.equal(item.selectedRationales.length,1);assert.ok(item.sourceRefs.length>0);assert.ok(r.node('dashboard').innerHTML.includes(item.selectedRationales[0].replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;')));}
     r.run('downloadBlob=(content,name,type)=>{globalThis.download={content,name,type}};exportJson(state.latestReport)');assert.deepEqual(JSON.parse(r.context.download.content),report);
-    const rows=plain(r.context.core.csvRows(report));assert.ok(rows.some(row=>row[1]==='answers.0.selectedRationales.0'));assert.ok(rows.some(row=>row[1]==='answers.0.sourceRefs.0'));assert.equal(rows.find(row=>row[1]==='meta.assessmentVersion')[2],'3.5.5');
+    const rows=plain(r.context.core.csvRows(report));assert.ok(rows.some(row=>row[1]==='answers.0.selectedRationales.0'));assert.ok(rows.some(row=>row[1]==='answers.0.sourceRefs.0'));assert.equal(rows.find(row=>row[1]==='meta.assessmentVersion')[2],'3.5.6');
     const original=r.storage.get('aiSkillAssessmentHistory');r.run('loadLastReport()');assert.equal(r.storage.get('aiSkillAssessmentHistory'),original);
   }
 });
@@ -581,7 +585,7 @@ test("Agents completion, navigation, frozen recommendations, history and exports
     r.run(`state.answers[questions[0].id]=choose(questions[0],false);scheduleAutoAdvance(questions[0],0,state.answers[questions[0].id])`);
     assert.equal(r.timers.size,1);r.timers.values().next().value();assert.equal(r.run('state.index'),1);r.run('goPrev()');assert.equal(r.run('state.index'),0);assert.equal(r.run('state.answers[questions[0].id]===choose(questions[0],false)'),true);
     r.run(`state.answers=Object.fromEntries(questions.map(q=>[q.id,q.options.findIndex(o=>o.score===3)]));finishAssessment()`);
-    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.5');assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.testMode.id,'agents');assert.equal(report.meta.formId,form);assert.equal(report.meta.language,language);
+    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.6');assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.testMode.id,'agents');assert.equal(report.meta.formId,form);assert.equal(report.meta.language,language);
     assert.equal(report.results.nextSteps.length,5);assert.ok(report.answers.every(q=>q.selectedRationales.length===1&&q.question.includes('\n')&&typeof q.nextStep==='string'));
     assert.match(r.node('dashboard').innerHTML,language==='it'?/Per approfondire le scelte/:/Develop your decisions/);
     r.run('downloadBlob=(content,name,type)=>{globalThis.download={content,name,type}};exportJson(state.latestReport)');assert.deepEqual(JSON.parse(r.context.download.content),report);
@@ -600,7 +604,6 @@ test("Agents sources load as explicit bilingual links and the full test uses the
     assert.match(r.node("agenticSourcesNote").textContent, description);
   }
   const report=r.run('full()');assert.deepEqual(plain(report.answers.filter(q=>q.section==='AI Agents').map(q=>q.sourceId)),['C29','C30','C31','C32','C33','C34','C35','C36','C37','C38']);assert.equal(report.results.nextSteps,undefined);
-  assert.equal(r.run(`bank.filter(q=>/^AG[0-9]+$/.test(q.id)).length`),15);
   assert.doesNotMatch(read('assets/agentic-workflows.js'),/\bfetch\s*\(|XMLHttpRequest|sendBeacon|<iframe|<img|<audio|<video/);
 });
 
@@ -644,7 +647,7 @@ test("Harness starts, navigates and persists frozen bilingual report/export cont
     const first=r.run('questions[0].options[choose(questions[0])].rationale');assert.ok(!r.node('options').innerHTML.includes(first));
     r.run(`state.answers[questions[0].id]=choose(questions[0]);scheduleAutoAdvance(questions[0],0,state.answers[questions[0].id])`);assert.equal(r.timers.size,1);r.timers.values().next().value();assert.equal(r.run('state.index'),1);r.run('goPrev()');assert.equal(r.run('state.index'),0);assert.equal(r.run('state.answers[questions[0].id]===choose(questions[0])'),true);
     r.run(`state.answers=Object.fromEntries(questions.map(q=>[q.id,q.options.findIndex(o=>o.score===3)]));finishAssessment()`);
-    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.5');assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.testMode.id,'harness');assert.equal(report.meta.formId,form);assert.equal(report.meta.language,language);assert.equal(report.results.nextSteps.length,6);
+    const report=plain(r.run('state.latestReport'));assert.equal(report.meta.assessmentVersion,'3.5.6');assert.equal(report.meta.questionBankVersion,'2026.11-m22');assert.equal(report.meta.formVersion,'1.8');assert.equal(report.meta.scoringVersion,'3.1.0');assert.equal(report.meta.reportSchemaVersion,4);assert.equal(report.meta.testMode.id,'harness');assert.equal(report.meta.formId,form);assert.equal(report.meta.language,language);assert.equal(report.results.nextSteps.length,6);
     assert.ok(report.answers.every(q=>q.question.includes('\n')&&q.selectedRationales.length===1&&typeof q.nextStep==='string'));
     r.run('downloadBlob=(content,name,type)=>{globalThis.download={content,name,type}};exportJson(state.latestReport)');assert.deepEqual(JSON.parse(r.context.download.content),report);
     const rows=plain(r.context.core.csvRows(report));for(const field of ['answers.0.nextStep','answers.0.selectedRationales.0','answers.0.sourceRefs.0','results.nextSteps.0.text'])assert.ok(rows.some(row=>row[1]===field));

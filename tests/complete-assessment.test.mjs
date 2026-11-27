@@ -1,7 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
-import { createHash } from "node:crypto";
 import { runtime } from "./helpers/runtime.mjs";
 const plain = value => JSON.parse(JSON.stringify(value));
 const blueprint = fs.readFileSync(new URL("../ASSESSMENT_BLUEPRINT.md",import.meta.url),"utf8");
@@ -33,7 +32,7 @@ test("full assessment implements every approved slot and area/evidence quota in 
     assert.equal(results.answers.filter(q=>q.questionKind==="scenario").length,30);
     assert.equal(results.results.simulatedSummary.value,100); assert.equal(results.results.simulatedCases.length,2);
     assert.deepEqual(units.slice(44).map(q=>q.sourceId),plain(r.run("LOCAL_LAB.IDS")));
-    assert.equal(results.meta.assessmentVersion,"3.5.5"); assert.equal(results.meta.formVersion,"1.8");
+    assert.equal(results.meta.assessmentVersion,"3.5.6"); assert.equal(results.meta.formVersion,"1.8");
     assert.equal(results.meta.questionBankVersion,"2026.11-m22"); assert.equal(results.meta.scoringVersion,"3.1.0");
     assert.equal(results.meta.reportSchemaVersion,4); assert.equal(r.run("core.reportKind(report())"),"evidence");
   }
@@ -189,10 +188,10 @@ test("drafts from 3.5.0 migrate with matching contents and future UI-only versio
     r.storage.set("aiSkillOperationalLabDraft",JSON.stringify({...draft,assessmentVersion:"3.5.0"}));
     r.run("resumeLabDraft()");
     assert.equal(r.run("answeredCount()"),1);
-    assert.equal(r.run("state.meta.assessmentVersion"),"3.5.5");
+    assert.equal(r.run("state.meta.assessmentVersion"),"3.5.6");
     assert.equal(r.storage.has("aiSkillOperationalLabDraft"),false);
     const record = JSON.parse(r.storage.get("aiSkillAssessmentDraft"));
-    for (const version of ["3.5.4", "3.5.6"]) {
+    for (const version of ["3.5.4", "3.5.5", "3.5.7"]) {
       record.draft.assessmentVersion = version;
       r.storage.set("aiSkillAssessmentDraft", JSON.stringify(record));
       assert.equal(r.run("readLabDraft().status"), "compatible");
@@ -200,17 +199,19 @@ test("drafts from 3.5.0 migrate with matching contents and future UI-only versio
   }
 });
 
-test("thematic content, six learning forms, lab rules and original reports match the approved 3.4.0 release", () => {
-  const baseline=JSON.parse(fs.readFileSync(new URL("./fixtures/m21-regression.json",import.meta.url),"utf8"));
+test("original 3.4.0 reports with archived Agents answers stay readable and exportable", () => {
+  const { report: saved }=JSON.parse(fs.readFileSync(new URL("./fixtures/m21-regression.json",import.meta.url),"utf8"));
   const current=runtime();
-  for(const lang of ["it","en"]) for(const form of ["A","B","C"]) {
-    current.context.lang=lang;current.context.form=form;
-    const code=`(() => {state.language=lang;const bank=lang==='en'?buildEnglishQuestionForm(form):buildQuestionForm(form);return {bank,paths:TEST_MODES.filter(m=>m.id!=='complete'&&m.type!=='learning').map(m=>({id:m.id,qs:questionsForMode(bank,m,false,form)})),learning:FIRST_STEPS_QUESTIONS[lang].filter(q=>q.formId===form),lab:LOCAL_LAB.evaluate(form,lang,{})};})()`;
-    assert.equal(createHash("sha256").update(JSON.stringify(current.run(code))).digest("hex"),baseline.hashes[`${lang}:${form}`]);
-  }
-  const saved=baseline.report; const raw=JSON.stringify([saved]);current.storage.set("aiSkillAssessmentHistory",raw);
-  current.run("loadLastReport()");assert.equal(current.storage.get("aiSkillAssessmentHistory"),raw);
-  assert.equal(current.run("core.reportKind(state.latestReport)"),"evidence");assert.deepEqual(plain(current.run("state.latestReport")),saved);
+  const raw=JSON.stringify([saved]);
+  assert.ok(saved.answers.some(answer => answer.sourceId === "AG2"));
+  current.storage.set("aiSkillAssessmentHistory",raw);
+  current.run("loadLastReport(); downloadBlob=(content)=>{globalThis.download=content}");
+  assert.equal(current.run("core.reportKind(state.latestReport)"),"evidence");
+  current.node("exportJsonBtn").events.click();
+  assert.deepEqual(JSON.parse(current.context.download),saved);
+  current.node("exportCsvBtn").events.click();
+  assert.match(current.context.download, /answers\.\d+\.sourceId,AG2/);
+  assert.equal(current.storage.get("aiSkillAssessmentHistory"),raw);
 });
 
 test("complete reports freeze bilingual decisions, slots, recommendations and exports independently of the current bank", () => {

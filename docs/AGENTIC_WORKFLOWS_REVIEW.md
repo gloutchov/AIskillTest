@@ -8,7 +8,7 @@ Fonti ricontrollate il **2026-11-25**. Documento generato con `node scripts/buil
 
 Ogni forma propone sempre AW01–AW10: due Q diretti per ciascuno degli obiettivi A01–A05, con due compiti O e otto S. Domande e alternative sono rimescolate, mentre la copertura è vincolata. I livelli descrivono la complessità del compito e non la qualifica della persona. Le 30 varianti sono originali e bilingui; stessa matrice e carico progettato non dimostrano equivalenza psicometrica.
 
-Il percorso sostituisce il precedente campionamento di dieci item da AG1–AG15. Questi quindici item restano nella banca: AG1–AG4 rimangono nel completo da 50 senza modifiche. Tutte le altre composizioni, AI moderne e Primi passi conservano i propri contenuti. Il nuovo completo sarà integrato nella M22.
+La M19 ha sostituito il campionamento da AG1–AG15 con la matrice AW01–AW10. AG1–AG4 sono rimasti nel completo fino alla M22. Gli altri percorsi e Primi passi hanno conservato i contenuti. Dalla M28 i quindici quesiti originali si consultano nell’[archivio](archive/agents-original.json).
 
 Tutti i tool, domini, credenziali, trace ID e dati sono ipotetici. Le tracce sono testo da interpretare; non sono eseguite né usate per collegare servizi. Un ordine riportato in un documento resta contenuto del caso. Una risposta Q valuta il giudizio descritto, senza raccogliere evidenza E di esecuzione pratica.
 

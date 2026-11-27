@@ -1,0 +1,1623 @@
+{
+  "source": {
+    "tag": "v3.5.5",
+    "commit": "3cd9fafb64bcde6295b47cc34a10050878193035"
+  },
+  "items": [
+    {
+      "question": {
+        "id": "AG1",
+        "section": "AI Agents",
+        "dimension": "literacy",
+        "type": "likert",
+        "text": "Distinguo tra chatbot, automazione tradizionale, RAG e agente AI che può pianificare passi e usare strumenti.",
+        "hint": "Conta capire quando l’AI risponde, quando recupera informazioni e quando può eseguire azioni."
+      },
+      "translationEn": {
+        "text": "I distinguish between a chatbot, traditional automation, RAG, and an AI agent that can plan steps and use tools.",
+        "hint": "What matters is understanding when AI answers, when it retrieves information, and when it can execute actions."
+      },
+      "overrides": {
+        "it": {
+          "B": {
+            "text": "Riconosco quando un flusso richiede solo una chat, quando basta un'automazione e quando serve un agente con strumenti, stato e criteri di controllo.",
+            "hint": "Valuta se distingui risposta testuale, recupero di informazioni e azione governata."
+          },
+          "C": {
+            "text": "So distinguere un assistente che risponde, un sistema RAG che recupera fonti e un agente che può scegliere passi, usare tool e mantenere stato.",
+            "hint": "Considera architettura, autonomia e controllo, non il nome commerciale dello strumento."
+          }
+        },
+        "en": {
+          "B": {
+            "text": "I recognize when a flow only needs chat, when automation is enough, and when it needs an agent with tools, state, and control criteria.",
+            "hint": "Assess whether you distinguish text response, information retrieval, and governed action."
+          },
+          "C": {
+            "text": "I can distinguish an assistant that answers, a RAG system that retrieves sources, and an agent that can choose steps, use tools, and maintain state.",
+            "hint": "Consider architecture, autonomy, and control, not the commercial name of the tool."
+          }
+        }
+      },
+      "classification": {
+        "evidenceType": "D",
+        "primaryArea": "A",
+        "objectiveId": "A01",
+        "objectiveAlignment": "direct",
+        "taskLevel": "O",
+        "secondaryTags": [
+          "delegation"
+        ]
+      }
+    },
+    {
+      "question": {
+        "id": "AG2",
+        "section": "AI Agents",
+        "dimension": "literacy",
+        "sub": "technical",
+        "type": "knowledge",
+        "text": "Quale caratteristica distingue meglio un agente AI da una normale chat con un LLM?",
+        "hint": "Scegli la descrizione più operativa.",
+        "options": [
+          {
+            "score": 1,
+            "title": "Risponde sempre con testi più lunghi",
+            "text": "La lunghezza dell’output non definisce un agente."
+          },
+          {
+            "score": 5,
+            "title": "Può usare strumenti e gestire passi verso un obiettivo",
+            "text": "Un agente combina modello, istruzioni, stato, strumenti e criteri di avanzamento."
+          },
+          {
+            "score": 2,
+            "title": "Ha sempre accesso a tutto il web",
+            "text": "L’accesso a strumenti o fonti dipende dalla configurazione."
+          },
+          {
+            "score": 1,
+            "title": "È necessariamente autonomo senza supervisione",
+            "text": "Molti agenti richiedono approvazioni umane e limiti stretti."
+          }
+        ],
+        "feedback": "Un agente non è solo una risposta testuale: è un sistema che può orchestrare passaggi, strumenti e stato sotto vincoli definiti."
+      },
+      "translationEn": {
+        "text": "Which characteristic best distinguishes an AI agent from a normal chat with an LLM?",
+        "hint": "Choose the most operational description.",
+        "options": [
+          [
+            "It always responds with longer text",
+            "Output length does not define an agent."
+          ],
+          [
+            "It can use tools and manage steps toward a goal",
+            "An agent combines model, instructions, state, tools, and progress criteria."
+          ],
+          [
+            "It always has access to the whole web",
+            "Access to tools or sources depends on configuration."
+          ],
+          [
+            "It is necessarily autonomous without supervision",
+            "Many agents require human approvals and tight limits."
+          ]
+        ],
+        "feedback": "An agent is not just a text response: it is a system that can orchestrate steps, tools, and state under defined constraints."
+      },
+      "overrides": {
+        "it": {
+          "B": {
+            "text": "Un agente deve completare un compito con più passaggi e possibili eccezioni. Che cosa lo rende diverso da un prompt singolo?",
+            "hint": "Scegli la caratteristica più legata al funzionamento operativo.",
+            "options": [
+              {
+                "score": 2,
+                "title": "Produce testi più creativi",
+                "text": "La creatività non definisce un agente."
+              },
+              {
+                "score": 5,
+                "title": "Mantiene stato, usa strumenti e avanza verso un obiettivo",
+                "text": "Il workflow agentico combina istruzioni, contesto, tool e regole di avanzamento."
+              },
+              {
+                "score": 1,
+                "title": "Non ha bisogno di istruzioni",
+                "text": "Più autonomia richiede istruzioni e limiti più chiari."
+              },
+              {
+                "score": 2,
+                "title": "Conosce sempre informazioni aggiornate",
+                "text": "L'aggiornamento dipende dagli strumenti e dalle fonti disponibili."
+              }
+            ],
+            "feedback": "Un agente è utile quando deve orchestrare passaggi e strumenti sotto vincoli espliciti, non quando serve soltanto una risposta più lunga."
+          },
+          "C": {
+            "text": "Quale descrizione rappresenta meglio un workflow agentico?",
+            "hint": "Scegli l'opzione più completa sul piano operativo.",
+            "options": [
+              {
+                "score": 1,
+                "title": "Una chat con un tono più deciso",
+                "text": "Il tono non cambia la natura del sistema."
+              },
+              {
+                "score": 5,
+                "title": "Un ciclo di pianificazione, tool use, osservazione e controllo",
+                "text": "L'agente avanza usando strumenti, stato e criteri definiti."
+              },
+              {
+                "score": 2,
+                "title": "Un modello sempre connesso al web",
+                "text": "La connessione a fonti esterne è solo un possibile strumento."
+              },
+              {
+                "score": 1,
+                "title": "Un sistema che decide sempre senza persone",
+                "text": "Gli agenti possono e spesso devono includere approvazioni umane."
+              }
+            ],
+            "feedback": "Il workflow agentico non è una chat più potente: è un processo governato che collega modello, strumenti, stato e supervisione."
+          }
+        },
+        "en": {
+          "B": {
+            "text": "An agent must complete a task with multiple steps and possible exceptions. What makes it different from a single prompt?",
+            "hint": "Choose the characteristic most tied to operational behavior.",
+            "options": [
+              [
+                "It produces more creative text",
+                "Creativity does not define an agent."
+              ],
+              [
+                "It maintains state, uses tools, and moves toward a goal",
+                "An agentic workflow combines instructions, context, tools, and progress rules."
+              ],
+              [
+                "It does not need instructions",
+                "More autonomy requires clearer instructions and limits."
+              ],
+              [
+                "It always knows updated information",
+                "Freshness depends on available tools and sources."
+              ]
+            ],
+            "feedback": "An agent is useful when it must orchestrate steps and tools under explicit constraints, not when you only need a longer answer."
+          },
+          "C": {
+            "text": "Which description best represents an agentic workflow?",
+            "hint": "Choose the most complete option operationally.",
+            "options": [
+              [
+                "A chat with a more assertive tone",
+                "Tone does not change the nature of the system."
+              ],
+              [
+                "A cycle of planning, tool use, observation, and control",
+                "The agent progresses using tools, state, and defined criteria."
+              ],
+              [
+                "A model that is always connected to the web",
+                "Connection to external sources is only one possible tool."
+              ],
+              [
+                "A system that always decides without people",
+                "Agents can and often should include human approvals."
+              ]
+            ],
+            "feedback": "An agentic workflow is not a more powerful chat: it is a governed process connecting model, tools, state, and supervision."
+          }
+        }
+      },
+      "classification": {
+        "evidenceType": "Q",
+        "primaryArea": "A",
+        "objectiveId": "A01",
+        "objectiveAlignment": "direct",
+        "taskLevel": "O",
+        "secondaryTags": [
+          "delegation"
+        ]
+      }
+    },
+    {
+      "question": {
+        "id": "AG3",
+        "section": "AI Agents",
+        "dimension": "fluency",
+        "sub": "delegation",
+        "type": "scenario",
+        "text": "Un team propone un agente per gestire automaticamente richieste clienti complesse. Qual è il primo controllo di progettazione?",
+        "hint": "Valuta se il task è davvero delegabile a un agente.",
+        "options": [
+          {
+            "score": 1,
+            "title": "Attivarlo subito sui casi reali",
+            "text": "Si salta la definizione di perimetro e rischio."
+          },
+          {
+            "score": 2,
+            "title": "Dargli un prompt molto dettagliato",
+            "text": "Il prompt aiuta, ma non basta per governare azioni e dati."
+          },
+          {
+            "score": 3,
+            "title": "Far partire solo i casi più frequenti",
+            "text": "Riduce la complessità, ma non chiarisce limiti e responsabilità."
+          },
+          {
+            "score": 4,
+            "title": "Mappare task, dati, strumenti e casi esclusi",
+            "text": "Crea una base controllabile per decidere il livello di automazione."
+          },
+          {
+            "score": 5,
+            "title": "Definire perimetro, approvazioni, metriche, log e fallback",
+            "text": "Stabilisce cosa l’agente può fare, quando fermarsi e quando escalare."
+          }
+        ],
+        "feedback": "La delega agentica richiede confini, strumenti, dati, criteri di successo, fallback e responsabilità prima dell’automazione."
+      },
+      "translationEn": {
+        "text": "A team proposes an agent to automatically manage complex customer requests. What is the first design check?",
+        "hint": "Assess whether the task is truly delegable to an agent.",
+        "options": [
+          [
+            "Activate it immediately on real cases",
+            "Scope and risk definition are skipped."
+          ],
+          [
+            "Give it a very detailed prompt",
+            "The prompt helps, but it is not enough to govern actions and data."
+          ],
+          [
+            "Start only with the most frequent cases",
+            "This reduces complexity, but does not clarify limits and responsibilities."
+          ],
+          [
+            "Map tasks, data, tools, and excluded cases",
+            "This creates a controllable basis for deciding the level of automation."
+          ],
+          [
+            "Define scope, approvals, metrics, logs, and fallback",
+            "This establishes what the agent can do, when it must stop, and when it must escalate."
+          ]
+        ],
+        "feedback": "Agentic delegation requires boundaries, tools, data, success criteria, fallback, and responsibility before automation."
+      },
+      "overrides": {
+        "it": {
+          "B": {
+            "text": "Vuoi introdurre un agente che smista richieste dei fornitori e propone risposte operative. Qual è il primo passo più solido?",
+            "hint": "Valuta delegabilità, dati e responsabilità.",
+            "options": [
+              {
+                "score": 1,
+                "title": "Lasciarlo rispondere direttamente ai fornitori",
+                "text": "Si trasferisce impatto esterno senza controllo."
+              },
+              {
+                "score": 2,
+                "title": "Scrivere un prompt molto dettagliato",
+                "text": "Il prompt non basta se mancano strumenti, log e limiti."
+              },
+              {
+                "score": 3,
+                "title": "Usarlo solo sulle richieste più semplici",
+                "text": "Riduce il rischio ma non definisce il modello operativo."
+              },
+              {
+                "score": 4,
+                "title": "Mappare tipologie, dati, sistemi e casi esclusi",
+                "text": "Costruisce il perimetro prima dell'autonomia."
+              },
+              {
+                "score": 5,
+                "title": "Definire permessi, approvazioni, metriche, log e fallback",
+                "text": "Stabilisce autonomia progressiva e controllo umano."
+              }
+            ],
+            "feedback": "La progettazione di un agente parte da perimetro, strumenti, autorizzazioni, criteri di stop e responsabilità."
+          },
+          "C": {
+            "text": "Un agente dovrebbe preparare report di avanzamento progetto e aprire task quando rileva blocchi. Da dove parti?",
+            "hint": "Valuta dati, azioni e punti di approvazione.",
+            "options": [
+              {
+                "score": 2,
+                "title": "Gli chiedo report completi ogni giorno",
+                "text": "Produco output, ma non governo azioni e fonti."
+              },
+              {
+                "score": 1,
+                "title": "Gli permetto di creare task liberamente",
+                "text": "Apre azioni operative senza criteri."
+              },
+              {
+                "score": 3,
+                "title": "Lo limito ai progetti meno critici",
+                "text": "Riduce l'impatto ma resta poco progettato."
+              },
+              {
+                "score": 4,
+                "title": "Definisco fonti, segnali di blocco e revisori",
+                "text": "Collega input, criteri e controllo umano."
+              },
+              {
+                "score": 5,
+                "title": "Disegno workflow con soglie, bozze, approvazioni, log e rollback",
+                "text": "Rende l'autonomia progressiva e verificabile."
+              }
+            ],
+            "feedback": "Gli agenti che aprono task o modificano workflow devono avere soglie, approvazioni, osservabilità e modalità di recupero."
+          }
+        },
+        "en": {
+          "B": {
+            "text": "You want to introduce an agent that triages supplier requests and proposes operational replies. What is the strongest first step?",
+            "hint": "Assess delegability, data, and responsibility.",
+            "options": [
+              [
+                "Let it reply directly to suppliers",
+                "External impact is transferred without control."
+              ],
+              [
+                "Write a very detailed prompt",
+                "The prompt is not enough if tools, logs, and limits are missing."
+              ],
+              [
+                "Use it only on the simplest requests",
+                "This reduces risk but does not define the operating model."
+              ],
+              [
+                "Map request types, data, systems, and excluded cases",
+                "This builds the perimeter before autonomy."
+              ],
+              [
+                "Define permissions, approvals, metrics, logs, and fallback",
+                "This establishes progressive autonomy and human control."
+              ]
+            ],
+            "feedback": "Agent design starts from scope, tools, authorization, stop criteria, and responsibility."
+          },
+          "C": {
+            "text": "An agent should prepare project status reports and open tasks when it detects blockers. Where do you start?",
+            "hint": "Assess data, actions, and approval points.",
+            "options": [
+              [
+                "Ask it for complete daily reports",
+                "You produce output but do not govern actions and sources."
+              ],
+              [
+                "Allow it to create tasks freely",
+                "It opens operational actions without criteria."
+              ],
+              [
+                "Limit it to less critical projects",
+                "This reduces impact but remains weakly designed."
+              ],
+              [
+                "Define sources, blocker signals, and reviewers",
+                "This connects inputs, criteria, and human control."
+              ],
+              [
+                "Design a workflow with thresholds, drafts, approvals, logs, and rollback",
+                "This makes autonomy progressive and verifiable."
+              ]
+            ],
+            "feedback": "Agents that open tasks or modify workflows need thresholds, approvals, observability, and recovery paths."
+          }
+        }
+      },
+      "classification": {
+        "evidenceType": "Q",
+        "primaryArea": "A",
+        "objectiveId": "A03",
+        "objectiveAlignment": "direct",
+        "taskLevel": "S",
+        "secondaryTags": [
+          "delegation",
+          "diligence"
+        ]
+      }
+    },
+    {
+      "question": {
+        "id": "AG4",
+        "section": "AI Agents",
+        "dimension": "fluency",
+        "sub": "diligence",
+        "type": "multi",
+        "text": "Vuoi usare un agente che legge ticket e aggiorna il CRM. Quali vincoli imposti prima di abilitarlo?",
+        "hint": "Seleziona controlli su dati, azioni e tracciabilità.",
+        "minSelected": 3,
+        "options": [
+          {
+            "score": 2,
+            "title": "Permessi minimi sugli strumenti",
+            "text": "L’agente deve poter fare solo ciò che serve."
+          },
+          {
+            "score": 2,
+            "title": "Approvazione umana per modifiche sensibili",
+            "text": "Le azioni ad alto impatto restano supervisionate."
+          },
+          {
+            "score": 1,
+            "title": "Log delle letture e delle modifiche",
+            "text": "La tracciabilità rende auditabile il comportamento."
+          },
+          {
+            "score": 1,
+            "title": "Regole di stop ed escalation",
+            "text": "L’agente deve fermarsi davanti a casi ambigui o rischiosi."
+          },
+          {
+            "score": 1,
+            "title": "Test su dati rappresentativi ma controllati",
+            "text": "Prima si prova il flusso in condizioni sicure."
+          },
+          {
+            "score": -2,
+            "title": "Accesso completo per evitare blocchi",
+            "text": "Aumenta il rischio e rende meno controllabile l’agente."
+          },
+          {
+            "score": -2,
+            "title": "Nessun log per proteggere la velocità",
+            "text": "La velocità non giustifica l’assenza di audit."
+          }
+        ],
+        "feedback": "Un agente operativo richiede permessi minimi, approvazioni, log, stop condition e test controllati."
+      },
+      "translationEn": {
+        "text": "You want to use an agent that reads tickets and updates the CRM. Which constraints do you impose before enabling it?",
+        "hint": "Select controls on data, actions, and traceability.",
+        "options": [
+          [
+            "Minimum permissions on tools",
+            "The agent must be able to do only what is needed."
+          ],
+          [
+            "Human approval for sensitive changes",
+            "High-impact actions remain supervised."
+          ],
+          [
+            "Logs of reads and changes",
+            "Traceability makes behavior auditable."
+          ],
+          [
+            "Stop and escalation rules",
+            "The agent must stop on ambiguous or risky cases."
+          ],
+          [
+            "Testing on representative but controlled data",
+            "The flow is tested first under safe conditions."
+          ],
+          [
+            "Full access to avoid blockers",
+            "This increases risk and makes the agent less controllable."
+          ],
+          [
+            "No logs to protect speed",
+            "Speed does not justify lack of audit."
+          ]
+        ],
+        "feedback": "An operational agent requires minimum permissions, approvals, logs, stop conditions, and controlled testing."
+      },
+      "overrides": {
+        "it": {
+          "B": {
+            "text": "Vuoi collegare un agente a fatture e sistema ERP per proporre aggiornamenti anagrafici. Quali vincoli imponi?",
+            "hint": "Seleziona controlli su accessi, dati e modifiche.",
+            "minSelected": 3,
+            "options": [
+              {
+                "score": 2,
+                "title": "Accesso in sola lettura dove possibile",
+                "text": "Riduce l'impatto degli errori."
+              },
+              {
+                "score": 2,
+                "title": "Approvazione umana prima di scrivere nell'ERP",
+                "text": "Le modifiche sui sistemi core restano controllate."
+              },
+              {
+                "score": 1,
+                "title": "Log di documenti letti, campi proposti e motivazione",
+                "text": "Rende ricostruibile il comportamento."
+              },
+              {
+                "score": 1,
+                "title": "Regole di blocco per dati ambigui o incoerenti",
+                "text": "Evita aggiornamenti su casi non affidabili."
+              },
+              {
+                "score": 1,
+                "title": "Test su ambiente o campione controllato",
+                "text": "Permette di osservare errori prima della produzione."
+              },
+              {
+                "score": -2,
+                "title": "Permessi amministrativi per semplificare",
+                "text": "Aumenta inutilmente il rischio operativo."
+              },
+              {
+                "score": -2,
+                "title": "Aggiornamenti automatici senza log",
+                "text": "Elimina tracciabilità e controllo."
+              }
+            ],
+            "feedback": "Un agente collegato a sistemi gestionali richiede minimo privilegio, approvazioni, log, stop condition e test controllati."
+          },
+          "C": {
+            "text": "Vuoi usare un agente per leggere ticket HR e proporre aggiornamenti alla knowledge base interna. Quali controlli imposti?",
+            "hint": "Seleziona le misure che proteggono dati, responsabilità e qualità.",
+            "minSelected": 3,
+            "options": [
+              {
+                "score": 2,
+                "title": "Minimizzazione e mascheramento dei dati personali",
+                "text": "Riduce l'esposizione dei contenuti sensibili."
+              },
+              {
+                "score": 2,
+                "title": "Solo proposte, con pubblicazione approvata",
+                "text": "L'agente non modifica contenuti ufficiali da solo."
+              },
+              {
+                "score": 1,
+                "title": "Registro di fonti, ticket e modifiche suggerite",
+                "text": "Rende verificabile la proposta."
+              },
+              {
+                "score": 1,
+                "title": "Escalation su casi personali o disciplinari",
+                "text": "I casi delicati restano fuori dall'automazione."
+              },
+              {
+                "score": 1,
+                "title": "Controllo periodico di errori e bias",
+                "text": "Misura qualità e impatto nel tempo."
+              },
+              {
+                "score": -2,
+                "title": "Accesso completo ai fascicoli personali",
+                "text": "Espone dati non necessari al compito."
+              },
+              {
+                "score": -2,
+                "title": "Pubblicazione automatica delle modifiche",
+                "text": "Trasforma suggerimenti in contenuti ufficiali senza revisione."
+              }
+            ],
+            "feedback": "Un agente su dati HR richiede minimizzazione, approvazione, tracciabilità, escalation e controllo degli effetti."
+          }
+        },
+        "en": {
+          "B": {
+            "text": "You want to connect an agent to invoices and an ERP system to propose master-data updates. Which constraints do you impose?",
+            "hint": "Select controls on access, data, and changes.",
+            "options": [
+              [
+                "Read-only access where possible",
+                "This reduces the impact of errors."
+              ],
+              [
+                "Human approval before writing to the ERP",
+                "Changes to core systems remain controlled."
+              ],
+              [
+                "Logs of documents read, proposed fields, and rationale",
+                "This makes behavior reconstructable."
+              ],
+              [
+                "Blocking rules for ambiguous or inconsistent data",
+                "This avoids updates on unreliable cases."
+              ],
+              [
+                "Testing in an environment or controlled sample",
+                "This lets you observe errors before production."
+              ],
+              [
+                "Admin permissions for simplicity",
+                "This unnecessarily increases operational risk."
+              ],
+              [
+                "Automatic updates without logs",
+                "This removes traceability and control."
+              ]
+            ],
+            "feedback": "An agent connected to management systems needs least privilege, approvals, logs, stop conditions, and controlled testing."
+          },
+          "C": {
+            "text": "You want to use an agent to read HR tickets and propose updates to the internal knowledge base. Which controls do you impose?",
+            "hint": "Select measures that protect data, responsibility, and quality.",
+            "options": [
+              [
+                "Minimization and masking of personal data",
+                "This reduces exposure of sensitive content."
+              ],
+              [
+                "Proposals only, with approved publication",
+                "The agent does not change official content by itself."
+              ],
+              [
+                "A record of sources, tickets, and suggested changes",
+                "This makes the proposal verifiable."
+              ],
+              [
+                "Escalation for personal or disciplinary cases",
+                "Sensitive cases remain outside automation."
+              ],
+              [
+                "Periodic checking of errors and bias",
+                "This measures quality and impact over time."
+              ],
+              [
+                "Full access to personal files",
+                "This exposes data that is not needed for the task."
+              ],
+              [
+                "Automatic publication of changes",
+                "This turns suggestions into official content without review."
+              ]
+            ],
+            "feedback": "An agent on HR data requires minimization, approval, traceability, escalation, and effect monitoring."
+          }
+        }
+      },
+      "classification": {
+        "evidenceType": "Q",
+        "primaryArea": "A",
+        "objectiveId": "A03",
+        "objectiveAlignment": "direct",
+        "taskLevel": "S",
+        "secondaryTags": [
+          "delegation",
+          "diligence"
+        ]
+      }
+    },
+    {
+      "question": {
+        "id": "AG5",
+        "section": "AI Agents",
+        "dimension": "fluency",
+        "sub": "description",
+        "type": "likert",
+        "text": "Quando progetto un agente, definisco obiettivo, strumenti disponibili, vincoli, output intermedi e condizioni di arresto.",
+        "hint": "Un brief agentico deve descrivere processo e controlli, non solo risultato finale."
+      },
+      "translationEn": {
+        "text": "When I design an agent, I define objective, available tools, constraints, intermediate outputs, and stop conditions.",
+        "hint": "An agentic brief must describe the process and controls, not only the final result."
+      },
+      "overrides": {
+        "it": {},
+        "en": {}
+      },
+      "classification": {
+        "evidenceType": "D",
+        "primaryArea": "A",
+        "objectiveId": "A03",
+        "objectiveAlignment": "direct",
+        "taskLevel": "S",
+        "secondaryTags": [
+          "delegation",
+          "diligence"
+        ]
+      }
+    },
+    {
+      "question": {
+        "id": "AG6",
+        "section": "AI Agents",
+        "dimension": "fluency",
+        "sub": "diligence",
+        "type": "scenario",
+        "text": "Un agente può inviare email ai clienti. Quale configurazione è più prudente all’avvio?",
+        "hint": "Considera impatto esterno e possibilità di recupero.",
+        "options": [
+          {
+            "score": 1,
+            "title": "Invio automatico di tutte le email",
+            "text": "Espone subito clienti e organizzazione a errori non filtrati."
+          },
+          {
+            "score": 2,
+            "title": "Invio automatico se il testo è sicuro nel tono",
+            "text": "Il tono non misura correttezza o opportunità."
+          },
+          {
+            "score": 3,
+            "title": "Bozze automatiche e controllo a campione",
+            "text": "Riduce il rischio ma può lasciare passare casi critici."
+          },
+          {
+            "score": 4,
+            "title": "Bozze con approvazione per destinatari esterni",
+            "text": "Mantiene controllo umano sulle comunicazioni a impatto."
+          },
+          {
+            "score": 5,
+            "title": "Bozze, checklist, soglie di rischio e blocco dei casi incerti",
+            "text": "Combina efficienza, verifica e fallback."
+          }
+        ],
+        "feedback": "Le azioni esterne richiedono livelli di autonomia progressivi e approvazioni proporzionate al rischio."
+      },
+      "translationEn": {
+        "text": "An agent can send emails to customers. Which configuration is most prudent at launch?",
+        "hint": "Consider external impact and recoverability.",
+        "options": [
+          [
+            "Automatic sending of all emails",
+            "This immediately exposes customers and the organization to unfiltered errors."
+          ],
+          [
+            "Automatic sending if the tone is safe",
+            "Tone does not measure correctness or appropriateness."
+          ],
+          [
+            "Automatic drafts and sample checking",
+            "This reduces risk but may let critical cases through."
+          ],
+          [
+            "Drafts with approval for external recipients",
+            "This keeps human control over impactful communications."
+          ],
+          [
+            "Drafts, checklist, risk thresholds, and blocking uncertain cases",
+            "This combines efficiency, verification, and fallback."
+          ]
+        ],
+        "feedback": "External actions require progressive autonomy levels and approvals proportional to risk."
+      },
+      "overrides": {
+        "it": {},
+        "en": {}
+      },
+      "classification": {
+        "evidenceType": "Q",
+        "primaryArea": "A",
+        "objectiveId": "A03",
+        "objectiveAlignment": "direct",
+        "taskLevel": "S",
+        "secondaryTags": [
+          "delegation",
+          "diligence"
+        ]
+      }
+    },
+    {
+      "question": {
+        "id": "AG7",
+        "section": "AI Agents",
+        "dimension": "literacy",
+        "sub": "technical",
+        "type": "knowledge",
+        "text": "Che cosa significa, in pratica, dare strumenti a un agente AI?",
+        "hint": "Pensa a ciò che il sistema può fare oltre generare testo.",
+        "options": [
+          {
+            "score": 1,
+            "title": "Aumentare automaticamente la sua intelligenza generale",
+            "text": "Gli strumenti ampliano le azioni possibili, non garantiscono giudizio migliore."
+          },
+          {
+            "score": 5,
+            "title": "Consentirgli di chiamare funzioni o servizi entro permessi definiti",
+            "text": "Può cercare, leggere, scrivere o attivare procedure se autorizzato."
+          },
+          {
+            "score": 2,
+            "title": "Renderlo capace di verificare sempre ogni risposta",
+            "text": "La verifica dipende da strumenti, fonti e criteri impostati."
+          },
+          {
+            "score": 1,
+            "title": "Eliminare la necessità di istruzioni",
+            "text": "Più strumenti richiedono istruzioni e limiti più chiari."
+          }
+        ],
+        "feedback": "Tool use significa collegare l’agente a funzioni o servizi governati da permessi, input, output e controlli."
+      },
+      "translationEn": {
+        "text": "What does it mean, in practice, to give tools to an AI agent?",
+        "hint": "Think about what the system can do beyond generating text.",
+        "options": [
+          [
+            "Automatically increasing its general intelligence",
+            "Tools expand possible actions; they do not guarantee better judgment."
+          ],
+          [
+            "Allowing it to call functions or services within defined permissions",
+            "It can search, read, write, or trigger procedures if authorized."
+          ],
+          [
+            "Making it able to always verify every answer",
+            "Verification depends on configured tools, sources, and criteria."
+          ],
+          [
+            "Removing the need for instructions",
+            "More tools require clearer instructions and limits."
+          ]
+        ],
+        "feedback": "Tool use means connecting the agent to functions or services governed by permissions, inputs, outputs, and controls."
+      },
+      "overrides": {
+        "it": {},
+        "en": {}
+      },
+      "classification": {
+        "evidenceType": "Q",
+        "primaryArea": "A",
+        "objectiveId": "A02",
+        "objectiveAlignment": "direct",
+        "taskLevel": "S",
+        "secondaryTags": [
+          "verification"
+        ]
+      }
+    },
+    {
+      "question": {
+        "id": "AG8",
+        "section": "AI Agents",
+        "dimension": "fluency",
+        "sub": "discernment",
+        "type": "scenario",
+        "text": "Un agente continua a riprovare lo stesso passaggio e consuma tempo senza migliorare il risultato. Che cosa fai?",
+        "hint": "Valuta loop, criteri di stop e osservabilità.",
+        "options": [
+          {
+            "score": 1,
+            "title": "Lo lascio continuare",
+            "text": "Il loop può consumare risorse e amplificare errori."
+          },
+          {
+            "score": 2,
+            "title": "Gli chiedo di impegnarsi di più",
+            "text": "Non cambia criteri o informazioni disponibili."
+          },
+          {
+            "score": 3,
+            "title": "Riavvio la sessione",
+            "text": "Può sbloccare il caso ma non risolve la causa."
+          },
+          {
+            "score": 4,
+            "title": "Analizzo log e passaggi falliti",
+            "text": "Capisco dove mancano dati, strumenti o criteri."
+          },
+          {
+            "score": 5,
+            "title": "Applico stop condition, diagnosi e fallback umano",
+            "text": "Interrompo il loop e trasformo l’errore in regola operativa."
+          }
+        ],
+        "feedback": "Gli agenti richiedono osservabilità e criteri di arresto: non basta aspettare che il processo migliori da solo."
+      },
+      "translationEn": {
+        "text": "An agent keeps retrying the same step and consumes time without improving the result. What do you do?",
+        "hint": "Assess loops, stop criteria, and observability.",
+        "options": [
+          [
+            "Let it continue",
+            "The loop can consume resources and amplify errors."
+          ],
+          [
+            "Ask it to try harder",
+            "This does not change criteria or available information."
+          ],
+          [
+            "Restart the session",
+            "It may unblock the case but does not solve the cause."
+          ],
+          [
+            "Analyze logs and failed steps",
+            "I understand where data, tools, or criteria are missing."
+          ],
+          [
+            "Apply stop conditions, diagnosis, and human fallback",
+            "I stop the loop and turn the error into an operating rule."
+          ]
+        ],
+        "feedback": "Agents require observability and stop criteria: waiting for the process to improve on its own is not enough."
+      },
+      "overrides": {
+        "it": {},
+        "en": {}
+      },
+      "classification": {
+        "evidenceType": "Q",
+        "primaryArea": "A",
+        "objectiveId": "A05",
+        "objectiveAlignment": "direct",
+        "taskLevel": "S",
+        "secondaryTags": [
+          "verification"
+        ]
+      }
+    },
+    {
+      "question": {
+        "id": "AG9",
+        "section": "AI Agents",
+        "dimension": "fluency",
+        "sub": "diligence",
+        "type": "multi",
+        "text": "Quali informazioni dovrebbero essere tracciate per rendere auditabile un agente?",
+        "hint": "Seleziona ciò che consente di ricostruire decisioni e azioni.",
+        "minSelected": 3,
+        "options": [
+          {
+            "score": 2,
+            "title": "Input ricevuti e fonti consultate",
+            "text": "Servono per capire il contesto usato."
+          },
+          {
+            "score": 2,
+            "title": "Strumenti chiamati e parametri usati",
+            "text": "Rende verificabili le azioni operative."
+          },
+          {
+            "score": 1,
+            "title": "Output intermedi e motivazioni",
+            "text": "Aiuta a diagnosticare errori e assunzioni."
+          },
+          {
+            "score": 1,
+            "title": "Approvazioni umane e override",
+            "text": "Mostra dove la responsabilità è stata esercitata."
+          },
+          {
+            "score": 1,
+            "title": "Errori, blocchi e fallback",
+            "text": "Permette miglioramento e gestione del rischio."
+          },
+          {
+            "score": -2,
+            "title": "Solo il risultato finale",
+            "text": "Non basta per ricostruire il comportamento."
+          },
+          {
+            "score": -1,
+            "title": "Niente log per evitare complessità",
+            "text": "Riduce controllo e accountability."
+          }
+        ],
+        "feedback": "Un agente auditabile conserva tracce di input, strumenti, output intermedi, approvazioni, errori e fallback."
+      },
+      "translationEn": {
+        "text": "Which information should be tracked to make an agent auditable?",
+        "hint": "Select what allows decisions and actions to be reconstructed.",
+        "options": [
+          [
+            "Inputs received and sources consulted",
+            "They are needed to understand the context used."
+          ],
+          [
+            "Tools called and parameters used",
+            "This makes operational actions verifiable."
+          ],
+          [
+            "Intermediate outputs and rationale",
+            "This helps diagnose errors and assumptions."
+          ],
+          [
+            "Human approvals and overrides",
+            "This shows where responsibility was exercised."
+          ],
+          [
+            "Errors, blocks, and fallback",
+            "This supports improvement and risk management."
+          ],
+          [
+            "Only the final result",
+            "This is not enough to reconstruct behavior."
+          ],
+          [
+            "No logs to avoid complexity",
+            "This reduces control and accountability."
+          ]
+        ],
+        "feedback": "An auditable agent keeps traces of inputs, tools, intermediate outputs, approvals, errors, and fallback."
+      },
+      "overrides": {
+        "it": {},
+        "en": {}
+      },
+      "classification": {
+        "evidenceType": "Q",
+        "primaryArea": "H",
+        "objectiveId": "H06",
+        "objectiveAlignment": "direct",
+        "taskLevel": "S",
+        "secondaryTags": [
+          "verification"
+        ]
+      }
+    },
+    {
+      "question": {
+        "id": "AG10",
+        "section": "AI Agents",
+        "dimension": "fluency",
+        "sub": "description",
+        "type": "text",
+        "text": "Scrivi il prompt/brief che useresti per configurare un agente che analizza ticket di assistenza e propone aggiornamenti a una knowledge base, senza pubblicare modifiche non approvate.",
+        "hint": "Includi obiettivo, strumenti, limiti, approvazioni e formato degli output.",
+        "minChars": 120,
+        "proceedChars": 1,
+        "rubric": {
+          "criteria": [
+            {
+              "label": "Obiettivo e ambito",
+              "points": 1,
+              "keywords": [
+                "obiettivo",
+                "ambito",
+                "ticket",
+                "knowledge base",
+                "kb"
+              ]
+            },
+            {
+              "label": "Strumenti e fonti",
+              "points": 1,
+              "keywords": [
+                "strumenti",
+                "fonti",
+                "ticket",
+                "base conoscenza",
+                "knowledge"
+              ]
+            },
+            {
+              "label": "Limiti di azione",
+              "points": 1,
+              "keywords": [
+                "non pubblicare",
+                "non modificare",
+                "solo proposta",
+                "permessi",
+                "limiti"
+              ]
+            },
+            {
+              "label": "Approvazione umana",
+              "points": 1,
+              "keywords": [
+                "approvazione",
+                "revisione",
+                "umano",
+                "validazione"
+              ]
+            },
+            {
+              "label": "Formato output",
+              "points": 1,
+              "keywords": [
+                "formato",
+                "tabella",
+                "diff",
+                "proposta",
+                "priorita",
+                "priorità"
+              ]
+            },
+            {
+              "label": "Controlli e stop",
+              "points": 1,
+              "keywords": [
+                "controll",
+                "log",
+                "stop",
+                "escalation",
+                "incert"
+              ]
+            }
+          ],
+          "redFlags": [
+            {
+              "label": "pubblicazione automatica",
+              "points": 1,
+              "keywords": [
+                "pubblica direttamente",
+                "modifica automaticamente",
+                "senza approvazione"
+              ]
+            },
+            {
+              "label": "delega cieca",
+              "points": 1,
+              "keywords": [
+                "decidi tu",
+                "fai tutto",
+                "senza log"
+              ]
+            }
+          ]
+        },
+        "feedback": "Un brief agentico deve governare strumenti, limiti, output intermedi, approvazioni e condizioni di stop."
+      },
+      "translationEn": {
+        "text": "Write the prompt/brief you would use to configure an agent that analyzes support tickets and proposes knowledge-base updates, without publishing unapproved changes.",
+        "hint": "Include objective, tools, limits, approvals, and output format.",
+        "feedback": "An agentic brief must govern tools, limits, intermediate outputs, approvals, and stop conditions.",
+        "rubric": {
+          "criteria": [
+            {
+              "label": "Objective and scope",
+              "points": 1,
+              "keywords": [
+                "objective",
+                "scope",
+                "ticket",
+                "knowledge base",
+                "kb"
+              ]
+            },
+            {
+              "label": "Tools and sources",
+              "points": 1,
+              "keywords": [
+                "tools",
+                "sources",
+                "ticket",
+                "knowledge base",
+                "knowledge"
+              ]
+            },
+            {
+              "label": "Action limits",
+              "points": 1,
+              "keywords": [
+                "do not publish",
+                "do not modify",
+                "proposal only",
+                "permissions",
+                "limits"
+              ]
+            },
+            {
+              "label": "Human approval",
+              "points": 1,
+              "keywords": [
+                "approval",
+                "review",
+                "human",
+                "validation"
+              ]
+            },
+            {
+              "label": "Output format",
+              "points": 1,
+              "keywords": [
+                "format",
+                "table",
+                "diff",
+                "proposal",
+                "priority"
+              ]
+            },
+            {
+              "label": "Controls and stop",
+              "points": 1,
+              "keywords": [
+                "check",
+                "control",
+                "log",
+                "stop",
+                "escalation",
+                "uncertain"
+              ]
+            }
+          ],
+          "redFlags": [
+            {
+              "label": "automatic publication",
+              "points": 1,
+              "keywords": [
+                "publish directly",
+                "modify automatically",
+                "without approval"
+              ]
+            },
+            {
+              "label": "blind delegation",
+              "points": 1,
+              "keywords": [
+                "you decide",
+                "do everything",
+                "without logs"
+              ]
+            }
+          ]
+        }
+      },
+      "overrides": {
+        "it": {},
+        "en": {}
+      },
+      "classification": {
+        "evidenceType": "T",
+        "primaryArea": "A",
+        "objectiveId": "A03",
+        "objectiveAlignment": "direct",
+        "taskLevel": "S",
+        "secondaryTags": [
+          "delegation",
+          "diligence"
+        ]
+      }
+    },
+    {
+      "question": {
+        "id": "AG11",
+        "section": "AI Agents",
+        "dimension": "fluency",
+        "sub": "diligence",
+        "type": "scenario",
+        "text": "Un agente può approvare rimborsi sotto una certa soglia. Quale controllo è più importante?",
+        "hint": "Considera impatto economico, abuso e casi limite.",
+        "options": [
+          {
+            "score": 1,
+            "title": "Lasciarlo approvare tutti i casi sotto soglia",
+            "text": "La soglia economica da sola non copre frodi o eccezioni."
+          },
+          {
+            "score": 2,
+            "title": "Chiedere una spiegazione dopo l’approvazione",
+            "text": "La tracciabilità ex post non previene errori critici."
+          },
+          {
+            "score": 3,
+            "title": "Controllare solo i rimborsi più alti",
+            "text": "Riduce il rischio economico ma ignora pattern anomali."
+          },
+          {
+            "score": 4,
+            "title": "Usare regole, campionamento e blocco anomalie",
+            "text": "Combina automazione e controllo."
+          },
+          {
+            "score": 5,
+            "title": "Soglie, segnali antifrode, approvazioni e audit periodico",
+            "text": "Governa autonomia, eccezioni e responsabilità."
+          }
+        ],
+        "feedback": "L’autonomia agentica su azioni economiche richiede soglie, eccezioni, audit e approvazioni proporzionate."
+      },
+      "translationEn": {
+        "text": "An agent can approve refunds below a certain threshold. Which control is most important?",
+        "hint": "Consider economic impact, abuse, and edge cases.",
+        "options": [
+          [
+            "Let it approve every case below the threshold",
+            "The monetary threshold alone does not cover fraud or exceptions."
+          ],
+          [
+            "Ask for an explanation after approval",
+            "Ex-post traceability does not prevent critical errors."
+          ],
+          [
+            "Check only the highest refunds",
+            "This reduces economic risk but ignores anomalous patterns."
+          ],
+          [
+            "Use rules, sampling, and anomaly blocking",
+            "This combines automation and control."
+          ],
+          [
+            "Thresholds, anti-fraud signals, approvals, and periodic audit",
+            "This governs autonomy, exceptions, and responsibility."
+          ]
+        ],
+        "feedback": "Agentic autonomy on economic actions requires thresholds, exceptions, audit, and risk-proportionate approvals."
+      },
+      "overrides": {
+        "it": {},
+        "en": {}
+      },
+      "classification": {
+        "evidenceType": "Q",
+        "primaryArea": "A",
+        "objectiveId": "A03",
+        "objectiveAlignment": "direct",
+        "taskLevel": "S",
+        "secondaryTags": [
+          "delegation",
+          "diligence"
+        ]
+      }
+    },
+    {
+      "question": {
+        "id": "AG12",
+        "section": "AI Agents",
+        "dimension": "literacy",
+        "sub": "technical",
+        "type": "knowledge",
+        "text": "Perché memoria e stato sono delicati in un agente AI?",
+        "hint": "Pensa a continuità operativa e propagazione degli errori.",
+        "options": [
+          {
+            "score": 1,
+            "title": "Perché rendono impossibili gli errori",
+            "text": "Memoria e stato possono anche conservare assunzioni sbagliate."
+          },
+          {
+            "score": 5,
+            "title": "Perché influenzano azioni successive e vanno governati",
+            "text": "Stato, memoria e contesto possono propagare decisioni o dati errati."
+          },
+          {
+            "score": 2,
+            "title": "Perché sostituiscono i log",
+            "text": "Memoria operativa e log di audit sono concetti diversi."
+          },
+          {
+            "score": 1,
+            "title": "Perché eliminano la necessità di permessi",
+            "text": "I permessi restano necessari anche con memoria persistente."
+          }
+        ],
+        "feedback": "Lo stato di un agente influenza passaggi successivi: va reso visibile, limitato e correggibile."
+      },
+      "translationEn": {
+        "text": "Why are memory and state delicate in an AI agent?",
+        "hint": "Think about operational continuity and error propagation.",
+        "options": [
+          [
+            "Because they make errors impossible",
+            "Memory and state can also preserve wrong assumptions."
+          ],
+          [
+            "Because they influence later actions and must be governed",
+            "State, memory, and context can propagate wrong decisions or data."
+          ],
+          [
+            "Because they replace logs",
+            "Operational memory and audit logs are different concepts."
+          ],
+          [
+            "Because they eliminate the need for permissions",
+            "Permissions remain necessary even with persistent memory."
+          ]
+        ],
+        "feedback": "An agent's state influences later steps: it must be visible, limited, and correctable."
+      },
+      "overrides": {
+        "it": {},
+        "en": {}
+      },
+      "classification": {
+        "evidenceType": "Q",
+        "primaryArea": "H",
+        "objectiveId": "H02",
+        "objectiveAlignment": "direct",
+        "taskLevel": "S",
+        "secondaryTags": [
+          "context"
+        ]
+      }
+    },
+    {
+      "question": {
+        "id": "AG13",
+        "section": "AI Agents",
+        "dimension": "fluency",
+        "sub": "discernment",
+        "type": "choice",
+        "text": "Quale metrica è più utile per valutare un agente operativo, oltre al risultato finale?",
+        "hint": "Scegli una metrica che faccia emergere qualità del processo.",
+        "options": [
+          {
+            "score": 1,
+            "title": "Numero di parole generate",
+            "text": "Non misura qualità né controllo."
+          },
+          {
+            "score": 2,
+            "title": "Velocità media senza distinzione dei casi",
+            "text": "La velocità va letta insieme a errori, escalation e rischio."
+          },
+          {
+            "score": 3,
+            "title": "Gradimento soggettivo degli utenti",
+            "text": "Utile, ma insufficiente da solo."
+          },
+          {
+            "score": 4,
+            "title": "Tasso di successo con errori ed escalation",
+            "text": "Misura risultato e necessità di intervento."
+          },
+          {
+            "score": 5,
+            "title": "Successo, errori, tool call, escalation, rollback e impatto",
+            "text": "Osserva l’intero workflow agentico."
+          }
+        ],
+        "feedback": "Un agente va valutato sui passaggi: azioni, errori, escalation, rollback e impatto, non solo sull’output finale."
+      },
+      "translationEn": {
+        "text": "Which metric is most useful for evaluating an operational agent, beyond the final result?",
+        "hint": "Choose a metric that reveals process quality.",
+        "options": [
+          [
+            "Number of words generated",
+            "This does not measure quality or control."
+          ],
+          [
+            "Average speed without distinguishing cases",
+            "Speed must be read together with errors, escalation, and risk."
+          ],
+          [
+            "Users' subjective satisfaction",
+            "Useful, but insufficient alone."
+          ],
+          [
+            "Success rate with errors and escalation",
+            "This measures outcome and need for intervention."
+          ],
+          [
+            "Success, errors, tool calls, escalation, rollback, and impact",
+            "This observes the whole agentic workflow."
+          ]
+        ],
+        "feedback": "An agent must be evaluated on its steps: actions, errors, escalation, rollback, and impact, not only on the final output."
+      },
+      "overrides": {
+        "it": {},
+        "en": {}
+      },
+      "classification": {
+        "evidenceType": "Q",
+        "primaryArea": "H",
+        "objectiveId": "H06",
+        "objectiveAlignment": "direct",
+        "taskLevel": "S",
+        "secondaryTags": [
+          "verification"
+        ]
+      }
+    },
+    {
+      "question": {
+        "id": "AG14",
+        "section": "AI Agents",
+        "dimension": "fluency",
+        "sub": "delegation",
+        "type": "likert",
+        "text": "So scomporre un processo in passaggi che un agente può eseguire, passaggi da approvare e passaggi da lasciare alla persona.",
+        "hint": "La competenza agentica include disegnare autonomia progressiva e punti di controllo."
+      },
+      "translationEn": {
+        "text": "I can decompose a process into steps an agent can execute, steps that require approval, and steps that must remain with a person.",
+        "hint": "Agentic competence includes designing progressive autonomy and checkpoints."
+      },
+      "overrides": {
+        "it": {},
+        "en": {}
+      },
+      "classification": {
+        "evidenceType": "D",
+        "primaryArea": "A",
+        "objectiveId": "A03",
+        "objectiveAlignment": "direct",
+        "taskLevel": "S",
+        "secondaryTags": [
+          "delegation",
+          "diligence"
+        ]
+      }
+    },
+    {
+      "question": {
+        "id": "AG15",
+        "section": "AI Agents",
+        "dimension": "fluency",
+        "sub": "diligence",
+        "type": "multi",
+        "text": "Prima di collegare un agente a sistemi aziendali, quali controlli fai su credenziali e accessi?",
+        "hint": "Seleziona le pratiche che riducono il rischio operativo.",
+        "minSelected": 3,
+        "options": [
+          {
+            "score": 2,
+            "title": "Account o token dedicati e revocabili",
+            "text": "Consentono controllo e disattivazione rapida."
+          },
+          {
+            "score": 2,
+            "title": "Permessi minimi per singolo strumento",
+            "text": "Limita l’impatto di errori o abuso."
+          },
+          {
+            "score": 1,
+            "title": "Segreti non inseriti nel prompt",
+            "text": "Le credenziali vanno gestite fuori dal testo libero."
+          },
+          {
+            "score": 1,
+            "title": "Monitoraggio e alert sulle azioni",
+            "text": "Aiuta a rilevare comportamenti anomali."
+          },
+          {
+            "score": 1,
+            "title": "Procedura di revoca e rollback",
+            "text": "Serve per reagire rapidamente."
+          },
+          {
+            "score": -2,
+            "title": "Usare le credenziali personali dell’utente",
+            "text": "Mescola responsabilità e aumenta l’esposizione."
+          },
+          {
+            "score": -2,
+            "title": "Dare accesso amministratore per semplicità",
+            "text": "Viola il principio del minimo privilegio."
+          }
+        ],
+        "feedback": "Credenziali e accessi degli agenti devono essere dedicati, limitati, monitorati e revocabili."
+      },
+      "translationEn": {
+        "text": "Before connecting an agent to company systems, which checks do you perform on credentials and access?",
+        "hint": "Select practices that reduce operational risk.",
+        "options": [
+          [
+            "Dedicated and revocable accounts or tokens",
+            "They enable control and fast deactivation."
+          ],
+          [
+            "Minimum permissions for each tool",
+            "This limits the impact of errors or abuse."
+          ],
+          [
+            "Secrets not inserted in the prompt",
+            "Credentials must be managed outside free text."
+          ],
+          [
+            "Monitoring and alerts on actions",
+            "This helps detect anomalous behavior."
+          ],
+          [
+            "Revocation and rollback procedure",
+            "This is needed to react quickly."
+          ],
+          [
+            "Use the user's personal credentials",
+            "This mixes responsibility and increases exposure."
+          ],
+          [
+            "Give administrator access for simplicity",
+            "This violates the principle of least privilege."
+          ]
+        ],
+        "feedback": "Agent credentials and access must be dedicated, limited, monitored, and revocable."
+      },
+      "overrides": {
+        "it": {},
+        "en": {}
+      },
+      "classification": {
+        "evidenceType": "Q",
+        "primaryArea": "A",
+        "objectiveId": "A03",
+        "objectiveAlignment": "direct",
+        "taskLevel": "S",
+        "secondaryTags": [
+          "delegation",
+          "diligence"
+        ]
+      }
+    }
+  ]
+}

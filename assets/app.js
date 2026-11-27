@@ -82,7 +82,7 @@ function cloneQuestionData(value) {
       return selected;
     }
 
-    const APP_VERSION = "3.5.5";
+    const APP_VERSION = "3.5.6";
     const HISTORY_KEY = "aiSkillAssessmentHistory";
     const ASSESSMENT_EPOCH_KEY = "aiSkillAssessmentClearGeneration";
     const DEFAULT_TEST_MODE_ID = "complete";
@@ -1088,11 +1088,7 @@ function cloneQuestionData(value) {
     }
 
     function modePoolQuestions(sourceQuestions, mode) {
-      if (mode && mode.type === "learning") return FIRST_STEPS_QUESTIONS.it.filter(question => question.formId === "A");
-      if (!mode || mode.id === DEFAULT_TEST_MODE_ID) {
-        const form = sourceQuestions[0]?.formId || "A";
-        return COMPLETE_ASSESSMENT.build(form, currentLanguage(), sourceQuestions);
-      }
+      if (mode.type === "learning") return FIRST_STEPS_QUESTIONS.it.filter(question => question.formId === "A");
       return sourceQuestions.filter(question => question.section === mode.section);
     }
 
@@ -1760,13 +1756,6 @@ function cloneQuestionData(value) {
       return Object.hasOwn(descriptions, profile) ? descriptions[profile] : "";
     }
 
-    function localizedProfileName(profile) {
-      if (profile === "Profilo tematico" || profile === "Thematic profile") {
-        return isEnglish() ? "Thematic profile" : "Profilo tematico";
-      }
-      return profile || (isEnglish() ? "Not available" : "Non disponibile");
-    }
-
     function localizedSubLabel(sub) {
       const labels = isEnglish() ? {
         literacy: "Literacy",
@@ -1778,11 +1767,6 @@ function cloneQuestionData(value) {
         diligence: "Diligence"
       } : subLabels;
       return Object.hasOwn(labels, sub) ? labels[sub] : (sub || "");
-    }
-
-    function sourceQuestionId(item) {
-      const raw = String((item && (item.sourceId || item.id)) || "");
-      return raw.replace(/^(A|B|C|EN)_/, "");
     }
 
     function localizedReviewItem(item) {
@@ -2282,10 +2266,6 @@ function cloneQuestionData(value) {
           <td><button type="button" class="btn-ghost" data-history-index="${index}">${reportText("Apri", "Open")}</button></td></tr>`;
       }).reverse().join('');
       return '<section class="card evidence-section"><h3>' + reportText('Storico locale', 'Local history') + '</h3><p>' + reportText('Report salvati separatamente per modalità, lingua, forma e versione. Nessuna media o confronto fra risultati incompatibili.', 'Reports are stored separately by mode, language, form, and version. No averaging or comparison of incompatible results.') + '</p><div class="history-scroll"><table class="history-table"><thead><tr><th>' + reportText('Data', 'Date') + '</th><th>' + reportText('Nome', 'Name') + '</th><th>' + reportText('Modalità', 'Mode') + '</th><th>' + reportText('Lingua / forma', 'Language / form') + '</th><th>App</th><th>' + reportText('Tipo di risultato', 'Result type') + '</th><th>' + reportText('Report', 'Report') + '</th></tr></thead><tbody>' + rows + '</tbody></table></div></section>';
-    }
-
-    function scoreText(value) {
-      return isScore(value) ? String(value) : "—";
     }
 
     function bindHistoryRows(containerId) {

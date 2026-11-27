@@ -4,7 +4,7 @@ Riferimento corrente: M22, release `3.5.0`, banca `2026.11-m22`, forma `1.8`; sc
 
 Questa è la checklist riutilizzabile per nuove modifiche. Le verifiche storiche in SCORING e nei documenti M18–M21 descrivono le rispettive release, senza attestare il browser della M22.
 
-Per le patch successive vedi [recupero e storage M23](#m23--recupero-e-storage), [bozze e bibliografia M24](#m24--bozze-tra-schede-e-bibliografia) ed [export CSV M25](#m25--export-csv-e-file-locali).
+Per le patch successive vedi [recupero e storage M23](#m23--recupero-e-storage), [bozze e bibliografia M24](#m24--bozze-tra-schede-e-bibliografia), [export CSV M25](#m25--export-csv-e-file-locali) e [compatibilità M28](#m28--pulizia-e-compatibilità).
 
 ## Verifiche automatiche
 
@@ -16,7 +16,7 @@ node --test --test-isolation=none tests/*.test.mjs
 
 Le verifiche M22 confrontano tutti i 50 slot con la matrice del blueprint in IT/EN e A/B/C; conteggi per area/evidenza, 6 knowledge e 30 scenario, copertura di tutti i 25 obiettivi, Q corretti/parziali/errati, dichiarazioni e testo senza punteggio, E separato, criticità senza compensazione, assenze e null. Verificano anche navigazione, raggruppamento e inversione K1, invalidazione della consegna, ripresa della bozza, rifiuto di dati corrotti/incompatibili, errori di storage, storico originale e JSON/CSV.
 
-`tests/fixtures/m21-regression.json` contiene sei SHA-256 del contenuto effettivo di banca, percorsi non completi, forme didattiche e regole/casi del tag annotato `v3.4.0` (`afb0887`), più un report sintetico originale schema 4. La fixture è stata estratta dagli asset di quel tag, non dalla banca corrente. Non contiene dati di rispondenti e non viene caricata dall'app. Il confronto non richiede Git o processi figli durante i test.
+`tests/fixtures/m21-regression.json` conserva i sei SHA-256 usati nella verifica dei contenuti della `v3.4.0` (`afb0887`) e un report sintetico originale schema 4 estratto da quel tag. Il report serve ancora alle prove di compatibilità dello storico. Per il confronto del contenuto attivo, la M28 usa la baseline `v3.5.5`.
 
 Per rigenerare la revisione editoriale e l'inventario M22:
 
@@ -117,3 +117,11 @@ Patch `3.5.5`, approvata dal maintainer il `2026-11-27`.
 77 test automatici superati. Le verifiche includono la presenza della distribuzione nell’HTML, le quote nelle due lingue, le transizioni di focus e la pausa del carosello. La suite verifica anche la ripresa delle bozze compatibili della `3.5.4`.
 
 Edge headless su localhost e profilo temporaneo ha verificato eventi di tastiera a 1280 px in italiano e a 390 px emulati in inglese. Verificati indicatori stabili al cambio di slide e lingua, pausa e ripresa del carosello, avvio e completamento di Primi passi, ritorno dalla bibliografia, selezioni multiple nel Practical Lab, testo nel completo e conferma, ritorno e inversione K1 nel laboratorio. Sulle unità a scelta multipla e a testo la prova ha impostato la posizione con dati sintetici, quindi ha usato i controlli della pagina. Con movimento ridotto, rotazione in pausa e transizioni del carosello e della barra di avanzamento a zero. La prova non ha prodotto eccezioni o richieste HTTP(S) esterne. Restano da provare un dispositivo mobile fisico e la lettura con uno screen reader.
+
+## M28 — Pulizia e compatibilità
+
+Il maintainer ha approvato il diff locale della patch `3.5.6` il `2026-11-27`. La suite ha superato 79 test. La fixture `tests/fixtures/m28-baseline.json` contiene gli SHA-256 ricavati dal tag `v3.5.5` (`3cd9faf`). Il confronto comprende l’intera banca attiva e 84 combinazioni di percorso, lingua e forma, con domande, risultati su risposte sintetiche e campi CSV. La prova normalizza la versione dell’app e i metadati variabili della singola sessione. Verifica anche che l’archivio AG1–AG15 conservi definizioni, traduzioni, override e classificazioni originali e che gli asset caricati dall’HTML siano privi di quei quesiti. I sei generatori riproducono gli stessi sette output in una copia temporanea.
+
+Edge headless con un profilo temporaneo ha completato Primi passi a 1280 px in italiano e il tematico Agents a 390 px emulati in inglese. Verificati risposta conservata con Indietro, bibliografia dalla landing e dai risultati, sette download JSON/CSV e lettura dei report sintetici 2.x e 3.4.0, compreso `AG2`. Gli export JSON storici corrispondono ai report originali e la consultazione ha preservato lo storico. Durante la prova non sono emerse eccezioni della pagina, richieste HTTP(S) esterne o richieste dell’archivio. Il mobile fisico e il deploy Pages restano fuori da questa verifica locale.
+
+L’apertura diretta di `index.html` da file locale reindirizza a `ai_skill_test.html` e mostra la versione `3.5.6` e tutti i 14 percorsi in Edge headless.

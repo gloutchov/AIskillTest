@@ -6,7 +6,7 @@ Questionario interattivo in italiano e inglese per esplorare conoscenze, giudizi
 
 L'assessment produce un quadro delle evidenze: conoscenze/scenari, pratiche dichiarate, testi con feedback ed esiti simulati restano separati, con copertura e limiti per area. È pensato come strumento diagnostico interno e migliorabile, non come test psicometrico validato.
 
-Versione corrente dell'app **`3.5.5`**, milestone 27 approvata dal maintainer il `2026-11-27`. Il tag di riferimento è `v3.5.5`.
+Versione dell’app **`3.5.6`**, milestone C28.
 
 ### Nota sullo sviluppo
 
@@ -43,7 +43,8 @@ Questo test è stato realizzato in vibecoding, usando l'AI come supporto operati
 - `scripts/build-harness-review.mjs`: rigenera la revisione Harness; facoltativo, non serve all'app.
 - `LEARNING_PATH.md`: blueprint bilingue del percorso introduttivo pianificato, con domande, unità didattiche e fonti.
 - `ASSESSMENT_BLUEPRINT.md`: blueprint approvato della milestone 16 per competenze, prove, risultati e compatibilità dello storico della futura serie 3.x.
-- `docs/ASSESSMENT_ITEM_MAP.md`: classificazione dei 145 quesiti e delle sei decisioni E per tipo di evidenza, area e obiettivo.
+- `docs/ASSESSMENT_ITEM_MAP.md`: classificazione dei 130 quesiti tematici, dei 44 slot Q/D/T del completo e delle sei decisioni E.
+- [`docs/archive/agents-original.json`](docs/archive/agents-original.json): archivio dei 15 quesiti Agents originali, con traduzioni, varianti e classificazione.
 - `PLAN.md`: roadmap, stato delle milestone e criteri di validazione e release.
 - `index.html`: pagina di ingresso che rimanda al test.
 - `LICENSE`: licenza Apache 2.0.
@@ -91,7 +92,7 @@ Modalità disponibili:
 - Practical Lab: 10 domande.
 - Laboratorio operativo: 2 casi, 6 decisioni E.
 
-La banca tematica conserva 145 domande base: le 115 originarie e dieci slot per AI moderne, Agents e Harness, con varianti A/B/C IT/EN. Il completo M22 usa 44 ID Q/D/T separati: 31 riusi espliciti con originSourceId e 13 nuovi contenuti, più le sei decisioni LAB con slotId. In totale 195 ID classificati, senza contare Primi passi. Le domande AG1–AG15 restano nella banca per tracciabilità; il completo usa nove scenari AW e il tematico Agents mantiene AW01–AW10. La rotazione delle forme resta distinta per lingua e modalità.
+La banca tematica contiene 130 domande con varianti A/B/C IT/EN, inclusi dieci slot ciascuno per AI moderne, Agents e Harness. Il completo M22 usa 44 ID Q/D/T separati, con 31 riusi espliciti e 13 nuovi contenuti, più le sei decisioni LAB. In totale 180 ID classificati, senza contare Primi passi. I quesiti AG1–AG15 sono nell’archivio storico. Il completo usa nove scenari AW e il tematico Agents mantiene AW01–AW10. La rotazione delle forme resta distinta per lingua e modalità.
 
 AI moderne seleziona sempre U01×2, U02×2 e U03–U08×1. Comprende immagini/scansioni/grafici, audio/video, comprensione rispetto a generazione o azione, scelta fra capacità e strumenti, brief, controlli e adozione. Le configurazioni sono ipotetiche e contengono tutti i vincoli necessari; non richiedono nomi o listini a memoria. I risultati mostrano la motivazione della scelta effettuata e letture facoltative. Il percorso valuta decisioni su scenari, senza osservare esecuzione pratica. Equivalenza delle forme e durata sono editoriali, non validate empiricamente.
 
@@ -147,8 +148,8 @@ L'icona a forma di casa accanto al selettore della lingua rimanda al sito princi
 
 ### Versioning
 
-- Versione app `3.5.5`.
-- Tag Git `v3.5.5`.
+- Versione app `3.5.6`.
+- Tag Git di riferimento `v3.5.6`.
 - Banca domande: `2026.11-m22`.
 - Forma assessment: `1.8`.
 - Scoring: `3.1.0`; schema report `4`; blueprint `1.0.0`; casi/laboratorio `1.0.0`.
@@ -159,7 +160,7 @@ I tag seguono il formato `vX.Y.Z`. Le modifiche patch aggiornano documentazione 
 
 ### Progettazione dell'aggiornamento 3.x
 
-La milestone 16 definisce il [blueprint delle competenze e della valutazione](ASSESSMENT_BLUEPRINT.md) `1.0.0`, approvato dal maintainer il `2026-11-25`, con la [mappa degli item](docs/ASSESSMENT_ITEM_MAP.md), inizialmente 115, ora 145 quesiti tematici, 44 unità Q/D/T del completo e sei decisioni E. Il blueprint distingue conoscenze/scenari, pratiche dichiarate, esercizi simulati e testi con feedback; definisce copertura, rubriche, percorsi futuri e conservazione dei report 2.x senza ricalcolo. Matrice, soglie, tempi e terminologia sono scelte editoriali da verificare durante l'implementazione.
+La milestone 16 definisce il [blueprint delle competenze e della valutazione](ASSESSMENT_BLUEPRINT.md) `1.0.0`, approvato dal maintainer il `2026-11-25`, con la [mappa degli item](docs/ASSESSMENT_ITEM_MAP.md), inizialmente 115, oggi 130 quesiti tematici attivi, 44 unità Q/D/T del completo e sei decisioni E. Il blueprint distingue conoscenze/scenari, pratiche dichiarate, esercizi simulati e testi con feedback; definisce copertura, rubriche, percorsi futuri e conservazione dei report 2.x senza ricalcolo. Matrice, soglie, tempi e terminologia sono scelte editoriali da verificare durante l'implementazione.
 
 La milestone 17 introduce il nuovo modello di valutazione nella release `3.0.0`, approvata il `2026-11-25`, senza revisionare banca e forme. La milestone 18 aggiunge AI moderne nella release `3.1.0`, approvata dal maintainer il `2026-11-25`: il completo e i nove tematici preesistenti mantengono testi e composizioni. Il laboratorio e l'integrazione del completo seguono nelle milestone 19-22 di [PLAN.md](PLAN.md). [Documento di revisione](docs/MODERN_AI_REVIEW.md).
 
@@ -196,7 +197,7 @@ Interactive questionnaire in Italian and English exploring GenAI knowledge, judg
 
 The assessment produces an evidence overview: knowledge/scenarios, self-reported practices, text with feedback, and simulated outcomes remain separate, with area coverage and limits. It is intended as an internal diagnostic tool that can evolve over time, not as a psychometrically validated test.
 
-The current app version is **`3.5.5`**. The maintainer approved milestone 27 on `2026-11-27`. The reference tag is `v3.5.5`.
+App version **`3.5.6`**, milestone C28.
 
 ### Development Note
 
@@ -233,7 +234,8 @@ This test was built through vibecoding, using AI as operational support for idea
 - `scripts/build-harness-review.mjs`: regenerates Harness review documentation; optional, not required by the app.
 - `LEARNING_PATH.md`: bilingual blueprint for the planned introductory path, including questions, learning units, and sources.
 - `ASSESSMENT_BLUEPRINT.md`: approved milestone 16 blueprint for competencies, evidence, results, and history compatibility in the future 3.x series.
-- `docs/ASSESSMENT_ITEM_MAP.md`: classification of 145 thematic items, 44 full-test slots, and six E decisions.
+- `docs/ASSESSMENT_ITEM_MAP.md`: classification of 130 thematic items, 44 full-test Q/D/T slots, and six E decisions.
+- [`docs/archive/agents-original.json`](docs/archive/agents-original.json): archive of the 15 original Agents questions, including translations, variants, and classification.
 - `PLAN.md`: roadmap, milestone status, and validation and release criteria.
 - `index.html`: entry page that redirects to the test.
 - `LICENSE`: Apache 2.0 license.
@@ -281,7 +283,7 @@ Available modes:
 - Practical Lab: 10 questions.
 - Operational lab: 2 cases, 6 E decisions.
 
-The thematic bank retains 145 base questions: the original 115 plus ten slots each for Modern AI, Agents, and Harness, with IT/EN A/B/C variants. M22 uses 44 separate full-test Q/D/T IDs: 31 explicit reuses with originSourceId and 13 new contents, plus the six LAB decisions with slotId. There are 195 classified IDs excluding First Steps. AG1–AG15 stay in the bank for traceability; the full test uses nine AW scenarios and thematic Agents retains AW01–AW10. Forms rotate separately by language and mode.
+The thematic bank contains 130 questions with IT/EN A/B/C variants, including ten slots each for Modern AI, Agents, and Harness. M22 uses 44 separate full-test Q/D/T IDs, with 31 explicit reuses and 13 new items, plus the six LAB decisions. There are 180 classified IDs excluding First Steps. The original AG1–AG15 questions are in the archive. The full test uses nine AW scenarios and thematic Agents retains AW01–AW10. Forms rotate separately by language and mode.
 
 Modern AI always selects U01×2, U02×2, and U03–U08×1. It covers images/scans/charts, audio/video, understanding versus generation or action, capability and tool selection, briefs, checks, and adoption. Configurations are hypothetical and supply all required constraints; no product names or price lists need memorizing. Results show a rationale for the selected choice and optional readings. This path assesses decisions on scenarios without observing practical execution. Form equivalence and timing are editorial, not empirically validated.
 
@@ -337,8 +339,8 @@ The home icon next to the language selector links to the main website, [glaucosi
 
 ### Versioning
 
-- App version `3.5.5`.
-- Git tag `v3.5.5`.
+- App version `3.5.6`.
+- Reference Git tag `v3.5.6`.
 - Question bank: `2026.11-m22`.
 - Assessment form: `1.8`.
 - Scoring: `3.1.0`; report schema `4`; blueprint `1.0.0`; cases/lab `1.0.0`.
@@ -349,7 +351,7 @@ Tags follow the `vX.Y.Z` format. Patch releases cover documentation or small fix
 
 ### Planning The 3.x Update
 
-Milestone 16 defines the [competency and assessment blueprint](ASSESSMENT_BLUEPRINT.md) `1.0.0`, approved by the maintainer on `2026-11-25`, with an [item map](docs/ASSESSMENT_ITEM_MAP.md), originally 115 items, now 145 thematic questions, 44 full-test Q/D/T units, and six E decisions. The blueprint separates knowledge/scenarios, self-reported practices, simulated exercises, and text with formative feedback; it defines coverage, rubrics, future paths, and preservation of 2.x reports without recalculation. The matrix, thresholds, timing, and terminology are editorial choices to verify during implementation.
+Milestone 16 defines the [competency and assessment blueprint](ASSESSMENT_BLUEPRINT.md) `1.0.0`, approved by the maintainer on `2026-11-25`, with an [item map](docs/ASSESSMENT_ITEM_MAP.md), originally 115 items, now 130 active thematic questions, 44 full-test Q/D/T units, and six E decisions. The blueprint separates knowledge/scenarios, self-reported practices, simulated exercises, and text with formative feedback; it defines coverage, rubrics, future paths, and preservation of 2.x reports without recalculation. The matrix, thresholds, timing, and terminology are editorial choices to verify during implementation.
 
 Milestone 17 introduces the new assessment model in release `3.0.0`, approved on `2026-11-25`, without revising the bank or forms. Milestone 18 adds Modern AI in release `3.1.0`, approved by the maintainer on `2026-11-25`: the full test and nine existing thematic paths retain their texts and compositions. The lab and full-test integration follow in milestones 19-22 of [PLAN.md](PLAN.md). [Review document](docs/MODERN_AI_REVIEW.md).
 

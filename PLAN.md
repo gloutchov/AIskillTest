@@ -4,7 +4,7 @@ Questo piano governa le prossime modifiche del progetto `AIskillTest`. Ogni mile
 
 Versione di partenza: `1.0.0`.
 
-Release di riferimento `v3.5.5`, con le milestone 0–27 completate. Il maintainer ha approvato la M27 il `2026-11-27`. La prossima attività della roadmap di review è la M28.
+Versione di riferimento `3.5.6`, con le milestone 0–27 completate e la C28 validata dal maintainer il `2026-11-27`. Il completamento della pubblicazione richiede la verifica di `main` e dei tag della C28 prima di avviare la M29.
 
 ## Regole di release
 
@@ -42,7 +42,7 @@ Il completo M22 contiene 50 unità di risposta in ogni forma A/B/C e IT/EN. Le s
 
 I 36 Q includono sei prove di comprensione e trenta scenari, con tutti i 25 obiettivi direttamente coperti. D e T non producono punti; E resta separato. Nessun conteggio aggiuntivo dai tag trasversali. Durata completa 40–55 minuti, stima editoriale da verificare; nessuna misura umana è stata comunicata nel messaggio di approvazione.
 
-La banca tematica conserva 145 ID Q/D/T; il completo usa 44 ID dedicati con riusi espliciti e sei ID LAB: 195 ID classificati complessivi. Modern AI, Agents e Harness mantengono dieci Q con matrice vincolata; gli altri tematici e Primi passi conservano le proprie forme; il laboratorio autonomo resta da due casi/sei decisioni. Quattordici percorsi in totale. [Revisione bilingue e report campione](docs/M22_REVIEW.md).
+La banca tematica contiene 130 ID Q/D/T attivi, dopo lo spostamento di AG1–AG15 nell’[archivio storico](docs/archive/agents-original.json). Il completo usa 44 ID dedicati con riusi espliciti e sei ID LAB, per un totale di 180 ID classificati. Modern AI, Agents e Harness mantengono dieci Q con matrice vincolata; gli altri tematici e Primi passi conservano le proprie forme; il laboratorio autonomo resta da due casi/sei decisioni. Quattordici percorsi in totale. [Revisione bilingue e report campione](docs/M22_REVIEW.md).
 
 ### Evoluzione pianificata: AI moderne, agenti, harness e valutazione
 
@@ -856,7 +856,7 @@ Base della review `8a98a8f`. I target sono indicativi e seguono l'ordine delle m
 | 25 | Export CSV sicuro e protezione degli export dal versionamento | `3.5.3` | Completata |
 | 26 | Report storici danneggiati e gestione sicura dei campi | `3.5.4` | Completata |
 | 27 | Navigazione da tastiera e distribuzione sulla landing | `3.5.5` | Completata |
-| 28 | Pulizia del codice orfano e archivio dei quesiti Agents originali | `3.5.6` | Pianificata |
+| 28 | Pulizia del codice orfano e archivio dei quesiti Agents originali | `3.5.6` | Implementazione approvata |
 | 29 | Pubblicazione selettiva e protezioni GitHub Pages | `3.5.7` | Pianificata |
 
 ### M23 — Recupero dei risultati e interruzione con storage indisponibile
@@ -908,12 +908,12 @@ Base della review `8a98a8f`. I target sono indicativi e seguono l'ordine delle m
 - Gli indicatori del carosello conservano il proprio elemento quando cambia la selezione o la lingua. L’interazione da tastiera sospende l’autoplay fino a «Riprendi». La preferenza per movimento ridotto avvia il carosello in pausa e disattiva la transizione di scorrimento. [Checklist M27](docs/QA.md#m27--tastiera-e-distribuzione-sulla-landing).
 - Il maintainer ha approvato la chiusura della M27 e la release `v3.5.5` il `2026-11-27`.
 
-### M28 — Pulizia del codice orfano e archivio Agents
+### C28 — Pulizia del codice orfano e archivio Agents
 
-- Branch `fix/remove-unused-assessment-code`, target patch `3.5.6`.
-- Rimuovere le funzioni prive di chiamanti `localizedProfileName`, `sourceQuestionId`, `scoreText` e i rami o stili rimasti senza un uso verificabile dopo la M27.
-- Spostare i 15 quesiti Agents non selezionati fuori dagli asset runtime, mantenendo ID e contenuti in un archivio per tracciabilità. Conservare il renderer 2.x e i contratti dei report archiviati.
-- Confrontare tutte le forme e le modalità attive con la release precedente. Verificare anche test, generatori e documentazione che leggono la banca.
+- Branch `fix/remove-unused-assessment-code`, versione `3.5.6`, tag di versione `v3.5.6` e checkpoint `milestone/C28` da verificare su `main`.
+- Rimosse le funzioni prive di chiamanti `localizedProfileName`, `sourceQuestionId`, `scoreText` e rami e stili inutilizzati. Aggiornate versione e cache degli asset.
+- L’[archivio AG1–AG15](docs/archive/agents-original.json) conserva definizioni, traduzioni, varianti IT/EN e classificazione. Le 84 combinazioni attive corrispondono alla `v3.5.5`. Verificati anche i report 2.x, la conservazione dei dati storici e la compatibilità delle bozze.
+- Il maintainer ha approvato il diff locale il `2026-11-27`. Superati 79 test e la verifica dei sei generatori. In Edge sono stati verificati percorsi, storico ed export da localhost e apertura da file locale. La prova mobile ha usato un viewport emulato. [Verifiche M28](docs/QA.md#m28--pulizia-e-compatibilità).
 
 ### M29 — Pubblicazione selettiva e protezioni GitHub Pages
 

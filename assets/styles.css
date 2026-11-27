@@ -650,30 +650,6 @@
       box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
     }
 
-    .task-note {
-      margin: 10px 0 0;
-      color: #64748b;
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .rubric-preview {
-      display: grid;
-      gap: 8px;
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 18px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      color: #475569;
-      font-size: 13px;
-      line-height: 1.45;
-    }
-
-    .rubric-preview strong {
-      color: #334155;
-    }
-
     .actions {
       display: flex;
       flex-wrap: wrap;
@@ -717,7 +693,6 @@
       background: #be123c;
     }
 
-    .btn-disabled,
     button[disabled] {
       opacity: 0.45;
       cursor: not-allowed;
